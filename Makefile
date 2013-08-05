@@ -5,8 +5,8 @@
 
 fetch: jats crossref crossref-schematron nlm-stylechecker
 
-validate:
-	./validate.sh
+#validate:
+	#./validate.sh
 
 # Archive files
 
@@ -39,17 +39,21 @@ jats/publishing/1.0/catalog-jats-v1.xml: downloads/jats-publishing-dtd-1.0.zip
 
 # CrossRef DTD
 
-crossref: crossref/crossref4.3.1.xsd crossref/common4.3.1.xsd crossref/fundref.xsd
+crossref: crossref4.3.2 crossref4.3.1 crossref/fundref.xsd crossref/AccessIndicators.xsd
 
-crossref/crossref4.3.1.xsd:
-	mkdir crossref
+crossref4.3.2:
+	wget --continue --directory-prefix=crossref http://doi.crossref.org/schemas/crossref4.3.2.xsd
+	wget --continue --directory-prefix=crossref http://doi.crossref.org/schemas/common4.3.2.xsd
+
+crossref4.3.1:
 	wget --continue --directory-prefix=crossref http://doi.crossref.org/schemas/crossref4.3.1.xsd
-
-crossref/common4.3.1.xsd:
 	wget --continue --directory-prefix=crossref http://doi.crossref.org/schemas/common4.3.1.xsd
 
 crossref/fundref.xsd:
 	wget --continue --directory-prefix=crossref http://doi.crossref.org/schemas/fundref.xsd
+
+crossref/AccessIndicators.xsd:
+	wget --continue --directory-prefix=crossref http://doi.crossref.org/schemas/AccessIndicators.xsd
 
 # NLM PMC Style Checker
 
