@@ -20,6 +20,14 @@ xmllint --loaddtd --noout --valid --catalogs "$ARTICLE"
 echo "Validating for CrossRef DOI deposition"
 xsltproc --catalogs --stringparam "timestamp" `date +"%s"` "$DIR/xsl/jats-to-unixref.xsl" "$ARTICLE" | xmllint --noout --schema "$DIR/resources/crossref/crossref4.3.1.xsd" -
 
+echo "Generating CrossRef schematron report"
+OUTPUT="output/$FILE-crossref-schematron-report.xml"
+#xsltproc --catalogs --stringparam "timestamp" `date +"%s"` "$DIR/xsl/jats-to-unixref.xsl" "$ARTICLE" | xsltproc "$DIR/resources/schematron/crossref.xsl" -
+xsltproc --catalogs --stringparam "timestamp" `date +"%s"` "$DIR/xsl/jats-to-unixref.xsl" "$ARTICLE" > "crossref.xml"
+saxon "crossref.xml" "$DIR/resources/schematron/crossref.xsl" > "$OUTPUT"
+rm "crossref.xml"
+echo "CrossRef schematron report written to $OUTPUT"
+
 echo "Checking PMC tagging style"
 OUTPUT="output/$FILE-nlm-style-report.html"
 xsltproc --catalogs "$DIR/resources/nlm-style/nlm-stylechecker.xsl" "$ARTICLE" | xsltproc -output "$OUTPUT" "$DIR/resources/nlm-style/style-reporter.xsl" -

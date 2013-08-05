@@ -13,6 +13,9 @@ mkdir -p $PMC_DIR
 CROSSREF_DIR="$DIR/resources/crossref"
 mkdir -p $CROSSREF_DIR
 
+SCHEMATRON_DIR="$DIR/resources/schematron"
+mkdir -p $SCHEMATRON_DIR
+
 echo "Fetching JATS DTD"
 ZIP="jats-publishing-dtd-1.0.zip"
 curl "ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.0/$ZIP" --output "/tmp/$ZIP"; unzip "/tmp/$ZIP" -d "$JATS_DIR"
@@ -27,5 +30,11 @@ for FILE in ${FILES[@]}
 do
 	curl "http://www.crossref.org/schema/deposit/$FILE" --output "$CROSSREF_DIR/$FILE"
 done
+
+echo "Fetching CrossRef Schematron"
+ZIP="CrossRef_Schematron_Rules.zip"
+curl "http://www.crossref.org/schematron/$ZIP" --output "/tmp/$ZIP"; unzip "/tmp/$ZIP" -d "$SCHEMATRON_DIR"
+xsltproc -output "$SCHEMATRON_DIR/crossref.xsl" "$SCHEMATRON_DIR/CrossRef_Schematron_Rules/iso_svrl.xsl" "$SCHEMATRON_DIR/CrossRef_Schematron_Rules/deposit.sch"
+rm -r "$SCHEMATRON_DIR/CrossRef_Schematron_Rules"
 
 echo "Ready."
