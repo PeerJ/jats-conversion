@@ -1,26 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" exclude-result-prefixes="xlink mml"
+<xsl:stylesheet version="1.0" exclude-result-prefixes="xlink mml php"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:mml="http://www.w3.org/1998/Math/MathML"
-                xmlns:xlink="http://www.w3.org/1999/xlink">
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                xmlns:php="http://php.net/xsl">
 
     <xsl:output method="xml" encoding="utf-8" omit-xml-declaration="yes" indent="yes"/>
 
     <xsl:strip-space elements="contrib"/>
 
+    <xsl:param name="public-reviews" select="false()"/>
     <xsl:param name="static-root" select="''"/>
+    <xsl:param name="search-root" select="''"/>
+    <xsl:param name="download-prefix" select="'file'"/>
+    <xsl:param name="publication-type" select="'publication'"/>
+    <xsl:param name="self-uri" select="/article/front/article-meta/self-uri/@xlink:href"/>
 
     <xsl:variable name="meta" select="/article/front/article-meta"/>
     <xsl:variable name="id" select="$meta/article-id[@pub-id-type='publisher-id']"/>
     <xsl:variable name="doi" select="$meta/article-id[@pub-id-type='doi']"/>
     <xsl:variable name="title" select="$meta/title-group/article-title"/>
-    <xsl:variable name="pub-date" select="$meta/pub-date[@date-type='pub'][@pub-type='epub']"/>
+    <xsl:variable name="pub-date" select="$meta/pub-date[@date-type='pub'][@pub-type='epub']|$meta/pub-date[@date-type='preprint'][@pub-type='epreprint']"/>
     <xsl:variable name="authors" select="$meta/contrib-group[@content-type='authors']/contrib[@contrib-type='author']"/>
     <xsl:variable name="editors" select="$meta/contrib-group[@content-type='editors']/contrib[@contrib-type='editor']"/>
-    <xsl:variable name="keywords" select="$meta/kwd-group[@kwd-group-type='author']/kwd"/>
 
     <xsl:variable name="journal-meta" select="/article/front/journal-meta"/>
     <xsl:variable name="journal-title" select="$journal-meta/journal-title-group/journal-title"/>
+
+    <xsl:variable name="end-punctuation">
+        <xsl:text>.?!"')]}</xsl:text>
+    </xsl:variable>
+
+    <xsl:key name="ref" match="ref" use="@id"/>
+    <xsl:key name="aff" match="aff" use="@id"/>
+    <xsl:key name="corresp" match="corresp" use="@id"/> <!-- remove when converted -->
 
     <!-- article -->
     <xsl:template match="/article">
@@ -30,9 +43,8 @@
                 <meta charset="utf-8"/>
                 <meta name="robots" content="noindex"/>
                 <title>
-                    <xsl:apply-templates select="$title/node()"/>
+                    <xsl:value-of select="$title"/>
                 </title>
-                <xsl:apply-templates select="$keywords" mode="meta"/>
                 <link rel="canonical" href="{$id}"/>
                 <xsl:apply-templates select="front/article-meta" mode="head"/>
                 <xsl:apply-templates select="front/journal-meta" mode="head"/>
@@ -56,10 +68,21 @@
         <meta name="citation_date" content="{$pub-date/@iso-8601-date}"/>
         <meta name="citation_doi" content="{$doi}"/>
         <meta name="citation_language" content="en"/>
-        <meta name="citation_pdf_url" content="{self-uri/@xlink:href}.pdf"/>
-        <meta name="citation_fulltext_html_url" content="{self-uri/@xlink:href}"/>
-        <meta name="citation_volume" content="{volume}"/>
-        <meta name="citation_firstpage" content="{elocation-id}"/>
+        <meta name="citation_pdf_url" content="{$self-uri}.pdf"/>
+        <meta name="citation_fulltext_html_url" content="{$self-uri}"/>
+
+        <xsl:choose>
+            <xsl:when test="$publication-type = 'publication'">
+                <meta name="citation_volume" content="{volume}"/>
+                <meta name="citation_firstpage" content="{elocation-id}"/>
+            </xsl:when>
+            <xsl:when test="$publication-type = 'preprint'">
+                <!-- note: no citation_volume for preprints -->
+                <meta name="citation_technical_report_number" content="{elocation-id}"/>
+            </xsl:when>
+        </xsl:choose>
+
+        <xsl:apply-templates select="$authors/name" mode="citation-author"/>
 
         <meta name="citation_authors">
             <xsl:attribute name="content">
@@ -79,7 +102,7 @@
         <meta name="citation_author_institutions">
             <xsl:attribute name="content">
                 <xsl:for-each select="contrib-group[@content-type='authors']/aff">
-                    <xsl:apply-templates select="node()[not(local-name() = 'label')]"/>
+                    <xsl:call-template name="affiliation-address-text"/>
                     <xsl:call-template name="comma-separator">
                         <xsl:with-param name="separator" select="'; '"/>
                     </xsl:call-template>
@@ -90,6 +113,8 @@
         <meta name="description">
             <xsl:attribute name="content">
                 <xsl:value-of select="normalize-space(abstract)"/>
+                <!--<xsl:value-of select="substring(normalize-space(abstract), 1, 500)"/>-->
+                <!--<xsl:text>[&#8230;]</xsl:text>-->
             </xsl:attribute>
         </meta>
 
@@ -107,17 +132,59 @@
 
     <!-- "meta" tags, journal -->
     <xsl:template match="journal-meta" mode="head">
-        <meta name="citation_journal_title" content="{$journal-title}"/>
-        <meta name="citation_journal_abbrev" content="{$journal-title}"/>
+        <xsl:choose>
+            <xsl:when test="$publication-type = 'publication'">
+                <meta name="citation_journal_title" content="{$journal-title}"/>
+                <meta name="citation_journal_abbrev" content="{$journal-title}"/>
+            </xsl:when>
+            <xsl:when test="$publication-type = 'preprint'">
+                <meta name="citation_technical_report_institution" content="{$journal-title}"/>
+                <!-- note: no citation_journal_abbrev for preprints -->
+            </xsl:when>
+        </xsl:choose>
         <meta name="citation_publisher" content="{publisher/publisher-name}"/>
-        <meta name="citation_issn" content="{issn[@pub-type='epub']}"/>
+        <meta name="citation_issn" content="{issn}"/>
     </xsl:template>
 
-    <!-- "meta" tags, references -->
-    <xsl:template match="ref-list" mode="head">
+    <!-- citation_author, citation_author_institution, citation_author_email -->
+    <xsl:template match="name" mode="citation-author">
+        <meta name="citation_author">
+            <xsl:attribute name="content">
+                <xsl:call-template name="name"/>
+            </xsl:attribute>
+        </meta>
+
+        <xsl:variable name="affid" select="../xref[@ref-type='aff']/@rid"/>
+
+        <xsl:if test="$affid">
+            <xsl:apply-templates select="key('aff', $affid)" mode="citation-author"/>
+        </xsl:if>
+
+        <xsl:choose>
+            <!-- new-style corresp -->
+            <xsl:when test="../email">
+                <meta name="citation_author_email" content="{../email}"/>
+            </xsl:when>
+            <!-- old-style corresp; remove once converted -->
+            <xsl:otherwise>
+                <xsl:variable name="correspid" select="../xref[@ref-type='corresp']/@rid"/>
+                <xsl:if test="$correspid">
+                    <xsl:variable name="corresp" select="key('corresp', $correspid)"/>
+                    <meta name="citation_author_email" content="{$corresp/email}"/>
+                </xsl:if>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
-    <!-- front mattter -->
+    <xsl:template match="aff" mode="citation-author">
+        <meta name="citation_author_institution">
+            <xsl:attribute name="content">
+                <xsl:call-template name="affiliation-address-text"/>
+            </xsl:attribute>
+        </meta>
+    </xsl:template>
+
+    <!-- front matter -->
     <xsl:template match="front/article-meta">
         <header class="{local-name()} front">
             <xsl:apply-templates select="$title"/>
@@ -134,6 +201,7 @@
 
                 <dl class="article-identifiers">
                     <dt>
+                        <!--<img src="http://www.crossref.org/images/citation_linking_graphic_12x54_trans.png"/>-->
                         <xsl:text>&#32;DOI</xsl:text>
                     </dt>
                     <dd>
@@ -151,31 +219,37 @@
                         </time>
                     </dd>
 
-                    <dt>Accepted</dt>
-                    <dd>
-                        <time itemprop="dateModified">
-                            <xsl:value-of select="history/date[@date-type='accepted']/@iso-8601-date"/>
-                        </time>
-                    </dd>
+                    <xsl:if test="history/date[@date-type='accepted']/@iso-8601-date">
+                        <dt>Accepted</dt>
+                        <dd>
+                            <time itemprop="dateModified">
+                                <xsl:value-of select="history/date[@date-type='accepted']/@iso-8601-date"/>
+                            </time>
+                        </dd>
+                    </xsl:if>
 
-                    <dt>Received</dt>
-                    <dd>
-                        <time itemprop="dateCreated">
-                            <xsl:value-of select="history/date[@date-type='received']/@iso-8601-date"/>
-                        </time>
-                    </dd>
+                    <xsl:if test="history/date[@date-type='received']/@iso-8601-date">
+                        <dt>Received</dt>
+                        <dd>
+                            <time itemprop="dateCreated">
+                                <xsl:value-of select="history/date[@date-type='received']/@iso-8601-date"/>
+                            </time>
+                        </dd>
+                    </xsl:if>
                 </dl>
 
-                <dl class="article-editors">
-                    <dt>Academic Editor</dt>
-                    <dd>
-                        <xsl:for-each select="$editors">
-                            <a href="editor-{ position() }" class="{local-name()}">
-                                <xsl:apply-templates select="node()|@*"/>
-                            </a>
-                        </xsl:for-each>
-                    </dd>
-                </dl>
+                <xsl:if test="count($editors)">
+                    <dl class="article-editors">
+                        <dt>Academic Editor</dt>
+                        <dd>
+                            <xsl:for-each select="$editors">
+                                <a href="editor-{ position() }" class="{local-name()}">
+                                    <xsl:apply-templates select="node()|@*"/>
+                                </a>
+                            </xsl:for-each>
+                        </dd>
+                    </dl>
+                </xsl:if>
 
                 <dl class="article-subjects">
                     <dt>Subject Areas</dt>
@@ -193,6 +267,19 @@
                 <xsl:call-template name="self-citation">
                     <xsl:with-param name="meta" select="."/>
                 </xsl:call-template>
+
+                <xsl:if test="$public-reviews">
+                    <xsl:variable name="prefix">
+                        <xsl:choose>
+                            <xsl:when test="count($authors) = 1">The author has</xsl:when>
+                            <xsl:otherwise>The authors have</xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:variable>
+                    <div class="alert alert-success view-public-reviews"><xsl:value-of select="$prefix"/> chosen to make <a href="{$public-reviews}">the review history of this article</a> public.</div>
+                </xsl:if>
+
+                <!-- TODO: actual version -->
+                <meta itemprop="version" content="1.0"/>
             </div>
 
             <div>
@@ -209,31 +296,59 @@
         </div>
     </xsl:template>
 
-    <!-- aff or fn -->
-    <xsl:template match="aff | fn | corresp" mode="front">
-        <div>
+    <!-- aff -->
+    <xsl:template match="aff" mode="front">
+        <div itemscope="itemscope" itemtype="http://schema.org/Organization">
             <xsl:apply-templates select="@*"/>
+
             <span class="article-label-container">
                 <xsl:apply-templates select="label"/>
                 <xsl:if test="not(label)">&#160;</xsl:if><!-- non-breaking space, to prevent collapsing elements -->
             </span>
+
+            <xsl:call-template name="affiliation-address"/>
+        </div>
+    </xsl:template>
+
+    <!-- affiliation address -->
+    <xsl:template name="affiliation-address">
+        <xsl:variable name="address-parts" select="node()[not(local-name() = 'label')][not(self::text())]"/>
+
+        <xsl:if test="count($address-parts)">
+            <span itemprop="address">
+                <xsl:for-each select="$address-parts">
+                    <xsl:apply-templates select="."/>
+                    <xsl:call-template name="comma-separator"/>
+                </xsl:for-each>
+            </span>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- affiliation address as text string -->
+    <xsl:template name="affiliation-address-text">
+        <xsl:variable name="address">
+            <xsl:call-template name="affiliation-address"/>
+        </xsl:variable>
+
+        <xsl:value-of select="$address"/>
+    </xsl:template>
+
+    <!-- fn -->
+    <xsl:template match="fn" mode="front">
+        <div>
+            <xsl:apply-templates select="@*"/>
+            <span class="article-label-container">
+                <xsl:apply-templates select="label"/>
+                <xsl:if test="not(label)">&#160;</xsl:if>
+                <!-- non-breaking space, to prevent collapsing elements -->
+            </span>
             <span>
-                <xsl:choose>
-                    <xsl:when test="local-name() = 'corresp'">
-                        <xsl:text>Corresponding author:&#32;</xsl:text>
-                        <a href="mailto:{email}" target="_new">
-                            <xsl:value-of select="email"/>
-                        </a>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:apply-templates select="node()[not(local-name() = 'label')]"/>
-                    </xsl:otherwise>
-                </xsl:choose>
+                <xsl:apply-templates select="node()[not(local-name() = 'label')]"/>
             </span>
         </div>
     </xsl:template>
 
-    <xsl:template match="fn/label | aff/label | corresp/label">
+    <xsl:template match="fn/label | aff/label">
         <a class="article-label">
             <xsl:apply-templates/>
         </a>
@@ -246,11 +361,25 @@
         </xsl:if>
     </xsl:template>
 
+    <xsl:template name="title-punctuation">
+        <xsl:param name="title" select="."/>
+        <xsl:variable name="last-character" select="substring($title, string-length($title))"/>
+        <xsl:if test="not(contains($end-punctuation, $last-character))">
+            <xsl:text>.</xsl:text>
+        </xsl:if>
+    </xsl:template>
+
     <!-- subject area -->
     <xsl:template match="subject" mode="front">
-        <span class="{local-name()}" itemprop="about">
+        <xsl:variable name="encoded-subject">
+            <xsl:call-template name="urlencode">
+                <xsl:with-param name="value" select="."/>
+            </xsl:call-template>
+        </xsl:variable>
+
+        <a class="{local-name()}" itemprop="about" href="{$search-root}?filter={$encoded-subject}">
             <xsl:apply-templates select="node()|@*"/>
-        </span>
+        </a>
         <xsl:call-template name="comma-separator"/>
     </xsl:template>
 
@@ -259,19 +388,6 @@
         <span class="{local-name()}" itemprop="keywords">
             <xsl:apply-templates select="node()|@*"/>
         </span>
-        <xsl:call-template name="comma-separator"/>
-    </xsl:template>
-
-    <xsl:template match="kwd-group" mode="meta">
-        <meta name="keywords">
-            <xsl:attribute name="content">
-                <xsl:apply-templates select="kwd" mode="meta"/>
-            </xsl:attribute>
-        </meta>
-    </xsl:template>
-
-    <xsl:template match="kwd" mode="meta">
-        <xsl:value-of select="."/>
         <xsl:call-template name="comma-separator"/>
     </xsl:template>
 
@@ -287,6 +403,7 @@
             <span itemprop="copyrightHolder">
                 <xsl:value-of select="../copyright-holder"/>
             </span>
+            <!--<xsl:apply-templates select="node()"/>-->
         </dd>
     </xsl:template>
 
@@ -318,7 +435,28 @@
             <div class="{local-name()}" lang="en">
                 <xsl:apply-templates select="node()|@*"/>
             </div>
+
+            <xsl:call-template name="footnotes">
+                <xsl:with-param name="footnotes" select="descendant::fn[preceding-sibling::xref[@ref-type='fn']]"/>
+            </xsl:call-template>
         </main>
+    </xsl:template>
+
+    <!-- don't display footnotes inline -->
+    <xsl:template match="body//fn[preceding-sibling::xref[@ref-type='fn']]"/>
+
+    <xsl:template name="footnotes">
+        <xsl:param name="footnotes"/>
+
+        <xsl:if test="$footnotes">
+            <div id="article-footnotes">
+                <xsl:for-each select="$footnotes">
+                    <div class="fn article-footnote">
+                        <xsl:apply-templates select="node()[not(local-name() = 'label')]|@*"/>
+                    </div>
+                </xsl:for-each>
+            </div>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="back">
@@ -336,54 +474,116 @@
 
     <!-- contrib in front matter -->
     <xsl:template match="contrib" mode="front">
-        <span class="{local-name()}">
+        <span class="{local-name()}" itemscope="itemscope" itemtype="http://schema.org/Person">
             <xsl:apply-templates select="@*"/>
+
+            <xsl:if test="@contrib-type = 'author'">
+                <xsl:attribute name="itemprop">author</xsl:attribute>
+            </xsl:if>
 
             <xsl:choose>
                 <xsl:when test="@contrib-type = 'author'">
                     <xsl:variable name="author-index" select="count(preceding::contrib[@contrib-type='author']) + 1"/>
-                    <a href="author-{$author-index}" rel="author" itemprop="author">
-                        <xsl:apply-templates select="name"/>
-                    </a>
+                    <a href="author-{$author-index}" rel="author"><xsl:apply-templates select="name | collab"/></a>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:apply-templates select="name"/>
+                    <xsl:apply-templates select="name | collab"/>
                 </xsl:otherwise>
             </xsl:choose>
 
+            <xsl:choose>
+                <xsl:when test="@corresp = 'yes' and email">
+                    <xsl:call-template name="corresponding-email">
+                        <xsl:with-param name="email" select="email"/>
+                    </xsl:call-template>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates select="xref[@ref-type='corresp']" mode="author"/>
+                </xsl:otherwise>
+            </xsl:choose>
+
+            <xsl:if test="@equal-contrib = 'yes'">
+                <xsl:call-template name="equal-contribution"/>
+            </xsl:if>
+
+            <xsl:if test="@deceased = 'yes'">
+                <xsl:call-template name="deceased"/>
+            </xsl:if>
+
             <xsl:if test="xref">
-                <xsl:apply-templates select="xref[@ref-type='corresp']" mode="author"/>
-                <sup class="contrib-xref-group">
+                <xsl:variable name="xrefs">
                     <xsl:for-each select="xref[not(@ref-type='corresp')]">
                         <xsl:variable name="rid" select="@rid"/>
                         <xsl:variable name="ref" select="//*[@id=$rid]"/>
                         <xsl:if test="$ref/label">
+                            <!--<xsl:variable name="ref-type" select="@ref-type"/>-->
                             <xsl:apply-templates select="$ref" mode="contrib-xref"/>
                             <xsl:call-template name="comma-separator">
                                 <xsl:with-param name="separator" select="','"/>
                             </xsl:call-template>
                         </xsl:if>
                     </xsl:for-each>
-                </sup>
+                </xsl:variable>
+
+                <xsl:if test="string-length($xrefs)">
+                    <sup class="contrib-xref-group">
+                       <xsl:copy-of select="$xrefs"/>
+                    </sup>
+                </xsl:if>
             </xsl:if>
         </span>
         <xsl:call-template name="comma-separator"/>
+
+        <!--
+            <xsl:variable name="contributorId" select="@id"/>
+            <xsl:variable name="contribution" select="//fn-group[@content-type='author-contributions']//fn[@fn-type='con']//xref[@ref-type='contrib'][@rid=$contributorId]"/>
+            <xsl:if test="$contribution">
+                <xsl:apply-templates select="$contribution/ancestor::fn"/>
+            </xsl:if>
+        -->
     </xsl:template>
 
     <!-- affiliation/corresponding author/footnote link -->
     <xsl:template match="*" mode="contrib-xref">
         <a class="{local-name()} xref" href="#{@id}">
+            <xsl:if test="local-name() = 'aff'">
+                <xsl:attribute name="itemprop">affiliation</xsl:attribute>
+                <xsl:attribute name="itemscope">itemscope</xsl:attribute>
+                <xsl:attribute name="itemtype">http://schema.org/Organization</xsl:attribute>
+                <xsl:attribute name="itemref"><xsl:value-of select="@id"/></xsl:attribute>
+            </xsl:if>
             <xsl:value-of select="label"/>
         </a>
     </xsl:template>
 
-    <!-- corresponding author -->
+    <!-- corresponding author (old-style; remove when converted) -->
     <xsl:template match="xref[@ref-type='corresp']" mode="author">
-        <xsl:variable name="rid" select="@rid"/>
-        <xsl:variable name="ref" select="//corresp[@id=$rid]"/>
-        <a class="{local-name()} corresp" href="mailto:{$ref/email}" target="_new" title="email the corresponding author" rel="tooltip">
+        <xsl:variable name="ref" select="key('corresp', @rid)"/>
+        <xsl:call-template name="corresponding-email">
+            <xsl:with-param name="email" select="$ref/email"/>
+        </xsl:call-template>
+    </xsl:template>
+
+    <!-- email the corresponding author -->
+    <xsl:template name="corresponding-email">
+        <xsl:param name="email"/>
+        <a class="corresp" href="mailto:{$email}" target="_blank" title="email the corresponding author" rel="tooltip" itemprop="email">
             <i class="icon-envelope">&#160;</i>
         </a>
+    </xsl:template>
+
+    <!-- authors with equal contributions -->
+    <xsl:template name="equal-contribution">
+        <span class="equal-contribution" title="These authors contributed equally to this work." rel="tooltip">
+            <i class="icon-asterisk">&#160;</i>
+        </span>
+    </xsl:template>
+
+    <!-- deceased authors -->
+    <xsl:template name="deceased">
+        <span class="deceased" title="Deceased" rel="tooltip">
+            <i class="icon-star-empty">&#160;</i>
+        </span>
     </xsl:template>
 
     <!-- any label -->
@@ -461,12 +661,30 @@
         </xsl:if>
     </xsl:template>
 
+    <xsl:template match="given-names">
+        <span class="{local-name()}" itemprop="givenName">
+            <xsl:apply-templates select="node()|@*"/>
+        </span>
+    </xsl:template>
+
+    <xsl:template match="surname">
+        <span class="{local-name()}" itemprop="familyName">
+            <xsl:apply-templates select="node()|@*"/>
+        </span>
+    </xsl:template>
+
     <!-- name -->
     <xsl:template match="name">
-        <span class="{local-name()}">
+        <span class="{local-name()}" itemprop="name">
             <xsl:call-template name="name"/>
         </span>
         <xsl:call-template name="comma-separator"/>
+    </xsl:template>
+
+    <xsl:template match="collab">
+        <span class="{local-name()} name" itemprop="name">
+            <xsl:apply-templates select="node()|@*"/>
+        </span>
     </xsl:template>
 
     <!-- text formatting -->
@@ -520,6 +738,10 @@
         </u>
     </xsl:template>
 
+    <xsl:template match="break">
+        <br/>
+    </xsl:template>
+
     <!-- style elements -->
     <xsl:template match="sc | strike | roman | sans-serif | monospace | overline">
         <span class="{local-name()}">
@@ -529,9 +751,9 @@
 
     <!-- inline elements -->
     <xsl:template
-        match="abbrev | surname | given-names | suffix | email | year | month | day
+        match="abbrev | suffix | email | year | month | day
         | xref | contrib | source | volume | fpage | lpage | etal | pub-id
-        | named-content | funding-source | award-id | institution | country | addr-line
+        | named-content | styled-content | funding-source | award-id | institution | country | addr-line
         | chem-struct">
         <span class="{local-name()}">
             <xsl:apply-templates select="node()|@*"/>
@@ -540,7 +762,17 @@
 
     <!-- links -->
     <xsl:template match="uri">
-        <a class="{local-name()}" href="{.}">
+        <a class="{local-name()}">
+            <xsl:attribute name="href">
+                <xsl:choose>
+                    <xsl:when test="@xlink:href">
+                        <xsl:value-of select="@xlink:href"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="."/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:attribute>
             <xsl:apply-templates select="node()|@*"/>
         </a>
     </xsl:template>
@@ -585,6 +817,19 @@
         </p>
     </xsl:template>
 
+    <!--<xsl:template match="table/label"></xsl:template>-->
+
+    <!-- label with a paragraph straight afterwards -->
+    <!--<xsl:template match="label[following-sibling::p]"></xsl:template>-->
+
+    <!--
+    <xsl:template match="label" mode="included-label">
+        <span class="article-label">
+            <xsl:apply-templates select="node()|@*"/>
+        </span>
+    </xsl:template>
+    -->
+
     <xsl:template match="p[ancestor::caption]">
         <span class="{local-name()}">
             <xsl:apply-templates select="@*"/>
@@ -595,9 +840,11 @@
     <xsl:template match="fn/p[preceding-sibling::label]">
         <span class="{local-name()}">
             <xsl:apply-templates select="@*"/>
+            <!--<xsl:apply-templates select="preceding-sibling::label" mode="included-label"/>-->
             <xsl:apply-templates select="node()"/>
         </span>
     </xsl:template>
+
 
     <!-- object DOI -->
     <xsl:template match="object-id[@pub-id-type=doi]">
@@ -655,7 +902,13 @@
     </xsl:template>
 
     <xsl:template match="ext-link[@ext-link-type='doi']">
-        <a class="{local-name()}" href="http://dx.doi.org/{@xlink:href}">
+        <xsl:variable name="encoded-doi">
+            <xsl:call-template name="urlencode">
+                <xsl:with-param name="value" select="@xlink:href"/>
+            </xsl:call-template>
+        </xsl:variable>
+
+        <a class="{local-name()}" href="http://dx.doi.org/{$encoded-doi}">
             <xsl:apply-templates select="node()|@*"/>
         </a>
     </xsl:template>
@@ -724,52 +977,30 @@
 
     <!-- bibliographic reference -->
     <xsl:template match="xref[@ref-type='bibr']">
-        <xsl:variable name="rid" select="@rid"/>
-        <xsl:variable name="ref" select="//ref[@id=$rid]"/>
+        <xsl:variable name="ref" select="key('ref', @rid)"/>
+        <xsl:variable name="citation" select="$ref/element-citation"/>
+
         <xsl:variable name="title">
             <xsl:choose>
-                <xsl:when test="$ref/*/article-title">
-                    <xsl:value-of select="$ref/*/article-title"/>
+                <xsl:when test="$citation/article-title">
+                    <xsl:value-of select="$citation/article-title"/>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:value-of select="$ref/*/source"/>
+                    <xsl:value-of select="$citation/source"/>
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
         <xsl:variable name="ref-doi" select="$ref/*/pub-id[@pub-id-type='doi']"/>
         <xsl:variable name="ref-uri" select="$ref/*/comment/uri"/>
         <xsl:variable name="url">
-            <xsl:choose>
-            <xsl:when test="$ref-doi">
-                <xsl:value-of select="concat('http://dx.doi.org/', $ref-doi)"/>
-            </xsl:when>
-            <xsl:when test="$ref-uri">
-                <xsl:value-of select="$ref-uri"/>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:value-of select="concat('http://scholar.google.com/scholar?q=intitle:&quot;', $title, '&quot;')"/>
-            </xsl:otherwise>
-            </xsl:choose>
+            <xsl:call-template name="citation-url">
+                <xsl:with-param name="citation" select="$citation"/>
+            </xsl:call-template>
         </xsl:variable>
 
-        <xsl:variable name="ref-type" select="$ref/element-citation/@publication-type"/>
-
-        <cite itemprop="citation" itemscope="itemscope" itemref="{@rid}">
-            <xsl:apply-templates select="@*"/>
-            <xsl:attribute name="itemtype">
-                <xsl:choose>
-                    <xsl:when test="$ref-type = 'journal'">
-                        <xsl:text>http://schema.org/ScholarlyArticle</xsl:text>
-                    </xsl:when>
-                    <xsl:when test="$ref-type = 'book'">
-                        <xsl:text>http://schema.org/Book</xsl:text>
-                    </xsl:when>
-                </xsl:choose>
-            </xsl:attribute>
-            <a class="{local-name()} xref-{@ref-type}" href="{$url}" title="{$title}">
-                <xsl:apply-templates select="node()|@*"/>
-            </a>
-        </cite>
+        <a class="{local-name()} xref-{@ref-type}" href="{$url}" title="{$title}">
+            <xsl:apply-templates select="node()|@*"/>
+        </a>
     </xsl:template>
 
     <!-- figure -->
@@ -794,6 +1025,15 @@
             </xsl:if>
 
             <xsl:apply-templates select="node()|@*"/>
+
+            <div class="article-image-download">
+                <xsl:variable name="fig-id" select="../@id"/>
+                <a href="{$static-root}{$fig-id}-full.png" class="btn btn-mini" download="{$download-prefix}-{$id}-{$fig-id}.png">
+                    <i class="icon-picture">&#160;</i>
+                    <xsl:text>&#32;Download full-size image</xsl:text>
+                </a>
+            </div>
+
             <xsl:apply-templates select="../object-id[@pub-id-type='doi']" mode="caption"/>
         </figcaption>
     </xsl:template>
@@ -836,10 +1076,8 @@
         <xsl:variable name="fig-id" select="$fig/@id"/>
         <a href="{$static-root}{$fig-id}-2x.jpg"
            title="View the full image">
-            <img class="{local-name()}"
-                 src="{$static-root}{$fig-id}-1x.jpg"
-                 data-image-id="{$fig-id}"
-                 alt="{$fig/caption/title}">
+            <img class="{local-name()}" src="{$static-root}{@xlink:href}"
+                alt="{$fig/caption/title}" data-image-type="figure">
                 <xsl:apply-templates select="@*"/>
             </img>
         </a>
@@ -897,6 +1135,7 @@
         <div class="{local-name()} well well-small">
             <xsl:apply-templates select="@*"/>
             <h3 class="heading">
+                <!--<xsl:apply-templates select="label/text()"/>-->
                 <xsl:choose>
                     <xsl:when test="normalize-space(caption/title) != ''">
                         <xsl:apply-templates select="caption/title" mode="supp-title"/>
@@ -914,11 +1153,21 @@
     <xsl:template match="supplementary-material/caption">
         <xsl:apply-templates select="node()|@*"/>
         <xsl:apply-templates select="../object-id[@pub-id-type='doi']" mode="caption"/>
-        <xsl:variable name="href" select="../@xlink:href"/>
+
+        <xsl:variable name="filename" select="../@xlink:href"/>
+
+        <xsl:variable name="encoded-filename">
+            <xsl:call-template name="urlencode">
+                <xsl:with-param name="value" select="$filename"/>
+            </xsl:call-template>
+        </xsl:variable>
 
         <div>
-            <a href="{$static-root}{$href}" class="article-supporting-download" download="{$href}" data-filename="{$href}">
-                <xsl:value-of select="$href"/>
+            <a href="{$static-root}{$encoded-filename}" class="btn article-supporting-download"
+               download="{$filename}" data-filename="{$filename}">
+                <i class="icon-download-alt">&#160;</i>
+                <!--<xsl:value-of select="concat(' Download .', ../@mime-subtype)"/>-->
+                <xsl:value-of select="' Download'"/>
             </a>
         </div>
     </xsl:template>
@@ -926,16 +1175,40 @@
     <xsl:template match="supplementary-material/caption/title"></xsl:template>
 
     <xsl:template match="supplementary-material/caption/title" mode="supp-title">
+        <!--<xsl:text>:&#32;</xsl:text>-->
         <xsl:apply-templates select="node()"/>
     </xsl:template>
 
     <!-- acknowledgments -->
     <xsl:template match="ack">
         <section class="{local-name()}" id="acknowledgements">
+            <xsl:apply-templates select="@*"/>
             <h2 class="heading">Acknowledgements</h2>
+            <xsl:apply-templates select="node()"/>
+        </section>
+    </xsl:template>
+
+    <!-- appendices -->
+    <xsl:template match="app-group">
+        <xsl:apply-templates select="app"/>
+    </xsl:template>
+
+    <!-- appendix -->
+    <xsl:template match="app">
+        <section class="{local-name()}">
             <xsl:apply-templates select="node()|@*"/>
         </section>
     </xsl:template>
+
+    <!-- appendix label -->
+    <xsl:template match="app/label">
+        <h2 class="heading">
+            <xsl:apply-templates/>
+        </h2>
+    </xsl:template>
+
+    <!-- appendix title -->
+    <xsl:template match="app/title"/>
 
     <!-- reference list -->
     <xsl:template match="ref-list">
@@ -950,32 +1223,43 @@
     <!-- reference list item -->
     <xsl:template match="ref-list/ref">
         <li class="{local-name()}">
-            <xsl:apply-templates select="element-citation|@*"/>
+            <div class="citation" itemprop="citation" itemscope="itemscope">
+                <xsl:choose>
+                    <xsl:when test="element-citation/@publication-type = 'journal'">
+                        <xsl:attribute name="itemtype">http://schema.org/ScholarlyArticle</xsl:attribute>
+                    </xsl:when>
+                    <xsl:when test="element-citation/@publication-type = 'book'">
+                        <xsl:attribute name="itemtype">http://schema.org/Book</xsl:attribute>
+                    </xsl:when>
+                </xsl:choose>
+
+                <xsl:apply-templates select="element-citation|@*"/>
+            </div>
         </li>
     </xsl:template>
 
     <!-- journal citation -->
     <xsl:template match="element-citation[@publication-type='journal']">
-        <div class="citation {local-name()}" itemscope="itemscope" itemtype="http://schema.org/ScholarlyArticle" id="{../@id}">
-            <xsl:variable name="authors" select="person-group[@person-group-type='author']"/>
-            <xsl:if test="$authors or year">
-                <span class="citation-authors-year">
-                    <xsl:apply-templates select="$authors" mode="citation"/>
-                    <xsl:apply-templates select="year" mode="citation"/>
-                </span>
-            </xsl:if>
-            <span itemprop="name">
-                <xsl:apply-templates select="article-title" mode="citation"/>
+        <xsl:variable name="authors" select="person-group[@person-group-type='author']"/>
+        <xsl:if test="$authors or year">
+            <span class="citation-authors-year">
+                <xsl:apply-templates select="$authors" mode="citation"/>
+                <xsl:apply-templates select="year" mode="citation"/>
             </span>
-            <span>
-                <xsl:apply-templates select="source" mode="journal-citation"/>
-                <xsl:text>&#32;</xsl:text>
-                <xsl:apply-templates select="volume" mode="citation"/>
-                <xsl:apply-templates select="issue" mode="citation"/>
-                <xsl:apply-templates select="fpage" mode="citation"/>
-                <xsl:text>&#32;</xsl:text>
-            </span>
-        </div>
+        </xsl:if>
+        <cite itemprop="name">
+            <xsl:apply-templates select="article-title" mode="citation"/>
+        </cite>
+        <span>
+            <xsl:apply-templates select="source" mode="journal-citation"/>
+            <xsl:text>&#32;</xsl:text>
+            <xsl:apply-templates select="volume" mode="citation"/>
+            <xsl:apply-templates select="issue" mode="citation"/>
+            <xsl:apply-templates select="elocation-id" mode="citation"/>
+            <xsl:apply-templates select="fpage" mode="citation"/>
+            <xsl:text>&#32;</xsl:text>
+            <xsl:apply-templates select="comment" mode="citation"/>
+        </span>
     </xsl:template>
 
     <!-- book-like citations -->
@@ -985,44 +1269,96 @@
         | element-citation[@publication-type='confproc']
         | element-citation[@publication-type='other']
         ">
-        <div class="citation {local-name()}" itemscope="itemscope" id="{../@id}">
-            <xsl:if test="@publication-type = 'book'">
-                <xsl:variable name="itemtype">http://schema.org/Book</xsl:variable>
-            </xsl:if>
-
-            <span class="citation-authors-year">
-                <xsl:apply-templates select="person-group[@person-group-type='author']" mode="citation"/>
-                <xsl:apply-templates select="year" mode="citation"/>
-            </span>
-            <span class="article-title">
-                <xsl:apply-templates select="article-title" mode="citation"/>
-                <xsl:text>&#32;</xsl:text>
-                <xsl:apply-templates select="source" mode="book-citation"/>
-            </span>
-            <span>
-                <xsl:apply-templates select="edition" mode="citation"/>
-                <xsl:text>&#32;</xsl:text>
-                <xsl:apply-templates select="volume" mode="citation"/>
-                <xsl:apply-templates select="fpage" mode="book-citation"/>
-                <xsl:text>&#32;</xsl:text>
-                <xsl:apply-templates select="pub-id[@pub-id-type='isbn']" mode="citation"/>
-
-                <xsl:apply-templates select="publisher-name" mode="citation"/>
-            </span>
-        </div>
+        <span class="citation-authors-year">
+            <xsl:apply-templates select="person-group[not(@person-group-type='editor')]" mode="citation"/>
+            <xsl:apply-templates select="year" mode="citation"/>
+        </span>
+        <cite class="article-title">
+            <xsl:apply-templates select="article-title" mode="book-citation"/>
+        </cite>
+        <xsl:text>&#32;</xsl:text>
+        <xsl:apply-templates select="source" mode="book-citation"/>
+        <span>
+            <xsl:apply-templates select="edition" mode="citation"/>
+            <xsl:text>&#32;</xsl:text>
+            <xsl:apply-templates select="publisher-name | institution" mode="citation"/>
+            <xsl:text>&#32;</xsl:text>
+            <xsl:apply-templates select="volume" mode="citation"/>
+            <xsl:apply-templates select="fpage" mode="book-citation"/>
+            <xsl:text>&#32;</xsl:text>
+            <xsl:apply-templates select="pub-id[@pub-id-type='isbn']" mode="citation"/>
+            <xsl:apply-templates select="comment" mode="citation"/>
+        </span>
     </xsl:template>
 
-    <!-- other citations -->
-    <xsl:template match="element-citation[@publication-type='other']">
-        <div class="citation {local-name()}" itemscope="itemscope" id="{../@id}">
-            <xsl:if test="person-group or year">
-                <span class="citation-authors-year">
-                    <xsl:apply-templates select="person-group" mode="citation"/>
-                    <xsl:apply-templates select="year" mode="citation"/>
-                </span>
-            </xsl:if>
-            <xsl:apply-templates select="comment" mode="citation"/>
-        </div>
+    <!-- report citations -->
+    <xsl:template match="element-citation[@publication-type='report']">
+        <span class="citation-authors-year">
+            <xsl:apply-templates select="person-group[@person-group-type='author'] | collab" mode="citation"/>
+            <xsl:apply-templates select="year" mode="citation"/>
+        </span>
+        <span class="article-title">
+            <xsl:apply-templates select="article-title" mode="citation"/>
+            <xsl:text>&#32;</xsl:text>
+            <xsl:apply-templates select="source" mode="report-citation"/>
+        </span>
+        <xsl:apply-templates select="institution" mode="report-citation"/>
+        <xsl:apply-templates select="volume" mode="citation"/>
+        <xsl:apply-templates select="fpage" mode="book-citation"/>
+        <xsl:apply-templates select="comment" mode="citation"/>
+    </xsl:template>
+
+    <!-- thesis citations -->
+    <xsl:template match="element-citation[@publication-type='thesis']">
+        <span class="citation-authors-year">
+            <xsl:apply-templates select="person-group[@person-group-type='author'] | collab" mode="citation"/>
+            <xsl:apply-templates select="year" mode="citation"/>
+        </span>
+        <span class="article-title">
+            <xsl:apply-templates select="article-title" mode="citation"/>
+        </span>
+        <xsl:text>&#32;</xsl:text>
+        <xsl:apply-templates select="source" mode="thesis-citation"/>
+        <xsl:apply-templates select="institution" mode="thesis-citation"/>
+        <xsl:apply-templates select="comment" mode="citation"/>
+    </xsl:template>
+
+    <!-- working paper (preprint) citations -->
+    <xsl:template match="element-citation[@publication-type='working-paper']">
+        <span class="citation-authors-year">
+            <xsl:apply-templates select="person-group[@person-group-type='author'] | collab" mode="citation"/>
+            <xsl:apply-templates select="year" mode="citation"/>
+        </span>
+        <span class="article-title">
+            <xsl:apply-templates select="article-title" mode="citation"/>
+        </span>
+        <xsl:text>&#32;</xsl:text>
+        <xsl:apply-templates select="comment" mode="citation"/>
+        <xsl:call-template name="preprint-label"/>
+    </xsl:template>
+
+    <!-- other citations (?) -->
+    <xsl:template match="element-citation">
+        <span class="citation-authors-year">
+            <xsl:apply-templates select="person-group[@person-group-type='author']" mode="citation"/>
+            <xsl:apply-templates select="year" mode="citation"/>
+        </span>
+        <span class="article-title">
+            <xsl:apply-templates select="article-title" mode="citation"/>
+            <xsl:text>&#32;</xsl:text>
+            <xsl:apply-templates select="source" mode="book-citation"/>
+        </span>
+    </xsl:template>
+
+    <xsl:template name="preprint-label">
+        <xsl:choose>
+            <xsl:when test="pub-id[@pub-id-type='arxiv']">
+                <span class="label label-preprint">arXiv preprint</span>
+            </xsl:when>
+            <xsl:otherwise>
+                <span class="label label-preprint">preprint</span>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="issn" mode="citation">
@@ -1031,28 +1367,105 @@
         </span>
     </xsl:template>
 
+    <!-- journal name -->
     <xsl:template match="source" mode="journal-citation">
-        <i class="{local-name()}">
-            <xsl:apply-templates/>
-        </i>
-    </xsl:template>
-
-    <xsl:template match="source" mode="book-citation">
-        <a class="{local-name()}" href="{concat('http://books.google.com/books?q=intitle:&quot;', ., '&quot;')}" target="_new">
-            <xsl:apply-templates/>
-            <xsl:text>.</xsl:text>
-        </a>
-    </xsl:template>
-
-    <xsl:template match="edition" mode="citation">
         <span class="{local-name()}">
-            <xsl:text>(</xsl:text>
             <xsl:apply-templates/>
-            <xsl:text>)</xsl:text>
         </span>
     </xsl:template>
 
-    <xsl:template match="publisher-name" mode="citation">
+    <!-- report source -->
+    <xsl:template match="source" mode="report-citation">
+        <span class="{local-name()}">
+            <xsl:apply-templates/>
+        </span>
+        <xsl:text>.</xsl:text>
+        <xsl:text>&#32;</xsl:text>
+    </xsl:template>
+
+    <xsl:template match="institution" mode="report-citation">
+        <span class="{local-name()}">
+            <xsl:apply-templates/>
+        </span>
+        <xsl:text>&#32;</xsl:text>
+    </xsl:template>
+
+    <!-- thesis source -->
+    <xsl:template match="source" mode="thesis-citation">
+        <span class="{local-name()}">
+            <xsl:apply-templates/>
+        </span>
+        <xsl:if test="following-sibling::institution">
+            <xsl:text>,</xsl:text>
+        </xsl:if>
+        <xsl:text>&#32;</xsl:text>
+   </xsl:template>
+
+    <xsl:template match="institution" mode="thesis-citation">
+        <span class="{local-name()}">
+            <xsl:apply-templates/>
+        </span>
+        <xsl:if test="following-sibling::comment">
+            <xsl:text>.</xsl:text>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- book source -->
+    <xsl:template match="source" mode="book-citation">
+        <xsl:variable name="editors" select="../person-group[@person-group-type='editor']"/>
+
+        <xsl:if test="../article-title">
+            <xsl:text>In:&#32;</xsl:text>
+        </xsl:if>
+
+        <xsl:apply-templates select="$editors" mode="book-citation"/>
+
+        <span itemprop="name">
+            <a class="{local-name()}" target="_blank">
+                <xsl:attribute name="href">
+                    <xsl:variable name="editor" select="$editors/name[1]/surname"/>
+                    <xsl:variable name="query" select="concat('q=intitle:&quot;', ., '&quot; inauthor:&quot;', $editor, '&quot;')"/>
+                    <xsl:value-of select="concat('https://www.google.co.uk/search?tbm=bks&amp;', $query)"/>
+                </xsl:attribute>
+                <xsl:apply-templates/>
+            </a>
+
+            <xsl:apply-templates select="../series" mode="book-citation"/>
+
+            <xsl:if test="not(../edition)">.</xsl:if>
+        </span>
+    </xsl:template>
+
+    <!-- citation editor names -->
+    <xsl:template match="person-group[@person-group-type='editor']" mode="book-citation">
+        <xsl:variable name="editors" select="count(name)"/>
+        <xsl:apply-templates select="name" mode="citation"/>
+        <xsl:choose>
+            <xsl:when test="$editors > 1">
+                <xsl:text>, eds.&#32;</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>, ed.&#32;</xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+    <xsl:template match="edition" mode="citation">
+        <xsl:text>&#32;(</xsl:text>
+            <span class="{local-name()}">
+                <xsl:apply-templates/>
+            </span>
+        <xsl:text>).</xsl:text>
+    </xsl:template>
+
+    <xsl:template match="series" mode="book-citation">
+        <xsl:text>,&#32;</xsl:text>
+        <span class="{local-name()}">
+            <xsl:apply-templates/>
+        </span>
+    </xsl:template>
+
+    <xsl:template match="publisher-name | institution" mode="citation">
         <xsl:apply-templates select="../publisher-loc" mode="citation"/>
         <xsl:text>&#32;</xsl:text>
         <span class="publisher">
@@ -1067,35 +1480,117 @@
         <xsl:text>:</xsl:text>
     </xsl:template>
 
-    <xsl:template match="article-title" mode="citation">
-        <xsl:variable name="doi" select="../pub-id[@pub-id-type='doi']"/>
+    <!-- link out from a citation title -->
+    <xsl:template name="citation-url">
+        <xsl:param name="citation"/>
 
-        <a class="{local-name()}" target="_new">
-            <xsl:attribute name="href">
+        <xsl:variable name="doi" select="$citation/pub-id[@pub-id-type='doi']"/>
+        <xsl:variable name="arxiv" select="$citation/pub-id[@pub-id-type='arxiv']"/>
+        <xsl:variable name="uri" select="$citation/comment/uri"/>
+
+        <xsl:choose>
+            <xsl:when test="$doi">
+                <xsl:variable name="encoded-doi">
+                    <xsl:call-template name="urlencode">
+                        <xsl:with-param name="value" select="$doi"/>
+                    </xsl:call-template>
+                </xsl:variable>
+
+                <xsl:value-of select="concat('http://dx.doi.org/', $encoded-doi)"/>
+            </xsl:when>
+            <xsl:when test="$arxiv">
+                <xsl:value-of select="concat('http://arxiv.org/abs/', $arxiv)"/>
+            </xsl:when>
+            <xsl:when test="$uri">
+                <xsl:value-of select="$uri/@xlink:href"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:variable name="authors" select="$citation/person-group[@person-group-type='author']"/>
+
                 <xsl:choose>
-                    <xsl:when test="$doi">
-                        <xsl:value-of select="concat('http://dx.doi.org/', $doi)"/>
-                    </xsl:when>
-                    <xsl:when test="../comment/uri">
-                        <xsl:value-of select="../comment/uri/@xlink:href"/>
+                    <xsl:when test="$citation/@publication-type = 'book'">
+                        <xsl:choose>
+                            <xsl:when test="$citation/article-title">
+                                <xsl:variable name="query" select="concat('q=intitle:&quot;', $citation/article-title, '&quot; inauthor:&quot;', $authors/name[1]/surname, '&quot;')"/>
+                                <xsl:value-of select="concat('http://scholar.google.com/scholar?', $query)"/>
+                            </xsl:when>
+                            <xsl:when test="$citation/source">
+                                <xsl:variable name="editors" select="$citation/person-group[@person-group-type='editor']"/>
+                                <xsl:variable name="author">
+                                    <xsl:choose>
+                                        <xsl:when test="$editors">
+                                            <xsl:value-of select="editor/name[1]/surname"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:value-of select="$authors/name[1]/surname"/>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </xsl:variable>
+                                <xsl:variable name="query" select="concat('q=intitle:&quot;', $citation/source, '&quot; inauthor:&quot;', $author, '&quot;')"/>
+                                <xsl:value-of select="concat('https://www.google.co.uk/search?tbm=bks&amp;', $query)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="concat('#', $citation/../@id)"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
                     </xsl:when>
                     <xsl:otherwise>
-                        <xsl:value-of select="concat('http://scholar.google.com/scholar?q=intitle:&quot;', ., '&quot;')"/>
+                        <xsl:choose>
+                            <xsl:when test="$citation/article-title">
+                                <xsl:variable name="query" select="concat('q=intitle:&quot;', $citation/article-title, '&quot; inauthor:&quot;', $authors/name[1]/surname, '&quot;')"/>
+                                <xsl:value-of select="concat('http://scholar.google.com/scholar?', $query)"/>
+                            </xsl:when>
+
+                            <xsl:otherwise>
+                                <xsl:value-of select="concat('#', $citation/../@id)"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
                     </xsl:otherwise>
                 </xsl:choose>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+    <xsl:template match="article-title" mode="citation">
+        <a class="{local-name()}" target="_blank">
+            <xsl:attribute name="href">
+                <xsl:call-template name="citation-url">
+                    <xsl:with-param name="citation" select=".."/>
+                </xsl:call-template>
             </xsl:attribute>
-            <xsl:if test="$doi">
+            <xsl:if test="../pub-id[@pub-id-type='doi']">
                 <xsl:attribute name="itemprop">url</xsl:attribute>
             </xsl:if>
             <xsl:apply-templates select="node()|@*"/>
-            <xsl:text>.</xsl:text>
+            <xsl:apply-templates select="../named-content[@content-type='abstract-details']" mode="citation"/>
         </a>
+
+        <xsl:call-template name="title-punctuation"/>
     </xsl:template>
 
+    <xsl:template match="article-title" mode="book-citation">
+        <a class="{local-name()}" target="_blank">
+            <xsl:attribute name="href">
+                <xsl:call-template name="citation-url">
+                    <xsl:with-param name="citation" select=".."/>
+                </xsl:call-template>
+            </xsl:attribute>
+            <xsl:apply-templates select="node()|@*"/>
+            <xsl:apply-templates select="../named-content[@content-type='abstract-details']" mode="citation"/>
+        </a>
+        <xsl:call-template name="title-punctuation"/>
+    </xsl:template>
+
+    <!-- eg " abstract no. 35" -->
+    <xsl:template match="named-content[@content-type='abstract-details']" mode="citation">
+        <xsl:value-of select="concat(' [', ., ']')"/>
+    </xsl:template>
+
+
     <xsl:template match="volume" mode="citation">
-        <span class="{local-name()}">
+        <b class="{local-name()}">
             <xsl:apply-templates/>
-        </span>
+        </b>
     </xsl:template>
 
     <xsl:template match="issue" mode="citation">
@@ -1103,6 +1598,15 @@
             <xsl:text>(</xsl:text>
             <xsl:apply-templates/>
             <xsl:text>)</xsl:text>
+        </span>
+    </xsl:template>
+
+    <xsl:template match="elocation-id" mode="citation">
+        <xsl:if test="../volume">
+            <xsl:text>:</xsl:text>
+        </xsl:if>
+        <span class="{local-name()}">
+            <xsl:apply-templates/>
         </span>
     </xsl:template>
 
@@ -1116,9 +1620,11 @@
     </xsl:template>
 
     <xsl:template match="fpage" mode="book-citation">
+        <xsl:if test="../volume">
+            <xsl:text>:</xsl:text>
+        </xsl:if>
         <xsl:choose>
             <xsl:when test="../lpage">
-                <xsl:text>&#32;pp&#32;</xsl:text>
                 <span class="fpage">
                     <xsl:apply-templates/>
                 </span>
@@ -1128,7 +1634,6 @@
                 </span>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:text>p&#32;</xsl:text>
                 <span class="{local-name()}">
                     <xsl:apply-templates/>
                 </span>
@@ -1137,14 +1642,15 @@
     </xsl:template>
 
     <xsl:template match="year" mode="citation">
-        <xsl:text>&#32;(</xsl:text>
-        <span class="{local-name()}" itemprop="datePublished">
+        <xsl:text>&#32;</xsl:text>
+        <b class="{local-name()}" itemprop="datePublished">
             <xsl:apply-templates/>
-        </span>
-        <xsl:text>)&#32;</xsl:text>
+        </b>
+        <xsl:text>.&#32;</xsl:text>
     </xsl:template>
 
     <xsl:template match="comment" mode="citation">
+        <xsl:text>&#32;</xsl:text>
         <span class="{local-name()}">
             <xsl:apply-templates/>
         </span>
@@ -1154,15 +1660,23 @@
 
     <xsl:template match="person-group" mode="citation">
         <xsl:variable name="max" select="10"/>
-        <xsl:variable name="citation-authors" select="name | collab"/>
-        <xsl:apply-templates select="$citation-authors[position() &lt; ($max + 1)]" mode="citation"/>
-        <xsl:if test="count($citation-authors) &gt; $max">
-            <span class="et-al"> et al.</span>
-        </xsl:if>
+        <xsl:variable name="people" select="name | collab"/>
+        <b class="{local-name()}">
+            <xsl:choose>
+                <xsl:when test="count($people) &gt; $max">
+                    <xsl:apply-templates select="$people[position() &lt; ($max + 1)]" mode="citation"/>
+                    <span class="et-al">&#32;et al.</span>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates select="$people" mode="citation"/>
+                    <xsl:text>.</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
+        </b>
     </xsl:template>
 
     <xsl:template match="name" mode="citation">
-        <span class="{local-name()}" itemprop="author">
+        <span class="{local-name()}" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
             <xsl:apply-templates select="surname"/>
             <xsl:if test="given-names">
                 <xsl:text>&#32;</xsl:text>
@@ -1173,10 +1687,12 @@
     </xsl:template>
 
     <xsl:template match="collab" mode="citation">
-        <span class="{local-name()}" itemprop="author">
+        <b class="{local-name()}" itemprop="author" itemscope="itemscope">
             <xsl:apply-templates/>
-        </span>
-        <xsl:call-template name="comma-separator"/>
+        </b>
+        <xsl:call-template name="comma-separator">
+            <xsl:with-param name="separator" select="'. '"/>
+        </xsl:call-template>
     </xsl:template>
 
     <!-- self citation -->
@@ -1198,7 +1714,10 @@
                 </span>
                 <xsl:text>)&#32;</xsl:text>
                 <xsl:apply-templates select="$title" mode="self-citation"/>
-                <xsl:text>.&#32;</xsl:text>
+                <xsl:call-template name="title-punctuation">
+                    <xsl:with-param name="title" select="$title"/>
+                </xsl:call-template>
+                <xsl:text>&#32;</xsl:text>
                 <span class="self-citation-journal" itemprop="publisher">
                     <xsl:value-of select="$journal-title"/>
                 </span>
@@ -1273,9 +1792,6 @@
         </xsl:attribute>
     </xsl:template>
 
-    <!-- ref id is on the child div instead -->
-    <xsl:template match="ref/@id"></xsl:template>
-
     <!-- other attributes (ignore) -->
     <xsl:template match="@*">
         <xsl:attribute name="data-jats-{local-name()}">
@@ -1294,11 +1810,26 @@
         </math>
     </xsl:template>
 
-    <!-- mathml elements (remove namespace prefix) -->
+    <!-- mathml (direct copy) -->
     <xsl:template match="*" mode="mathml">
         <xsl:element name="{local-name()}" xmlns="http://www.w3.org/1998/Math/MathML">
             <xsl:copy-of select="@*"/>
             <xsl:apply-templates mode="mathml"/>
         </xsl:element>
+        <!--<xsl:copy-of select="."/>-->
+    </xsl:template>
+
+    <!-- url-encode a string, if PHP functions are registered -->
+    <xsl:template name="urlencode">
+        <xsl:param name="value"/>
+
+        <xsl:choose>
+            <xsl:when test="function-available('php:function')">
+                <xsl:value-of select="php:function('rawurlencode', string($value))"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$value"/><!-- TODO: replace special characters with XSL -->
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 </xsl:stylesheet>

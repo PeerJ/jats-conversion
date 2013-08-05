@@ -1,11 +1,13 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="1.0"
-	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns="http://www.crossref.org/schema/4.3.1"
-	xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:fr="http://www.crossref.org/fundref.xsd">
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                xmlns:fr="http://www.crossref.org/fundref.xsd"
+                xmlns="http://www.crossref.org/schema/4.3.1"
+                xsi:schemaLocation="http://www.crossref.org/schema/4.3.1 http://www.crossref.org/schema/deposit/crossref4.3.1.xsd
+                http://www.crossref.org/fundref.xsd http://www.crossref.org/schema/deposit/fundref.xsd"
+                exclude-result-prefixes="xlink">
 
 	<xsl:output method="xml" indent="yes" encoding="UTF-8" standalone="yes" />
 
@@ -16,12 +18,9 @@
 
     <xsl:param name="timestamp"/>
 
-	<xsl:param name="depositorName" select="'Example Depositor'"/>
-	<xsl:param name="depositorEmail" select="'doi@example.com'"/>
+	<xsl:param name="depositorName"/>
+	<xsl:param name="depositorEmail"/>
 	<xsl:param name="batchId" select="$doi"/>
-	<xsl:param name="journalTitle" select="'Example Journal'"/>
-	<xsl:param name="journalISSN" select="'1111-1111'"/>
-	<xsl:param name="journalVolume" select="'1'"/>
 
 	<!-- root element -->
 
@@ -62,27 +61,29 @@
 	<!-- item metadata -->
 
 	<xsl:template match="article">
+        <xsl:variable name="meta" select="front/article-meta"/>
+        <xsl:variable name="pub-date" select="$meta/pub-date[@date-type='pub'][@pub-type='epub']|$meta/pub-date[@date-type='preprint'][@pub-type='epreprint']"/>
 		<journal>
 			<!-- journal -->
 			<journal_metadata language="en">
 				<full_title>
-					<xsl:value-of select="$journalTitle"/>
+					<xsl:value-of select="front/journal-meta/journal-title-group/journal-title"/>
 				</full_title>
 
 				<issn media_type="electronic">
-					<xsl:value-of select="$journalISSN"/>
+					<xsl:value-of select="front/journal-meta/issn"/>
 				</issn>
 			</journal_metadata>
 
 			<!-- journal issue -->
 			<journal_issue>
 				<publication_date media_type="online">
-					<year><xsl:value-of select="front/article-meta/pub-date[@date-type='pub'][@pub-type='epub']/year/@iso-8601-date"/></year>
+					<year><xsl:value-of select="$pub-date/year/@iso-8601-date"/></year>
 				</publication_date>
 
 				<journal_volume>
 					<volume>
-						<xsl:value-of select="$journalVolume"/>
+						<xsl:value-of select="$meta/volume"/>
 					</volume>
 				</journal_volume>
 			</journal_issue>
@@ -117,7 +118,7 @@
 		</contributors>
 
 		<publication_date media_type="online">
-            <xsl:variable name="pub-date" select="pub-date[@date-type='pub'][@pub-type='epub']"/>
+            <xsl:variable name="pub-date" select="pub-date[@date-type='pub'][@pub-type='epub']|pub-date[@date-type='preprint'][@pub-type='epreprint']"/>
             <month>
                 <xsl:apply-templates select="$pub-date/month" mode="zero-pad-date"/>
             </month>
@@ -321,45 +322,26 @@
 		</xsl:apply-templates>
 	</xsl:template>
 
-	<!-- journal article citations -->
-	<xsl:template match="element-citation[@publication-type='journal']">
+    <!-- citation -->
+    <xsl:template match="element-citation">
 		<xsl:param name="key"/>
 		<citation key="{$key}">
 			<xsl:apply-templates select="issn" mode="citation"/>
-			<xsl:apply-templates select="source" mode="journal-citation"/>
+            <xsl:apply-templates select="source" mode="citation"/>
 			<xsl:call-template name="citation-author"/>
-			<xsl:apply-templates select="volume" mode="citation"/>
+            <xsl:apply-templates select="volume" mode="citation"/>
 			<xsl:apply-templates select="issue" mode="citation"/>
-			<xsl:apply-templates select="fpage" mode="citation"/>
-			<xsl:apply-templates select="year" mode="citation"/>
-            <xsl:apply-templates select="pub-id[@pub-id-type='doi'][1]" mode="citation"/>
-            <xsl:apply-templates select="article-title" mode="citation"/>
-		</citation>
-	</xsl:template>
-
-	<!-- book-like citations -->
-	<xsl:template match="element-citation[@publication-type='book'] |
-		element-citation[@publication-type='conf-proceedings'] |
-		element-citation[@publication-type='confproc'] |
-		element-citation[@publication-type='other']
-		">
-		<xsl:param name="key"/>
-		<citation key="{$key}">
-			<xsl:apply-templates select="source" mode="book-citation"/>
-			<xsl:call-template name="citation-author"/>
 			<xsl:apply-templates select="edition" mode="citation"/>
-			<xsl:apply-templates select="fpage" mode="citation"/>
+			<xsl:apply-templates select="fpage | elocation-id" mode="citation"/>
 			<xsl:apply-templates select="year" mode="citation"/>
             <xsl:apply-templates select="pub-id[@pub-id-type='doi'][1]" mode="citation"/>
             <xsl:apply-templates select="article-title" mode="citation"/>
-	</citation>
-	</xsl:template>
 
-	<!-- other types of citations -->
-	<xsl:template match="element-citation">
-		<unstructured_citation>
-			<xsl:value-of select="."/>
-		</unstructured_citation>
+            <!-- unstructured citations -->
+            <xsl:if test="not(article-title) and not(source)">
+                <xsl:apply-templates select="comment" mode="citation"/>
+            </xsl:if>
+		</citation>
 	</xsl:template>
 
     <xsl:template match="pub-id[@pub-id-type='doi']" mode="citation">
@@ -374,13 +356,13 @@
 		</issn>
 	</xsl:template>
 
-	<xsl:template match="source" mode="journal-citation">
+	<xsl:template match="source" mode="citation">
 		<journal_title>
 			<xsl:apply-templates/>
 		</journal_title>
 	</xsl:template>
 
-	<xsl:template match="source" mode="book-citation">
+	<xsl:template match="source[../@publication-type='book']" mode="citation">
 		<volume_title>
 			<xsl:apply-templates/>
 		</volume_title>
@@ -397,6 +379,12 @@
 			<xsl:apply-templates/>
 		</first_page>
 	</xsl:template>
+
+    <xsl:template match="elocation-id" mode="citation">
+        <first_page>
+            <xsl:apply-templates/>
+        </first_page>
+    </xsl:template>
 
 	<xsl:template match="article-title" mode="citation">
 		<article_title>
@@ -416,9 +404,22 @@
 		</issue>
 	</xsl:template>
 
+    <xsl:template match="comment" mode="citation">
+        <unstructured_citation>
+            <xsl:value-of select="."/>
+        </unstructured_citation>
+    </xsl:template>
+
 	<xsl:template match="year" mode="citation">
 		<cYear>
-			<xsl:apply-templates/>
+			<xsl:choose>
+				<xsl:when test="@iso-8601-date">
+					<xsl:value-of select="@iso-8601-date"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</cYear>
 	</xsl:template>
 
