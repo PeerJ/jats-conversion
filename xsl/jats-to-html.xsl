@@ -17,6 +17,7 @@
     <xsl:variable name="pub-date" select="$meta/pub-date[@date-type='pub'][@pub-type='epub']"/>
     <xsl:variable name="authors" select="$meta/contrib-group[@content-type='authors']/contrib[@contrib-type='author']"/>
     <xsl:variable name="editors" select="$meta/contrib-group[@content-type='editors']/contrib[@contrib-type='editor']"/>
+    <xsl:variable name="keywords" select="$meta/kwd-group[@kwd-group-type='author']/kwd"/>
 
     <xsl:variable name="journal-meta" select="/article/front/journal-meta"/>
     <xsl:variable name="journal-title" select="$journal-meta/journal-title-group/journal-title"/>
@@ -31,6 +32,7 @@
                 <title>
                     <xsl:apply-templates select="$title/node()"/>
                 </title>
+                <xsl:apply-templates select="$keywords" mode="meta"/>
                 <link rel="canonical" href="{$id}"/>
                 <xsl:apply-templates select="front/article-meta" mode="head"/>
                 <xsl:apply-templates select="front/journal-meta" mode="head"/>
@@ -257,6 +259,19 @@
         <span class="{local-name()}" itemprop="keywords">
             <xsl:apply-templates select="node()|@*"/>
         </span>
+        <xsl:call-template name="comma-separator"/>
+    </xsl:template>
+
+    <xsl:template match="kwd-group" mode="meta">
+        <meta name="keywords">
+            <xsl:attribute name="content">
+                <xsl:apply-templates select="kwd" mode="meta"/>
+            </xsl:attribute>
+        </meta>
+    </xsl:template>
+
+    <xsl:template match="kwd" mode="meta">
+        <xsl:value-of select="."/>
         <xsl:call-template name="comma-separator"/>
     </xsl:template>
 
