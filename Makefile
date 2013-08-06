@@ -1,9 +1,9 @@
 #TMPDIR := $(shell mktemp -d)
 #trap "rm -rf $TMPDIR" EXIT
 
-.PHONY: fetch jats crossref crossref-schematron nlm-stylechecker datacite doaj eutils ncbi
+.PHONY: fetch jats crossref crossref-schematron nlm-stylechecker datacite doaj eutils ncbi w3
 
-fetch: catalog.xml jats crossref crossref-schematron nlm-stylechecker datacite doaj eutils ncbi
+fetch: catalog.xml jats crossref crossref-schematron nlm-stylechecker datacite doaj eutils ncbi w3
 
 #validate:
 	#./validate.sh
@@ -31,6 +31,12 @@ downloads/CrossRef_Schematron_Rules.zip: | downloads-dir
 downloads/CrossRef_Schematron_Rules: | downloads/CrossRef_Schematron_Rules.zip
 	unzip downloads/CrossRef_Schematron_Rules.zip -d downloads
 	touch downloads/CrossRef_Schematron_Rules
+
+downloads/mathml3-dtd.zip:
+	wget -c -P downloads http://www.w3.org/Math/DTD/mathml3-dtd.zip
+
+downloads/mathml3-xsd.zip:
+	wget -c -P downloads http://www.w3.org/Math/XMLSchema/mathml3-xsd.zip
 
 # JATS DTD
 
@@ -81,9 +87,17 @@ datacite-3: w3
 	wget -c -P datacite/meta/kernel-3/include  http://schema.datacite.org/meta/kernel-3/include/datacite-relatedIdentifierType-v3.xsd
 	wget -c -P datacite/meta/kernel-3/include  http://schema.datacite.org/meta/kernel-3/include/datacite-descriptionType-v3.xsd
 
-w3:
+w3: | w3/Math/DTD/mathml3 w3/Math/XMLSchema/mathml3
 	mkdir -p w3/2009/01
 	wget -c -P w3/2009/01 http://www.w3.org/2009/01/xml.xsd
+
+w3/Math/DTD/mathml3: | downloads/mathml3-dtd.zip
+	mkdir -p w3/Math/DTD
+	unzip downloads/mathml3-dtd.zip -d w3/Math/DTD
+
+w3/Math/XMLSchema/mathml3: | downloads/mathml3-xsd.zip
+	mkdir -p w3/Math/XMLSchema
+	unzip downloads/mathml3-xsd.zip -d w3/Math/XMLSchema
 
 # DOAJ schema
 # http://www.doaj.org/doaj?func=loadTempl&templ=uploadInfo
