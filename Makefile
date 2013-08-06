@@ -1,9 +1,9 @@
 #TMPDIR := $(shell mktemp -d)
 #trap "rm -rf $TMPDIR" EXIT
 
-.PHONY: fetch jats crossref crossref-schematron nlm-stylechecker datacite doaj ncbi
+.PHONY: fetch jats crossref crossref-schematron nlm-stylechecker datacite doaj eutils ncbi
 
-fetch: catalog.xml jats crossref crossref-schematron nlm-stylechecker datacite doaj ncbi
+fetch: catalog.xml jats crossref crossref-schematron nlm-stylechecker datacite doaj eutils ncbi
 
 #validate:
 	#./validate.sh
@@ -108,17 +108,23 @@ crossref/schematron.xsl: | downloads/CrossRef_Schematron_Rules
 	mkdir -p crossref
 	xsltproc -output crossref/schematron.xsl downloads/CrossRef_Schematron_Rules/iso_svrl.xsl downloads/CrossRef_Schematron_Rules/deposit.sch
 
-# NCBI DTDs
+# eUtils DTDs
 # http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/index.shtml
 
+eutils:
+	mkdir -p eutils/corehtml/query/DTD
+	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/pubmed_100101.dtd
+	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/nlmmedlinecitationset_100101.dtd
+	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/eLink_020511.dtd
+	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/eInfo_020511.dtd
+	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/ePost_020511.dtd
+	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/eSearch_020511.dtd
+	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/eSummary_041029.dtd
+	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/egquery.dtd
+	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/eSpell.dtd
+
+# NCBI DTDs
+# http://www.ncbi.nlm.nih.gov/data_specs/dtd/
+
 ncbi:
-	mkdir -p ncbi/corehtml/query/DTD
-	wget -c -P ncbi/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/pubmed_100101.dtd
-	wget -c -P ncbi/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/nlmmedlinecitationset_100101.dtd
-	wget -c -P ncbi/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/eLink_020511.dtd
-	wget -c -P ncbi/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/eInfo_020511.dtd
-	wget -c -P ncbi/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/ePost_020511.dtd
-	wget -c -P ncbi/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/eSearch_020511.dtd
-	wget -c -P ncbi/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/eSummary_041029.dtd
-	wget -c -P ncbi/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/egquery.dtd
-	wget -c -P ncbi/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/eSpell.dtd
+	# TODO
