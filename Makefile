@@ -1,9 +1,9 @@
 #TMPDIR := $(shell mktemp -d)
 #trap "rm -rf $TMPDIR" EXIT
 
-.PHONY: fetch jats crossref pmc-style-checker crossref-schematron
+.PHONY: fetch jats crossref pmc-style-checker crossref-schematron datacite
 
-fetch: jats crossref crossref-schematron nlm-stylechecker
+fetch: jats crossref crossref-schematron nlm-stylechecker datacite
 
 #validate:
 	#./validate.sh
@@ -37,15 +37,15 @@ jats/publishing/1.0/catalog-jats-v1.xml: downloads/jats-publishing-dtd-1.0.zip
 	cp jats/publishing/1.0/catalog-test-jats-v1.xml jats/publishing/1.0/catalog-jats-v1.xml
 	touch jats/publishing/1.0/catalog-jats-v1.xml
 
-# CrossRef DTD
+# CrossRef Schema
 
-crossref: crossref4.3.2 crossref4.3.1 crossref/fundref.xsd crossref/AccessIndicators.xsd
+crossref: crossref-4.3.2 crossref-4.3.1 crossref/fundref.xsd crossref/AccessIndicators.xsd
 
-crossref4.3.2:
+crossref-4.3.2:
 	wget --continue --directory-prefix=crossref http://doi.crossref.org/schemas/crossref4.3.2.xsd
 	wget --continue --directory-prefix=crossref http://doi.crossref.org/schemas/common4.3.2.xsd
 
-crossref4.3.1:
+crossref-4.3.1:
 	wget --continue --directory-prefix=crossref http://doi.crossref.org/schemas/crossref4.3.1.xsd
 	wget --continue --directory-prefix=crossref http://doi.crossref.org/schemas/common4.3.1.xsd
 
@@ -54,6 +54,32 @@ crossref/fundref.xsd:
 
 crossref/AccessIndicators.xsd:
 	wget --continue --directory-prefix=crossref http://doi.crossref.org/schemas/AccessIndicators.xsd
+
+# DataCite schema
+
+datacite: datacite-2.2 datacite-3.0
+
+datacite-2.2:
+	mkdir -p datacite/2.2/include
+	wget --continue --directory-prefix=datacite/2.2  http://schema.datacite.org/meta/kernel-2.2/metadata.xsd
+	wget --continue --directory-prefix=datacite/2.2/include  http://schema.datacite.org/meta/kernel-2.2/include/datacite-titleType-v2.xsd
+	wget --continue --directory-prefix=datacite/2.2/include  http://schema.datacite.org/meta/kernel-2.2/include/datacite-contributorType-v2.xsd
+	wget --continue --directory-prefix=datacite/2.2/include  http://schema.datacite.org/meta/kernel-2.2/include/datacite-dateType-v2.xsd
+	wget --continue --directory-prefix=datacite/2.2/include  http://schema.datacite.org/meta/kernel-2.2/include/datacite-resourceType-v2.xsd
+	wget --continue --directory-prefix=datacite/2.2/include  http://schema.datacite.org/meta/kernel-2.2/include/datacite-relationType-v2.xsd
+	wget --continue --directory-prefix=datacite/2.2/include  http://schema.datacite.org/meta/kernel-2.2/include/datacite-relatedIdentifierType-v2.xsd
+	wget --continue --directory-prefix=datacite/2.2/include  http://schema.datacite.org/meta/kernel-2.2/include/datacite-descriptionType-v2.xsd
+
+datacite-3.0:
+	mkdir -p datacite/3.0/include
+	wget --continue --directory-prefix=datacite/3.0  http://schema.datacite.org/meta/kernel-3/metadata.xsd
+	wget --continue --directory-prefix=datacite/3.0/include  http://schema.datacite.org/meta/kernel-3/include/datacite-titleType-v3.xsd
+	wget --continue --directory-prefix=datacite/3.0/include  http://schema.datacite.org/meta/kernel-3/include/datacite-contributorType-v3.xsd
+	wget --continue --directory-prefix=datacite/3.0/include  http://schema.datacite.org/meta/kernel-3/include/datacite-dateType-v3.xsd
+	wget --continue --directory-prefix=datacite/3.0/include  http://schema.datacite.org/meta/kernel-3/include/datacite-resourceType-v3.xsd
+	wget --continue --directory-prefix=datacite/3.0/include  http://schema.datacite.org/meta/kernel-3/include/datacite-relationType-v3.xsd
+	wget --continue --directory-prefix=datacite/3.0/include  http://schema.datacite.org/meta/kernel-3/include/datacite-relatedIdentifierType-v3.xsd
+	wget --continue --directory-prefix=datacite/3.0/include  http://schema.datacite.org/meta/kernel-3/include/datacite-descriptionType-v3.xsd
 
 # NLM PMC Style Checker
 
