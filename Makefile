@@ -19,6 +19,9 @@ downloads-dir:
 downloads/jats-publishing-dtd-1.0.zip: | downloads-dir
 	wget -c -P downloads ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.0/jats-publishing-dtd-1.0.zip
 
+downloads/journal-publishing-dtd-3.0.zip: | downloads-dir
+	wget -c -P downloads ftp://ftp.ncbi.nih.gov/pub/archive_dtd/publishing/3.0/journal-publishing-dtd-3.0.zip
+
 downloads/nlm-style-5.0.tar.gz: | downloads-dir
 	wget -c -P downloads http://www.ncbi.nlm.nih.gov/pmc/assets/nlm-style-5.0.tar.gz
 
@@ -123,8 +126,17 @@ eutils:
 	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/egquery.dtd
 	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/eSpell.dtd
 
-# NCBI DTDs
+# NLM DTDs
 # http://www.ncbi.nlm.nih.gov/data_specs/dtd/
 
-ncbi:
-	# TODO
+nlm: | nlm/publishing/3.0/journalpublishing3.dtd
+	mkdir -p nlm/ncbi/pmc/articleset
+	wget -c -P nlm/ncbi/pmc/articleset http://dtd.nlm.nih.gov/ncbi/pmc/articleset/nlm-articleset-2.0.dtd
+
+# NLM Journal Publishing  DTD
+
+nlm/publishing/3.0/journalpublishing3.dtd: | downloads/journal-publishing-dtd-3.0.zip
+	mkdir -p nlm/publishing
+	unzip downloads/journal-publishing-dtd-3.0.zip -d nlm/publishing
+	mv nlm/publishing/publishing nlm/publishing/3.0
+	# TODO: remove xml:base from catalog
