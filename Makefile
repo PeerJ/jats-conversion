@@ -10,28 +10,6 @@ fetch: | jats crossref nlm-stylechecker datacite doaj eutils nlm w3
 downloads:
 	mkdir -p downloads
 
-downloads/jats-publishing-dtd-1.0.zip: | downloads
-	wget -c -P downloads ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.0/jats-publishing-dtd-1.0.zip
-
-downloads/journal-publishing-dtd-3.0.zip: | downloads
-	wget -c -P downloads ftp://ftp.ncbi.nih.gov/pub/archive_dtd/publishing/3.0/journal-publishing-dtd-3.0.zip
-
-downloads/nlm-style-5.0.tar.gz: | downloads
-	wget -c -P downloads http://www.ncbi.nlm.nih.gov/pmc/assets/nlm-style-5.0.tar.gz
-
-downloads/CrossRef_Schematron_Rules.zip: | downloads
-	wget -c -P downloads http://www.crossref.org/schematron/CrossRef_Schematron_Rules.zip
-
-downloads/CrossRef_Schematron_Rules: | downloads/CrossRef_Schematron_Rules.zip
-	unzip downloads/CrossRef_Schematron_Rules.zip -d downloads
-	touch downloads/CrossRef_Schematron_Rules
-
-downloads/mathml3-dtd.zip: | downloads
-	wget -c -P downloads http://www.w3.org/Math/DTD/mathml3-dtd.zip
-
-downloads/mathml3-xsd.zip: | downloads
-	wget -c -P downloads http://www.w3.org/Math/XMLSchema/mathml3-xsd.zip
-
 # JATS DTD
 
 jats: | jats/publishing/1.0
@@ -40,6 +18,9 @@ jats: | jats/publishing/1.0
 jats/publishing/1.0: | downloads/jats-publishing-dtd-1.0.zip
 	mkdir -p jats/publishing/1.0
 	unzip downloads/jats-publishing-dtd-1.0.zip -d jats/publishing/1.0
+
+downloads/jats-publishing-dtd-1.0.zip: | downloads
+	wget -c -P downloads ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.0/jats-publishing-dtd-1.0.zip
 
 # CrossRef Schema
 
@@ -55,6 +36,13 @@ crossref: | crossref/schematron.xsl
 crossref/schematron.xsl: | downloads/CrossRef_Schematron_Rules
 	mkdir -p crossref
 	xsltproc -output crossref/schematron.xsl downloads/CrossRef_Schematron_Rules/iso_svrl.xsl downloads/CrossRef_Schematron_Rules/deposit.sch
+
+downloads/CrossRef_Schematron_Rules.zip: | downloads
+	wget -c -P downloads http://www.crossref.org/schematron/CrossRef_Schematron_Rules.zip
+
+downloads/CrossRef_Schematron_Rules: | downloads/CrossRef_Schematron_Rules.zip
+	unzip downloads/CrossRef_Schematron_Rules.zip -d downloads
+	touch downloads/CrossRef_Schematron_Rules
 
 # DataCite schema
 
@@ -92,9 +80,15 @@ w3/Math/DTD/mathml3: | downloads/mathml3-dtd.zip
 	mkdir -p w3/Math/DTD
 	unzip downloads/mathml3-dtd.zip -d w3/Math/DTD
 
+downloads/mathml3-dtd.zip: | downloads
+	wget -c -P downloads http://www.w3.org/Math/DTD/mathml3-dtd.zip
+
 w3/Math/XMLSchema/mathml3: | downloads/mathml3-xsd.zip
 	mkdir -p w3/Math/XMLSchema
 	unzip downloads/mathml3-xsd.zip -d w3/Math/XMLSchema
+
+downloads/mathml3-xsd.zip: | downloads
+	wget -c -P downloads http://www.w3.org/Math/XMLSchema/mathml3-xsd.zip
 
 # DOAJ schema
 # http://www.doaj.org/doaj?func=loadTempl&templ=uploadInfo
@@ -114,6 +108,9 @@ doaj:
 nlm-stylechecker: | downloads/nlm-style-5.0.tar.gz
 	mkdir -p nlm-stylechecker
 	tar xvz -C nlm-stylechecker -f downloads/nlm-style-5.0.tar.gz
+
+downloads/nlm-style-5.0.tar.gz: | downloads
+	wget -c -P downloads http://www.ncbi.nlm.nih.gov/pmc/assets/nlm-style-5.0.tar.gz
 
 # eUtils DTDs
 # http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/index.shtml
@@ -144,3 +141,6 @@ nlm/publishing/3.0/journalpublishing3.dtd: | downloads/journal-publishing-dtd-3.
 	unzip downloads/journal-publishing-dtd-3.0.zip -d nlm/publishing
 	mv nlm/publishing/publishing nlm/publishing/3.0
 	# TODO: remove xml:base from catalog
+
+downloads/journal-publishing-dtd-3.0.zip: | downloads
+	wget -c -P downloads ftp://ftp.ncbi.nih.gov/pub/archive_dtd/publishing/3.0/journal-publishing-dtd-3.0.zip
