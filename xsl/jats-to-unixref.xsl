@@ -25,7 +25,7 @@
 	<!-- root element -->
 
 	<xsl:template match="/">
-		<doi_batch version="4.3.1" xsi:schemaLocation="http://www.crossref.org/schema/4.3.1 http://www.crossref.org/schema/deposit/crossref4.3.1.xsd">
+		<doi_batch version="4.3.1" xsi:schemaLocation="http://www.crossref.org/schema/4.3.1 http://doi.crossref.org/schemas/crossref4.3.1.xsd">
 			<head>
 				<xsl:call-template name="deposition"/>
 			</head>

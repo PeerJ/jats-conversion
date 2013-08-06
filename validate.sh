@@ -19,7 +19,12 @@ echo "Validating against JATS DTD"
 xmllint --loaddtd --valid  --nonet --load-trace --noout --catalogs "$ARTICLE"
 
 echo "Validating for CrossRef DOI deposition"
-xsltproc --catalogs --stringparam "timestamp" `date +"%s"` "$DIR/xsl/jats-to-unixref.xsl" "$ARTICLE" | xmllint --valid --nonet --load-trace --noout --schema "$DIR/crossref/crossref4.3.1.xsd" -
+xsltproc --catalogs \
+	--stringparam 'timestamp' `date +"%s"` \
+	--stringparam 'depositorName' 'test' \
+	--stringparam 'depositorEmail' 'test@example.com' \
+	"$DIR/xsl/jats-to-unixref.xsl" "$ARTICLE" \
+	| xmllint --nonet --load-trace --noout --schema "$DIR/crossref/crossref4.3.1.xsd" -
 
 echo "Generating CrossRef schematron report"
 OUTPUT="output/$FILE-crossref-schematron-report.xml"
