@@ -1,58 +1,49 @@
 #TMPDIR := $(shell mktemp -d)
 #trap "rm -rf $TMPDIR" EXIT
 
-.PHONY: fetch jats crossref crossref-schematron nlm-stylechecker datacite doaj eutils ncbi w3
+.PHONY: fetch
 
-fetch: catalog.xml jats crossref crossref-schematron nlm-stylechecker datacite doaj eutils ncbi w3
-
-#validate:
-	#./validate.sh
-
-# XML catalog
-# xmlcatalog --noout --add "nextCatalog" file://$(CURDIR)/catalog.xml "" /etc/xml/catalog
+fetch: | jats crossref nlm-stylechecker datacite doaj eutils nlm w3
 
 # Archive files
 
-downloads-dir:
+downloads:
 	mkdir -p downloads
 
-downloads/jats-publishing-dtd-1.0.zip: | downloads-dir
+downloads/jats-publishing-dtd-1.0.zip: | downloads
 	wget -c -P downloads ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.0/jats-publishing-dtd-1.0.zip
 
-downloads/journal-publishing-dtd-3.0.zip: | downloads-dir
+downloads/journal-publishing-dtd-3.0.zip: | downloads
 	wget -c -P downloads ftp://ftp.ncbi.nih.gov/pub/archive_dtd/publishing/3.0/journal-publishing-dtd-3.0.zip
 
-downloads/nlm-style-5.0.tar.gz: | downloads-dir
+downloads/nlm-style-5.0.tar.gz: | downloads
 	wget -c -P downloads http://www.ncbi.nlm.nih.gov/pmc/assets/nlm-style-5.0.tar.gz
 
-downloads/CrossRef_Schematron_Rules.zip: | downloads-dir
+downloads/CrossRef_Schematron_Rules.zip: | downloads
 	wget -c -P downloads http://www.crossref.org/schematron/CrossRef_Schematron_Rules.zip
 
 downloads/CrossRef_Schematron_Rules: | downloads/CrossRef_Schematron_Rules.zip
 	unzip downloads/CrossRef_Schematron_Rules.zip -d downloads
 	touch downloads/CrossRef_Schematron_Rules
 
-downloads/mathml3-dtd.zip:
+downloads/mathml3-dtd.zip: | downloads
 	wget -c -P downloads http://www.w3.org/Math/DTD/mathml3-dtd.zip
 
-downloads/mathml3-xsd.zip:
+downloads/mathml3-xsd.zip: | downloads
 	wget -c -P downloads http://www.w3.org/Math/XMLSchema/mathml3-xsd.zip
 
 # JATS DTD
 
-jats: | jats/publishing/1.0/catalog-jats-v1.xml
+jats: | jats/publishing/1.0
 
 # "test" = version of the DTD with no xml:base
-jats/publishing/1.0/catalog-test-jats-v1.xml: | downloads/jats-publishing-dtd-1.0.zip
+jats/publishing/1.0: | downloads/jats-publishing-dtd-1.0.zip
 	mkdir -p jats/publishing/1.0
 	unzip downloads/jats-publishing-dtd-1.0.zip -d jats/publishing/1.0
-	touch jats/publishing/1.0/catalog-test-jats-v1.xml
 
 # CrossRef Schema
 
-fetch = wget -c -P $(1) $(2)
-
-crossref:
+crossref: | crossref/schematron.xsl
 	mkdir -p crossref
 	wget -c -P crossref http://doi.crossref.org/schemas/crossref4.3.2.xsd
 	wget -c -P crossref http://doi.crossref.org/schemas/common4.3.2.xsd
@@ -61,11 +52,15 @@ crossref:
 	wget -c -P crossref http://doi.crossref.org/schemas/fundref.xsd
 	wget -c -P crossref http://doi.crossref.org/schemas/AccessIndicators.xsd
 
+crossref/schematron.xsl: | downloads/CrossRef_Schematron_Rules
+	mkdir -p crossref
+	xsltproc -output crossref/schematron.xsl downloads/CrossRef_Schematron_Rules/iso_svrl.xsl downloads/CrossRef_Schematron_Rules/deposit.sch
+
 # DataCite schema
 
-datacite: datacite-2.2 datacite-3
+datacite: | datacite/meta/kernel-2.2 datacite/meta/kernel-3
 
-datacite-2.2:
+datacite/meta/kernel-2.2:
 	mkdir -p datacite/meta/kernel-2.2/include
 	wget -c -P datacite/meta/kernel-2.2  http://schema.datacite.org/meta/kernel-2.2/metadata.xsd
 	wget -c -P datacite/meta/kernel-2.2/include  http://schema.datacite.org/meta/kernel-2.2/include/datacite-titleType-v2.xsd
@@ -76,7 +71,7 @@ datacite-2.2:
 	wget -c -P datacite/meta/kernel-2.2/include  http://schema.datacite.org/meta/kernel-2.2/include/datacite-relatedIdentifierType-v2.xsd
 	wget -c -P datacite/meta/kernel-2.2/include  http://schema.datacite.org/meta/kernel-2.2/include/datacite-descriptionType-v2.xsd
 
-datacite-3: w3
+datacite/meta/kernel-3: w3
 	mkdir -p datacite/meta/kernel-3/include
 	wget -c -P datacite/meta/kernel-3  http://schema.datacite.org/meta/kernel-3/metadata.xsd
 	wget -c -P datacite/meta/kernel-3/include  http://schema.datacite.org/meta/kernel-3/include/datacite-titleType-v3.xsd
@@ -86,6 +81,8 @@ datacite-3: w3
 	wget -c -P datacite/meta/kernel-3/include  http://schema.datacite.org/meta/kernel-3/include/datacite-relationType-v3.xsd
 	wget -c -P datacite/meta/kernel-3/include  http://schema.datacite.org/meta/kernel-3/include/datacite-relatedIdentifierType-v3.xsd
 	wget -c -P datacite/meta/kernel-3/include  http://schema.datacite.org/meta/kernel-3/include/datacite-descriptionType-v3.xsd
+
+# W3 DTDs and Schema
 
 w3: | w3/Math/DTD/mathml3 w3/Math/XMLSchema/mathml3
 	mkdir -p w3/2009/01
@@ -114,20 +111,9 @@ doaj:
 
 # NLM PMC Style Checker
 
-nlm-stylechecker: | nlm-stylechecker/nlm-stylechecker.xsl
-
-nlm-stylechecker/nlm-stylechecker.xsl: | downloads/nlm-style-5.0.tar.gz
+nlm-stylechecker: | downloads/nlm-style-5.0.tar.gz
 	mkdir -p nlm-stylechecker
 	tar xvz -C nlm-stylechecker -f downloads/nlm-style-5.0.tar.gz
-	touch nlm-stylechecker/nlm-stylechecker.xsl
-
-# CrossRef Schematron
-
-crossref-schematron: | crossref/schematron.xsl
-
-crossref/schematron.xsl: | downloads/CrossRef_Schematron_Rules
-	mkdir -p crossref
-	xsltproc -output crossref/schematron.xsl downloads/CrossRef_Schematron_Rules/iso_svrl.xsl downloads/CrossRef_Schematron_Rules/deposit.sch
 
 # eUtils DTDs
 # http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/index.shtml
