@@ -4,7 +4,7 @@ Check an XML file against the [JATS Article Publishing 1.0 DTD](http://jats.nlm.
 
 ## Usage
 
-* Run ```./setup.sh``` once to fetch all the resources.
+* Run ```make fetch``` once to fetch all the resources.
 * Run ```./validate.sh filename``` to validate a JATS XML file.
 * Output: any validation errors; NLM style report; HTML article preview.
 
