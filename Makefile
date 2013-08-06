@@ -70,7 +70,7 @@ datacite-2.2:
 	wget -c -P datacite/meta/kernel-2.2/include  http://schema.datacite.org/meta/kernel-2.2/include/datacite-relatedIdentifierType-v2.xsd
 	wget -c -P datacite/meta/kernel-2.2/include  http://schema.datacite.org/meta/kernel-2.2/include/datacite-descriptionType-v2.xsd
 
-datacite-3:
+datacite-3: w3
 	mkdir -p datacite/meta/kernel-3/include
 	wget -c -P datacite/meta/kernel-3  http://schema.datacite.org/meta/kernel-3/metadata.xsd
 	wget -c -P datacite/meta/kernel-3/include  http://schema.datacite.org/meta/kernel-3/include/datacite-titleType-v3.xsd
@@ -80,6 +80,10 @@ datacite-3:
 	wget -c -P datacite/meta/kernel-3/include  http://schema.datacite.org/meta/kernel-3/include/datacite-relationType-v3.xsd
 	wget -c -P datacite/meta/kernel-3/include  http://schema.datacite.org/meta/kernel-3/include/datacite-relatedIdentifierType-v3.xsd
 	wget -c -P datacite/meta/kernel-3/include  http://schema.datacite.org/meta/kernel-3/include/datacite-descriptionType-v3.xsd
+
+w3:
+	mkdir -p w3/2009/01
+	wget -c -P w3/2009/01 http://www.w3.org/2009/01/xml.xsd
 
 # DOAJ schema
 # http://www.doaj.org/doaj?func=loadTempl&templ=uploadInfo
