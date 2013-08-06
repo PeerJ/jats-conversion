@@ -12,13 +12,14 @@ ARTICLE=$1
 FILE=`basename "$ARTICLE" .xml`
 mkdir -p 'output'
 
-export SGML_CATALOG_FILES="$DIR/jats/publishing/1.0/catalog-jats-v1.xml"
+export SGML_CATALOG_FILES="$DIR/catalog.xml"
+#export SGML_CATALOG_FILES=catalog.xml
 
 echo "Validating against JATS DTD"
-xmllint --loaddtd --noout --valid --catalogs "$ARTICLE"
+xmllint --loaddtd --valid  --nonet --load-trace --noout --catalogs "$ARTICLE"
 
 echo "Validating for CrossRef DOI deposition"
-xsltproc --catalogs --stringparam "timestamp" `date +"%s"` "$DIR/xsl/jats-to-unixref.xsl" "$ARTICLE" | xmllint --noout --schema "$DIR/crossref/crossref4.3.1.xsd" -
+xsltproc --catalogs --stringparam "timestamp" `date +"%s"` "$DIR/xsl/jats-to-unixref.xsl" "$ARTICLE" | xmllint --valid --nonet --load-trace --noout --schema "$DIR/crossref/crossref4.3.1.xsd" -
 
 echo "Generating CrossRef schematron report"
 OUTPUT="output/$FILE-crossref-schematron-report.xml"
@@ -37,3 +38,5 @@ echo "Generating HTML"
 OUTPUT="output/$FILE-preview.html"
 xsltproc --catalogs -output "$OUTPUT" "$DIR/xsl/jats-to-html.xsl" "$ARTICLE"
 echo "HTML written to $OUTPUT"
+
+# TODO: run JS tests in PhantomJS
