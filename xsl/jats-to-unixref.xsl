@@ -5,8 +5,8 @@
                 xmlns:xlink="http://www.w3.org/1999/xlink"
                 xmlns:fr="http://www.crossref.org/fundref.xsd"
                 xmlns="http://www.crossref.org/schema/4.3.1"
-                xsi:schemaLocation="http://www.crossref.org/schema/4.3.1 http://www.crossref.org/schema/deposit/crossref4.3.1.xsd
-                http://www.crossref.org/fundref.xsd http://www.crossref.org/schema/deposit/fundref.xsd"
+                xsi:schemaLocation="http://www.crossref.org/schema/4.3.1 http://doi.crossref.org/schemas/crossref4.3.1.xsd
+                http://www.crossref.org/fundref.xsd http://doi.crossref.org/schemas/fundref.xsd"
                 exclude-result-prefixes="xlink">
 
 	<xsl:output method="xml" indent="yes" encoding="UTF-8" standalone="yes" />
