@@ -1,26 +1,29 @@
 #TMPDIR := $(shell mktemp -d)
 #trap "rm -rf $TMPDIR" EXIT
 
-.PHONY: fetch
+.PHONY: fetch nlm jats pmc
 
-fetch: | jats crossref nlm-stylechecker datacite doaj eutils nlm w3
+fetch: | jats crossref nlm-stylechecker datacite doaj nlm w3
+fetch-all: | fetch pmc eutils
 
 # Archive files
 
-downloads:
-	mkdir -p downloads
+DOWNLOADS := /tmp/downloads
+
+$(DOWNLOADS):
+	mkdir -p $(DOWNLOADS)
 
 # JATS DTD
 
 jats: | jats/publishing/1.0
 
 # "test" = version of the DTD with no xml:base
-jats/publishing/1.0: | downloads/jats-publishing-dtd-1.0.zip
+jats/publishing/1.0: | $(DOWNLOADS)/jats-publishing-dtd-1.0.zip
 	mkdir -p jats/publishing/1.0
-	unzip downloads/jats-publishing-dtd-1.0.zip -d jats/publishing/1.0
+	unzip $(DOWNLOADS)/jats-publishing-dtd-1.0.zip -d jats/publishing/1.0
 
-downloads/jats-publishing-dtd-1.0.zip: | downloads
-	wget -c -P downloads ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.0/jats-publishing-dtd-1.0.zip
+$(DOWNLOADS)/jats-publishing-dtd-1.0.zip: | $(DOWNLOADS)
+	wget -c -P $(DOWNLOADS) ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.0/jats-publishing-dtd-1.0.zip
 
 # CrossRef Schema
 
@@ -33,16 +36,16 @@ crossref: | crossref/schematron.xsl
 	wget -c -P crossref http://doi.crossref.org/schemas/fundref.xsd
 	wget -c -P crossref http://doi.crossref.org/schemas/AccessIndicators.xsd
 
-crossref/schematron.xsl: | downloads/CrossRef_Schematron_Rules
+crossref/schematron.xsl: | $(DOWNLOADS)/CrossRef_Schematron_Rules
 	mkdir -p crossref
-	xsltproc -output crossref/schematron.xsl downloads/CrossRef_Schematron_Rules/iso_svrl.xsl downloads/CrossRef_Schematron_Rules/deposit.sch
+	xsltproc -output crossref/schematron.xsl $(DOWNLOADS)/CrossRef_Schematron_Rules/iso_svrl.xsl $(DOWNLOADS)/CrossRef_Schematron_Rules/deposit.sch
 
-downloads/CrossRef_Schematron_Rules.zip: | downloads
-	wget -c -P downloads http://www.crossref.org/schematron/CrossRef_Schematron_Rules.zip
+$(DOWNLOADS)/CrossRef_Schematron_Rules.zip: | $(DOWNLOADS)
+	wget -c -P $(DOWNLOADS) http://www.crossref.org/schematron/CrossRef_Schematron_Rules.zip
 
-downloads/CrossRef_Schematron_Rules: | downloads/CrossRef_Schematron_Rules.zip
-	unzip downloads/CrossRef_Schematron_Rules.zip -d downloads
-	touch downloads/CrossRef_Schematron_Rules
+$(DOWNLOADS)/CrossRef_Schematron_Rules: | $(DOWNLOADS)/CrossRef_Schematron_Rules.zip
+	unzip $(DOWNLOADS)/CrossRef_Schematron_Rules.zip -d $(DOWNLOADS)
+	touch $(DOWNLOADS)/CrossRef_Schematron_Rules
 
 # DataCite schema
 
@@ -76,19 +79,19 @@ w3: | w3/Math/DTD/mathml3 w3/Math/XMLSchema/mathml3
 	mkdir -p w3/2009/01
 	wget -c -P w3/2009/01 http://www.w3.org/2009/01/xml.xsd
 
-w3/Math/DTD/mathml3: | downloads/mathml3-dtd.zip
+w3/Math/DTD/mathml3: | $(DOWNLOADS)/mathml3-dtd.zip
 	mkdir -p w3/Math/DTD
-	unzip downloads/mathml3-dtd.zip -d w3/Math/DTD
+	unzip $(DOWNLOADS)/mathml3-dtd.zip -d w3/Math/DTD
 
-downloads/mathml3-dtd.zip: | downloads
-	wget -c -P downloads http://www.w3.org/Math/DTD/mathml3-dtd.zip
+$(DOWNLOADS)/mathml3-dtd.zip: | $(DOWNLOADS)
+	wget -c -P $(DOWNLOADS) http://www.w3.org/Math/DTD/mathml3-dtd.zip
 
-w3/Math/XMLSchema/mathml3: | downloads/mathml3-xsd.zip
+w3/Math/XMLSchema/mathml3: | $(DOWNLOADS)/mathml3-xsd.zip
 	mkdir -p w3/Math/XMLSchema
-	unzip downloads/mathml3-xsd.zip -d w3/Math/XMLSchema
+	unzip $(DOWNLOADS)/mathml3-xsd.zip -d w3/Math/XMLSchema
 
-downloads/mathml3-xsd.zip: | downloads
-	wget -c -P downloads http://www.w3.org/Math/XMLSchema/mathml3-xsd.zip
+$(DOWNLOADS)/mathml3-xsd.zip: | $(DOWNLOADS)
+	wget -c -P $(DOWNLOADS) http://www.w3.org/Math/XMLSchema/mathml3-xsd.zip
 
 # DOAJ schema
 # http://www.doaj.org/doaj?func=loadTempl&templ=uploadInfo
@@ -105,12 +108,36 @@ doaj:
 
 # NLM PMC Style Checker
 
-nlm-stylechecker: | downloads/nlm-style-5.0.tar.gz
+nlm-stylechecker: | $(DOWNLOADS)/nlm-style-5.0.tar.gz
 	mkdir -p nlm-stylechecker
-	tar xvz -C nlm-stylechecker -f downloads/nlm-style-5.0.tar.gz
+	tar xvz -C nlm-stylechecker -f $(DOWNLOADS)/nlm-style-5.0.tar.gz
 
-downloads/nlm-style-5.0.tar.gz: | downloads
-	wget -c -P downloads http://www.ncbi.nlm.nih.gov/pmc/assets/nlm-style-5.0.tar.gz
+$(DOWNLOADS)/nlm-style-5.0.tar.gz: | $(DOWNLOADS)
+	wget -c -P $(DOWNLOADS) http://www.ncbi.nlm.nih.gov/pmc/assets/nlm-style-5.0.tar.gz
+
+# NLM DTDs
+# http://www.ncbi.nlm.nih.gov/data_specs/dtd/
+
+# NLM Journal Publishing DTD
+
+nlm: | nlm/publishing/3.0
+
+nlm/publishing/3.0: | $(DOWNLOADS)/journal-publishing-dtd-3.0.zip
+	mkdir -p nlm/publishing
+	unzip $(DOWNLOADS)/journal-publishing-dtd-3.0.zip -d nlm/publishing
+	mv nlm/publishing/publishing nlm/publishing/3.0
+	# TODO: remove xml:base from catalog
+
+$(DOWNLOADS)/journal-publishing-dtd-3.0.zip: | $(DOWNLOADS)
+	wget -c -P $(DOWNLOADS) ftp://ftp.ncbi.nih.gov/pub/archive_dtd/publishing/3.0/journal-publishing-dtd-3.0.zip
+
+# PMC DTDs
+
+pmc: | nlm/ncbi/pmc/articleset
+
+nlm/ncbi/pmc/articleset:
+	mkdir -p nlm/ncbi/pmc/articleset
+	wget -c -P nlm/ncbi/pmc/articleset http://dtd.nlm.nih.gov/ncbi/pmc/articleset/nlm-articleset-2.0.dtd
 
 # eUtils DTDs
 # http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/index.shtml
@@ -126,21 +153,3 @@ eutils:
 	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/eSummary_041029.dtd
 	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/egquery.dtd
 	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/eSpell.dtd
-
-# NLM DTDs
-# http://www.ncbi.nlm.nih.gov/data_specs/dtd/
-
-nlm: | nlm/publishing/3.0/journalpublishing3.dtd
-	mkdir -p nlm/ncbi/pmc/articleset
-	wget -c -P nlm/ncbi/pmc/articleset http://dtd.nlm.nih.gov/ncbi/pmc/articleset/nlm-articleset-2.0.dtd
-
-# NLM Journal Publishing  DTD
-
-nlm/publishing/3.0/journalpublishing3.dtd: | downloads/journal-publishing-dtd-3.0.zip
-	mkdir -p nlm/publishing
-	unzip downloads/journal-publishing-dtd-3.0.zip -d nlm/publishing
-	mv nlm/publishing/publishing nlm/publishing/3.0
-	# TODO: remove xml:base from catalog
-
-downloads/journal-publishing-dtd-3.0.zip: | downloads
-	wget -c -P downloads ftp://ftp.ncbi.nih.gov/pub/archive_dtd/publishing/3.0/journal-publishing-dtd-3.0.zip

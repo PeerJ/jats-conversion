@@ -1,0 +1,22 @@
+{
+    "name":"peerj/conversion",
+    "description":"Conversion and validation files for JATS XML",
+    "keywords":["xml","xsl","dtd","schema"],
+    "type":"library",
+    "license":"",
+    "authors":[
+        {
+            "name":"PeerJ",
+            "homepage":"https://peerj.com/"
+        }
+    ],
+    "homepage": "https://github.com/PeerJ/conversion",
+    "suggest": {
+        "ext-xsl":"Install PHP's xsl extension if using these files in PHP"
+    },
+    "autoload":{
+        "classmap": [
+            "lib/"
+        ]
+    }
+}

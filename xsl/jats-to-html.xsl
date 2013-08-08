@@ -58,6 +58,12 @@
                     <xsl:apply-templates select="back"/>
                     <xsl:apply-templates select="floats-group"/>
                 </article>
+
+                <script src="../tests/vendor/jquery.js">x</script>
+                <script src="../tests/vendor/jquery-ui.js">x</script>
+                <script src="../tests/vendor/microdata.js">x</script>
+                <script src="../tests/vendor/qunit.js">x</script>
+                <script src="../tests/tests.js">x</script>
             </body>
         </html>
     </xsl:template>
