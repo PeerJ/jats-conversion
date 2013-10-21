@@ -14,7 +14,7 @@ class JATS
 	 */
 	public function __construct()
 	{
-		$this->dir = __DIR__ . '/data/xsl/';
+		$this->dir = __DIR__ . '/../../data/xsl/';
 	}
 
 	/**

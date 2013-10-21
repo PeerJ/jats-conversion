@@ -18,6 +18,6 @@
         "ext-xsl":"Install PHP's xsl extension if using these files in PHP"
     },
     "autoload": {
-       "psr-0": { "PeerJ\\Conversion\\": "lib/" }
+       "psr-0": { "PeerJ\\Conversion\\": "src/" }
     }
 }
