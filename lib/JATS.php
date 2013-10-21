@@ -33,6 +33,22 @@ class JATS
 		return $output;
 	}
 
+    /**
+     * Generate JATS XML for a correction article
+     *
+     * @param \DOMDocument $input
+     * @param array        $params
+     *
+     * @return \DOMDocument
+     */
+    public function generateCorrection(\DOMDocument $input, $params = array())
+    {
+        $output = $this->convert('jats-to-correction', $input, $params);
+        $this->validateWithDTD($output);
+
+        return $output;
+    }
+
 	/**
 	 * Convert to CrossRef deposit XML
 	 *
