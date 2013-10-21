@@ -13,6 +13,16 @@
     <xsl:param name="publication"/>
     <xsl:param name="url"/>
 
+    <xsl:param name="page" select="1"/>
+    <xsl:param name="link-self"/>
+    <xsl:param name="link-prev"/>
+    <xsl:param name="link-next"/>
+    <xsl:param name="link-atom"/>
+    <xsl:param name="link-rss"/>
+    <xsl:param name="link-rdf"/>
+    <xsl:param name="link-html"/>
+    <xsl:param name="link-json"/>
+
     <xsl:template match="/articles">
         <feed>
             <title><xsl:value-of select="$publication"/></title>

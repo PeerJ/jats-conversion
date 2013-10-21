@@ -4,9 +4,9 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
                 xmlns:fr="http://www.crossref.org/fundref.xsd"
-                xmlns="http://www.crossref.org/schema/4.3.1"
-                xsi:schemaLocation="http://www.crossref.org/schema/4.3.1 http://doi.crossref.org/schemas/crossref4.3.1.xsd
-                http://www.crossref.org/fundref.xsd http://doi.crossref.org/schemas/fundref.xsd"
+                xmlns="http://www.crossref.org/schema/4.3.3"
+                xsi:schemaLocation="http://www.crossref.org/schema/4.3.3 http://www.crossref.org/schema/deposit/crossref4.3.3.xsd
+                http://www.crossref.org/fundref.xsd http://www.crossref.org/schema/deposit/fundref.xsd"
                 exclude-result-prefixes="xlink">
 
 	<xsl:output method="xml" indent="yes" encoding="UTF-8" standalone="yes" />
@@ -25,7 +25,7 @@
 	<!-- root element -->
 
 	<xsl:template match="/">
-		<doi_batch version="4.3.1" xsi:schemaLocation="http://www.crossref.org/schema/4.3.1 http://doi.crossref.org/schemas/crossref4.3.1.xsd">
+		<doi_batch version="4.3.3" xsi:schemaLocation="http://www.crossref.org/schema/4.3.3 http://www.crossref.org/schema/deposit/crossref4.3.3.xsd">
 			<head>
 				<xsl:call-template name="deposition"/>
 			</head>
@@ -220,7 +220,7 @@
 	<!-- contributors -->
 
 	<xsl:template match="contrib">
-		<person_name contributor_role="author" sequence="">
+		<person_name contributor_role="author" sequence="additional">
             <xsl:choose>
                 <xsl:when test="position() = 1">
                     <xsl:attribute name="sequence">first</xsl:attribute>

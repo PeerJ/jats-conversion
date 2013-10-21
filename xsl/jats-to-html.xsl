@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="xlink mml php"
+                extension-element-prefixes="str"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:mml="http://www.w3.org/1998/Math/MathML"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
+                xmlns:str="http://exslt.org/strings"
                 xmlns:php="http://php.net/xsl">
 
     <xsl:output method="xml" encoding="utf-8" omit-xml-declaration="yes" indent="yes"/>
 
-    <xsl:strip-space elements="contrib"/>
+    <xsl:strip-space elements="contrib collab"/>
 
     <xsl:param name="public-reviews" select="false()"/>
     <xsl:param name="static-root" select="''"/>
@@ -58,12 +60,6 @@
                     <xsl:apply-templates select="back"/>
                     <xsl:apply-templates select="floats-group"/>
                 </article>
-
-                <script src="../tests/vendor/jquery.js">x</script>
-                <script src="../tests/vendor/jquery-ui.js">x</script>
-                <script src="../tests/vendor/microdata.js">x</script>
-                <script src="../tests/vendor/qunit.js">x</script>
-                <script src="../tests/tests.js">x</script>
             </body>
         </html>
     </xsl:template>
@@ -288,17 +284,28 @@
                 <meta itemprop="version" content="1.0"/>
             </div>
 
-            <div>
-                <h2>Abstract</h2>
-                <xsl:apply-templates select="abstract"/>
-            </div>
+            <xsl:apply-templates select="abstract"/>
+            <xsl:apply-templates select="../notes[@notes-type='author-note']"/>
         </header>
     </xsl:template>
 
     <!-- abstract -->
     <xsl:template match="abstract">
-        <div class="{local-name()}" itemprop="description">
-            <xsl:apply-templates select="node()|@*"/>
+        <div>
+            <h2>Abstract</h2>
+            <div class="{local-name()}" itemprop="description">
+                <xsl:apply-templates select="node()|@*"/>
+            </div>
+        </div>
+    </xsl:template>
+
+    <!-- author note -->
+    <xsl:template match="notes[@notes-type='author-note']">
+        <div>
+            <h2>Author Comment</h2>
+            <div class="{local-name()}">
+                <xsl:apply-templates select="node()|@*"/>
+            </div>
         </div>
     </xsl:template>
 
@@ -573,23 +580,17 @@
     <!-- email the corresponding author -->
     <xsl:template name="corresponding-email">
         <xsl:param name="email"/>
-        <a class="corresp" href="mailto:{$email}" target="_blank" title="email the corresponding author" rel="tooltip" itemprop="email">
-            <i class="icon-envelope">&#160;</i>
-        </a>
+        <a class="corresp" href="mailto:{$email}" target="_blank" title="email the corresponding author" rel="tooltip" itemprop="email"><i class="icon-envelope">&#8203;</i></a>
     </xsl:template>
 
     <!-- authors with equal contributions -->
     <xsl:template name="equal-contribution">
-        <span class="equal-contribution" title="These authors contributed equally to this work." rel="tooltip">
-            <i class="icon-asterisk">&#160;</i>
-        </span>
+        <span class="equal-contribution" title="These authors contributed equally to this work." rel="tooltip"><i class="icon-asterisk">&#8203;</i></span>
     </xsl:template>
 
     <!-- deceased authors -->
     <xsl:template name="deceased">
-        <span class="deceased" title="Deceased" rel="tooltip">
-            <i class="icon-star-empty">&#160;</i>
-        </span>
+        <span class="deceased" title="Deceased" rel="tooltip"><i class="icon-star-empty">&#8203;</i></span>
     </xsl:template>
 
     <!-- any label -->
@@ -636,6 +637,17 @@
     <!-- paragraph -->
     <xsl:template match="p">
         <p>
+            <xsl:apply-templates select="node()|@*"/>
+        </p>
+    </xsl:template>
+
+    <!-- paragraph in the body -->
+    <xsl:template match="body//p">
+        <p>
+            <xsl:attribute name="id">
+                <xsl:text>p-</xsl:text>
+                <xsl:number count="body//p" level="any"/>
+            </xsl:attribute>
             <xsl:apply-templates select="node()|@*"/>
         </p>
     </xsl:template>
@@ -748,6 +760,12 @@
         <br/>
     </xsl:template>
 
+    <!-- preformatted code block -->
+    <!-- contains zero-width spaces to ensure white-space is preserved in HTML -->
+    <xsl:template match="preformat">
+        <pre><code><xsl:apply-templates select="node()|@*"/>&#8203;</code>&#8203;</pre>
+    </xsl:template>
+
     <!-- style elements -->
     <xsl:template match="sc | strike | roman | sans-serif | monospace | overline">
         <span class="{local-name()}">
@@ -786,6 +804,9 @@
     <!-- table elements -->
     <xsl:template match="table | tbody | thead | tfoot | column | tr | th | td | colgroup | col">
         <xsl:element name="{local-name()}">
+            <xsl:if test="@content-type = 'text'">
+                <xsl:attribute name="class">table-text</xsl:attribute>
+            </xsl:if>
             <xsl:apply-templates select="node()|@*"/>
         </xsl:element>
     </xsl:template>
@@ -919,6 +940,12 @@
         </a>
     </xsl:template>
 
+    <xsl:template match="ext-link[@ext-link-type='DDBJ/EMBL/GenBank']">
+        <a class="{local-name()}" href="https://www.ncbi.nlm.nih.gov/nucleotide?term={@xlink:href}">
+            <xsl:apply-templates select="node()|@*"/>
+        </a>
+    </xsl:template>
+
     <xsl:template match="license-p/ext-link">
         <a class="{local-name()}" href="{@xlink:href}" rel="license">
             <xsl:apply-templates select="node()|@*"/>
@@ -1035,7 +1062,7 @@
             <div class="article-image-download">
                 <xsl:variable name="fig-id" select="../@id"/>
                 <a href="{$static-root}{$fig-id}-full.png" class="btn btn-mini" download="{$download-prefix}-{$id}-{$fig-id}.png">
-                    <i class="icon-picture">&#160;</i>
+                    <i class="icon-large icon-picture">&#160;</i>
                     <xsl:text>&#32;Download full-size image</xsl:text>
                 </a>
             </div>
@@ -1081,9 +1108,19 @@
         <xsl:variable name="fig" select=".."/>
         <xsl:variable name="fig-id" select="$fig/@id"/>
         <a href="{$static-root}{$fig-id}-2x.jpg"
-           title="View the full image">
-            <img class="{local-name()}" src="{$static-root}{@xlink:href}"
-                alt="{$fig/caption/title}" data-image-type="figure">
+           title="View the full image"
+           class="fresco"
+           data-fresco-caption="{$fig/label}: {$fig/caption/title}"
+           data-fresco-group="figure"
+           data-fresco-options="fit: 'width', ui: 'outside', thumbnails: false, loop: true, position: true, preload: false">
+            <img class="{local-name()}"
+                 src="{$static-root}{$fig-id}-1x.jpg"
+                 data-image-id="{$fig-id}"
+                 alt="{$fig/caption/title}"
+                 data-full="{$static-root}{$fig-id}-full.png"
+                 data-thumb="{$static-root}{$fig-id}-thumb.jpg"
+                 data-original="{$static-root}{@xlink:href}"
+                 data-image-type="figure">
                 <xsl:apply-templates select="@*"/>
             </img>
         </a>
@@ -1171,7 +1208,7 @@
         <div>
             <a href="{$static-root}{$encoded-filename}" class="btn article-supporting-download"
                download="{$filename}" data-filename="{$filename}">
-                <i class="icon-download-alt">&#160;</i>
+                <i class="icon-large icon-download-alt">&#160;</i>
                 <!--<xsl:value-of select="concat(' Download .', ../@mime-subtype)"/>-->
                 <xsl:value-of select="' Download'"/>
             </a>
@@ -1290,7 +1327,7 @@
             <xsl:apply-templates select="publisher-name | institution" mode="citation"/>
             <xsl:text>&#32;</xsl:text>
             <xsl:apply-templates select="volume" mode="citation"/>
-            <xsl:apply-templates select="fpage" mode="book-citation"/>
+            <xsl:apply-templates select="fpage" mode="citation"/>
             <xsl:text>&#32;</xsl:text>
             <xsl:apply-templates select="pub-id[@pub-id-type='isbn']" mode="citation"/>
             <xsl:apply-templates select="comment" mode="citation"/>
@@ -1300,7 +1337,7 @@
     <!-- report citations -->
     <xsl:template match="element-citation[@publication-type='report']">
         <span class="citation-authors-year">
-            <xsl:apply-templates select="person-group[@person-group-type='author'] | collab" mode="citation"/>
+            <xsl:apply-templates select="person-group[@person-group-type='author']" mode="citation"/>
             <xsl:apply-templates select="year" mode="citation"/>
         </span>
         <span class="article-title">
@@ -1310,14 +1347,14 @@
         </span>
         <xsl:apply-templates select="institution" mode="report-citation"/>
         <xsl:apply-templates select="volume" mode="citation"/>
-        <xsl:apply-templates select="fpage" mode="book-citation"/>
+        <xsl:apply-templates select="fpage" mode="citation"/>
         <xsl:apply-templates select="comment" mode="citation"/>
     </xsl:template>
 
     <!-- thesis citations -->
     <xsl:template match="element-citation[@publication-type='thesis']">
         <span class="citation-authors-year">
-            <xsl:apply-templates select="person-group[@person-group-type='author'] | collab" mode="citation"/>
+            <xsl:apply-templates select="person-group[@person-group-type='author']" mode="citation"/>
             <xsl:apply-templates select="year" mode="citation"/>
         </span>
         <span class="article-title">
@@ -1332,7 +1369,7 @@
     <!-- working paper (preprint) citations -->
     <xsl:template match="element-citation[@publication-type='working-paper']">
         <span class="citation-authors-year">
-            <xsl:apply-templates select="person-group[@person-group-type='author'] | collab" mode="citation"/>
+            <xsl:apply-templates select="person-group[@person-group-type='author']" mode="citation"/>
             <xsl:apply-templates select="year" mode="citation"/>
         </span>
         <span class="article-title">
@@ -1620,18 +1657,9 @@
         <xsl:if test="../volume">
             <xsl:text>:</xsl:text>
         </xsl:if>
-        <span class="{local-name()}">
-            <xsl:apply-templates/>
-        </span>
-    </xsl:template>
-
-    <xsl:template match="fpage" mode="book-citation">
-        <xsl:if test="../volume">
-            <xsl:text>:</xsl:text>
-        </xsl:if>
         <xsl:choose>
             <xsl:when test="../lpage">
-                <span class="fpage">
+                <span class="{local-name()}">
                     <xsl:apply-templates/>
                 </span>
                 <xsl:text>-</xsl:text>
@@ -1693,12 +1721,61 @@
     </xsl:template>
 
     <xsl:template match="collab" mode="citation">
-        <b class="{local-name()}" itemprop="author" itemscope="itemscope">
+        <span class="{local-name()}" itemprop="author" itemscope="itemscope">
             <xsl:apply-templates/>
-        </b>
-        <xsl:call-template name="comma-separator">
-            <xsl:with-param name="separator" select="'. '"/>
-        </xsl:call-template>
+        </span>
+        <xsl:call-template name="comma-separator"/>
+    </xsl:template>
+
+    <!-- self citation author names -->
+
+    <xsl:template name="self-citation-authors">
+        <xsl:variable name="max" select="5"/>
+        <xsl:variable name="people" select="$authors/name | $authors/collab"/>
+        <span class="self-citation-authors">
+            <xsl:choose>
+                <xsl:when test="count($people) &gt; $max">
+                    <xsl:apply-templates select="$people[position() &lt; ($max + 1)]" mode="self-citation"/>
+                    <span class="et-al">&#32;et al.</span>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates select="$people" mode="self-citation"/>
+                    <xsl:text>.</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
+        </span>
+    </xsl:template>
+
+    <xsl:template match="name" mode="self-citation">
+        <xsl:apply-templates select="surname" mode="self-citation"/>
+        <xsl:if test="given-names">
+            <xsl:text>&#32;</xsl:text>
+            <xsl:apply-templates select="given-names" mode="self-citation"/>
+        </xsl:if>
+        <xsl:if test="suffix">
+            <xsl:text>&#32;</xsl:text>
+            <xsl:apply-templates select="suffix" mode="self-citation"/>
+        </xsl:if>
+        <xsl:call-template name="comma-separator"/>
+    </xsl:template>
+
+    <xsl:template match="surname" mode="self-citation">
+        <xsl:apply-templates/>
+    </xsl:template>
+
+    <xsl:template match="suffix" mode="self-citation">
+        <xsl:apply-templates/>
+    </xsl:template>
+
+    <xsl:template match="given-names" mode="self-citation">
+        <xsl:for-each select="str:tokenize(., ' ')">
+            <xsl:value-of select="substring(., 1, 1)"/>
+        </xsl:for-each>
+    </xsl:template>
+
+    <xsl:template match="collab" mode="self-citation">
+        <xsl:apply-templates/>
+        <xsl:call-template name="comma-separator"/>
     </xsl:template>
 
     <!-- self citation -->
@@ -1708,12 +1785,7 @@
         <dl class="self-citation">
             <dt>Cite this article</dt>
             <dd>
-                <span class="self-citation-author-year">
-                    <xsl:value-of select="$authors[1]/name/surname"/>
-                    <xsl:if test="count($authors) > 1">
-                        <xsl:text>&#32;et al.</xsl:text>
-                    </xsl:if>
-                </span>
+                <xsl:call-template name="self-citation-authors"/>
                 <xsl:text>&#32;(</xsl:text>
                 <span class="self-citation-year">
                     <xsl:value-of select="$pub-date/year"/>
@@ -1834,7 +1906,7 @@
                 <xsl:value-of select="php:function('rawurlencode', string($value))"/>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:value-of select="$value"/><!-- TODO: replace special characters with XSL -->
+                <xsl:value-of select="$value"/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
