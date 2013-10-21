@@ -46,7 +46,7 @@ class JATS
 		$params['timestamp'] = date('YmdHis');
 
 		$output = $this->convert('jats-to-unixref', $input, $params);
-		$this->validateWithSchema($output, 'http://www.crossref.org/schema/deposit/crossref4.3.1.xsd');
+		$this->validateWithSchema($output, 'http://www.crossref.org/schema/deposit/crossref4.3.3.xsd');
 
 		return $output;
 	}
