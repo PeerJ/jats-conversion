@@ -1,5 +1,5 @@
 {
-    "name":"peerj/conversion",
+    "name":"peerj/jats-conversion",
     "description":"Conversion and validation files for JATS XML",
     "keywords":["xml","xsl","dtd","schema"],
     "type":"library",
