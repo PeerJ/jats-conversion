@@ -27,10 +27,7 @@ class JATS
 	 */
 	public function generateHTML(\DOMDocument $input, $params = array())
 	{
-		$output = $this->convert('jats-to-html', $input, $params);
-		$this->validateWithDTD($output);
-
-		return $output;
+		return $this->convert('jats-to-html', $input, $params);
 	}
 
     /**
