@@ -1,21 +1,28 @@
 {
-    "name":"peerj/jats-conversion",
-    "description":"Conversion and validation files for JATS XML",
-    "keywords":["xml","xsl","dtd","schema"],
-    "type":"library",
-    "license":"",
-    "authors":[
-        {
-            "name":"Alf Eaton",
-            "email": "alf@peerj.com"
-        }
-    ],
-    "homepage": "https://github.com/PeerJ/jats-conversion",
-    "require": {
-        "php": ">=5.3.0",
-        "ext-xsl": "Install PHP's xsl extension if using these files in PHP"
-    },
-    "autoload": {
-       "psr-0": { "PeerJ\\Conversion\\": "src/" }
+  "name": "peerj/jats-conversion",
+  "description": "Conversion and validation files for JATS XML",
+  "keywords": [
+    "xml",
+    "xsl",
+    "dtd",
+    "schema"
+  ],
+  "type": "library",
+  "license": "",
+  "authors": [
+    {
+      "name": "Alf Eaton",
+      "email": "alf@peerj.com"
     }
+  ],
+  "homepage": "https://github.com/PeerJ/jats-conversion",
+  "require": {
+    "php": ">=5.3.0",
+    "ext-xsl": "Install PHP's xsl extension if using these files in PHP"
+  },
+  "autoload": {
+    "psr-0": {
+      "PeerJ\\Conversion\\": "src/"
+    }
+  }
 }
