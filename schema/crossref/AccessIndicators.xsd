@@ -23,18 +23,3 @@
         </xsd:complexType>
     </xsd:element>
 </xsd:schema>
-e="xsd:date" use="optional"/>
-                    <xsd:attribute name="applies_to" use="optional">
-                        <xsd:simpleType>
-                            <xsd:restriction base="xsd:NMTOKEN">
-                                <xsd:enumeration value="vor"/>
-                                <xsd:enumeration value="am"/>
-                                <xsd:enumeration value="tdm"/>
-                            </xsd:restriction>
-                        </xsd:simpleType>
-                    </xsd:attribute>
-                </xsd:extension>
-            </xsd:simpleContent>
-        </xsd:complexType>
-    </xsd:element>
-</xsd:schema>
