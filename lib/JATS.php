@@ -1,6 +1,8 @@
-<?php namespace PeerJ;
+<?php
 
-class Conversion
+namespace PeerJ\Conversion;
+
+class JATS
 {
 	/** directory containing XSL files */
 	protected $dir;
@@ -12,7 +14,7 @@ class Conversion
 	 */
 	public function __construct()
 	{
-		$this->dir = __DIR__ . '/../xsl/';
+		$this->dir = __DIR__ . '/data/xsl/';
 	}
 
 	/**

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog PUBLIC "-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN" "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd">
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+	<rewriteURI uriStartString="http://www.crossref.org/schema/deposit/" rewritePrefix="crossref/"/>
+	<rewriteURI uriStartString="http://schema.datacite.org/" rewritePrefix="datacite/"/>
+	<rewriteURI uriStartString="http://www.doaj.org/schemas/" rewritePrefix="doaj/"/>
+	<rewriteURI uriStartString="http://dtd.nlm.nih.gov/" rewritePrefix="nlm/"/>
+	<rewriteURI uriStartString="http://eutils.ncbi.nlm.nih.gov/" rewritePrefix="eutils/"/>
+	<rewriteURI uriStartString="http://www.ncbi.nlm.nih.gov/" rewritePrefix="ncbi/"/>
+	<rewriteURI uriStartString="http://www.w3.org/" rewritePrefix="w3/"/>
+	<nextCatalog catalog="jats/publishing/1.0/catalog-test-jats-v1.xml"/>
+</catalog>

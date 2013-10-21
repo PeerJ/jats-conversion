@@ -29,12 +29,7 @@ $(DOWNLOADS)/jats-publishing-dtd-1.0.zip: | $(DOWNLOADS)
 
 crossref: | crossref/schematron.xsl
 	mkdir -p crossref
-	wget -c -P crossref http://doi.crossref.org/schemas/crossref4.3.2.xsd
-	wget -c -P crossref http://doi.crossref.org/schemas/common4.3.2.xsd
-	wget -c -P crossref http://doi.crossref.org/schemas/crossref4.3.1.xsd
-	wget -c -P crossref http://doi.crossref.org/schemas/common4.3.1.xsd
-	wget -c -P crossref http://doi.crossref.org/schemas/fundref.xsd
-	wget -c -P crossref http://doi.crossref.org/schemas/AccessIndicators.xsd
+	wget --recursive --level=1 --directory-prefix=crossref --no-directories --accept xsd http://www.crossref.org/schema/deposit/
 
 crossref/schematron.xsl: | $(DOWNLOADS)/CrossRef_Schematron_Rules
 	mkdir -p crossref
@@ -75,9 +70,15 @@ datacite/meta/kernel-3: w3
 
 # W3 DTDs and Schema
 
-w3: | w3/Math/DTD/mathml3 w3/Math/XMLSchema/mathml3
+w3: | w3/2009/01/xml.xsd w3/1999/xlink.xsd w3/Math/DTD/mathml3 w3/Math/XMLSchema/mathml3
+
+w3/2009/01/xml.xsd:
 	mkdir -p w3/2009/01
 	wget -c -P w3/2009/01 http://www.w3.org/2009/01/xml.xsd
+
+w3/1999/xlink.xsd:
+	mkdir -p w3/1999
+	wget -c -P w3/1999 http://www.w3.org/1999/xlink.xsd
 
 w3/Math/DTD/mathml3: | $(DOWNLOADS)/mathml3-dtd.zip
 	mkdir -p w3/Math/DTD
@@ -144,6 +145,7 @@ nlm/ncbi/pmc/articleset:
 
 eutils:
 	mkdir -p eutils/corehtml/query/DTD
+	# wget --continue --recursive --level=1 --directory-prefix=eutils/corehtml/query/DTD --no-directories --accept xsd http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/
 	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/pubmed_100101.dtd
 	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/nlmmedlinecitationset_100101.dtd
 	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/eLink_020511.dtd

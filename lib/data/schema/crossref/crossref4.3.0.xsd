@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns="http://www.crossref.org/schema/4.3.1"
+<!-- edited with XMLSpy v2006 sp1 U (http://www.altova.com) by Chuck Koscher (CrossRef) -->
+<xsd:schema xmlns="http://www.crossref.org/schema/4.3.0"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://www.crossref.org/schema/4.3.1"
-	xmlns:fr="http://www.crossref.org/fundref.xsd">
+	targetNamespace="http://www.crossref.org/schema/4.3.0">
 
 	<!--Conforms to w3c http://www.w3.org/2001/XMLSchema-->
 	<!-- =============================================================
@@ -54,7 +54,8 @@
                           Change History
 
     Changes record version, author initials, date, and comments
-   4.3.0 (PDF) 7/24/2012 added namespace and import for fundref.xsd
+   
+   4.3.0 (PDF) 10/17/2012 updated stale comments and moved documentation into <documentation>
    4.3.0 (PDF)  12/9/11 Added CrossMark element to content_item (for book chapters), dissertations, report-paper, and standards, moved CrossMark elements to common4.3.0.xsd to accommodate CrossMark-only deposits	
    4.3.0 (PDF)  12/2/11 changed allowed value of crossmark_policy to doi_t
    4.3.0 (PDF)	10/28/11 Added href attribute to <assertions>
@@ -200,7 +201,7 @@
           0. Include module common to multiple CrossRef schemas
 
      ============================================================= -->
-	<xsd:include schemaLocation="common4.3.1.xsd"/>
+	<xsd:include schemaLocation="common4.3.0.xsd"/>
 	<!-- =============================================================
 
                           1. Shared attributes
@@ -219,7 +220,6 @@
 
      ================================================================= -->
 	<!--      Most elements moved to common.xsd for version 3.0.0      -->
-	<xsd:import namespace="http://www.crossref.org/fundref.xsd" schemaLocation="fundref.xsd" />
 	<xsd:element name="doi_batch">
 		<xsd:annotation>
 			<xsd:documentation>Top level element for a metadata submission to CrossRef.
@@ -235,7 +235,7 @@ For the purposes of parsing, you may also set xsi:schemaLocation to http://www.c
 				<xsd:element ref="head"/>
 				<xsd:element ref="body"/>
 			</xsd:sequence>
-			<xsd:attribute name="version" type="xsd:string" fixed="4.3.1"/>
+			<xsd:attribute name="version" type="xsd:string" fixed="4.3.0"/>
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="head">
@@ -412,10 +412,7 @@ journal_article allows for multiple titles per entity. In some cases it may be h
 				<xsd:element ref="publication_date" maxOccurs="10"/>
 				<xsd:element ref="pages" minOccurs="0"/>
 				<xsd:element ref="publisher_item" minOccurs="0"/>
-				<xsd:choice>
-					<xsd:element ref="crossmark" minOccurs="0"/>
-					<xsd:element ref="fr:program"/>
-				</xsd:choice>
+				<xsd:element ref="crossmark" minOccurs="0"/>
 				<xsd:element ref="doi_data"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 				<xsd:element ref="component_list" minOccurs="0"/>

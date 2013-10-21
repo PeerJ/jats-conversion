@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xmlns:fr="http://www.crossref.org/fundref.xsd" xmlns:ai="http://www.crossref.org/AccessIndicators.xsd" xmlns:mml="http://www.w3.org/1998/Math/MathML">
+	xmlns:fr="http://www.crossref.org/fundref.xsd">
 
 	<!-- =============================================================
 
@@ -40,13 +40,8 @@
 
     Changes record version, author initials, date, and comments
   
-  4.3.2 (PDF) 5/1/2013 changed openAI.xsd to AccessIndicators.xsd
-  4.3.2 (PDF) 4/10/2013 added reference_distribution_opt and metadata_distribution_opt attribute
-  4.3.2 (PDF) 4/10/2013 added openAI.xsd namespace and import (for Open Access Indicators program)
-  4.3.2 (PDF) 4/9/2013  added "text-mining" value to the property attribute of the <collection> element, optional mime-type attribute to the <resource> element 
-  4.3.2 (PDF) added reg-agency attribute to component
-  4.3.1 (PDF) added application/eps and application/vnd.openxmlformats-officedocument.wordprocessingml.document
-  				as mime types
+  4.3.1 (PDF) 2/11/2013 added application/eps and application/vnd.openxmlformats-officedocument.wordprocessingml.document
+  as mime types
   4.3.1 (PDF) 10/4/2012 added ORCID to contributors 
   4.3.1 (PDF) 9/12/2012 extended surname length to 45 chars
   4.3.0 (PDF) 7/11/2012 added video/mp4 as mime type
@@ -122,9 +117,7 @@
 
      ============================================================= -->
 
-        <xsd:import namespace="http://www.w3.org/1998/Math/MathML" schemaLocation="http://www.w3.org/Math/XMLSchema/mathml3/mathml3.xsd"/>
 	<xsd:import namespace="http://www.crossref.org/fundref.xsd" schemaLocation="fundref.xsd"/>
-	<xsd:import namespace="http://www.crossref.org/AccessIndicators.xsd" schemaLocation="AccessIndicators.xsd"/>
 	<xsd:attributeGroup name="publication_type.atts">
 		<xsd:attribute name="publication_type" default="full_text">
 			<xsd:simpleType>
@@ -168,7 +161,7 @@
 	</xsd:attributeGroup>
 	<xsd:attributeGroup name="language.atts">
 		<xsd:annotation>
-			<xsd:documentation>language attributes are based on iso 639</xsd:documentation>
+			<xsd:documentation>lanuage attributes are based on iso 639</xsd:documentation>
 		</xsd:annotation>
 		<xsd:attribute name="language" use="optional">
 			<xsd:simpleType>
@@ -340,7 +333,7 @@
 					<xsd:enumeration value="multipart/signed"/>
 					<xsd:enumeration value="multipart/encrypted"/>
 					<xsd:enumeration value="multipart/byteranges"/>
-					<xsd:enumeration value="application/eps"/>
+                                        <xsd:enumeration value="application/eps"/>
 					<xsd:enumeration value="application/octet-stream"/>
 					<xsd:enumeration value="application/postscript"/>
 					<xsd:enumeration value="application/rtf"/>
@@ -375,8 +368,7 @@
 						value="application/vnd.openxmlformats-officedocument.presentationml.presentation"/>
 					<xsd:enumeration
 						value="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
-					<xsd:enumeration
-						value="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+					<xsd:enumeration value="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
 					<xsd:enumeration value="image/jpeg"/>
 					<xsd:enumeration value="image/gif"/>
 					<xsd:enumeration value="image/ief"/>
@@ -452,33 +444,6 @@
 					<xsd:enumeration value="model/vrml"/>
 					<xsd:enumeration value="audio/x-wav"/>
 					<xsd:enumeration value="video/x-flv"/>
-				</xsd:restriction>
-			</xsd:simpleType>
-		</xsd:attribute>
-	</xsd:attributeGroup>
-	<xsd:attributeGroup name="metadata_distribution_opts.att">
-		<xsd:annotation>
-			<xsd:documentation>Use to flag metadata for distribution.  "query" is the default and follows current protocol - bibliographic metadata is distributed to anyone in a query response, bulk distribution is only allowed per CMS rules.  "any" allows bulk distribution of metadata to anyone using OAI-PMH queries.</xsd:documentation>
-		</xsd:annotation>	
-	<xsd:attribute name="metadata_distribution_opts" use="optional" default="query">
-		<xsd:simpleType>
-			<xsd:restriction base="xsd:string">
-				<xsd:enumeration value="any" />
-				<xsd:enumeration value="query" />
-			</xsd:restriction>
-		</xsd:simpleType>
-	</xsd:attribute>
-	</xsd:attributeGroup>
-	<xsd:attributeGroup name="reference_distribution_opts.att">
-		<xsd:annotation>
-		<xsd:documentation>Use to flag references for distribution. "none" is the default and follows current protocol - references are only distributed to everyone if the prefix level permission is set, otherwise reference distribution is limited to the DOI owner. Setting the value to "query" releases references to anyone making a query request (this overrides any established prefix level permission). Value "any" allows bulk distribution to anyone (using a CrossRef query account) using the OAI-PMH protocol, and also releases references to anyone making a query request.</xsd:documentation>
-		</xsd:annotation>
-		<xsd:attribute name="reference_distribution_opts" use="optional" default="none">
-			<xsd:simpleType>
-				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="none" />
-					<xsd:enumeration value="query" />
-					<xsd:enumeration value="any" />
 				</xsd:restriction>
 			</xsd:simpleType>
 		</xsd:attribute>
@@ -768,22 +733,14 @@ Cases of single-resolution (i.e. one DOI with a single corresponding URI) should
 Only one resource is allowed per doi_data, the exception being resource elements within a collection element.
 </xsd:documentation>
 		</xsd:annotation>
-		<xsd:complexType>
-			<xsd:simpleContent>
-				<xsd:extension base="resource_t">
-					<xsd:attributeGroup ref="mime_type.atts"/>
-				</xsd:extension>
-			</xsd:simpleContent>
-		</xsd:complexType>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:anyURI">
+				<xsd:maxLength value="2048"/>
+				<xsd:minLength value="1"/>
+				<xsd:pattern value="([hH][tT][tT][pP]|[hH][tT][tT][pP][sS]|[fF][tT][pP])://.*"/>
+			</xsd:restriction>
+		</xsd:simpleType>
 	</xsd:element>
-
-	<xsd:simpleType name="resource_t">
-		<xsd:restriction base="xsd:anyURI">
-			<xsd:maxLength value="2048"/>
-			<xsd:minLength value="1"/>
-			<xsd:pattern value="([hH][tT][tT][pP]|[hH][tT][tT][pP][sS]|[fF][tT][pP])://.*"/>
-		</xsd:restriction>
-	</xsd:simpleType>
 
 	<xsd:element name="collection">
 		<xsd:annotation>
@@ -811,7 +768,6 @@ The multi-resolution attribute may be used to lock or unlock DOIs for multiple r
 						<xsd:enumeration value="list-based"/>
 						<xsd:enumeration value="country-based"/>
 						<xsd:enumeration value="crawler-based"/>
-						<xsd:enumeration value="text-mining"/>
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>
@@ -1321,7 +1277,6 @@ Use care to remove face markup (such as italic applied to genus or species names
 		<xsd:complexType mixed="true">
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
 				<xsd:group ref="face_markup"/>
-				<xsd:element ref="mml:math"/>
 			</xsd:choice>
 		</xsd:complexType>
 	</xsd:element>
@@ -1334,7 +1289,6 @@ When providing the original language of a title, you should set the language att
 		<xsd:complexType mixed="true">
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
 				<xsd:group ref="face_markup"/>
-                                <xsd:element ref="mml:math"/>
 			</xsd:choice>
 			<xsd:attributeGroup ref="language.atts"/>
 		</xsd:complexType>
@@ -1364,7 +1318,6 @@ Incorrect:
 		<xsd:complexType mixed="true">
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
 				<xsd:group ref="face_markup"/>
-                                <xsd:element ref="mml:math"/>
 			</xsd:choice>
 		</xsd:complexType>
 	</xsd:element>
@@ -1970,11 +1923,7 @@ All descriptive elements are optional allowing for the creation of simple anonym
 				<xsd:element ref="publication_date" minOccurs="0"/>
 				<xsd:element ref="description" minOccurs="0"/>
 				<xsd:element ref="format" minOccurs="0"/>
-                                <xsd:choice>
-  				   <xsd:element ref="doi_data"/>
-                                   <xsd:element ref="doi"/>
-                                </xsd:choice>
-                                   
+				<xsd:element ref="doi_data"/>
 			</xsd:sequence>
 			<xsd:attribute name="parent_relation" use="required">
 				<xsd:simpleType>
@@ -1986,12 +1935,7 @@ All descriptive elements are optional allowing for the creation of simple anonym
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>
-			<xsd:attribute name="reg-agency" use="optional">
-				<xsd:simpleType>
-					<xsd:restriction base="xsd:string"/>
 
-				</xsd:simpleType>
-			</xsd:attribute>
 			<xsd:attributeGroup ref="language.atts"/>
 			<xsd:attribute name="component_size">
 				<xsd:simpleType>
@@ -2060,7 +2004,6 @@ The format element may contain only the mime_type attribute, or in addition it m
 			<xsd:documentation>Container element for CrossMark data.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
-			<xsd:choice>
 				<xsd:sequence minOccurs="0">
 					<xsd:element ref="crossmark_version" minOccurs="0"/>
 					<xsd:element ref="crossmark_policy"/>
@@ -2075,9 +2018,6 @@ The format element may contain only the mime_type attribute, or in addition it m
 						<xsd:element ref="custom_metadata" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:sequence>
-				<xsd:element ref="fr:program"/>
-				<xsd:element ref="ai:program"/>
-			</xsd:choice>
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="crossmark_policy" type="doi_t">
@@ -2185,7 +2125,6 @@ However, different publishers sometimes have to support different, custom update
 			<xsd:sequence>
 				<xsd:element maxOccurs="unbounded" ref="assertion"/>
 				<xsd:element maxOccurs="unbounded" minOccurs="0" ref="fr:program"/>
-				<xsd:element maxOccurs="unbounded" minOccurs="0" ref="ai:program"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>

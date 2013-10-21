@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.crossref.org/fundrefoutput.xsd"
+    xmlns="http://www.crossref.org/fundrefoutput.xsd">
+    
+    <!--=========Change History===========
+    5/2/13 (PDF) created fundrefoutput.xsd to allow both funding_identifier and award_number in unixref1.1.xsd
+    -->
+    
+    
+    <xsd:element name="program">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="assertion" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+            <xsd:attribute name="name" type="xsd:string" fixed="fundref"/>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="assertion">
+        <xsd:complexType mixed="true">
+            <xsd:sequence>
+                <xsd:element ref="assertion" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+            <xsd:attribute name="name" use="required">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:NMTOKEN">
+                        <xsd:enumeration value="fundgroup"/>
+                        <xsd:enumeration value="funder_identifier"/>
+                        <xsd:enumeration value="funder_name"/>
+                        <xsd:enumeration value="award_number"/>
+                        <xsd:enumeration value="funding_identifier"/>
+                        <!-- deprecated - replaced by award_number-->
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

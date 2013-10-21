@@ -3,20 +3,21 @@
     "description":"Conversion and validation files for JATS XML",
     "keywords":["xml","xsl","dtd","schema"],
     "type":"library",
-    "license":"",
+    "license":"MIT",
     "authors":[
         {
-            "name":"PeerJ",
-            "homepage":"https://peerj.com/"
+            "name":"Alf Eaton",
+            "email": "alf@peerj.com"
         }
     ],
-    "homepage": "https://github.com/PeerJ/conversion",
+    "homepage": "https://github.com/PeerJ/jats-conversion",
+    "require": {
+        "php": ">=5.3.0"
+    },
     "suggest": {
         "ext-xsl":"Install PHP's xsl extension if using these files in PHP"
     },
-    "autoload":{
-        "classmap": [
-            "lib/"
-        ]
+    "autoload": {
+       "psr-0": { "PeerJ\\Conversion\\": "lib/" }
     }
 }
