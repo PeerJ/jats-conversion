@@ -120,7 +120,7 @@ class JATS
 	 */
 	public function generateRIS(\DOMDocument $input)
 	{
-		return $this->convert('jats-to-ris', $input);
+		return $this->convert('jats-to-ris', $input, array(), true);
 	}
 
 	/**
@@ -132,8 +132,20 @@ class JATS
 	 */
 	public function generateBibTeX(\DOMDocument $input)
 	{
-		return $this->convert('jats-to-bibtex', $input);
+		return $this->convert('jats-to-bibtex', $input, array(), true);
 	}
+
+    /**
+     * Convert HTML to JATS
+     *
+     * @param \DOMDocument $input
+     *
+     * @return \DOMDocument
+     */
+    public function fromHTML(\DOMDocument $input)
+    {
+        return $this->convert('html-to-jats', $input);
+    }
 
 	/**
 	 * @param string       $file   XSL stylesheet file for the conversion
@@ -143,7 +155,7 @@ class JATS
 	 *
 	 * @return \DOMDocument
 	 */
-	protected function convert($file, \DOMDocument $input, $params = array(), $string = false)
+	public function convert($file, \DOMDocument $input, $params = array(), $string = false)
 	{
 		$path = $this->dir . $file . '.xsl';
 
