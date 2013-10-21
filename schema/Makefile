@@ -72,6 +72,10 @@ datacite/meta/kernel-3: w3
 
 w3: | w3/2009/01/xml.xsd w3/1999/xlink.xsd w3/Math/DTD/mathml3 w3/Math/XMLSchema/mathml3
 
+w3/2001/xml.xsd:
+	mkdir -p w3/2001
+	wget -c -P w3/2001 http://www.w3.org/2001/xml.xsd
+
 w3/2009/01/xml.xsd:
 	mkdir -p w3/2009/01
 	wget -c -P w3/2009/01 http://www.w3.org/2009/01/xml.xsd
