@@ -3,7 +3,7 @@
     "description":"Conversion and validation files for JATS XML",
     "keywords":["xml","xsl","dtd","schema"],
     "type":"library",
-    "license":"MIT",
+    "license":"",
     "authors":[
         {
             "name":"Alf Eaton",
