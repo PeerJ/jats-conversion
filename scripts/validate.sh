@@ -11,8 +11,8 @@ FILE=`basename "$ARTICLE" .xml`
 
 # http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-XSL="$DIR/../xsl"
-RESOURCES="$DIR/../resources"
+XSL="$DIR/../src/data/xsl"
+RESOURCES="$DIR/../schema"
 
 OUTPUT_DIR=$(mktemp -d -t validate)
 
@@ -28,7 +28,7 @@ xsltproc --catalogs \
 	--stringparam 'depositorName' 'test' \
 	--stringparam 'depositorEmail' 'test@example.com' \
 	"$XSL/jats-to-unixref.xsl" "$ARTICLE" \
-	| xmllint --nonet --load-trace --noout --schema "$RESOURCES/crossref/crossref4.3.1.xsd" -
+	| xmllint --nonet --load-trace --noout --schema "$RESOURCES/crossref/crossref4.3.3.xsd" -
 
 echo "Generating CrossRef schematron report"
 OUTPUT="$OUTPUT_DIR/$FILE-crossref-schematron-report.xml"
