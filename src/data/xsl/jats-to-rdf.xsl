@@ -7,14 +7,10 @@
             xmlns:rights="http://ns.adobe.com/xap/1.0/rights/"
             xmlns:terms="http://purl.org/dc/terms/"
             xmlns:pdf="http://ns.adobe.com/pdf/1.3/"
-            xmlns:xmp="http://ns.adobe.com/xap/1.0/"
             xmlns:foaf="http://xmlns.com/foaf/0.1/"
-            xmlns:dctype="http://purl.org/dc/dcmitype/"
             xmlns:bibo="http://purl.org/ontology/bibo/"
             xmlns:prism="http://prismstandard.org/namespaces/basic/2.0/"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            xmlns:x="adobe:ns:meta/"
-    >
+            xmlns:xlink="http://www.w3.org/1999/xlink">
 
     <output encoding="utf-8" indent="yes"/>
 

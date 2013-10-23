@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<stylesheet version="1.0" xmlns="http://www.w3.org/1999/XSL/Transform"
-            xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<stylesheet version="1.0"
+            xmlns="http://www.w3.org/1999/XSL/Transform"
+            xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <!-- documentation: http://www.refman.com/support/risformat_intro.asp -->
     <output method="text" encoding="utf-8"/>
 

@@ -3,7 +3,7 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
-                xsi:schemaLocation="http://www.doaj.org/schemas/doajArticles.xsd"
+                xsi:schemaLocation="http://www.doaj.org/schemas/doajArticles.xsd http://www.doaj.org/schemas/doajArticles.xsd"
                 exclude-result-prefixes="xlink xsi">
 
     <xsl:output method="xml" indent="yes" encoding="UTF-8" standalone="yes"/>

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" exclude-result-prefixes="php"
+<xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:mml="http://www.w3.org/1998/Math/MathML"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                xmlns:php="http://php.net/xsl">
+                xmlns:xlink="http://www.w3.org/1999/xlink">
 
 	<xsl:output method="xml" encoding="utf-8" omit-xml-declaration="yes" indent="yes"
                 doctype-public="-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN"
