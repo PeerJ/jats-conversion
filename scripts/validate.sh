@@ -8,6 +8,8 @@ fi
 
 ARTICLE=$1
 FILE=`basename "$ARTICLE" .xml`
+#TRACE='--load-trace'
+TRACE=''
 
 # http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -20,7 +22,7 @@ export SGML_CATALOG_FILES="$RESOURCES/catalog.xml"
 #export SGML_CATALOG_FILES=catalog.xml
 
 echo "Validating against JATS DTD"
-xmllint --loaddtd --valid  --nonet --load-trace --noout --catalogs "$ARTICLE"
+xmllint --loaddtd --valid  --nonet $TRACE --noout --catalogs "$ARTICLE"
 
 echo "Validating for CrossRef DOI deposition"
 xsltproc --catalogs \
@@ -28,7 +30,7 @@ xsltproc --catalogs \
 	--stringparam 'depositorName' 'test' \
 	--stringparam 'depositorEmail' 'test@example.com' \
 	"$XSL/jats-to-unixref.xsl" "$ARTICLE" \
-	| xmllint --nonet --load-trace --noout --schema "$RESOURCES/crossref/crossref4.3.3.xsd" -
+	| xmllint --nonet $TRACE --noout --schema "$RESOURCES/crossref/crossref4.3.3.xsd" -
 
 echo "Generating CrossRef schematron report"
 OUTPUT="$OUTPUT_DIR/$FILE-crossref-schematron-report.xml"
