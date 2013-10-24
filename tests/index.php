@@ -16,11 +16,11 @@ $head = $xpath->query('head')->item(0);
 
 // inject script elements
 $scripts = array(
-    'js/vendor/jquery/jquery.js',
-    'js/vendor/jquery/jquery-ui.js',
-    'js/vendor/polyfill/a.js',
-    'js/vendor/polyfill/microdata.js',
-    'js/vendor/qunit/qunit.js',
+    'vendor/jquery/jquery.js',
+    'vendor/jquery/jquery-ui.js',
+    'vendor/polyfill/a.js',
+    'vendor/polyfill/microdata.js',
+    'vendor/qunit/qunit.js',
     'js/tests.js',
 );
 
@@ -33,7 +33,7 @@ foreach ($scripts as $script) {
 // inject CSS
 $styles = array(
     'css/layout.css',
-    'css/vendor/qunit/qunit.css',
+    'vendor/qunit/qunit.css',
 );
 
 foreach ($styles as $style) {

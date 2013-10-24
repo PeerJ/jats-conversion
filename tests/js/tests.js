@@ -1,8 +1,10 @@
 var init = function() {
+	console.log(document.getItems("http://schema.org/ScholarlyArticle"));
 	var article = document.getItems("http://schema.org/ScholarlyArticle")[0];
 	console.log(article);
 	var citations = article.properties["citation"];
 	console.log(article.properties);
+	console.log(citations);
 
 	var fetchData = function(doi, citation) {
 		console.log(doi);
