@@ -18,7 +18,7 @@
   "homepage": "https://github.com/PeerJ/jats-conversion",
   "require": {
     "php": ">=5.3.0",
-    "ext-xsl": "Install PHP's xsl extension if using these files in PHP"
+    "ext-xsl": "*"
   },
   "autoload": {
     "psr-0": {
