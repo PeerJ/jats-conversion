@@ -15,6 +15,7 @@
         <cite itemprop="name">
             <xsl:apply-templates select="article-title" mode="citation"/>
         </cite>
+        <xsl:text>&#32;</xsl:text>
         <span>
             <xsl:apply-templates select="source" mode="journal-citation"/>
             <xsl:text>&#32;</xsl:text>
