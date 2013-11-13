@@ -10,7 +10,9 @@
     </xsl:template>
 
     <xsl:template match="body">
-        <xsl:apply-templates/>
+        <p>
+            <xsl:apply-templates/>
+        </p>
     </xsl:template>
 
     <xsl:template match="a">
@@ -19,13 +21,13 @@
         </ext-link>
     </xsl:template>
 
-    <xsl:template match="i">
+    <xsl:template match="i | em">
         <italic>
             <xsl:apply-templates/>
         </italic>
     </xsl:template>
 
-    <xsl:template match="b">
+    <xsl:template match="b | strong">
         <bold>
             <xsl:apply-templates/>
         </bold>

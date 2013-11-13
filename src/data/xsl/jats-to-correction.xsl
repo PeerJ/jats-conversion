@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0"
+<xsl:stylesheet version="1.0" exclude-result-prefixes="php"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xlink="http://www.w3.org/1999/xlink">
 
@@ -10,7 +10,9 @@
     <xsl:param name="timestamp"/>
     <xsl:param name="pub-year"/>
     <xsl:param name="pub-month"/>
+    <xsl:param name="pub-month-digit"/>
     <xsl:param name="pub-day"/>
+    <xsl:param name="pub-day-digit"/>
 
     <xsl:variable name="meta" select="/article/front/article-meta"/>
     <xsl:variable name="doi" select="$meta/article-id[@pub-id-type='doi']"/>
@@ -22,7 +24,7 @@
     <xsl:template match="/article">
         <article article-type="correction" dtd-version="1.0">
             <front>
-                <xsl:copy-of select="front/journal-meta"/>
+                <xsl:apply-templates select="front/journal-meta"/>
                 <xsl:apply-templates select="front/article-meta"/>
             </front>
             <body/>
@@ -48,18 +50,26 @@
             -->
             <pub-date pub-type="epub" date-type="pub" iso-8601-date="{$pub-date}">
                 <day>
-                    <xsl:value-of select="$pub-day"/>
+                    <xsl:value-of select="$pub-day-digit"/>
                 </day>
                 <month>
-                    <xsl:value-of select="$pub-month"/>
+                    <xsl:value-of select="$pub-month-digit"/>
                 </month>
                 <year iso-8601-date="{$pub-year}">
                     <xsl:value-of select="$pub-year"/>
                 </year>
             </pub-date>
-            <xsl:copy-of select="volume"/>
+            <pub-date pub-type="collection">
+                <year>
+                    <xsl:value-of select="$pub-year"/>
+                </year>
+            </pub-date>
+            <xsl:apply-templates select="volume"/>
+            <elocation-id>
+                 <xsl:value-of select="concat('e', $correction-id)"/>
+            </elocation-id>
             <permissions>
-                <xsl:copy-of select="permissions/license"/>
+                <xsl:apply-templates select="permissions/license"/>
             </permissions>
             <self-uri xlink:href="{concat(self-uri/@xlink:href, '/correction-', $timestamp)}"/>
             <related-article related-article-type="corrected-article"
@@ -79,6 +89,9 @@
     </xsl:template>
 
     <xsl:template match="*">
-        <xsl:copy-of select="."/>
+        <xsl:element name="{local-name()}">
+            <xsl:copy-of select="@*"/>
+            <xsl:apply-templates/>
+        </xsl:element>
     </xsl:template>
 </xsl:stylesheet>

@@ -453,22 +453,99 @@
         </a>
     </xsl:template>
 
-    <xsl:template match="ext-link[@ext-link-type='doi']">
-        <xsl:variable name="encoded-doi">
-            <xsl:call-template name="urlencode">
-                <xsl:with-param name="value" select="@xlink:href"/>
-            </xsl:call-template>
+    <!-- typed links -->
+    <xsl:template match="ext-link[@ext-link-type]">
+        <xsl:variable name="type" select="@ext-link-type"/>
+
+        <xsl:variable name="url">
+            <xsl:choose>
+                <xsl:when test="$type = 'uri'">
+                    <xsl:value-of select="@xlink:href"/>
+                </xsl:when>
+                <xsl:when test="$type = 'ftp'">
+                    <xsl:value-of select="@xlink:href"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:call-template name="ext-link-url">
+                        <xsl:with-param name="type" select="$type"/>
+                        <xsl:with-param name="uri" select="@xlink:href"/>
+                    </xsl:call-template>
+                </xsl:otherwise>
+            </xsl:choose>
         </xsl:variable>
 
-        <a class="{local-name()}" href="http://dx.doi.org/{$encoded-doi}">
+        <a class="{local-name()}" href="{$url}">
             <xsl:apply-templates select="node()|@*"/>
         </a>
     </xsl:template>
 
-    <xsl:template match="ext-link[@ext-link-type='DDBJ/EMBL/GenBank']">
-        <a class="{local-name()}" href="https://www.ncbi.nlm.nih.gov/nucleotide?term={@xlink:href}">
-            <xsl:apply-templates select="node()|@*"/>
-        </a>
+    <!-- map an identifier to an external site -->
+    <xsl:template name="ext-link-url">
+        <xsl:param name="type"/>
+        <xsl:param name="uri"/>
+
+        <xsl:variable name="encoded-id">
+            <xsl:call-template name="urlencode">
+                <xsl:with-param name="value" select="$uri"/>
+            </xsl:call-template>
+        </xsl:variable>
+
+        <xsl:choose>
+            <xsl:when test="$type = 'doi'">
+                <xsl:value-of select="concat('http://dx.doi.org/', $encoded-id)"/>
+            </xsl:when>
+            <xsl:when test="$type = 'DDBJ/EMBL/GenBank'">
+                <xsl:value-of select="concat('https://www.ncbi.nlm.nih.gov/nucleotide?term=', $encoded-id)"/>
+            </xsl:when>
+            <xsl:when test="$type = 'NCBI:nucleotide'">
+                <xsl:value-of select="concat('https://www.ncbi.nlm.nih.gov/nucleotide?term=', $encoded-id)"/>
+            </xsl:when>
+            <xsl:when test="$type = 'NCBI:gene'">
+                <xsl:value-of select="concat('https://www.ncbi.nlm.nih.gov/gene?term=', $encoded-id)"/>
+            </xsl:when>
+            <xsl:when test="$type = 'NCBI:protein'">
+                <xsl:value-of select="concat('https://www.ncbi.nlm.nih.gov/protein?term=', $encoded-id)"/>
+            </xsl:when>
+            <xsl:when test="$type = 'NCBI:taxonomy'">
+                <xsl:value-of select="concat('https://www.ncbi.nlm.nih.gov/taxonomy?term=', $encoded-id)"/>
+            </xsl:when>
+            <xsl:when test="$type = 'NCBI:geo'">
+                <xsl:value-of select="concat('https://www.ncbi.nlm.nih.gov/gds?term=', $encoded-id)"/>
+            </xsl:when>
+            <xsl:when test="$type = 'NCBI:structure'">
+                <xsl:value-of select="concat('https://www.ncbi.nlm.nih.gov/structure?term=', $encoded-id)"/>
+            </xsl:when>
+            <xsl:when test="$type = 'Omim'">
+                <xsl:value-of select="concat('https://www.ncbi.nlm.nih.gov/omim?term=', $encoded-id)"/>
+            </xsl:when>
+            <xsl:when test="$type = 'NCBI:pubchem-bioassay'">
+                <xsl:value-of select="concat('https://www.ncbi.nlm.nih.gov/pcassay?term=', $encoded-id)"/>
+            </xsl:when>
+            <xsl:when test="$type = 'NCBI:pubchem-compound'">
+                <xsl:value-of select="concat('https://www.ncbi.nlm.nih.gov/pccompound?term=', $encoded-id)"/>
+            </xsl:when>
+            <xsl:when test="$type = 'NCBI:pubchem-substance'">
+                <xsl:value-of select="concat('https://www.ncbi.nlm.nih.gov/pcsubstance?term=', $encoded-id)"/>
+            </xsl:when>
+            <xsl:when test="$type = 'NCBI:refseq'">
+                <xsl:value-of select="concat('https://www.ncbi.nlm.nih.gov/nuccore?term=srcdb_refseq[PROP]+AND+', $encoded-id)"/>
+            </xsl:when>
+            <xsl:when test="$type = 'NCBI:refseq_gene'">
+                <xsl:value-of select="concat('https://www.ncbi.nlm.nih.gov/gene?term=', $encoded-id)"/>
+            </xsl:when>
+            <xsl:when test="$type = 'NCBI:sra'">
+                <xsl:value-of select="concat('https://www.ncbi.nlm.nih.gov/sra?term=', $encoded-id)"/>
+            </xsl:when>
+            <xsl:when test="$type = 'SwissProt'">
+                <xsl:value-of select="concat('http://www.uniprot.org/uniprot/', $encoded-id)"/>
+            </xsl:when>
+            <xsl:when test="$type = 'UniProt'">
+                <xsl:value-of select="concat('http://www.uniprot.org/uniprot/', $encoded-id)"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$uri"/>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="license-p/ext-link">
@@ -587,15 +664,17 @@
 
             <xsl:apply-templates select="node()|@*"/>
 
-            <div class="article-image-download">
-                <xsl:variable name="fig-id" select="../@id"/>
-                <a href="{$static-root}{$fig-id}-full.png" class="btn btn-mini" download="{$download-prefix}-{$id}-{$fig-id}.png">
-                    <i class="icon-large icon-picture">&#160;</i>
-                    <xsl:text>&#32;Download full-size image</xsl:text>
-                </a>
-            </div>
+            <div class="figcaption-footer">
+                <div class="article-image-download">
+                    <xsl:variable name="fig-id" select="../@id"/>
+                    <a href="{$static-root}{$fig-id}-full.png" class="btn btn-mini" download="{$download-prefix}-{$id}-{$fig-id}.png">
+                        <i class="icon-large icon-picture">&#160;</i>
+                        <xsl:text>&#32;Download full-size image</xsl:text>
+                    </a>
+                </div>
 
-            <xsl:apply-templates select="../object-id[@pub-id-type='doi']" mode="caption"/>
+                <xsl:apply-templates select="../object-id[@pub-id-type='doi']" mode="caption"/>
+            </div>
         </figcaption>
     </xsl:template>
 
@@ -735,7 +814,7 @@
 
         <div>
             <a href="{$static-root}{$encoded-filename}" class="btn article-supporting-download"
-               download="{$filename}" data-filename="{$filename}">
+               rel="supplement" download="{$filename}" data-filename="{$filename}">
                 <i class="icon-large icon-download-alt">&#160;</i>
                 <!--<xsl:value-of select="concat(' Download .', ../@mime-subtype)"/>-->
                 <xsl:value-of select="' Download'"/>
