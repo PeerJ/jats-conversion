@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?> 
 <!-- ************************************************************************ -->
 <!--                                     NLM STYLECHECKER
-                                           Version 5.0
+                                           Version 5.3
     
     Stylesheet tests an XML instance to determine whether it conforms to correct
     PMC style as defined in the Tagging Guidelines located at:
@@ -50,7 +50,48 @@
      
      
      
-   Revision notes:
+   PMC Project Revision notes:
+    November 8, 2013: Version 5.3
+                    Public release of 4th quarter changes
+		
+	October 31, 2013:
+	 			Allowed <target> to be empty - to act as a milestone.
+	
+    September 25, 2013:
+    			Added allowed values to ext-link-type:
+    				bmrb, EBI:arrayexpress, ERI:ena, geneweaver:geneset
+    			Allowed Winter-Spring as a range for <season>
+    			In license//ext-link checking, do not allow multiple creativecommons.org/licenses
+    				URI values in a single license
+    
+    September 4, 2013:
+                   Allow related-object in lieu of related-article; related-object 
+                   	now included in:
+	                  article-type-to-related-article-check
+	                  related-article-to-article-type-check
+   
+    August 16, 2013:
+                   added "arxiv" as allowed value in template pub-id-type 
+   
+    August 12, 2013: Version 5.2
+                    Public release of 3rd quarter changes                    
+    July 16, 2013: 
+                    Unescaped spaces will cause malformed DOI error    
+    July 1, 2013:
+                   Warn if count(abstract/sec)=1 and count(abstract/sec/sec) > 1
+                   Warn if kwd-group has only 1 <kwd> which contains punctuation                    
+    May 28, 2013: 
+                    Empty element check on issue
+                    Normalize space in math fence checks
+                    
+    May 10, 2013: Version 5.1
+                    Public release of changes from 4/3/13, 3/1/13
+    April 3, 2013: 
+                    Added collection pub-type to dup-pub-date-check
+    March 1, 2013: 
+	               Added 'referee-report' to allowed related-article-type values
+	               Removed abstract title test
+   
    	January 15, 2013: Version 5.0
    					xref-type="list" may point to def element ("def" not allowed in Blue)
    					alternatives allowed in td, th

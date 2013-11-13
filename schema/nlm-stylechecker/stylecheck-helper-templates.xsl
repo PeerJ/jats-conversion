@@ -85,6 +85,27 @@
          </xsl:choose>
       </xsl:variable>
 
+	<xsl:variable name="errpath">
+	<xsl:for-each select="ancestor-or-self::*">
+		<xsl:variable name="name" select="name()"/>
+    	<xsl:text/>/<xsl:value-of select="name()"/><xsl:text/>
+		<xsl:choose>
+			<xsl:when test="@id">
+				<xsl:text>[</xsl:text>
+				<xsl:value-of select="concat('@id=&quot;',@id,'&quot;')"/>
+				<xsl:text>]</xsl:text>
+				</xsl:when>
+				
+			<xsl:when test="preceding-sibling::node()[name()=$name]">
+				<xsl:text>[</xsl:text>
+				<xsl:value-of select="count(preceding-sibling::node()[name()=$name])+1"/>
+				<xsl:text>]</xsl:text>
+				</xsl:when>
+			</xsl:choose>
+	</xsl:for-each>
+		</xsl:variable>
+
+
       <!-- Make sure have all needed values, otherwise don't output -->
       <xsl:if test="string-length($error-type) &gt; 0 and
 	                string-length($description) &gt; 0">
@@ -92,6 +113,11 @@
             <xsl:value-of select="$error-type"/>
             <xsl:text>: </xsl:text>
             <xsl:value-of select="$description"/>
+				<xsl:if test="$stream='manuscript'">
+					<xsl:text> (</xsl:text>
+					<xsl:value-of select="$errpath"/>
+					<xsl:text>)</xsl:text>
+					</xsl:if>
          <xsl:if test="string-length($tg-target) &gt; 0">
 				<xsl:call-template name="tglink">
 					<xsl:with-param name="tg-target" select="$tg-target"/>
@@ -101,8 +127,9 @@
          
          <xsl:call-template name="output-message">
             <xsl:with-param name="class" select="$class-type"/>
+            <xsl:with-param name="errpath" select="$errpath"/>
             <xsl:with-param name="description">
-			   <xsl:value-of select="description"/>
+			   <xsl:value-of select="$description"/>
 			   <xsl:if test="$class!='error' and $class!='warning'">
 			      <xsl:text>   *** Error class was neither 'error' nor 'warning' ***   </xsl:text>
 			   </xsl:if>
@@ -152,6 +179,7 @@
    <xsl:template name="output-message">
       <xsl:param name="class" select="'error'"/>
       <xsl:param name="description" select="''"/>
+      <xsl:param name="errpath" />
       <xsl:param name="type" select="''"/>
       
       <xsl:variable name="descriptor">
@@ -171,6 +199,11 @@
             <xsl:value-of select="concat($type, $descriptor)"/>
             <xsl:text>: </xsl:text>
             <xsl:value-of select="$description"/>
+				<xsl:if test="$errpath!=''">
+					<xsl:text> (</xsl:text>
+					<xsl:value-of select="$errpath"/>
+					<xsl:text>)</xsl:text>
+					</xsl:if>
             <xsl:text disable-output-escaping="yes">&#10;</xsl:text>
          </xsl:message>
       </xsl:if>

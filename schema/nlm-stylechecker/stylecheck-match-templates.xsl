@@ -5,7 +5,7 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:mml="http://www.w3.org/1998/Math/MathML" 
    version="1.0">
-
+ 
 
 <!-- ##################### MATCHING ELEMENT TEMPLATES ####################### -->
 <!-- 
@@ -42,16 +42,17 @@
 		  5) If manuscript, do not allow attributes.
         -->
 	<xsl:template match="abstract">
-      <xsl:call-template name="check-abstract-content"/>
-      <xsl:call-template name="check-abstract-type"/>
-      <xsl:call-template name="empty-element-check"/>
-      <xsl:call-template name="abstract-title-test"/>
-      <xsl:call-template name="article-pi-check"/>
+		<xsl:call-template name="check-abstract-content"/>
+		<xsl:call-template name="check-abstract-type"/>
+		<xsl:call-template name="empty-element-check"/>
+		<!--<xsl:call-template name="abstract-title-test"/>-->
+		<xsl:call-template name="abstract-sec-test"/>
+		<xsl:call-template name="article-pi-check"/>
 		<xsl:if test="$stream='manuscript'">
-      	<xsl:call-template name="abstract-attribute-test"/>
-			</xsl:if>
-      <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+			<xsl:call-template name="abstract-attribute-test"/>
+		</xsl:if>
+		<xsl:apply-templates select="." mode="output"/>
+	</xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: ack
@@ -191,6 +192,9 @@
 			<xsl:call-template name="doi-check">
 				<xsl:with-param name="value" select="."/>
 				</xsl:call-template>
+			</xsl:if>
+		<xsl:if test="$stream='manuscript' and @pub-id-type='manuscript'">
+			<xsl:call-template name="ms-whitespace-check"/>
 			</xsl:if>
       <xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
@@ -1137,6 +1141,17 @@
 			</xsl:if>
 		<xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
+	
+	
+	<!-- *********************************************************** -->
+	<!-- Match: issue
+			1) cannot be empty.
+			-->
+	<!-- *********************************************************** -->
+	<xsl:template match="issue">   
+		<xsl:call-template name="empty-element-check"/>
+		<xsl:apply-templates select="." mode="output"/>
+	</xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: issue-part
@@ -1180,6 +1195,16 @@
       <xsl:call-template name="journal-meta-check"/>
       <xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
+
+	<!-- *********************************************************** -->
+	<!-- Match: kwd-group
+        1) should have more than 1 kwd
+     -->
+	<!-- *********************************************************** -->
+	<xsl:template match="kwd-group">
+		<xsl:call-template name="kwd-group-check"/>
+		<xsl:apply-templates select="." mode="output"/>
+	</xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -1500,6 +1525,11 @@
             <xsl:with-param name="expected-parent" select="'mmultiscripts'"/>
          </xsl:call-template>
       </xsl:if>
+
+    <!--   <xsl:if test="local-name(.) = 'mrow'">
+         <xsl:call-template name="mathml-mrow-content-check"/>
+       </xsl:if>  -->
+
 
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
@@ -1973,6 +2003,9 @@
             <xsl:with-param name="value" select="@object-id"/>
          	</xsl:call-template>
       	</xsl:if>
+   	<xsl:if test="@document-type='article'">
+   		<xsl:call-template name="related-article-to-article-type-attribute"/>
+   	</xsl:if>
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
    
@@ -2516,7 +2549,7 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="target">
-      <xsl:call-template name="empty-element-check"/>
+      <!-- <xsl:call-template name="empty-element-check"/>  -->
       <xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
    

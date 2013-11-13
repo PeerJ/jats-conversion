@@ -80,7 +80,7 @@
 			<xsl:with-param name="tg-target" select="'tags.html#el-artmeta'"/>
         </xsl:call-template>
       </xsl:if>
-   	<xsl:if test="related-article and not(/article/@article-type='correction') and not(/article/@article-type='retraction') and not(/article/@article-type='article-commentary')">
+   	<xsl:if test="related-article[not(@related-article-type='republished-article')] and not(/article/@article-type='correction') and not(/article/@article-type='retraction') and not(/article/@article-type='article-commentary')">
    		<xsl:call-template name="make-error">
    			<xsl:with-param name="error-type">article-meta content check</xsl:with-param>
    			<xsl:with-param name="description">
@@ -611,6 +611,27 @@
          </xsl:call-template>
       </xsl:if>
    </xsl:template>
+	
+	
+	<!-- ********************************************* -->
+	<!-- Template: abstract-sec-test
+        	If abstract has 1 first-level section with only 2nd level sections
+        	(no non-title content), warn that nesting may be wrong.
+	-->
+	<!-- ********************************************* -->   
+	<xsl:template name="abstract-sec-test">
+		<xsl:if test="sec and sec/sec">
+			<xsl:if test="count(sec)=1 and count(sec/sec) > 1">
+				<xsl:call-template name="make-error">
+					<xsl:with-param name="error-type">abstract-sec-test</xsl:with-param>
+					<xsl:with-param name="description">
+						<xsl:text>abstract contains multiple nested sections; check that the structure is correct.</xsl:text>
+					</xsl:with-param>
+					<xsl:with-param name="class" select="'warning'"/>
+				</xsl:call-template>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
    
 
   <!-- ********************************************* -->
@@ -1411,7 +1432,8 @@
          <xsl:when test="$context/@article-type[.='expression-of-concern']">
             <!-- Could have more than one related article element: be happy if at least one has the right type-->
             <xsl:choose>
-               <xsl:when test="$context//related-article[@related-article-type='object-of-concern']">
+               <xsl:when test="$context//related-article[@related-article-type='object-of-concern']
+               					or $context//related-object[@link-type='object-of-concern']">
                   <!-- This is correct-->
                </xsl:when>
 
@@ -1419,7 +1441,7 @@
                   <xsl:call-template name="make-error">
                      <xsl:with-param name="error-type">article-type attribute check</xsl:with-param>
                      <xsl:with-param name="description">
-                        <xsl:text>Expression of Concern should have a related-article element with the related-article-type attribute set to 'object-of-concern'</xsl:text>
+                        <xsl:text>Expression of Concern should have a related-article element with the related-article-type attribute set to 'object-of-concern' or a related-object element with the link-type attribute set to 'object-of-concern'</xsl:text>
                      </xsl:with-param>
 							<xsl:with-param name="class" select="'warning'"/>
                   </xsl:call-template>
@@ -1431,7 +1453,8 @@
          <xsl:when test="$context/@article-type[.='correction']">
             <!-- Could have more than one related article element: be happy if at least one has the right type-->
             <xsl:choose>
-               <xsl:when test="$context//related-article[@related-article-type='corrected-article']">
+            	<xsl:when test="$context//related-article[@related-article-type='corrected-article']
+            					or $context//related-object[@link-type='corrected-article']">
                   <!-- This is correct-->
                </xsl:when>
 
@@ -1439,7 +1462,7 @@
                   <xsl:call-template name="make-error">
                      <xsl:with-param name="error-type">article-type attribute check</xsl:with-param>
                      <xsl:with-param name="description">
-                        <xsl:text>Corrections should have a related-article element with the related-article-type attribute set to 'corrected-article'</xsl:text>
+                        <xsl:text>Corrections should have a related-article element with the related-article-type attribute set to 'corrected-article' or a related-ojbect element with the link-type attribute set to 'corrected-article'</xsl:text>
                      </xsl:with-param>
 							<xsl:with-param name="class" select="'warning'"/>
                   </xsl:call-template>
@@ -1451,7 +1474,8 @@
          <xsl:when test="$context/@article-type[.='retraction']">
             <!-- Could have more than one related article element: be happy if at least one has the right type-->
             <xsl:choose>
-               <xsl:when test="$context//related-article[@related-article-type='retracted-article']">
+               <xsl:when test="$context//related-article[@related-article-type='retracted-article']
+               					or $context//related-object[@link-type='retracted-article']">
                   <!-- This is correct-->
                </xsl:when>
                
@@ -1459,7 +1483,7 @@
                   <xsl:call-template name="make-error">
                      <xsl:with-param name="error-type">article-type attribute check</xsl:with-param>
                      <xsl:with-param name="description">
-                        <xsl:text>Retractions should have a related-article element with the related-article-type attribute set to 'retracted-article'</xsl:text>
+                        <xsl:text>Retractions should have a related-article element with the related-article-type attribute set to 'retracted-article' or a related-object element with the link-type attribute set to 'retracted-article'</xsl:text>
                      </xsl:with-param>
 							<xsl:with-param name="class" select="'warning'"/>
                   </xsl:call-template>
@@ -1470,11 +1494,12 @@
          <!-- in brief -->
          <xsl:when test="$context/@article-type[.='in-brief']">
             <xsl:choose>
-               <xsl:when test="not($context//related-article)">
+               <xsl:when test="not($context//related-article) and not($context//related-object)">
                   <!-- No related article links at all: that's ok -->
                </xsl:when>
 
-               <xsl:when test="$context//related-article[@related-article-type='article-reference']">
+               <xsl:when test="$context//related-article[@related-article-type='article-reference']
+               					or $context//related-object[@link-type='article-reference']">
                   <!-- has at least one link of the right type -->
                </xsl:when>
                
@@ -1483,12 +1508,18 @@
                   <xsl:call-template name="make-error">
                      <xsl:with-param name="error-type">article-type attribute check</xsl:with-param>
                      <xsl:with-param name="class" select="'warning'"/>
-                     <xsl:with-param name="description" select="concat(
-                        'If an *in brief* article has a related-article ',
-						' element, the related-article-type attribute should ',
-						'be set to [article-reference], not ',
-						$context//related-article/@related-article-type,
-						'.')"/>
+                     <xsl:with-param name="description">
+                     		<xsl:choose>
+                     			<xsl:when test="$context//related-object">
+                     				<xsl:text>If an *in brief* article has a related-object element, the link-type attribute should be set to [article-reference], not </xsl:text>
+                     				<xsl:value-of select="$context//related-object/@link-type"/>
+                     			</xsl:when>
+                     			<xsl:otherwise>
+                     				<xsl:text>If an *in brief* article has a related-article element, the related-article-type attribute should be set to [article-reference], not </xsl:text>
+                     				<xsl:value-of select="$context//related-article/@related-article-type"/>
+                     			</xsl:otherwise>
+                     		</xsl:choose>
+				</xsl:with-param>
                   </xsl:call-template>
                </xsl:otherwise>
             </xsl:choose>
@@ -1498,7 +1529,8 @@
          <xsl:when test="$context/@article-type[.='reply']">
             <!-- Could have more than one related article element: be happy if at least one has the right type-->
             <xsl:choose>
-               <xsl:when test="$context//related-article[@related-article-type='letter']">
+               <xsl:when test="$context//related-article[@related-article-type='letter']
+               					or $context//related-object[@link-type='letter']">
                   <!-- This is correct-->
                </xsl:when>
                
@@ -1513,7 +1545,7 @@
                      <xsl:with-param name="class" select="'warning'"/>
                      <xsl:with-param name="description">
                         <xsl:text>Replies should have a related-article element with the related-article-type attribute set to 'letter', not '</xsl:text>
-						<xsl:value-of select="$context//related-article/@related-article-type"/>'.
+						<xsl:value-of select="$context//related-article/@related-article-type | $context//related-object/@link-type"/>'.
                      </xsl:with-param>
                   </xsl:call-template>
                </xsl:otherwise>
@@ -1525,8 +1557,8 @@
             <!-- Could have more than one related article element: 
 			     be happy if at least one has the right type-->
             <xsl:choose>
-               <xsl:when test="$context//related-article
-			                     [@related-article-type='commentary-article']">
+               <xsl:when test="$context//related-article[@related-article-type='commentary-article']
+               					or $context//related-object[@link-type='commentary-article']">
                   <!-- This is correct-->
                </xsl:when>
 
@@ -1542,8 +1574,8 @@
 					    article-type attribute check</xsl:with-param>
                      <xsl:with-param name="class" select="'warning'"/>
                      <xsl:with-param name="description">
-                        <xsl:text>Commentaries should have a related-article element with the related-article-type attribute set to 'commentary-article', not '</xsl:text>
-						<xsl:value-of select="$context//related-article/@related-article-type"/>'.
+                        <xsl:text>Commentaries should have a related-article element with the related-article-type attribute set to 'commentary-article' or a related-object element with the link-type set to 'commentary-article', not '</xsl:text>
+						<xsl:value-of select="$context//related-article/@related-article-type | $context//related-object/@link-type"/>'.
                      </xsl:with-param>
                   </xsl:call-template>
                </xsl:otherwise>
@@ -1627,7 +1659,7 @@
         Elements tested include:
          ack (should not be direct child of body)
          fn-group (should not be in a sec inside body)
-         glossary (should not be in a sec inside body)
+         glossary (should not be in a sec inside body) WARNING
          notes   (should not appear in sec inside body)       
      -->
    <!-- *********************************************************** -->
@@ -1656,18 +1688,6 @@
                   </xsl:when>
 
                   <xsl:when test="$context[parent::sec/ancestor::body] and parent!='boxed-text'">
-                     <xsl:text>true</xsl:text>
-                  </xsl:when>
-                  
-                  <xsl:otherwise>
-                     <xsl:text>false</xsl:text>
-                  </xsl:otherwise>
-               </xsl:choose>
-            </xsl:when>
-
-            <xsl:when test="$context[self::glossary]">
-               <xsl:choose>
-                  <xsl:when test="$context[parent::sec/ancestor::body]">
                      <xsl:text>true</xsl:text>
                   </xsl:when>
                   
@@ -1712,6 +1732,47 @@
  				<xsl:with-param name="tg-target" select="'tags.html#el-back'"/>
          </xsl:call-template>
       </xsl:if>
+
+
+      <xsl:variable name="has-warning">
+         <xsl:choose>
+ 
+            <xsl:when test="$context[self::glossary]">
+               <xsl:choose>
+                  <xsl:when test="$context[parent::sec/ancestor::body]">
+                     <xsl:text>true</xsl:text>
+                  </xsl:when>
+                  
+                  <xsl:otherwise>
+                     <xsl:text>false</xsl:text>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:when>
+       
+            <xsl:otherwise>
+               <xsl:text>false</xsl:text>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:variable>
+
+
+      <!-- Output error if not correct --> 
+      <xsl:if test="$has-warning = 'true'">
+         <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type">back element checking</xsl:with-param>
+            <xsl:with-param name="description">
+					<xsl:text>Unless it is required here for the flow of the article, </xsl:text>
+               <xsl:value-of select="name($context)"/>
+               <xsl:text> should be moved to the back matter</xsl:text>
+            	</xsl:with-param>
+				<xsl:with-param name="class" select="'warning'"/> 				
+				<xsl:with-param name="tg-target" select="'tags.html#el-back'"/>
+         </xsl:call-template>
+      </xsl:if>
+
+
+
+
    </xsl:template>
 
 
@@ -2870,13 +2931,10 @@
             <xsl:text>false</xsl:text>
          </xsl:when>
          
-         <!-- No spaces allowed 
-			
-			SPACES ARE ALLOWED  - beck 8/21/2006
-			
+         <!-- No spaces allowed -->
          <xsl:when test="contains($normalized-doi, ' ')">
             <xsl:text>false</xsl:text>
-         </xsl:when>-->
+         </xsl:when>
          
          <!-- Prefix must start with '10.' -->
          <xsl:when test="not(starts-with($normalized-doi, '10.'))">
@@ -2938,6 +2996,17 @@
 						<xsl:with-param name="error-type" select="'pub-date checking'"/>
 						<xsl:with-param name="description">
 							<xsl:text>article-meta should only contain one electronic publication date</xsl:text>
+						</xsl:with-param>
+						<xsl:with-param name="tg-target" select="'tags.html#el-pubdate'"/>
+					</xsl:call-template>
+				</xsl:if>
+			</xsl:when>
+			<xsl:when test="$context/@pub-type='collection'">
+				<xsl:if test="$context/preceding-sibling::pub-date[@pub-type = 'collection']">
+					<xsl:call-template name="make-error">
+						<xsl:with-param name="error-type" select="'pub-date checking'"/>
+						<xsl:with-param name="description">
+							<xsl:text>article-meta should only contain one collection date</xsl:text>
 						</xsl:with-param>
 						<xsl:with-param name="tg-target" select="'tags.html#el-pubdate'"/>
 					</xsl:call-template>
@@ -3191,10 +3260,14 @@
 			  
 			  NOTE: the comma after each value for nice display in error message. -->	
       <xsl:variable name="documented-elt-values" select="concat(
+      			'bmrb, ',
 				'DDBJ/EMBL/GenBank, ',
             		'doi, ',
+            		'EBI:arrayexpress, ',
+            		'EBI:ena, ',
             		'emblalign, ',
             		'ftp, ',
+            		'geneweaver:geneset, ',
  				'NCBI:gene, ',
 				'NCBI:geo, ',
 				'NCBI:nucleotide, ',
@@ -3223,6 +3296,7 @@
             'biomodels ',
             'bsh ',
             'cdd ',
+	    'clone ',
             'ec ',
             'ensembl ',
             'fmridc ',
@@ -4264,14 +4338,14 @@
             <xsl:variable name="is-named-season-range-with-fall">
                <xsl:call-template name="test-month-range">
                   <xsl:with-param name="range" select="$normalized-input-case"/>
-                  <xsl:with-param name="comparison-string" select="'SPRING-SUMMER-FALL-WINTER-'"/>
+                  <xsl:with-param name="comparison-string" select="'SPRING-SUMMER-FALL-WINTER-SPRING-'"/>
                </xsl:call-template>
             </xsl:variable>
 
             <xsl:variable name="is-named-season-range-with-autumn">
                <xsl:call-template name="test-month-range">
                   <xsl:with-param name="range" select="$normalized-input-case"/>
-                  <xsl:with-param name="comparison-string" select="'SPRING-SUMMER-AUTUMN-WINTER-'"/>
+                  <xsl:with-param name="comparison-string" select="'SPRING-SUMMER-AUTUMN-WINTER-SPRING-'"/>
                </xsl:call-template>
             </xsl:variable>
 			
@@ -4559,7 +4633,7 @@
         <xsl:when test="$stream='rrn' "/>
 		  <xsl:otherwise>
          	<!-- Check that issn is present -->
-         	<xsl:if test="not(issn[normalize-space()])">
+         	<xsl:if test="not(issn[normalize-space()]) and not(issn-l[normalize-space()])">
             	<xsl:call-template name="make-error">
 	               <xsl:with-param name="error-type">journal-meta-check</xsl:with-param>
    	               <xsl:with-param name="description">
@@ -4615,8 +4689,28 @@
             </xsl:call-template>
          </xsl:if>
       </xsl:if>
-   </xsl:template>   
+   </xsl:template> 
 	
+	
+	<!-- *********************************************************** -->
+	<!-- Template: kwd-group-check    
+       1) should have more than 1 kwd; warn if on 1 and it contains commas
+       	or semi-colons. Only concerned with <kwd>
+     -->
+	<!-- *********************************************************** -->	
+	<xsl:template name="kwd-group-check">
+		<xsl:if test="count(kwd)=1 and count(*)=1">
+			<xsl:if test="contains(kwd, ',') or contains(kwd,';')">
+				<xsl:call-template name="make-error">
+					<xsl:with-param name="error-type">kwd-group-check</xsl:with-param>
+					<xsl:with-param name="description">
+						<xsl:text>kwd-group has only 1 kwd with punctuation; check that keywords are tagged correctly.</xsl:text>
+					</xsl:with-param>
+					<xsl:with-param name="class" select="'warning'"/>
+				</xsl:call-template>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 	
 	
 	<!-- *********************************************************** -->
@@ -4733,6 +4827,37 @@
 				<xsl:otherwise>
 					<!-- no descendant ext-link, no problem -->
 				</xsl:otherwise>
+			</xsl:choose>			
+		</xsl:if>
+		<xsl:if test="count($context//ext-link) > 1">
+			<xsl:choose>
+				<xsl:when test="$context//ext-link[contains(@xlink:href,'creativecommons.org/licenses')]">
+					<xsl:variable name="nodes" select="$context//ext-link[contains(@xlink:href,'creativecommons.org/licenses')]"/>					
+					<xsl:if test="count($nodes) > 1">
+						<xsl:call-template name="license-ext-link-recursion">
+							<xsl:with-param name="nodes" select="$nodes"/>
+						</xsl:call-template>
+					</xsl:if>
+				</xsl:when>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="license-ext-link-recursion">
+		<xsl:param name="nodes"/>
+		<xsl:if test="$nodes">
+			<xsl:choose>
+				<xsl:when test="$nodes[2] and substring-after($nodes[1]/@xlink:href,'licenses') != substring-after($nodes[2]/@xlink:href,'licenses')">
+					<xsl:call-template name="make-error">
+						<xsl:with-param name="error-type">Creative Commons license check</xsl:with-param>
+						<xsl:with-param name="description">License element must not contain different Creative Common license URIs.</xsl:with-param>
+					</xsl:call-template>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="license-ext-link-recursion">
+						<xsl:with-param name="nodes" select="$nodes[position() > 1]"/>
+					</xsl:call-template>
+				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
 	</xsl:template>
@@ -4761,11 +4886,7 @@
       </xsl:if>
 		
 	  <!-- TEST 2 -->
-      <xsl:if test="$document-type='book' or $document-type='book-part'">
-      <!--<xsl:if test="descendant::boxed-text[not(@content-type='inline')] |
-           descendant::table-wrap[not(@position='anchor')] |
-	   descendant::table-wrap-group | 
-	   descendant::fig">-->
+      <!--<xsl:if test="$document-type='book' or $document-type='book-part'">
       <xsl:if test="descendant::boxed-text[not(@position='anchor')] |
            descendant::table-wrap[not(@position='anchor')] | 
 	   descendant::fig[not(@position='anchor')]">	
@@ -4776,7 +4897,7 @@
             </xsl:with-param>
          </xsl:call-template>
       </xsl:if>
-      </xsl:if>
+      </xsl:if>-->
    </xsl:template>
       
 
@@ -5120,7 +5241,86 @@
             </xsl:with-param>
          </xsl:call-template>
       </xsl:if>
+		
+		
+		<!-- test for a single child of mml:math called mml:mrow. Error in manuscript. otherwise, warning 
+		<xsl:if test="count(*)=1 and local-name(*)='mrow'">
+         <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type" select="'mathml top level element check'"/>
+            <xsl:with-param name="description">
+					<xsl:choose>
+						<xsl:when test="$stream='manuscript'">
+               		<xsl:text>mathml must not contain only a single &lt;mml:mrow&gt; child.</xsl:text>
+							</xsl:when>
+						<xsl:otherwise>
+               		<xsl:text>mathml should not contain only a single &lt;mml:mrow&gt; child.</xsl:text>
+							</xsl:otherwise>
+							</xsl:choose>
+            </xsl:with-param>
+             <xsl:with-param name="class" >
+					<xsl:choose>
+						<xsl:when test="$stream='manuscript'">
+               		<xsl:text>error</xsl:text>
+							</xsl:when>
+						<xsl:otherwise>
+               		<xsl:text>warning</xsl:text>
+							</xsl:otherwise>
+							</xsl:choose>
+            </xsl:with-param>
+         </xsl:call-template>
+			</xsl:if>-->
+		
    </xsl:template>
+
+
+   <!-- *********************************************************** -->
+   <!-- Template: mathml-mrow-content-check 
+      
+      1. mrow should not contain just mrow(s)
+		2. mrow should have more than one child.
+		
+		These will be errors in manuscripts and warnings everywhere else. 
+      
+   -->
+   <!-- *********************************************************** -->
+   <xsl:template name="mathml-mrow-content-check">
+		<xsl:variable name="errlevel">
+			<xsl:choose>
+				<xsl:when test="$stream='manuscript'">error</xsl:when>
+				<xsl:otherwise>warning</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			
+		<!-- test for single child of mrow -->
+		<xsl:if test="count(*)=1">
+         <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type" select="'mathml mrow element check'"/>
+            <xsl:with-param name="description">
+               <xsl:text>&lt;mml:mrow&gt; should not be used to wrap a single child element.</xsl:text>
+            	</xsl:with-param>
+				<xsl:with-param name="class">
+					<xsl:value-of select="$errlevel"/>
+					</xsl:with-param>
+         </xsl:call-template>
+			</xsl:if>	
+
+
+		<!-- test for mrow only having mrow children -->
+		<xsl:if test="not(child::*[not(local-name()='mrow')])">
+         <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type" select="'mathml mrow element check'"/>
+            <xsl:with-param name="description">
+               <xsl:text>&lt;mml:mrow&gt; should not be used to wrap only child &lt;mml:mrow&gt; elements.</xsl:text>
+            	</xsl:with-param>
+				<xsl:with-param name="class">
+					<xsl:value-of select="$errlevel"/>
+					</xsl:with-param>
+         </xsl:call-template>
+			</xsl:if>	
+
+
+
+		</xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Template: mathml-parent-el-check 
@@ -5156,7 +5356,7 @@
    <!-- *********************************************************** -->
    <xsl:template name="mathml-subsup-fence-check">
       <!-- Report an error -->
-      <xsl:if test="translate(*[1], ']})&#x03009;&#x0232A;&#x027E9;', ']]]]]]') = ']'">
+      <xsl:if test="translate(normalize-space(*[1]), ']})&#x03009;&#x0232A;&#x027E9;', ']]]]]]') = ']'">
          <xsl:call-template name="make-error">
             <xsl:with-param name="error-type" select="'mathml closing fence nesting check'"/>
             <xsl:with-param name="description">
@@ -5353,6 +5553,27 @@
       </xsl:choose>
    </xsl:template> 
 	
+	<!-- *********************************************************** -->
+	<!-- Template: ms-whitespace-check
+		In manuscript stream, elements (called from article-id) must not 
+		have extra whitespace in content.
+		-->
+	<!-- *********************************************************** -->
+	<xsl:template name="ms-whitespace-check">
+		<xsl:variable name="content" select="."/>
+		<xsl:variable name="clean-content" select="normalize-space()"/>
+      <xsl:if test="$content != $clean-content">
+          <xsl:call-template name="make-error">
+             <xsl:with-param name="error-type" select="'manuscript whitespace check'"/>
+             <xsl:with-param name="description">
+                <xsl:text>Manuscript has extra whitespace characters in mixed content elements.</xsl:text>
+                </xsl:with-param>
+             </xsl:call-template>
+         </xsl:if>
+		
+		</xsl:template>
+
+
 	
 	<!-- *********************************************************** -->
 	<!-- Template: name-alternatives-content-check
@@ -5796,7 +6017,7 @@
 
  
 	  <xsl:variable name="ok-names" select="concat(
-	     ' art-access-id coden doaj doi medline manuscript rrn ',
+	     ' art-access-id arxiv coden doaj doi medline manuscript rrn ',
 		 ' other pii pmcid pmid publisher-id sici ',
 		 ' ')"/>
 
@@ -6173,6 +6394,8 @@
    		'update-of ',
    		'updated-article ',
    		'update ',
+   		'peer-review ',
+   		'peer-reviewed-article ',
    		'')"/>
    	
    	<xsl:variable name="rat-ok">
@@ -6257,7 +6480,7 @@
    <!-- *********************************************************** -->
    <xsl:template name="ms-related-article-check">
 
-   	<xsl:if test="@related-article-type!='corrected-article' and @related-article-type!='retracted-article' and @related-article-type!='commentary-article' and @related-article-type!='concurrent-pub'">
+   	<xsl:if test="@related-article-type!='corrected-article' and @related-article-type!='retracted-article' and @related-article-type!='commentary-article' and @related-article-type!='concurrent-pub'and @related-article-type!='republished-article'">
    		<xsl:call-template name="make-error">
    			<xsl:with-param name="error-type">related-article type check</xsl:with-param>
    			<xsl:with-param name="description">
@@ -6293,13 +6516,16 @@
    <!-- *********************************************************** -->
    <!-- Template: related-object-check 
    
-        related article elements must have the following:
-        1) @related-article-type required and restricted to given list.
-        2) @id required
-        3) @ext-link-type required
+        related-object elements must have the following:
+        1) @id required
+        2) @*-id-type required for each supplied @*-id
+        3) object must have at least one @*-id
+        4) if @document-type="article", @document-id-type must be an approved value
+	  5) if @document-type="article", @link-type must be an approved value        
 	 -->
    <!-- *********************************************************** -->
    <xsl:template name="related-object-check">
+   	<xsl:param name="context" select="."/>
 		<!-- @id required -->
 		<xsl:if test="not(@id)">
 			<xsl:call-template name="make-error">
@@ -6312,61 +6538,101 @@
 			</xsl:if>
 		<!-- @id-type required for each target id-->
 		<xsl:if test="(@source-id and not(@source-id-type)) or
-		              (@document-id and not(@document-id-type)) or 
-						  (@object-id and not(@object-id-type))">
+		              		(@document-id and not(@document-id-type)) or 
+						(@object-id and not(@object-id-type))">
 			<xsl:call-template name="make-error">
 				<xsl:with-param name="error-type" select="'related-object check'"/>
 				<xsl:with-param name="description">
 					<xsl:text>Every target id attribute (@source-id, @document-id, @object-id) requires a target id-type attribute (@source-id-type, @document-id-type, @object-id-type) to identify it.</xsl:text>
-               </xsl:with-param>
+              		 </xsl:with-param>
 				<xsl:with-param name="tg-target" select="'tags.html#el-relobj'"/>
-            </xsl:call-template>
-			</xsl:if>
-		<xsl:choose>
-			<xsl:when test="@object-id">
-				<xsl:if test="not(@object-type)">
-					<xsl:call-template name="make-error">
-						<xsl:with-param name="error-type" select="'related-object check'"/>
-						<xsl:with-param name="description">
-							<xsl:text>The object that is the target of this &lt;related-object&gt; must be described with an @object-type.</xsl:text>
-        	   	    </xsl:with-param>
-						<xsl:with-param name="tg-target" select="'tags.html#el-relobj'"/>
-         		   </xsl:call-template>
-					</xsl:if>
-				</xsl:when>
-			<xsl:when test="@document-id ">
-				<xsl:if test="not(@document-type)">
-					<xsl:call-template name="make-error">
-						<xsl:with-param name="error-type" select="'related-object check'"/>
-						<xsl:with-param name="description">
-							<xsl:text>The document that is the target of this &lt;related-object&gt; must be described with an @document-type.</xsl:text>
-        	   	    </xsl:with-param>
-						<xsl:with-param name="tg-target" select="'tags.html#el-relobj'"/>
-         		   </xsl:call-template>
-					</xsl:if>
-				</xsl:when>
-			<xsl:when test="@source-id ">
-				<xsl:if test="not(@source-type)">
-					<xsl:call-template name="make-error">
-						<xsl:with-param name="error-type" select="'related-object check'"/>
-						<xsl:with-param name="description">
-							<xsl:text>The work that is the target of this &lt;related-object&gt; must be described with an @source-type.</xsl:text>
-        	   	    </xsl:with-param>
-						<xsl:with-param name="tg-target" select="'tags.html#el-relobj'"/>
-         		   </xsl:call-template>
-					</xsl:if>
-				</xsl:when>
-			<xsl:otherwise>
-				<xsl:call-template name="make-error">
-					<xsl:with-param name="error-type" select="'related-object check'"/>
-					<xsl:with-param name="description">
-						<xsl:text>&lt;related-object&gt; must must describe a link to something: a work, a document in a work, or an object in a document in a work.</xsl:text>
-       	   	    </xsl:with-param>
-					<xsl:with-param name="tg-target" select="'tags.html#el-relobj'"/>
+            	</xsl:call-template>
+		</xsl:if>
+   		<!-- Must describe something -->
+   		<xsl:if test="not(@source-id) and not(@document-id) and not(@object-id)">
+			<xsl:call-template name="make-error">
+				<xsl:with-param name="error-type" select="'related-object check'"/>
+				<xsl:with-param name="description">
+					<xsl:text>&lt;related-object&gt; must must describe a link to something: a work, a document in a work, or an object in a document in a work.</xsl:text>
+       	   		</xsl:with-param>
+				<xsl:with-param name="tg-target" select="'tags.html#el-relobj'"/>
         		   </xsl:call-template>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:template>
+   		</xsl:if>
+   		<!-- If describing an article, @document-id-type must be doi, pmcid, or pmid -->
+   		<xsl:if test="@document-type='article'">
+   			<xsl:choose>
+	   			<xsl:when test="@document-id-type='doi' or @document-id-type='pmcid' or @document-id-type='pmid'">
+	   				<!-- these are okay -->
+	   			</xsl:when>
+   				<xsl:otherwise>
+   					<xsl:call-template name="make-error">
+   						<xsl:with-param name="error-type" select="'related-object check'"/>
+   						<xsl:with-param name="description">&lt;related-object&gt; with document-type="article" must have document-id-type of [doi | pmcid | pmid]. Supplied value is [<xsl:value-of select="@document-id-type"/>].</xsl:with-param>
+   					</xsl:call-template>
+   				</xsl:otherwise>
+   			</xsl:choose>
+   		</xsl:if>
+   		<!-- If describing an article, @document-id must exist -->
+   		<xsl:if test="@document-type='article' and not(@document-id)">
+   			<xsl:call-template name="make-error">
+   				<xsl:with-param name="error-type" select="'related-object check'"/>
+   				<xsl:with-param name="description">&lt;related-object&gt; with document-type="article" must have a document-id.</xsl:with-param>
+   			</xsl:call-template>
+   		</xsl:if>
+   		<!-- If describing an article, @link-type must be recognized value -->
+   		<xsl:if test="@document-type='article'">
+   			<xsl:variable name="ok-list" select="concat(
+   				'addendum ',
+   				'addended-article ',
+   				'alt-language ',
+   				'article-reference ',
+   				'article-response ',
+   				'commentary ',
+   				'commentary-article ',
+   				'companion ',
+   				'concurrent-pub ',
+   				'corrected-article ',
+   				'correction-forward ',
+   				'letter ',
+   				'letter-reply ',
+   				'object-of-concern ',
+   				'repub-note ',
+   				'repub-note-target ',
+   				'republication ',
+   				'republished-article ',
+   				'retracted-article ',
+   				'retraction-forward ',
+   				'update-in ',
+   				'update-of ',
+   				'updated-article ',
+   				'update ',
+   				'peer-review ',
+   				'peer-reviewed-article ',
+   				'')"/>
+   			
+   			<xsl:variable name="rat-ok">
+   				<xsl:call-template name="is-in-list">
+   					<xsl:with-param name="list"  select="$ok-list"/>
+   					<xsl:with-param name="token" select="$context/@link-type"/>
+   					<xsl:with-param name="case"  select="'1'"/>
+   				</xsl:call-template>
+   			</xsl:variable>
+   			
+   			<!-- Check the related-article-type values -->
+   			<xsl:variable name="rel-art-value"
+   				select="$context/@link-type"/>
+   			<xsl:if test="$rat-ok != 1">
+   				<xsl:call-template name="make-error">
+   					<xsl:with-param name="error-type" select="'related-object check'"/>
+   					<xsl:with-param name="description" select="concat(
+   						'link-type attribute is restricted to one of [',
+   						$ok-list, '], not [', $context/@link-type,
+   						'].')"/>
+   					<xsl:with-param name="tg-target" select="'tags.html#el-relobj'"/>
+   				</xsl:call-template>
+   			</xsl:if>
+   		</xsl:if>
+	</xsl:template>
 <!-- end related-object -->
 	
 	<!-- *********************************************************** -->
@@ -6406,17 +6672,41 @@
       
       <xsl:variable name="art-type" select=
 	     "normalize-space($context/ancestor::article/@article-type)"/>
+   	
+   	<xsl:variable name="context-name" select="local-name($context)"/>
+   	<xsl:variable name="context-att-name">
+   		<xsl:choose>
+   			<xsl:when test="$context-name='related-object'">
+   				<xsl:text>link-type</xsl:text>
+   			</xsl:when>
+   			<xsl:otherwise>
+   				<xsl:text>related-article-type</xsl:text>
+   			</xsl:otherwise>
+   		</xsl:choose>
+   	</xsl:variable>
+   	
+   	<xsl:variable name="context-type-att">
+   		<xsl:choose>
+   			<xsl:when test="$context-name='related-object'">
+   				<xsl:value-of select="$context/@link-type"/>
+   			</xsl:when>
+   			<xsl:otherwise>
+   				<xsl:value-of select="$context/@related-article-type"/>
+   			</xsl:otherwise>
+   		</xsl:choose>
+   	</xsl:variable> 
 
-	  <xsl:variable name="msg_start" select="concat(
-         'Either the related-article-type attribute in this element or ',
-		 'the article-type attribute in &lt;article&gt; is incorrect. ',
-		 'The related-article-type suggests that this article ')"/>
+	  <xsl:variable name="msg_start">
+	  	<xsl:value-of select="concat('Either the ',$context-att-name,' attribute in ',
+	  		$context-name,' is incorrect or the article-type attribute in &lt;article&gt; is incorrect. The ',$context-att-name,
+	  		' suggests that this article' )"/>
+	  </xsl:variable>
             
       <xsl:choose>
          <!-- Stop if there is no article-type attribute -->
          <xsl:when test="string-length($art-type) = 0"/>
 
-         <xsl:when test="$context[@related-article-type = 'addended-article']">
+         <xsl:when test="$context-type-att='addended-article'">
             <xsl:choose>
                <!-- This is correct -->
                <xsl:when test="$art-type = 'addendum'"/>
@@ -6424,11 +6714,10 @@
                <!-- Report problem -->
                <xsl:otherwise>
                   <xsl:call-template name="make-error">
-                     <xsl:with-param name="error-type">related-article-type check
-					 </xsl:with-param>
+                  	<xsl:with-param name="error-type" select="concat($context-att-name,' check')"/>
                      <xsl:with-param name="description" select="concat(
 					    $msg_start,
-						' addends the related-article. ',
+						' addends the ',$context-name, '. ',
 						'However, the article-type attribute is [', $art-type,
                         '] instead of [addendum].')"/>
                   </xsl:call-template>
@@ -6436,25 +6725,22 @@
             </xsl:choose>
          </xsl:when>
 
-         <xsl:when test="$context[@related-article-type = 'commentary-article']">
+      	<xsl:when test="$context-type-att='commentary-article'">
             <xsl:choose>
                <!-- This is correct -->
                <xsl:when test="                                        
-                  $art-type = 'editorial'                                        
-                  or $art-type = 'letter'                                        
-                  or $art-type = 'discussion'                                        
-                  or $art-type = 'expression-of-concern'                                        
+                  $art-type = 'editorial'
+                  or $art-type = 'letter'
+                  or $art-type = 'discussion'
+                  or $art-type = 'expression-of-concern'
                   or $art-type = 'article-commentary'"/>
-				<!--	<xsl:when test="$art-type 'retraction' and 
-					(preceding-sibling::related-article[@related-article-type = 'retracted-article'] or
-					 following-sibling::related-article[@related-article-type = 'retracted-article'])"/> -->
                <!-- Report problem -->
                <xsl:otherwise>
                   <xsl:call-template name="make-error">
-                     <xsl:with-param name="error-type" select="'related-article-type check'"/>
+                     <xsl:with-param name="error-type" select="concat($context-att-name,' check')"/>
                      <xsl:with-param name="description" select="concat(
 					    $msg_start,
-						' comments on the related-article. ',
+						' comments on the ', $context-name, '. ',
 						'However, the article-type attribute is [', $art-type,
                         '] instead of [article-commentary].')"/>
                   </xsl:call-template>
@@ -6462,7 +6748,8 @@
             </xsl:choose>
          </xsl:when>
 
-         <xsl:when test="$context[@related-article-type = 'corrected-article']">
+         <!--<xsl:when test="$context[@related-article-type = 'corrected-article']">-->
+      	<xsl:when test="$context-type-att='corrected-article'">
             <xsl:choose>
                <!-- This is correct -->
                <xsl:when test="$art-type = 'correction'"/>
@@ -6470,11 +6757,10 @@
                <!-- Report problem -->
                <xsl:otherwise>
                   <xsl:call-template name="make-error">
-                     <xsl:with-param name="error-type"
-					    select="'related-article-type check'"/>
+                  	<xsl:with-param name="error-type" select="concat($context-att-name,' check')"/>
                      <xsl:with-param name="description" select="concat(
 					    $msg_start,
-						' corrects the related-article. ',
+						' corrects the ', $context-name, '. ',
 						'However, the article-type attribute is [', $art-type,
                         '] instead of [correction].')"/>
                   </xsl:call-template>
@@ -6482,7 +6768,7 @@
             </xsl:choose>
          </xsl:when>
          
-         <xsl:when test="$context[@related-article-type = 'retracted-article']">
+         <xsl:when test="$context-type-att='retracted-article'">
             <xsl:choose>
                <!-- This is correct -->
                <xsl:when test="$art-type = 'retraction'"/>
@@ -6490,11 +6776,10 @@
                <!-- Report problem -->
                <xsl:otherwise>
                   <xsl:call-template name="make-error">
-                     <xsl:with-param name="error-type"
-					    select="'related-article-type check'"/>
+                  	<xsl:with-param name="error-type" select="concat($context-att-name,' check')"/>
                      <xsl:with-param name="description" select="concat(
 					    $msg_start,
-						' retracts the related-article. ',
+						' retracts the ', $context-name, '. ',
 						'However, the article-type attribute is [', $art-type,
                         '] instead of [retraction].')"/>
                   </xsl:call-template>
@@ -7582,7 +7867,7 @@
 			</xsl:when> 
 
          <xsl:when test="$context/@ref-type='aff'">
-            <xsl:if test="not(id($context/@rid)[self::aff])">
+         	<xsl:if test="not(id($context/@rid)[self::aff]) and not(id($context/@rid)[self::aff-alternatives])">
                <xsl:call-template name="make-error">   
                   <xsl:with-param name="error-type">xref checking</xsl:with-param>
                   <xsl:with-param name="description">
