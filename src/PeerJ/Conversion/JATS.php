@@ -14,8 +14,8 @@ class JATS
 	 */
 	public function __construct()
 	{
-		$this->dir = __DIR__ . '/../../data/xsl/';
-	}
+        $this->dir = __DIR__ . '/../../data/xsl/';
+    }
 
 	/**
 	 * Convert to HTML
@@ -51,15 +51,20 @@ class JATS
 	 *
 	 * @param \DOMDocument $input  XML document to be converted
 	 * @param array        $params { 'depositorName', 'depositorEmail' }
+     * @param bool         $validate
 	 *
 	 * @return \DOMDocument
 	 */
-	public function generateCrossRef(\DOMDocument $input, $params = array())
+	public function generateCrossRef(\DOMDocument $input, $params = array(), $validate = true)
 	{
 		$params['timestamp'] = date('YmdHis');
 
 		$output = $this->convert('jats-to-unixref', $input, $params);
-		$this->validateWithSchema($output, 'http://www.crossref.org/schema/deposit/crossref4.3.3.xsd');
+
+        if ($validate) {
+            $schema = 'http://www.crossref.org/schema/deposit/crossref4.3.3.xsd';
+		    $this->validateWithSchema($output, $schema);
+        }
 
 		return $output;
 	}
@@ -75,7 +80,8 @@ class JATS
 	public function generateDataCite(\DOMDocument $input, $params = array())
 	{
 		$output = $this->convert('jats-to-datacite', $input, $params);
-		$this->validateWithSchema($output, 'http://schema.datacite.org/meta/kernel-2.2/metadata.xsd');
+        $schema = 'http://schema.datacite.org/meta/kernel-2.2/metadata.xsd';
+        $this->validateWithSchema($output, $schema);
 
 		return $output;
 	}
@@ -90,7 +96,8 @@ class JATS
 	public function generateDOAJ(\DOMDocument $input)
 	{
 		$output = $this->convert('jats-to-doaj', $input);
-		$this->validateWithSchema($output, 'http://www.doaj.org/schemas/doajArticles.xsd');
+        $schema = 'http://www.doaj.org/schemas/doajArticles.xsd';
+        $this->validateWithSchema($output, $schema);
 
 		return $output;
 	}
@@ -204,7 +211,9 @@ class JATS
 	}
 
 	/**
-	 * @param \DOMDocument $doc    XML document to be validated
+     * Generally not validating with schema currently, as it loads remote files and needs newer libxml
+     *
+*@param \DOMDocument $doc    XML document to be validated
 	 * @param string       $schema Schema URL
 	 *
 	 * @throws \Exception
@@ -216,10 +225,10 @@ class JATS
 		if (!$doc->schemaValidate($schema)) {
 			$errors = libxml_get_errors();
 
-			// TODO: specific exception class
 			throw new \Exception('Invalid XML: ' . json_encode($errors));
 		}
 
 		libxml_use_internal_errors(false);
 	}
+
 }
