@@ -112,7 +112,7 @@ class JATS
 	 */
 	public function generateRDF(\DOMDocument $input, $params = array())
 	{
-		return $this->convert('jats-to-ris', $input, $params = array());
+		return $this->convert('jats-to-ris', $input, $params);
 	}
 
 	/**
