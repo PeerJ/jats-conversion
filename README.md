@@ -11,7 +11,7 @@ Convert and validate against:
 
 ## Usage
 
-* Run ```cd resources && make fetch``` to fetch all the resources.
+* Run ```cd schema && make fetch``` to fetch all the resources.
 * Run ```scripts/validate.sh filename``` to validate a JATS XML file.
 * Output: any validation errors; NLM style report; HTML article preview.
 
