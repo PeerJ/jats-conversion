@@ -18,12 +18,16 @@ $(DOWNLOADS):
 jats: | jats/publishing/1.0
 
 # "test" = version of the DTD with no xml:base
-jats/publishing/1.0: | $(DOWNLOADS)/jats-publishing-dtd-1.0.zip
+jats/publishing/1.0: | $(DOWNLOADS)/jats-publishing-dtd-1.0.zip $(DOWNLOADS)/jats-publishing-xsd-1.0.zip
 	mkdir -p jats/publishing/1.0
 	unzip $(DOWNLOADS)/jats-publishing-dtd-1.0.zip -d jats/publishing/1.0
+	unzip $(DOWNLOADS)/jats-publishing-xsd-1.0.zip -d jats/publishing/1.0/xsd
 
 $(DOWNLOADS)/jats-publishing-dtd-1.0.zip: | $(DOWNLOADS)
 	wget -c -P $(DOWNLOADS) ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.0/jats-publishing-dtd-1.0.zip
+
+$(DOWNLOADS)/jats-publishing-xsd-1.0.zip: | $(DOWNLOADS)
+	wget -c -P $(DOWNLOADS) ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.0/jats-publishing-xsd-1.0.zip
 
 # CrossRef Schema
 

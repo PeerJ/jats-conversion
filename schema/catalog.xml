@@ -8,5 +8,6 @@
 	<rewriteURI uriStartString="http://eutils.ncbi.nlm.nih.gov/" rewritePrefix="eutils/"/>
 	<rewriteURI uriStartString="http://www.ncbi.nlm.nih.gov/" rewritePrefix="ncbi/"/>
 	<rewriteURI uriStartString="http://www.w3.org/" rewritePrefix="w3/"/>
+	<rewriteURI uriStartString="http://jats.nlm.nih.gov/" rewritePrefix="jats/"/>
 	<nextCatalog catalog="jats/publishing/1.0/catalog-test-jats-v1.xml"/>
 </catalog>

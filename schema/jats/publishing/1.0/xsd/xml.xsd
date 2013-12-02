@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" elementFormDefault="qualified" targetNamespace="http://www.w3.org/XML/1998/namespace">
+  <!-- XSD import (no namespace) suppressed, whee -->
+  <!-- XSD import of namespace http://www.w3.org/1998/Math/MathML suppressed, whee -->
+  <!-- XSD import of namespace http://www.w3.org/1999/xlink suppressed, whee -->
+  <!-- XSD import of namespace http://www.w3.org/2001/XMLSchema-instance suppressed, whee -->
+  <xs:attribute name="lang" type="xs:NMTOKEN"/>
+  <xs:attribute name="space">
+    <xs:simpleType>
+      <xs:restriction base="xs:token">
+        <xs:enumeration value="preserve"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:attribute>
+</xs:schema>
