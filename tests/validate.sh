@@ -24,6 +24,9 @@ export SGML_CATALOG_FILES="$RESOURCES/catalog.xml"
 echo "Validating against JATS DTD"
 xmllint --loaddtd --valid  --nonet $TRACE --noout --catalogs "$ARTICLE"
 
+echo "Validating against JATS XSD"
+xmllint --nonet $TRACE --noout --catalogs --schema 'http://jats.nlm.nih.gov/publishing/1.0/xsd/JATS-journalpublishing1.xsd' "$ARTICLE"
+
 echo "Validating for CrossRef DOI deposition"
 xsltproc --catalogs \
 	--stringparam 'timestamp' `date +"%s"` \
