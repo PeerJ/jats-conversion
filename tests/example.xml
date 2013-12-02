@@ -8800,5 +8800,107 @@
                 </element-citation>
             </ref>
         </ref-list>
+        <ref-list content-type="authoryear">
+          <title>Further reading</title>
+          <ref id="ref-105">
+            <label>Fine &amp; Tchernov (2007)</label>
+            <element-citation publication-type="journal">
+              <person-group person-group-type="author">
+                      <name><surname>Fine</surname><given-names>M</given-names></name>
+                      <name><surname>Tchernov</surname><given-names>D</given-names></name>
+                   </person-group>
+              <article-title>Scleractinian coral species survive and recover from decalcification</article-title>
+              <source>Science</source>
+              <year iso-8601-date="2007">2007</year>
+              <volume>315</volume>
+              <fpage>1811</fpage>
+              <pub-id pub-id-type="doi">10.1126/science.1137094</pub-id>
+            </element-citation>
+          </ref>
+          <ref id="ref-106">
+            <label>Hautmann (2004)</label>
+            <element-citation publication-type="journal">
+              <person-group person-group-type="author">
+                      <name><surname>Hautmann</surname><given-names>M</given-names></name>
+                   </person-group>
+              <article-title>Effect of End-Triassic CO<sub>2</sub> maximum on carbonate sedimentation and marine mass extinction</article-title>
+              <source>Facies</source>
+              <year iso-8601-date="2004">2004</year>
+              <volume>50</volume>
+              <fpage>257</fpage>
+              <lpage>261</lpage>
+              <pub-id pub-id-type="doi">10.1007/s10347-004-0020-y</pub-id>
+            </element-citation>
+          </ref>
+          <ref id="ref-107">
+            <label>Kroeker et al. (2010)</label>
+            <element-citation publication-type="journal">
+              <person-group person-group-type="author">
+                      <name><surname>Kroeker</surname><given-names>KJ</given-names></name>
+                      <name><surname>Kordas</surname><given-names>RL</given-names></name>
+                      <name><surname>Crim</surname><given-names>RN</given-names></name>
+                      <name><surname>Singh</surname><given-names>GG</given-names></name>
+                   </person-group>
+              <article-title>Meta-analysis reveals negative yet variable effects of ocean acidification on marine organisms</article-title>
+              <source>Ecology Letters</source>
+              <year iso-8601-date="2010">2010</year>
+              <volume>13</volume>
+              <fpage>1419</fpage>
+              <lpage>1434</lpage>
+              <pub-id pub-id-type="doi">10.1111/j.1461-0248.2010.01518.x</pub-id>
+            </element-citation>
+          </ref>
+          <ref id="ref-108">
+            <label>Manzello et al. (2008)</label>
+            <element-citation publication-type="journal">
+              <person-group person-group-type="author">
+                      <name><surname>Manzello</surname><given-names>DP</given-names></name>
+                      <name><surname>Kleypas</surname><given-names>JA</given-names></name>
+                      <name><surname>Budd</surname><given-names>DA</given-names></name>
+                      <name><surname>Eakin</surname><given-names>CM</given-names></name>
+                      <name><surname>Glynn</surname><given-names>PW</given-names></name>
+                      <name><surname>Langdon</surname><given-names>C</given-names></name>
+                   </person-group>
+              <source>Proceedings of the National Academy of Sciences of the United States of America</source>
+              <year iso-8601-date="2008">2008</year>
+              <volume>105</volume>
+              <fpage>10450</fpage>
+              <lpage>10455</lpage>
+              <pub-id pub-id-type="doi">10.1073/pnas.0712167105</pub-id>
+            </element-citation>
+          </ref>
+          <ref id="ref-109">
+            <label>Morse, Arvidson &amp; Luttge (2007)</label>
+            <element-citation publication-type="journal">
+              <person-group person-group-type="author">
+                      <name><surname>Morse</surname><given-names>JW</given-names></name>
+                      <name><surname>Arvidson</surname><given-names>RS</given-names></name>
+                      <name><surname>Luttge</surname><given-names>A</given-names></name>
+                   </person-group>
+              <article-title>Calcium carbonate formation and dissolution</article-title>
+              <source>Chemical Reviews</source>
+              <year iso-8601-date="2007">2007</year>
+              <volume>107</volume>
+              <fpage>342</fpage>
+              <lpage>381</lpage>
+              <pub-id pub-id-type="doi">10.1021/cr050358j</pub-id>
+            </element-citation>
+          </ref>
+          <ref id="ref-110">
+            <label>Veron (2008)</label>
+            <element-citation publication-type="journal">
+              <person-group person-group-type="author">
+                      <name><surname>Veron</surname><given-names>JEN</given-names></name>
+                   </person-group>
+              <article-title>Mass extinctions and ocean acidification: biological constraints on geological dilemmas</article-title>
+              <source>Coral Reefs</source>
+              <year iso-8601-date="2008">2008</year>
+              <volume>27</volume>
+              <fpage>459</fpage>
+              <lpage>472</lpage>
+              <pub-id pub-id-type="doi">10.1007/s00338-008-0381-8</pub-id>
+            </element-citation>
+          </ref>
+        </ref-list>
     </back>
 </article>
