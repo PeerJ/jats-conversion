@@ -94,7 +94,8 @@
 				<xsl:apply-templates select="front/article-meta"/>
 
 				<!-- references -->
-				<xsl:apply-templates select="back/ref-list"/>
+				<!-- note: only uses the first reference list -->
+				<xsl:apply-templates select="back/ref-list[1]"/>
 
 				<!-- components -->
 				<component_list>
