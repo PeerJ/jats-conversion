@@ -138,6 +138,42 @@
         </span>
     </xsl:template>
 
+    <!-- list with labels -->
+    <xsl:template match="list[@list-type='labelled']">
+        <table class="{local-name()} list-labelled">
+            <xsl:apply-templates select="@*"/>
+            <tbody>
+                <xsl:apply-templates select="list-item" mode="list-labelled"/>
+            </tbody>
+        </table>
+    </xsl:template>
+
+    <!-- list item with label -->
+    <xsl:template match="list-item" mode="list-labelled">
+        <tr>
+            <th>
+                <xsl:value-of select="label"/>
+            </th>
+            <td>
+                <xsl:apply-templates select="*[not(self::label)]"/>
+            </td>
+        </tr>
+    </xsl:template>
+
+    <!-- simple list -->
+    <xsl:template match="list[@list-type='simple']">
+        <ul class="{local-name()}" style="list-style-type:none">
+            <xsl:apply-templates select="node()|@*"/>
+        </ul>
+    </xsl:template>
+
+    <!-- alpha list -->
+    <xsl:template match="list[@list-type='alpha-upper']">
+        <ol class="{local-name()}" style="list-style-type:upper-alpha">
+            <xsl:apply-templates select="node()|@*"/>
+        </ol>
+    </xsl:template>
+
     <!-- ordered list -->
     <xsl:template match="list[@list-type='order']">
         <ol class="{local-name()}">
@@ -145,7 +181,7 @@
         </ol>
     </xsl:template>
 
-    <!-- unordered list -->
+    <!-- unordered list (bullets)  -->
     <xsl:template match="list">
         <ul class="{local-name()}">
             <xsl:apply-templates select="node()|@*"/>
@@ -731,26 +767,6 @@
                 <xsl:apply-templates select="@*"/>
             </img>
         </a>
-    </xsl:template>
-
-    <!-- list -->
-    <xsl:template match="list[@list-type='order']">
-        <ol>
-            <xsl:apply-templates select="node()|@*"/>
-        </ol>
-    </xsl:template>
-
-    <xsl:template match="list[@list-type='bullet']">
-        <ul>
-            <xsl:apply-templates select="node()|@*"/>
-        </ul>
-    </xsl:template>
-
-    <!-- list item -->
-    <xsl:template match="list-item">
-        <li>
-            <xsl:apply-templates select="node()|@*"/>
-        </li>
     </xsl:template>
 
     <!-- definition list -->
