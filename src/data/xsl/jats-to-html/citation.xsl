@@ -252,7 +252,7 @@
 
         <xsl:variable name="doi" select="$citation/pub-id[@pub-id-type='doi']"/>
         <xsl:variable name="arxiv" select="$citation/pub-id[@pub-id-type='arxiv']"/>
-        <xsl:variable name="uri" select="$citation/comment/uri"/>
+        <xsl:variable name="uri" select="$citation/comment//uri"/>
 
         <xsl:choose>
             <xsl:when test="$doi">
