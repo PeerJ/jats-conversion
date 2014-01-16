@@ -98,8 +98,8 @@
         <span class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
         </span>
-        <xsl:text>&#32;</xsl:text>
         <xsl:apply-templates select="comment" mode="citation"/>
+        <xsl:text>&#32;</xsl:text>
         <xsl:call-template name="preprint-label"/>
     </xsl:template>
 
