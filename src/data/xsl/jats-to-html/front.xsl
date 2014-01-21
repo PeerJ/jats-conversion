@@ -58,13 +58,13 @@
                 <xsl:if test="count($editors)">
                     <dl class="article-editors">
                         <dt>Academic Editor</dt>
-                        <dd>
-                            <xsl:for-each select="$editors">
+                        <xsl:for-each select="$editors">
+                            <dd itemscope="itemscope" itemtype="http://schema.org/Person">
                                 <a href="editor-{ position() }" class="{local-name()}">
                                     <xsl:apply-templates select="node()|@*"/>
                                 </a>
-                            </xsl:for-each>
-                        </dd>
+                            </dd>
+                        </xsl:for-each>
                     </dl>
                 </xsl:if>
 
