@@ -12,11 +12,13 @@
     <xsl:param name="publication"/>
     <xsl:param name="url"/>
     <xsl:param name="creator"/>
+    <xsl:param name="title"/>
+    <xsl:param name="description"/>
 
     <xsl:template match="/">
-        <xsl:value-of select="concat('title: ', $publication)"/>
+        <xsl:value-of select="concat('title: ', $title)"/>
         <xsl:text>&#10;</xsl:text>
-        <xsl:value-of select="concat('description: Recent articles published in ', $publication)"/>
+        <xsl:value-of select="concat('description: ', $description)"/>
         <xsl:text>&#10;</xsl:text>
         <xsl:value-of select="concat('link: ', $url)"/>
         <xsl:text>&#10;</xsl:text>

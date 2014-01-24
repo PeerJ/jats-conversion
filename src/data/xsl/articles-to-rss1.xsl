@@ -24,13 +24,15 @@
     <xsl:param name="logo"/>
     <xsl:param name="publisher"/>
     <xsl:param name="creator"/>
+    <xsl:param name="title"/>
+    <xsl:param name="description"/>
 
     <xsl:template match="/articles">
         <rdf:RDF>
             <channel rdf:about="{$url}/index.rss1">
-                <title><xsl:value-of select="$publication"/></title>
+                <title><xsl:value-of select="$title"/></title>
                 <link><xsl:value-of select="$url"/></link>
-                <description><xsl:value-of select="concat('Recent articles published in ', $publication)"/></description>
+                <description><xsl:value-of select="$description"/></description>
                 <image rdf:resource="{$logo}"/>
 
                 <dc:publisher><xsl:value-of select="$publisher"/></dc:publisher>
