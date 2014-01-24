@@ -12,14 +12,16 @@
     <xsl:param name="now"/>
     <xsl:param name="publication"/>
     <xsl:param name="url"/>
+    <xsl:param name="title"/>
+    <xsl:param name="description"/>
 
     <xsl:template match="/articles">
         <rss version="2.0">
             <channel>
-                <title><xsl:value-of select="$publication"/></title>
+                <title><xsl:value-of select="$title"/></title>
                 <link><xsl:value-of select="$url"/></link>
                 <atom:link rel="self" type="application/rss+xml" href="{$url}index.rss2"/>
-                <description><xsl:value-of select="concat('Recent articles published in ', $publication)"/></description>
+                <description><xsl:value-of select="$description"/></description>
                 <pubDate><xsl:value-of select="$now"/></pubDate>
                 <language>en</language>
 

@@ -12,6 +12,8 @@
     <xsl:param name="now"/>
     <xsl:param name="publication"/>
     <xsl:param name="url"/>
+    <xsl:param name="title"/>
+    <xsl:param name="description"/>
 
     <xsl:param name="page" select="1"/>
     <xsl:param name="link-self"/>
@@ -25,11 +27,11 @@
 
     <xsl:template match="/articles">
         <feed>
-            <title><xsl:value-of select="$publication"/></title>
+            <title><xsl:value-of select="$title"/></title>
             <id><xsl:value-of select="$url"/></id>
             <link rel="self" type="application/atom+xml" href="{$url}index.atom"/>
             <link rel="search" type="application/opensearchdescription+xml" href="osd.xml"/>
-            <subtitle><xsl:value-of select="concat('Recent articles published in ', $publication)"/></subtitle>
+            <subtitle><xsl:value-of select="$description"/></subtitle>
             <updated><xsl:value-of select="$now"/></updated>
 
             <xsl:apply-templates select="front/article-meta"/>
