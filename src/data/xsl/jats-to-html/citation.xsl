@@ -11,6 +11,7 @@
                 <xsl:apply-templates select="$authors" mode="citation"/>
                 <xsl:apply-templates select="year" mode="citation"/>
             </span>
+            <xsl:text>&#32;</xsl:text>
         </xsl:if>
         <cite itemprop="name">
             <xsl:apply-templates select="article-title" mode="citation"/>
@@ -39,6 +40,7 @@
             <xsl:apply-templates select="person-group[not(@person-group-type='editor')]" mode="citation"/>
             <xsl:apply-templates select="year" mode="citation"/>
         </span>
+        <xsl:text>&#32;</xsl:text>
         <cite class="article-title">
             <xsl:apply-templates select="article-title" mode="book-citation"/>
         </cite>
@@ -63,6 +65,7 @@
             <xsl:apply-templates select="person-group[@person-group-type='author']" mode="citation"/>
             <xsl:apply-templates select="year" mode="citation"/>
         </span>
+        <xsl:text>&#32;</xsl:text>
         <span class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
             <xsl:text>&#32;</xsl:text>
@@ -80,6 +83,7 @@
             <xsl:apply-templates select="person-group[@person-group-type='author']" mode="citation"/>
             <xsl:apply-templates select="year" mode="citation"/>
         </span>
+        <xsl:text>&#32;</xsl:text>
         <span class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
         </span>
@@ -95,6 +99,7 @@
             <xsl:apply-templates select="person-group[@person-group-type='author']" mode="citation"/>
             <xsl:apply-templates select="year" mode="citation"/>
         </span>
+        <xsl:text>&#32;</xsl:text>
         <span class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
         </span>
@@ -109,6 +114,7 @@
             <xsl:apply-templates select="person-group[@person-group-type='author']" mode="citation"/>
             <xsl:apply-templates select="year" mode="citation"/>
         </span>
+        <xsl:text>&#32;</xsl:text>
         <span class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
             <xsl:text>&#32;</xsl:text>
@@ -403,7 +409,7 @@
         <b class="{local-name()}" itemprop="datePublished">
             <xsl:apply-templates/>
         </b>
-        <xsl:text>.&#32;</xsl:text>
+        <xsl:text>.</xsl:text>
     </xsl:template>
 
     <xsl:template match="comment" mode="citation">
