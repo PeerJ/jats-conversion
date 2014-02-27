@@ -273,8 +273,11 @@
             <xsl:when test="$arxiv">
                 <xsl:value-of select="concat('http://arxiv.org/abs/', $arxiv)"/>
             </xsl:when>
-            <xsl:when test="$uri">
+            <xsl:when test="$uri/@xlink:href">
                 <xsl:value-of select="$uri/@xlink:href"/>
+            </xsl:when>
+            <xsl:when test="$uri">
+                <xsl:value-of select="$uri"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:variable name="authors" select="$citation/person-group[@person-group-type='author']"/>
