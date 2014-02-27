@@ -224,10 +224,18 @@
 
     <xsl:template match="edition" mode="citation">
         <xsl:text>&#32;(</xsl:text>
-            <span class="{local-name()}">
-                <xsl:apply-templates/>
-            </span>
+        <span class="{local-name()}">
+            <xsl:apply-templates/>
+        </span>
+        <xsl:apply-templates select="following-sibling::part-title" mode="book-citation-edition"/>
         <xsl:text>).</xsl:text>
+    </xsl:template>
+
+    <xsl:template match="part-title" mode="book-citation-edition">
+        <xsl:text>,&#32;</xsl:text>
+        <span class="{local-name()}">
+            <xsl:apply-templates/>
+        </span>
     </xsl:template>
 
     <xsl:template match="series" mode="book-citation">
