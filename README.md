@@ -1,7 +1,7 @@
 # JATS conversion and validation
 
 Check an XML file against:
- * [JATS Article Publishing 1.0 DTD](http://jats.nlm.nih.gov/publishing/tag-library/1.0/)
+ * [JATS Article Publishing DTD](http://jats.nlm.nih.gov/publishing/tag-library/1.1d1/)
  * [PMC Style Checker](http://www.ncbi.nlm.nih.gov/pmc/tools/stylechecker/)
 
 Convert and validate against:
