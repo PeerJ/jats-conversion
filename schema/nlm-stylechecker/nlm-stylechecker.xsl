@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <!-- ************************************************************************ -->
 <!--                                     NLM STYLECHECKER
-                                           Version 5.3
+                                           Version 5.4
     
     Stylesheet tests an XML instance to determine whether it conforms to correct
     PMC style as defined in the Tagging Guidelines located at:
@@ -51,6 +51,31 @@
      
      
    PMC Project Revision notes:
+    February 10, 2014: Version 5.4
+                        Public release of 1st quarter changes
+   
+    January 21, 2014:
+    				Expanded xref-check to allow element [target] withing existing
+    				  allowed structures to be a valid match
+   
+    December 23, 2013:
+                     subj-group[@subj-group-type="heading"] cannot have a 
+                       subject with only an <inline-grapic>
+   
+    December 3, 2013:
+                    Added explicit test for @xml:lang on all trans-* elements
+
+    December 2, 2013:
+                    Add newer pub-date attributes specifying electronic collection to 
+                      dup-pub-date-check
+                      pub-date-check
+                      pub-type-check
+                      date-type-check
+   
+    November 25, 2013:
+                    Modified license-ext-link-content-check to exclude strings that are
+                    	likely sentences containing URIs.
+   
     November 8, 2013: Version 5.3
                     Public release of 4th quarter changes
 		

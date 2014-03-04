@@ -896,7 +896,11 @@
    <xsl:template match="fn">
    
 		<xsl:call-template name="ms-stream-id-test"/>
-
+		
+		<xsl:if test="$stream='manuscript'">
+			<xsl:call-template name="ms-footnote-license-check"/>
+			</xsl:if>
+			
       <xsl:if test="parent::author-notes">
          <xsl:call-template name="author-notes-fn-type-check">
             <xsl:with-param name="context" select="."/>
@@ -2714,7 +2718,12 @@
    <!-- *********************************************************** -->
    <xsl:template match="trans-abstract">
       <xsl:call-template name="empty-element-check"/>
-      <xsl:call-template name="trans-abstract-check"/>
+   	<xsl:call-template name="trans-atts-check">
+   		<xsl:with-param name="context" select="."/>
+   	</xsl:call-template>
+      <xsl:call-template name="trans-abstract-check">
+      	<xsl:with-param name="context" select="."/>
+      </xsl:call-template>
       <xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
    
@@ -2725,7 +2734,10 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="trans-source">
-      <xsl:call-template name="empty-element-check"/>
+   	<xsl:call-template name="empty-element-check"/>
+   	<xsl:call-template name="trans-atts-check">
+   		<xsl:with-param name="context" select="."/>
+   	</xsl:call-template>
       <xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
    
@@ -2735,7 +2747,7 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="trans-subtitle">
-      <xsl:call-template name="empty-element-check"/>
+   	<xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
    
@@ -2746,7 +2758,7 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="trans-title">
-      <xsl:call-template name="empty-element-check"/>
+   	<xsl:call-template name="empty-element-check"/>
       <xsl:call-template name="trans-title-check"/>
       <xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
@@ -2762,7 +2774,7 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="trans-title-group">
-      <xsl:call-template name="trans-title-group-content-check"/>
+   	<xsl:call-template name="trans-title-group-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
    
