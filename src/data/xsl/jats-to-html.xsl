@@ -813,14 +813,17 @@
             </h3>
 
             <xsl:apply-templates select="caption"/>
+
+            <xsl:apply-templates select="object-id[@pub-id-type='doi']" mode="caption"/>
+
+            <xsl:call-template name="supplemental-file-download">
+                <xsl:with-param name="filename" select="@xlink:href"/>
+            </xsl:call-template>
         </div>
     </xsl:template>
 
-    <xsl:template match="supplementary-material/caption">
-        <xsl:apply-templates select="node()|@*"/>
-        <xsl:apply-templates select="../object-id[@pub-id-type='doi']" mode="caption"/>
-
-        <xsl:variable name="filename" select="../@xlink:href"/>
+    <xsl:template name="supplemental-file-download">
+        <xsl:param name="filename"/>
 
         <xsl:variable name="encoded-filename">
             <xsl:call-template name="urlencode">
@@ -836,6 +839,10 @@
                 <xsl:value-of select="' Download'"/>
             </a>
         </div>
+    </xsl:template>
+
+    <xsl:template match="supplementary-material/caption">
+        <xsl:apply-templates select="node()|@*"/>
     </xsl:template>
 
     <xsl:template match="supplementary-material/caption/title"/>
