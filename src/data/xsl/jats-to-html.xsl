@@ -148,26 +148,42 @@
         </table>
     </xsl:template>
 
-    <!-- list item with label -->
-    <xsl:template match="list-item" mode="list-labelled">
-        <tr>
-            <th>
-                <xsl:value-of select="label"/>
-            </th>
-            <td>
-                <xsl:apply-templates select="*[not(self::label)]"/>
-            </td>
-        </tr>
-    </xsl:template>
-
     <!-- simple list -->
-    <xsl:template match="list[@list-type='simple']">
-        <ul class="{local-name()}" style="list-style-type:none">
-            <xsl:apply-templates select="node()|@*"/>
+    <xsl:template match="list[@list-type='simple'] | list[@list-type='labelled']">
+        <ul style="list-style-type:none;display:table">
+            <xsl:attribute name="class">
+                <xsl:choose>
+                    <xsl:when test="list-item/label">
+                        <xsl:text>list list-simple list-labelled</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>list list-simple</xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:attribute>
+
+            <xsl:apply-templates select="@*"/>
+            <xsl:apply-templates select="node()" mode="list-simple"/>
         </ul>
     </xsl:template>
 
-    <!-- alpha list -->
+    <!-- simple list item  -->
+    <xsl:template match="list-item" mode="list-simple">
+        <li class="{local-name()}" style="display:table-row">
+            <xsl:apply-templates select="@*"/>
+            <xsl:apply-templates select="label" mode="list-simple"/>
+            <div class="list-item-content" style="display:table-cell">
+                <xsl:apply-templates select="*[not(self::label)]"/>
+            </div>
+        </li>
+    </xsl:template>
+
+    <!-- simple list item label -->
+    <xsl:template match="label" mode="list-simple">
+        <div class="list-item-label" style="display:table-cell;text-align:right">
+            <xsl:apply-templates select="node()|@*"/>
+        </div>
+    </xsl:template>
     <xsl:template match="list[@list-type='alpha-upper']">
         <ol class="{local-name()}" style="list-style-type:upper-alpha">
             <xsl:apply-templates select="node()|@*"/>
