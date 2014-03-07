@@ -184,8 +184,31 @@
             <xsl:apply-templates select="node()|@*"/>
         </div>
     </xsl:template>
+
+    <!-- alpha list, uppercase -->
     <xsl:template match="list[@list-type='alpha-upper']">
         <ol class="{local-name()}" style="list-style-type:upper-alpha">
+            <xsl:apply-templates select="node()|@*"/>
+        </ol>
+    </xsl:template>
+
+    <!-- alpha list, lowercase -->
+    <xsl:template match="list[@list-type='alpha-lower']">
+        <ol class="{local-name()}" style="list-style-type:lower-alpha">
+            <xsl:apply-templates select="node()|@*"/>
+        </ol>
+    </xsl:template>
+
+    <!-- roman list, uppercase -->
+    <xsl:template match="list[@list-type='roman-upper']">
+        <ol class="{local-name()}" style="list-style-type:upper-roman">
+            <xsl:apply-templates select="node()|@*"/>
+        </ol>
+    </xsl:template>
+
+    <!-- roman list, lowercase -->
+    <xsl:template match="list[@list-type='roman-lower']">
+        <ol class="{local-name()}" style="list-style-type:lower-roman">
             <xsl:apply-templates select="node()|@*"/>
         </ol>
     </xsl:template>
