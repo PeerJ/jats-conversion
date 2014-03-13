@@ -371,7 +371,14 @@
 
 	<xsl:template match="edition" mode="citation">
 		<edition_number>
-			<xsl:apply-templates/>
+			<xsl:choose>
+				<xsl:when test="@designator">
+					<xsl:value-of select="@designator"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</edition_number>
 	</xsl:template>
 
