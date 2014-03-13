@@ -108,6 +108,23 @@
         <xsl:call-template name="preprint-label"/>
     </xsl:template>
 
+    <!-- software citations -->
+    <xsl:template match="element-citation[@publication-type='software']">
+        <span class="citation-authors-year">
+            <xsl:apply-templates select="person-group[@person-group-type='author']" mode="citation"/>
+            <xsl:apply-templates select="year" mode="citation"/>
+        </span>
+        <xsl:text>&#32;</xsl:text>
+        <span class="article-title">
+            <xsl:apply-templates select="source" mode="citation"/>
+        </span>
+        <span>
+            <xsl:apply-templates select="edition" mode="software-citation"/>
+            <xsl:apply-templates select="publisher-name | institution" mode="citation"/>
+        </span>
+        <xsl:apply-templates select="comment" mode="citation"/>
+    </xsl:template>
+
     <!-- other citations (?) -->
     <xsl:template match="element-citation">
         <span class="citation-authors-year">
@@ -228,6 +245,14 @@
             <xsl:apply-templates/>
         </span>
         <xsl:apply-templates select="following-sibling::part-title" mode="book-citation-edition"/>
+        <xsl:text>).</xsl:text>
+    </xsl:template>
+
+    <xsl:template match="edition" mode="software-citation">
+        <xsl:text>&#32;(</xsl:text>
+        <span class="{local-name()}">
+            <xsl:apply-templates/>
+        </span>
         <xsl:text>).</xsl:text>
     </xsl:template>
 
