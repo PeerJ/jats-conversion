@@ -891,6 +891,13 @@
         <xsl:apply-templates select="node()"/>
     </xsl:template>
 
+    <!-- text box -->
+    <xsl:template match="boxed-text">
+        <aside class="{local-name()}">
+            <xsl:apply-templates select="node()|@*"/>
+        </aside>
+    </xsl:template>
+
     <!-- acknowledgments -->
     <xsl:template match="ack">
         <section class="{local-name()}" id="acknowledgements">
