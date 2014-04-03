@@ -8,6 +8,7 @@
 
             <div class="article-authors">
                 <xsl:apply-templates select="$authors" mode="front"/>
+                <xsl:apply-templates select="$meta/contrib-group[@content-type='authors']/on-behalf-of"/>
             </div>
 
             <div id="article-information">
@@ -230,7 +231,6 @@
         </span>
     </xsl:template>
 
-
     <!-- contrib in front matter -->
     <xsl:template match="contrib" mode="front">
         <span class="{local-name()}" itemscope="itemscope" itemtype="http://schema.org/Person">
@@ -247,6 +247,7 @@
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:apply-templates select="name | collab"/>
+                    <!--<xsl:apply-templates select="on-behalf-of"/>--><!-- TODO: display as footnote/xref? -->
                 </xsl:otherwise>
             </xsl:choose>
 
@@ -341,6 +342,13 @@
 
     <xsl:template match="label" mode="front">
         <span class="article-label">
+            <xsl:apply-templates select="node()|@*"/>
+        </span>
+    </xsl:template>
+
+    <xsl:template match="on-behalf-of">
+        <span class="{local-name()}">
+            <xsl:text>, </xsl:text>
             <xsl:apply-templates select="node()|@*"/>
         </span>
     </xsl:template>
