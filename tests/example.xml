@@ -66,6 +66,15 @@
                     </name>
                     <xref ref-type="aff" rid="aff-3">3</xref>
                 </contrib>
+                <contrib id="author-6" contrib-type="author">
+                    <collab>
+                        <institution>Example Institution</institution>
+                    </collab>
+                </contrib>
+                <contrib id="author-7" contrib-type="author">
+                    <collab>Example Collaboration</collab>
+                </contrib>
+                <on-behalf-of>on behalf of An Example Collaboration</on-behalf-of>
                 <aff id="aff-1">
                     <label>1</label>
                     <institution>Raymond M. Alf Museum of Paleontology</institution>,<addr-line>Claremont, CA</addr-line>, <country>USA</country>

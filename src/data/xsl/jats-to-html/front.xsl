@@ -8,6 +8,7 @@
 
             <div class="article-authors">
                 <xsl:apply-templates select="$authors" mode="front"/>
+                <xsl:apply-templates select="$meta/contrib-group[@content-type='authors']/on-behalf-of"/>
             </div>
 
             <div id="article-information">
@@ -55,7 +56,7 @@
                     </xsl:if>
                 </dl>
 
-                <xsl:if test="count($editors)">
+                <xsl:if test="count($editors) > 0">
                     <dl class="article-editors">
                         <dt>Academic Editor</dt>
                         <xsl:for-each select="$editors">
@@ -142,7 +143,7 @@
     <xsl:template name="affiliation-address">
         <xsl:variable name="address-parts" select="node()[not(local-name() = 'label')][not(self::text())]"/>
 
-        <xsl:if test="count($address-parts)">
+        <xsl:if test="count($address-parts) > 0">
             <span itemprop="address">
                 <xsl:for-each select="$address-parts">
                     <xsl:apply-templates select="."/>
@@ -230,7 +231,6 @@
         </span>
     </xsl:template>
 
-
     <!-- contrib in front matter -->
     <xsl:template match="contrib" mode="front">
         <span class="{local-name()}" itemscope="itemscope" itemtype="http://schema.org/Person">
@@ -247,6 +247,7 @@
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:apply-templates select="name | collab"/>
+                    <!--<xsl:apply-templates select="on-behalf-of"/>--><!-- TODO: display as footnote/xref? -->
                 </xsl:otherwise>
             </xsl:choose>
 
@@ -284,7 +285,7 @@
                     </xsl:for-each>
                 </xsl:variable>
 
-                <xsl:if test="string-length($xrefs)">
+                <xsl:if test="string-length($xrefs) > 0">
                     <sup class="contrib-xref-group">
                        <xsl:copy-of select="$xrefs"/>
                     </sup>
@@ -341,6 +342,13 @@
 
     <xsl:template match="label" mode="front">
         <span class="article-label">
+            <xsl:apply-templates select="node()|@*"/>
+        </span>
+    </xsl:template>
+
+    <xsl:template match="on-behalf-of">
+        <xsl:text>, </xsl:text>
+        <span class="{local-name()}">
             <xsl:apply-templates select="node()|@*"/>
         </span>
     </xsl:template>
