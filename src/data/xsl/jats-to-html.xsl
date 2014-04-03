@@ -138,17 +138,7 @@
         </span>
     </xsl:template>
 
-    <!-- list with labels -->
-    <xsl:template match="list[@list-type='labelled']">
-        <table class="{local-name()} list-labelled">
-            <xsl:apply-templates select="@*"/>
-            <tbody>
-                <xsl:apply-templates select="list-item" mode="list-labelled"/>
-            </tbody>
-        </table>
-    </xsl:template>
-
-    <!-- simple list -->
+    <!-- simple list, or list with labels -->
     <xsl:template match="list[@list-type='simple'] | list[@list-type='labelled']">
         <ul style="list-style-type:none;display:table">
             <xsl:attribute name="class">
@@ -475,7 +465,7 @@
 
 
     <!-- object DOI -->
-    <xsl:template match="object-id[@pub-id-type=doi]">
+    <xsl:template match="object-id[@pub-id-type='doi']">
         <a class="{local-name()}" href="http://dx.doi.org/{.}">
             <xsl:apply-templates select="node()|@*"/>
         </a>
@@ -493,12 +483,17 @@
 
     <!-- section headings -->
     <xsl:template match="title">
-        <xsl:variable name="heading-level"
+        <xsl:variable name="heading-count"
                       select="count(ancestor::sec | ancestor::back | ancestor::fig | ancestor::g) + 1"/>
 
-        <xsl:if test="$heading-level > 6">
-            <xsl:variable name="heading-level">6</xsl:variable>
-        </xsl:if>
+        <xsl:variable name="heading-level">
+            <xsl:choose>
+                <xsl:when test="$heading-count > 6">6</xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="$heading-count"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
 
         <xsl:variable name="heading">h<xsl:value-of select="$heading-level"/></xsl:variable>
 

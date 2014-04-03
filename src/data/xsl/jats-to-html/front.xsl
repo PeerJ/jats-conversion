@@ -55,7 +55,7 @@
                     </xsl:if>
                 </dl>
 
-                <xsl:if test="count($editors)">
+                <xsl:if test="count($editors) > 0">
                     <dl class="article-editors">
                         <dt>Academic Editor</dt>
                         <xsl:for-each select="$editors">
@@ -142,7 +142,7 @@
     <xsl:template name="affiliation-address">
         <xsl:variable name="address-parts" select="node()[not(local-name() = 'label')][not(self::text())]"/>
 
-        <xsl:if test="count($address-parts)">
+        <xsl:if test="count($address-parts) > 0">
             <span itemprop="address">
                 <xsl:for-each select="$address-parts">
                     <xsl:apply-templates select="."/>
@@ -284,7 +284,7 @@
                     </xsl:for-each>
                 </xsl:variable>
 
-                <xsl:if test="string-length($xrefs)">
+                <xsl:if test="string-length($xrefs) > 0">
                     <sup class="contrib-xref-group">
                        <xsl:copy-of select="$xrefs"/>
                     </sup>
