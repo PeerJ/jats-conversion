@@ -347,8 +347,8 @@
     </xsl:template>
 
     <xsl:template match="on-behalf-of">
+        <xsl:text>, </xsl:text>
         <span class="{local-name()}">
-            <xsl:text>, </xsl:text>
             <xsl:apply-templates select="node()|@*"/>
         </span>
     </xsl:template>
