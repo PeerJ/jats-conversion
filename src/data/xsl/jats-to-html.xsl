@@ -463,14 +463,6 @@
         </span>
     </xsl:template>
 
-
-    <!-- object DOI -->
-    <xsl:template match="object-id[@pub-id-type='doi']">
-        <a class="{local-name()}" href="http://dx.doi.org/{.}">
-            <xsl:apply-templates select="node()|@*"/>
-        </a>
-    </xsl:template>
-
     <!-- other object ID -->
     <xsl:template match="object-id"/>
 
