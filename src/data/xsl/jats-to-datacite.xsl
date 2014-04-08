@@ -36,7 +36,7 @@
                 <xsl:apply-templates select="title-group/article-title" mode="title"/>
             </titles>
             <publisher>
-                <xsl:apply-templates select="../journal-meta/publisher/publisher-name"/>
+                <xsl:apply-templates select="../journal-meta/journal-title-group/journal-title"/>
             </publisher>
             <publicationYear>
                 <xsl:apply-templates select="$pub-date/year"/>
