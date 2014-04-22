@@ -30,12 +30,8 @@
     </xsl:template>
 
     <!-- book-like citations -->
-    <xsl:template match="
-        element-citation[@publication-type='book']
-        | element-citation[@publication-type='conf-proceedings']
-        | element-citation[@publication-type='confproc']
-        | element-citation[@publication-type='other']
-        ">
+    <xsl:template match="element-citation[@publication-type='book']
+    				   | element-citation[@publication-type='other']">
         <span class="citation-authors-year">
             <xsl:apply-templates select="person-group[not(@person-group-type='editor')]" mode="citation"/>
             <xsl:apply-templates select="year" mode="citation"/>
@@ -47,6 +43,35 @@
         <xsl:text>&#32;</xsl:text>
         <xsl:apply-templates select="source" mode="book-citation"/>
         <span>
+            <xsl:apply-templates select="edition" mode="citation"/>
+            <xsl:text>&#32;</xsl:text>
+            <xsl:apply-templates select="publisher-name | institution" mode="citation"/>
+            <xsl:text>&#32;</xsl:text>
+            <xsl:apply-templates select="volume" mode="citation"/>
+            <xsl:apply-templates select="fpage" mode="citation"/>
+            <xsl:text>&#32;</xsl:text>
+            <xsl:apply-templates select="pub-id[@pub-id-type='isbn']" mode="citation"/>
+            <xsl:apply-templates select="comment" mode="citation"/>
+        </span>
+    </xsl:template>
+
+    <xsl:template match="element-citation[@publication-type='conf-proceedings']
+					   | element-citation[@publication-type='confproc']">
+        <span class="citation-authors-year">
+            <xsl:apply-templates select="person-group[not(@person-group-type='editor')]" mode="citation"/>
+            <xsl:apply-templates select="year" mode="citation"/>
+        </span>
+        <xsl:text>&#32;</xsl:text>
+        <cite class="article-title">
+            <xsl:apply-templates select="article-title" mode="book-citation"/>
+        </cite>
+        <xsl:text>&#32;</xsl:text>
+        <xsl:apply-templates select="conf-name | source" mode="book-citation"/>
+        <span>
+            <xsl:apply-templates select="conf-loc" mode="citation"/>
+            <xsl:apply-templates select="conf-date" mode="citation"/>
+            <xsl:apply-templates select="conf-sponsor" mode="citation"/>
+            <xsl:text>&#32;</xsl:text>
             <xsl:apply-templates select="edition" mode="citation"/>
             <xsl:text>&#32;</xsl:text>
             <xsl:apply-templates select="publisher-name | institution" mode="citation"/>
@@ -188,7 +213,7 @@
             <xsl:text>,</xsl:text>
         </xsl:if>
         <xsl:text>&#32;</xsl:text>
-   </xsl:template>
+    </xsl:template>
 
     <xsl:template match="institution" mode="thesis-citation">
         <span class="{local-name()}">
@@ -200,7 +225,7 @@
     </xsl:template>
 
     <!-- book source -->
-    <xsl:template match="source" mode="book-citation">
+    <xsl:template match="source | conf-name" mode="book-citation">
         <xsl:variable name="editors" select="../person-group[@person-group-type='editor']"/>
 
         <xsl:if test="../article-title">
@@ -268,6 +293,37 @@
         <span class="{local-name()}">
             <xsl:apply-templates/>
         </span>
+    </xsl:template>
+
+    <xsl:template match="conf-sponsor" mode="citation">
+        <xsl:text>&#32;</xsl:text>
+        <span class="{local-name()}">
+            <xsl:apply-templates/>
+        </span>
+        <xsl:text>.</xsl:text>
+    </xsl:template>
+
+    <xsl:template match="conf-loc" mode="citation">
+        <xsl:text>&#32;</xsl:text>
+        <span class="{local-name()}">
+            <xsl:apply-templates/>
+        </span>
+        <xsl:choose>
+            <xsl:when test="../conf-date">
+                <xsl:text>,</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>.</xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+    <xsl:template match="conf-date" mode="citation">
+        <xsl:text>&#32;</xsl:text>
+        <span class="{local-name()}">
+            <xsl:apply-templates/>
+        </span>
+        <xsl:text>.</xsl:text>
     </xsl:template>
 
     <xsl:template match="publisher-name | institution" mode="citation">
