@@ -11,9 +11,11 @@
 
     <xsl:strip-space elements="aff"/>
 
-    <xsl:param name="itemVersion" select="'1'"/>
     <xsl:param name="doi" select="/article/front/article-meta/article-id[@pub-id-type='doi']"/>
     <xsl:param name="url" select="/article/front/article-meta/self-uri/@xlink:href"/>
+
+    <xsl:variable name="itemVersion"
+        select="/article/front/article-meta/custom-meta-group/custom-meta[meta-name='version']/meta-value"/>
 
     <!-- root element -->
 
@@ -75,7 +77,15 @@
                 <format>text/html</format>
             </formats>
             <version>
-                <xsl:value-of select="$itemVersion"/>
+                <xsl:choose>
+                    <!-- the "version" custom-meta may not be present -->
+                    <xsl:when test="$itemVersion">
+                        <xsl:value-of select="$itemVersion"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>1</xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose>
             </version>
             <rights>
                 <xsl:value-of select="permissions/license/license-p"/>

@@ -96,8 +96,10 @@
                     <div class="alert alert-success view-public-reviews"><xsl:value-of select="$prefix"/> chosen to make <a href="{$public-reviews}">the review history of this article</a> public.</div>
                 </xsl:if>
 
-                <!-- TODO: actual version -->
-                <meta itemprop="version" content="1.0"/>
+                <!-- the "version" custom-meta might not be present -->
+                <xsl:if test="$itemVersion">
+                    <meta itemprop="version" content="{$itemVersion}"/>
+                </xsl:if>
             </div>
 
             <xsl:apply-templates select="abstract"/>
