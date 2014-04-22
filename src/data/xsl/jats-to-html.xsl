@@ -22,6 +22,7 @@
     <xsl:variable name="pub-date" select="$meta/pub-date[@date-type='pub'][@pub-type='epub']|$meta/pub-date[@date-type='preprint'][@pub-type='epreprint']"/>
     <xsl:variable name="authors" select="$meta/contrib-group[@content-type='authors']/contrib[@contrib-type='author']"/>
     <xsl:variable name="editors" select="$meta/contrib-group[@content-type='editors']/contrib[@contrib-type='editor']"/>
+	<xsl:variable name="itemVersion" select="$meta/custom-meta-group/custom-meta[meta-name='version']/meta-value"/>
 
     <xsl:variable name="journal-meta" select="/article/front/journal-meta"/>
     <xsl:variable name="journal-title" select="$journal-meta/journal-title-group/journal-title"/>
