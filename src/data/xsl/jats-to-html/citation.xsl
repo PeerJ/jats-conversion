@@ -479,7 +479,7 @@
             <xsl:text>:</xsl:text>
         </xsl:if>
         <xsl:choose>
-            <xsl:when test="../lpage">
+            <xsl:when test="../lpage and . != ../lpage">
                 <span class="{local-name()}">
                     <xsl:apply-templates/>
                 </span>
