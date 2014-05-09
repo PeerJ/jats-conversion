@@ -240,16 +240,27 @@
 	<!-- contributor name -->
 
 	<xsl:template match="name" mode="contrib">
-		<xsl:if test="given-names">
-			<given_name>
-				<xsl:value-of select="given-names"/>
-			</given_name>
-		</xsl:if>
-		<xsl:if test="surname">
-			<surname>
-				<xsl:value-of select="surname"/>
-			</surname>
-		</xsl:if>
+		<!-- there must be a surname, so use given-names as surname if needed -->
+		<xsl:choose>
+			<xsl:when test="surname">
+				<xsl:if test="given-names">
+					<given_name>
+						<xsl:value-of select="given-names"/>
+					</given_name>
+				</xsl:if>
+
+				<surname>
+					<xsl:value-of select="surname"/>
+				</surname>
+			</xsl:when>
+
+			<xsl:otherwise>
+				<surname>
+					<xsl:value-of select="given-names"/>
+				</surname>
+			</xsl:otherwise>
+		</xsl:choose>
+
 		<xsl:if test="suffix">
 			<suffix>
 				<xsl:apply-templates select="suffix"/>
