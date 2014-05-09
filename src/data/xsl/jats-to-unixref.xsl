@@ -245,9 +245,11 @@
 				<xsl:value-of select="given-names"/>
 			</given_name>
 		</xsl:if>
-		<surname>
-			<xsl:value-of select="surname"/>
-		</surname>
+		<xsl:if test="surname">
+			<surname>
+				<xsl:value-of select="surname"/>
+			</surname>
+		</xsl:if>
 		<xsl:if test="suffix">
 			<suffix>
 				<xsl:apply-templates select="suffix"/>
