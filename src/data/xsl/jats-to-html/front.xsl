@@ -60,7 +60,7 @@
                     <dl class="article-editors">
                         <dt>Academic Editor</dt>
                         <xsl:for-each select="$editors">
-                            <dd itemscope="itemscope" itemtype="http://schema.org/Person">
+                            <dd itemprop="editor" itemscope="itemscope" itemtype="http://schema.org/Person">
                                 <a href="editor-{ position() }" class="{local-name()}">
                                     <xsl:apply-templates select="node()|@*"/>
                                 </a>
