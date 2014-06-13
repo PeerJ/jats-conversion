@@ -71,7 +71,7 @@
                         <institution>Example Institution</institution>
                     </collab>
                 </contrib>
-                <contrib id="author-7" contrib-type="author">
+                <contrib id="author-7" contrib-type="author" xlink:href="http://example-collaboration.com">
                     <collab>Example Collaboration</collab>
                 </contrib>
                 <on-behalf-of>on behalf of An Example Collaboration</on-behalf-of>

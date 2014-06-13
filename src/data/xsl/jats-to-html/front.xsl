@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xlink="http://www.w3.org/1999/xlink">
 
     <!-- front matter -->
     <xsl:template match="front/article-meta">
@@ -244,8 +246,20 @@
 
             <xsl:choose>
                 <xsl:when test="@contrib-type = 'author'">
-                    <xsl:variable name="author-index" select="count(preceding::contrib[@contrib-type='author']) + 1"/>
-                    <a href="author-{$author-index}" rel="author"><xsl:apply-templates select="name | collab"/></a>
+	                <xsl:variable name="author-url">
+		                <xsl:choose>
+			                <xsl:when test="@xlink:href">
+				                <xsl:value-of select="@xlink:href"/>
+			                </xsl:when>
+			                <xsl:otherwise>
+				                <xsl:variable name="author-index"
+				                              select="count(preceding::contrib[@contrib-type='author']) + 1"/>
+				                <xsl:value-of select="concat('author-', $author-index)"/>
+			                </xsl:otherwise>
+		                </xsl:choose>
+	                </xsl:variable>
+
+	                <a href="{$author-url}" rel="author"><xsl:apply-templates select="name | collab"/></a>
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:apply-templates select="name | collab"/>
