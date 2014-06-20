@@ -87,7 +87,7 @@
     </xsl:template>
 
     <xsl:template match="given-names" mode="self-citation">
-        <xsl:for-each select="str:tokenize(., ' ')">
+        <xsl:for-each select="str:tokenize(., ' .')">
             <xsl:value-of select="substring(., 1, 1)"/>
         </xsl:for-each>
     </xsl:template>
