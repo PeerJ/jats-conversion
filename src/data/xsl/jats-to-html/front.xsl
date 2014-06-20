@@ -251,15 +251,24 @@
 			                <xsl:when test="@xlink:href">
 				                <xsl:value-of select="@xlink:href"/>
 			                </xsl:when>
+			                <xsl:when test="@deceased or collab">
+				                <xsl:value-of select="''"/>
+			                </xsl:when>
 			                <xsl:otherwise>
-				                <xsl:variable name="author-index"
-				                              select="count(preceding::contrib[@contrib-type='author']) + 1"/>
+				                <xsl:variable name="author-index" select="count(preceding::contrib[@contrib-type='author'][not(@deceased)][not(collab)]) + 1"/>
 				                <xsl:value-of select="concat('author-', $author-index)"/>
 			                </xsl:otherwise>
 		                </xsl:choose>
 	                </xsl:variable>
 
-	                <a href="{$author-url}" rel="author"><xsl:apply-templates select="name | collab"/></a>
+	                <xsl:choose>
+		                <xsl:when test="$author-url != ''">
+	                        <a href="{$author-url}" rel="author" itemprop="url"><xsl:apply-templates select="name | collab"/></a>
+		                </xsl:when>
+	                    <xsl:otherwise>
+		                    <span><xsl:apply-templates select="name | collab"/></span>
+	                    </xsl:otherwise>
+	                </xsl:choose>
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:apply-templates select="name | collab"/>
