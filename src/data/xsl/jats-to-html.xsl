@@ -843,11 +843,19 @@
 
             <xsl:apply-templates select="object-id[@pub-id-type='doi']" mode="caption"/>
 
+	        <xsl:apply-templates select="." mode="file-viewer"/>
+
             <xsl:call-template name="supplemental-file-download">
                 <xsl:with-param name="filename" select="@xlink:href"/>
             </xsl:call-template>
         </div>
     </xsl:template>
+
+	<xsl:template match="supplementary-material[@mimetype='video']" mode="file-viewer">
+		<video controls="controls" preload="none" width="100%">
+			<source src="{$static-root}{@xlink:href}" type="video/{@mime-subtype}"/>
+		</video>
+	</xsl:template>
 
     <xsl:template name="supplemental-file-download">
         <xsl:param name="filename"/>
