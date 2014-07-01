@@ -924,8 +924,24 @@
         </h2>
     </xsl:template>
 
+	<!-- empty appendix title -->
+	<xsl:template match="app/title[.='']"/>
+
     <!-- appendix title -->
-    <xsl:template match="app/title"/>
+    <xsl:template match="app/title">
+	    <xsl:choose>
+	        <xsl:when test="../label">
+			    <h3 class="heading">
+				    <xsl:apply-templates/>
+			    </h3>
+	        </xsl:when>
+		    <xsl:otherwise>
+			    <h2 class="heading">
+				    <xsl:apply-templates/>
+			    </h2>
+		    </xsl:otherwise>
+	    </xsl:choose>
+    </xsl:template>
 
     <!-- reference list -->
     <xsl:template match="ref-list">
