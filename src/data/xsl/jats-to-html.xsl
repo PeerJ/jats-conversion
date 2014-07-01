@@ -943,6 +943,27 @@
 	    </xsl:choose>
     </xsl:template>
 
+	<!-- statement label (inline, bold) -->
+	<xsl:template match="statement/label">
+		<b class="statement-label">
+			<xsl:apply-templates/>
+		</b>
+	</xsl:template>
+
+	<!-- assumption label (block, italic) -->
+	<xsl:template match="statement[@content-type='assumption']/label">
+		<i class="statement-label-assumption">
+			<xsl:apply-templates/>
+		</i>
+	</xsl:template>
+
+	<!-- proof label (inline, italic) -->
+	<xsl:template match="statement[@content-type='proof']/label">
+		<i class="statement-label-proof">
+			<xsl:apply-templates/>
+		</i>
+	</xsl:template>
+
     <!-- reference list -->
     <xsl:template match="ref-list">
         <section class="ref-list-container" id="references">
