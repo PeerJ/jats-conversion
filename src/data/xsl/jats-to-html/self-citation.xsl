@@ -43,19 +43,9 @@
 
     <!-- self citation author names -->
     <xsl:template name="self-citation-authors">
-        <xsl:variable name="max" select="5"/>
-        <xsl:variable name="people" select="$authors/name | $authors/collab"/>
         <span class="self-citation-authors">
-            <xsl:choose>
-                <xsl:when test="count($people) &gt; $max">
-                    <xsl:apply-templates select="$people[position() &lt; ($max + 1)]" mode="self-citation"/>
-                    <span class="et-al">&#32;et al.</span>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:apply-templates select="$people" mode="self-citation"/>
-                    <xsl:text>.</xsl:text>
-                </xsl:otherwise>
-            </xsl:choose>
+            <xsl:apply-templates select="$authors/name | $authors/collab" mode="self-citation"/>
+            <xsl:text>.</xsl:text>
         </span>
     </xsl:template>
 
