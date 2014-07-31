@@ -43,9 +43,8 @@
 
     <!-- self citation author names -->
     <xsl:template name="self-citation-authors">
-        <xsl:variable name="people" select="$authors/name | $authors/collab"/>
         <span class="self-citation-authors">
-            <xsl:apply-templates select="$people" mode="self-citation"/>
+            <xsl:apply-templates select="$authors/name | $authors/collab" mode="self-citation"/>
             <xsl:text>.</xsl:text>
         </span>
     </xsl:template>
