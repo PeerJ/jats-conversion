@@ -514,19 +514,9 @@
     <!-- citation author names -->
 
     <xsl:template match="person-group" mode="citation">
-        <xsl:variable name="max" select="10"/>
-        <xsl:variable name="people" select="name | collab"/>
         <b class="{local-name()}">
-            <xsl:choose>
-                <xsl:when test="count($people) &gt; $max">
-                    <xsl:apply-templates select="$people[position() &lt; ($max + 1)]" mode="citation"/>
-                    <span class="et-al">&#32;et al.</span>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:apply-templates select="$people" mode="citation"/>
-                    <xsl:text>.</xsl:text>
-                </xsl:otherwise>
-            </xsl:choose>
+            <xsl:apply-templates select="name | collab" mode="citation"/>
+            <xsl:text>.</xsl:text>
         </b>
     </xsl:template>
 
