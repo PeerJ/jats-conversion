@@ -22,15 +22,22 @@
                     <xsl:with-param name="title" select="$title"/>
                 </xsl:call-template>
                 <xsl:text>&#32;</xsl:text>
-                <span class="self-citation-journal" itemprop="publisher">
-                    <xsl:value-of select="$journal-title"/>
-                </span>
-                <xsl:text>&#32;</xsl:text>
-                <span class="self-citation-volume">
-                    <xsl:value-of select="$meta/volume"/>
-                </span>
+	            <span itemprop="isPartOf" itemscope="itemscope"
+	                  itemtype="http://schema.org/PublicationVolume">
+		            <span class="self-citation-journal"
+		                  itemprop="isPartOf" itemscope="itemscope"
+		                  itemtype="http://schema.org/Periodical">
+			            <span itemprop="name">
+				            <xsl:value-of select="$journal-title"/>
+			            </span>
+		            </span>
+		            <xsl:text>&#32;</xsl:text>
+		            <span class="self-citation-volume" itemprop="volumeNumber">
+			            <xsl:value-of select="$meta/volume"/>
+		            </span>
+	            </span>
                 <xsl:text>:</xsl:text>
-                <span class="self-citation-elocation">
+                <span class="self-citation-elocation" itemprop="pageStart">
                     <xsl:value-of select="$meta/elocation-id"/>
                 </span>
                 <xsl:text>&#32;</xsl:text>

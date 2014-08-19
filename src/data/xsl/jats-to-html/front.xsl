@@ -25,7 +25,7 @@
                         <xsl:text>&#32;DOI</xsl:text>
                     </dt>
                     <dd>
-                        <a href="http://dx.doi.org/{$doi}" itemprop="identifier">
+                        <a href="http://dx.doi.org/{$doi}" itemprop="sameAs">
                             <xsl:value-of select="concat('', $doi)"/>
                         </a>
                     </dd>
@@ -42,7 +42,8 @@
                     <xsl:if test="history/date[@date-type='accepted']/@iso-8601-date">
                         <dt>Accepted</dt>
                         <dd>
-                            <time itemprop="dateModified">
+	                        <!-- note: dateAccepted is not a real property -->
+                            <time itemprop="dateAccepted">
                                 <xsl:value-of select="history/date[@date-type='accepted']/@iso-8601-date"/>
                             </time>
                         </dd>

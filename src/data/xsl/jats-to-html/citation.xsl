@@ -18,10 +18,20 @@
         </cite>
         <xsl:text>&#32;</xsl:text>
         <span>
-            <xsl:apply-templates select="source" mode="journal-citation"/>
-            <xsl:text>&#32;</xsl:text>
-            <xsl:apply-templates select="volume" mode="citation"/>
-            <xsl:apply-templates select="issue" mode="citation"/>
+	        <xsl:choose>
+		        <xsl:when test="issue">
+			        <!-- if an issue exists, the source and volume are part of it -->
+			        <xsl:apply-templates select="issue" mode="journal-citation"/>
+		        </xsl:when>
+		        <xsl:when test="volume">
+			        <!-- if a volume exists, the source is part of it -->
+			        <xsl:apply-templates select="volume" mode="journal-citation"/>
+		        </xsl:when>
+		        <xsl:otherwise>
+			        <xsl:apply-templates select="source" mode="journal-citation"/>
+			        <xsl:text>&#32;</xsl:text>
+		        </xsl:otherwise>
+	        </xsl:choose>
             <xsl:apply-templates select="elocation-id" mode="citation"/>
             <xsl:apply-templates select="fpage" mode="citation"/>
             <xsl:text>&#32;</xsl:text>
@@ -182,11 +192,15 @@
     </xsl:template>
 
     <!-- journal name -->
-    <xsl:template match="source" mode="journal-citation">
-        <span class="{local-name()}">
-            <xsl:apply-templates/>
-        </span>
-    </xsl:template>
+	<xsl:template match="source" mode="journal-citation">
+		<span class="{local-name()}"
+		      itemprop="isPartOf" itemscope="itemscope"
+		      itemtype="http://schema.org/Periodical">
+			<span itemprop="name">
+				<xsl:apply-templates/>
+			</span>
+		</span>
+	</xsl:template>
 
     <!-- report source -->
     <xsl:template match="source" mode="report-citation">
@@ -411,7 +425,7 @@
     </xsl:template>
 
     <xsl:template match="article-title" mode="citation">
-        <a class="{local-name()}" target="_blank">
+        <a class="{local-name()}" target="_blank" itemprop="url">
             <xsl:attribute name="href">
                 <xsl:call-template name="citation-url">
                     <xsl:with-param name="citation" select=".."/>
@@ -428,7 +442,7 @@
     </xsl:template>
 
     <xsl:template match="article-title" mode="book-citation">
-        <a class="{local-name()}" target="_blank">
+        <a class="{local-name()}" target="_blank" itemprop="url">
             <xsl:attribute name="href">
                 <xsl:call-template name="citation-url">
                     <xsl:with-param name="citation" select=".."/>
@@ -445,6 +459,17 @@
         <xsl:value-of select="concat(' [', ., ']')"/>
     </xsl:template>
 
+	<xsl:template match="volume" mode="journal-citation">
+		<span class="{local-name()}"
+		      itemprop="isPartOf" itemscope="itemscope"
+		      itemtype="http://schema.org/PublicationVolume">
+			<xsl:apply-templates select="../source" mode="journal-citation"/>
+			<xsl:text>&#32;</xsl:text>
+			<b itemprop="volumeNumber">
+				<xsl:apply-templates/>
+			</b>
+		</span>
+	</xsl:template>
 
     <xsl:template match="volume" mode="citation">
         <b class="{local-name()}">
@@ -452,19 +477,33 @@
         </b>
     </xsl:template>
 
-    <xsl:template match="issue" mode="citation">
-        <span class="{local-name()}">
-            <xsl:text>(</xsl:text>
-            <xsl:apply-templates/>
-            <xsl:text>)</xsl:text>
-        </span>
-    </xsl:template>
+	<xsl:template match="issue" mode="journal-citation">
+		<span class="{local-name()}"
+		      itemprop="isPartOf" itemscope="itemscope"
+		      itemtype="http://schema.org/PublicationIssue">
+			<!-- if a volume exists, the source is part of it -->
+			<xsl:choose>
+				<xsl:when test="../volume">
+					<xsl:apply-templates select="../volume" mode="journal-citation"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="../source" mode="journal-citation"/>
+					<xsl:text>&#32;</xsl:text>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:text>(</xsl:text>
+			<span itemprop="issueNumber">
+				<xsl:apply-templates/>
+			</span>
+			<xsl:text>)</xsl:text>
+		</span>
+	</xsl:template>
 
     <xsl:template match="elocation-id" mode="citation">
         <xsl:if test="../volume">
             <xsl:text>:</xsl:text>
         </xsl:if>
-        <span class="{local-name()}">
+        <span class="{local-name()}" itemprop="startPage">
             <xsl:apply-templates/>
         </span>
     </xsl:template>
@@ -475,16 +514,16 @@
         </xsl:if>
         <xsl:choose>
             <xsl:when test="../lpage and . != ../lpage">
-                <span class="{local-name()}">
+                <span class="{local-name()}" itemprop="startPage">
                     <xsl:apply-templates/>
                 </span>
                 <xsl:text>-</xsl:text>
-                <span class="lpage">
+                <span class="lpage" itemprop="endPage">
                     <xsl:value-of select="../lpage"/>
                 </span>
             </xsl:when>
             <xsl:otherwise>
-                <span class="{local-name()}">
+                <span class="{local-name()}" itemprop="startPage">
                     <xsl:apply-templates/>
                 </span>
             </xsl:otherwise>
