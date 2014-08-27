@@ -92,7 +92,7 @@
             <name>
                 <xsl:apply-templates select="name|collab" mode="contrib"/>
             </name>
-            <xsl:apply-templates select="email" mode="contrib"/>
+            <xsl:apply-templates select="email[1]" mode="contrib"/>
             <xsl:apply-templates select="xref[@ref-type='aff']" mode="contrib"/>
         </author>
     </xsl:template>
