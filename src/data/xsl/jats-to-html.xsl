@@ -606,8 +606,7 @@
                 <xsl:value-of select="concat('http://www.uniprot.org/uniprot/', $encoded-id)"/>
             </xsl:when>
             <xsl:when test="$type = 'ENSEMBL'">
-                <!--<xsl:value-of select="concat('http://www.ensembl.org/id/', $encoded-id)"/>-->
-                <xsl:value-of select="concat('http://www.ncbi.nlm.nih.gov/gene/?term=', $encoded-id)"/>
+                <xsl:value-of select="concat('http://www.ensembl.org/id/', $encoded-id)"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:value-of select="$uri"/>
