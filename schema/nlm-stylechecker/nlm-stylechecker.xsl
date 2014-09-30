@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <!-- ************************************************************************ -->
 <!--                                     NLM STYLECHECKER
-                                           Version 5.4
+                                           Version 5.6
     
     Stylesheet tests an XML instance to determine whether it conforms to correct
     PMC style as defined in the Tagging Guidelines located at:
@@ -51,6 +51,46 @@
      
      
    PMC Project Revision notes:
+    August 12, 2014: Version 5.6
+    				Public release of 3rd quarter changes
+   
+    July 8, 2014: 
+    				Added checking for Extended Data sections in the manuscript stream.
+    				  - any manuscript with a figure or table whose label contains "Extended Data"
+    				    or with an <xref> that contains "Extended Data" must have a first level 
+    				    section at the end of the <body> (but before any Supplementary Material 
+    				    section) that has @sec-type="extended-data" and <title>Extended Data</title>.
+    				  - this section must contain at least one figure or table
+	 
+    July 1, 2014:   
+    				Added check in contrib-id that ORCID values must start with 
+    				  http://orcid.org or orcid.org
+
+    May 20, 2014:
+    				In template=mathml-repeated-element-check, allow repeating elements
+    				  if parent::mml:mfenced[@separators]
+    				
+    May 7, 2014:
+    				Added 'online' as alllowed @date-type value in history/date
+    
+    May 6, 2014:
+    				Added 'sc' (Silverchair) to allowed journal-id-type values
+    				
+    April 14, 2014:
+    				Updated stylechecker-version to 5.5
+    				Added aff-xref-check
+    				Added pub-date-conflict-check
+    				Added 'collection' to allowed values in publication-format-check
+    				
+    March 21, 2014:
+    				Added param pub-id-type-values to use in both named templates
+    				 pub-id-check and pub-id-type-check to keep consistent values. 
+   
+    March 11, 2014:
+    				Modified subj-group checks; at least one subj-group with
+    				  subj-group-type="heading" or "part" or no subj-group-type
+    				  must exist.
+   
     February 10, 2014: Version 5.4
                         Public release of 1st quarter changes
    
@@ -308,7 +348,7 @@
                           not(self::text())])"/>
 
    <!-- Indicate our own version -->
-   <xsl:param name="stylechecker-version"     select="'5.0'"/>
+   <xsl:param name="stylechecker-version"     select="'5.6'"/>
    <xsl:param name="stylechecker-mainline"    select="'nlm-stylechecker5.xsl'"/>
 
    <!-- The 'style' selects the rules that can be applied by the stylechecker.
@@ -404,6 +444,8 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:param>
+	
+	<xsl:param name="pub-id-type-values" select="' aggregator archive art-access-id arxiv coden doaj doi index isbn manuscript medline other pii pmc pmcid pmid publisher-id publisher-manuscript sici std-designation '"/>
 
 
    <!-- ********************************************************************* -->

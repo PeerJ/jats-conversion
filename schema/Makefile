@@ -135,12 +135,12 @@ doaj:
 
 # NLM PMC Style Checker
 
-nlm-stylechecker: | $(DOWNLOADS)/nlm-style-5.4.tar.gz
+nlm-stylechecker: | $(DOWNLOADS)/nlm-style-5.6.tar.gz
 	mkdir -p nlm-stylechecker
-	tar xvz -C nlm-stylechecker -f $(DOWNLOADS)/nlm-style-5.4.tar.gz
+	tar xvz -C nlm-stylechecker -f $(DOWNLOADS)/nlm-style-5.6.tar.gz
 
-$(DOWNLOADS)/nlm-style-5.4.tar.gz: | $(DOWNLOADS)
-	wget -c -P $(DOWNLOADS) http://www.ncbi.nlm.nih.gov/pmc/assets/nlm-style-5.4.tar.gz
+$(DOWNLOADS)/nlm-style-5.6.tar.gz: | $(DOWNLOADS)
+	wget -c -P $(DOWNLOADS) http://www.ncbi.nlm.nih.gov/pmc/assets/nlm-style-5.6.tar.gz
 
 # NLM DTDs
 # http://www.ncbi.nlm.nih.gov/data_specs/dtd/

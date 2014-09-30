@@ -73,6 +73,7 @@
       -->
    <xsl:template match="aff">
 		<xsl:call-template name="ms-stream-id-test"/>
+   		<xsl:call-template name="aff-xref-check"/>
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>	
 	
@@ -164,13 +165,16 @@
 		  2) for manuscript, only one subj-group is allowed with @subj-group-type
 		     ='heading' and one subject 'Article'
      -->
-   <xsl:template match="article-categories">   
-      <xsl:call-template name="empty-element-check"/>
+	<xsl:template match="article-categories">   
+		<xsl:call-template name="empty-element-check"/>
 		<xsl:if test="$stream='manuscript'">
 			<xsl:call-template name="ms-subj-group-test"/>
-			</xsl:if>
-      <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+		</xsl:if>
+		<xsl:if test="$stream='article'">
+			<xsl:call-template name="article-subj-group-test"/>
+		</xsl:if>
+		<xsl:apply-templates select="." mode="output"/>
+	</xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: article-id
@@ -303,9 +307,14 @@
    <!-- *********************************************************** -->
    <!-- Match: body
         1) cannot be empty 
+		  2) if manuscript, check that extended data figures are in
+		     the appropriate section.
      -->
    <xsl:template match="body">
       <xsl:call-template name="empty-element-check"/>
+		<xsl:if test="$stream='manuscript'">
+			<xsl:call-template name="ms-extended-data-test"/>
+ 		</xsl:if>		  
       <xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
 
@@ -1850,6 +1859,9 @@
 		<xsl:call-template name="dup-pub-date-check">
 			<xsl:with-param name="context" select="."/>			
 		</xsl:call-template>
+		<xsl:call-template name="pub-date-conflict-check">
+			<xsl:with-param name="context" select="."/>
+		</xsl:call-template>
 		<xsl:call-template name="pub-date-content-check">
 			<xsl:with-param name="context" select="."/>
 		</xsl:call-template>
@@ -2130,6 +2142,7 @@
       
       <xsl:if test="$stream='manuscript'">
 			<xsl:call-template name="ms-abstract-sec-type-test"/>
+			<xsl:call-template name="ms-extended-data-sec-test"/>
       	</xsl:if>
       
       <xsl:choose>
