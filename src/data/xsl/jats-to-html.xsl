@@ -789,7 +789,7 @@
            data-fresco-options="fit: 'width', ui: 'outside', thumbnails: false, loop: true, position: true, preload: false">
 	        <img class="{local-name()}"
 	             src="{$root}-1x.jpg"
-	             sizes="(min-width: 1200px) 581px, (min-width: 980px) 462px, (min-width: 768px) 347px, (max-width: 767px) calc(100vw - 50px)"
+	             sizes="(min-width: 1200px) 581px, (max-width: 1199px) and (min-width: 980px) 462px, (max-width: 979px) and (min-width: 768px) 347px, (max-width: 767px) calc(100vw - 50px)"
 	             srcset="{$root}-2x.jpg 1200w, {$root}-1x.jpg 600w, {$root}-small.jpg 355w"
 	             data-image-id="{$fig-id}"
 	             alt="{$fig/caption/title}"
