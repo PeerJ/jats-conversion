@@ -777,22 +777,25 @@
     <xsl:template match="graphic" mode="fig">
         <xsl:variable name="fig" select=".."/>
         <xsl:variable name="fig-id" select="$fig/@id"/>
-        <a href="{$static-root}{$fig-id}-2x.jpg"
+        <xsl:variable name="root" select="concat($static-root, $fig-id)"/>
+        <a href="{$root}-2x.jpg"
            title="View the full image"
            class="fresco"
            data-fresco-caption="{$fig/label}: {$fig/caption/title}"
            data-fresco-group="figure"
            data-fresco-options="fit: 'width', ui: 'outside', thumbnails: false, loop: true, position: true, preload: false">
-            <img class="{local-name()}"
-                 src="{$static-root}{$fig-id}-1x.jpg"
-                 data-image-id="{$fig-id}"
-                 alt="{$fig/caption/title}"
-                 data-full="{$static-root}{$fig-id}-full.png"
-                 data-thumb="{$static-root}{$fig-id}-thumb.jpg"
-                 data-original="{$static-root}{@xlink:href}"
-                 data-image-type="figure">
-                <xsl:apply-templates select="@*"/>
-            </img>
+	        <img class="{local-name()}"
+	             src="{$root}-1x.jpg"
+	             sizes="(min-width: 1200px) 581px, (min-width: 980px) 462px, (min-width: 768px) 347px, (max-width: 767px) calc(100vw - 50px)"
+	             srcset="{$root}-2x.jpg 1200w, {$root}-1x.jpg 600w, {$root}-small.jpg 355w"
+	             data-image-id="{$fig-id}"
+	             alt="{$fig/caption/title}"
+	             data-full="{$root}-full.png"
+	             data-thumb="{$root}-thumb.jpg"
+	             data-original="{$static-root}{@xlink:href}"
+	             data-image-type="figure">
+		        <xsl:apply-templates select="@*"/>
+	        </img>
         </a>
     </xsl:template>
 
