@@ -404,11 +404,11 @@
     </xsl:template>
 
     <xsl:template match="table-wrap">
-        <div class="{local-name()}">
+        <figure class="{local-name()}">
             <xsl:apply-templates select="@*"/>
             <xsl:apply-templates select="caption" mode="table"/>
             <xsl:apply-templates/>
-        </div>
+        </figure>
     </xsl:template>
 
     <xsl:template match="table-wrap/alternatives">
