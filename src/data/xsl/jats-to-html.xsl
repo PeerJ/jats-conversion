@@ -910,6 +910,13 @@
             <xsl:apply-templates select="node()"/>
         </section>
     </xsl:template>
+    
+    <!-- glossary -->
+    <xsl:template match="glossary">
+        <section class="{local-name()}">
+            <xsl:apply-templates select="node()|@*"/>
+        </section>
+    </xsl:template>
 
     <!-- appendices -->
     <xsl:template match="app-group">
