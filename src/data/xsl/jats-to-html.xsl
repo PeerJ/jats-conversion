@@ -449,7 +449,7 @@
     </xsl:template>
     -->
 
-    <xsl:template match="p[ancestor::caption]">
+    <xsl:template match="p[ancestor::caption][not(ancestor::supplementary-material)]">
         <span class="{local-name()}">
             <xsl:apply-templates select="@*"/>
             <xsl:apply-templates select="node()"/>
