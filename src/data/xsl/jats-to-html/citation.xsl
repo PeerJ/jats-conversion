@@ -5,14 +5,7 @@
 
     <!-- journal citation -->
     <xsl:template match="element-citation[@publication-type='journal']">
-        <xsl:variable name="authors" select="person-group[@person-group-type='author']"/>
-        <xsl:if test="$authors or year">
-            <span class="citation-authors-year">
-                <xsl:apply-templates select="$authors" mode="citation"/>
-                <xsl:apply-templates select="year" mode="citation"/>
-            </span>
-            <xsl:text>&#32;</xsl:text>
-        </xsl:if>
+        <xsl:call-template name="authors-year"></xsl:call-template>
         <cite itemprop="name">
             <xsl:apply-templates select="article-title" mode="citation"/>
         </cite>
@@ -42,11 +35,7 @@
     <!-- book-like citations -->
     <xsl:template match="element-citation[@publication-type='book']
     				   | element-citation[@publication-type='other']">
-        <span class="citation-authors-year">
-            <xsl:apply-templates select="person-group[not(@person-group-type='editor')]" mode="citation"/>
-            <xsl:apply-templates select="year" mode="citation"/>
-        </span>
-        <xsl:text>&#32;</xsl:text>
+        <xsl:call-template name="authors-year"></xsl:call-template>
         <cite class="article-title">
             <xsl:apply-templates select="article-title" mode="book-citation"/>
         </cite>
@@ -67,11 +56,7 @@
 
     <xsl:template match="element-citation[@publication-type='conf-proceedings']
 					   | element-citation[@publication-type='confproc']">
-        <span class="citation-authors-year">
-            <xsl:apply-templates select="person-group[not(@person-group-type='editor')]" mode="citation"/>
-            <xsl:apply-templates select="year" mode="citation"/>
-        </span>
-        <xsl:text>&#32;</xsl:text>
+        <xsl:call-template name="authors-year"></xsl:call-template>
         <cite class="article-title">
             <xsl:apply-templates select="article-title" mode="book-citation"/>
         </cite>
@@ -96,11 +81,7 @@
 
     <!-- report citations -->
     <xsl:template match="element-citation[@publication-type='report']">
-        <span class="citation-authors-year">
-            <xsl:apply-templates select="person-group[@person-group-type='author']" mode="citation"/>
-            <xsl:apply-templates select="year" mode="citation"/>
-        </span>
-        <xsl:text>&#32;</xsl:text>
+        <xsl:call-template name="authors-year"></xsl:call-template>
         <span class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
             <xsl:text>&#32;</xsl:text>
@@ -114,11 +95,7 @@
 
     <!-- thesis citations -->
     <xsl:template match="element-citation[@publication-type='thesis']">
-        <span class="citation-authors-year">
-            <xsl:apply-templates select="person-group[@person-group-type='author']" mode="citation"/>
-            <xsl:apply-templates select="year" mode="citation"/>
-        </span>
-        <xsl:text>&#32;</xsl:text>
+        <xsl:call-template name="authors-year"></xsl:call-template>
         <span class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
         </span>
@@ -130,11 +107,7 @@
 
     <!-- working paper (preprint) citations -->
     <xsl:template match="element-citation[@publication-type='working-paper']">
-        <span class="citation-authors-year">
-            <xsl:apply-templates select="person-group[@person-group-type='author']" mode="citation"/>
-            <xsl:apply-templates select="year" mode="citation"/>
-        </span>
-        <xsl:text>&#32;</xsl:text>
+        <xsl:call-template name="authors-year"></xsl:call-template>
         <span class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
         </span>
@@ -145,11 +118,7 @@
 
     <!-- software citations -->
     <xsl:template match="element-citation[@publication-type='software']">
-        <span class="citation-authors-year">
-            <xsl:apply-templates select="person-group[@person-group-type='author']" mode="citation"/>
-            <xsl:apply-templates select="year" mode="citation"/>
-        </span>
-        <xsl:text>&#32;</xsl:text>
+        <xsl:call-template name="authors-year"></xsl:call-template>
         <span class="article-title">
             <xsl:apply-templates select="source" mode="citation"/>
         </span>
@@ -162,11 +131,7 @@
 
     <!-- other citations (?) -->
     <xsl:template match="element-citation">
-        <span class="citation-authors-year">
-            <xsl:apply-templates select="person-group[@person-group-type='author']" mode="citation"/>
-            <xsl:apply-templates select="year" mode="citation"/>
-        </span>
-        <xsl:text>&#32;</xsl:text>
+        <xsl:call-template name="authors-year"></xsl:call-template>
         <span class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
             <xsl:text>&#32;</xsl:text>
@@ -546,15 +511,27 @@
     </xsl:template>
 
     <!-- citation author names -->
+    <xsl:template name="authors-year">
+        <xsl:variable name="authors" select="person-group[not(@person-group-type='editor')]"/>
+        <xsl:variable name="author-names" select="$authors/name | $authors/collab"/>
 
-    <xsl:template match="person-group" mode="citation">
-        <b class="{local-name()}">
-            <xsl:apply-templates select="name | collab" mode="citation"/>
-            <xsl:text>.</xsl:text>
-        </b>
+        <xsl:if test="$author-names or year">
+            <span class="citation-authors-year">
+                <xsl:if test="$author-names">
+                    <b>
+                        <xsl:apply-templates select="$author-names" mode="citation"/>
+                        <xsl:text>.</xsl:text>
+                    </b>
+                </xsl:if>
+                <xsl:apply-templates select="year" mode="citation"/>
+            </span>
+            <xsl:text>&#32;</xsl:text>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="name" mode="citation">
+        <xsl:variable name="person-type" select="parent::person-group/@person-group-type"/>
+
         <span class="{local-name()}" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
             <xsl:apply-templates select="surname"/>
             <xsl:if test="given-names">
@@ -562,6 +539,17 @@
                 <xsl:apply-templates select="given-names"/>
             </xsl:if>
         </span>
+
+        <xsl:if test="$person-type != '' and $person-type != 'author' and $person-type != 'editor'">
+            <xsl:text> (</xsl:text>
+            <span class="person-type">
+                <xsl:call-template name="ucfirst">
+                    <xsl:with-param name="text" select="$person-type"/>
+                </xsl:call-template>
+            </span>
+            <xsl:text>)</xsl:text>
+        </xsl:if>
+
         <xsl:call-template name="comma-separator"/>
     </xsl:template>
 
@@ -570,5 +558,12 @@
             <xsl:apply-templates/>
         </span>
         <xsl:call-template name="comma-separator"/>
+    </xsl:template>
+
+    <!-- convert the first letter of a string to uppercase -->
+    <xsl:template name="ucfirst">
+        <xsl:param name="text"/>
+        <xsl:value-of select="translate(substring($text, 1, 1) , 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/>
+        <xsl:value-of select="substring($text, 2, string-length($text) - 1)"/>
     </xsl:template>
 </xsl:stylesheet>
