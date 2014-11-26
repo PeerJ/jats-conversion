@@ -32,6 +32,17 @@
                 </dl>
 
                 <dl class="article-dates">
+                    <!-- TODO: handle multiple "corrected" dates -->
+                    <xsl:if test="history/date[@date-type='corrected']/@iso-8601-date">
+                        <dt>Corrected</dt>
+                        <dd>
+	                    <!-- note: dateCorrected is not a real property -->
+                            <time itemprop="dateCorrected">
+                                <xsl:value-of select="history/date[@date-type='corrected']/@iso-8601-date"/>
+                            </time>
+                        </dd>
+                    </xsl:if>
+                    
                     <dt>Published</dt>
                     <dd>
                         <time itemprop="datePublished">
@@ -42,7 +53,7 @@
                     <xsl:if test="history/date[@date-type='accepted']/@iso-8601-date">
                         <dt>Accepted</dt>
                         <dd>
-	                        <!-- note: dateAccepted is not a real property -->
+	                    <!-- note: dateAccepted is not a real property -->
                             <time itemprop="dateAccepted">
                                 <xsl:value-of select="history/date[@date-type='accepted']/@iso-8601-date"/>
                             </time>
