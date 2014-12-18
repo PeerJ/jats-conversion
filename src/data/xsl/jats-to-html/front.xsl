@@ -42,7 +42,7 @@
                             </time>
                         </dd>
                     </xsl:if>
-                    
+
                     <dt>Published</dt>
                     <dd>
                         <time itemprop="datePublished">
@@ -364,17 +364,17 @@
     <!-- email the corresponding author -->
     <xsl:template name="corresponding-email">
         <xsl:param name="email"/>
-        <a class="corresp" href="mailto:{$email}" target="_blank" title="email the corresponding author" rel="tooltip" itemprop="email"><i class="icon-envelope">&#8203;</i></a>
+        <a class="corresp" href="mailto:{$email}" target="_blank" title="email the corresponding author" data-toggle="tooltip" itemprop="email"><i class="icon-envelope">&#8203;</i></a>
     </xsl:template>
 
     <!-- authors with equal contributions -->
     <xsl:template name="equal-contribution">
-        <span class="equal-contribution" title="These authors contributed equally to this work." rel="tooltip"><i class="icon-asterisk">&#8203;</i></span>
+        <span class="equal-contribution" title="These authors contributed equally to this work." data-toggle="tooltip"><i class="icon-asterisk">&#8203;</i></span>
     </xsl:template>
 
     <!-- deceased authors -->
     <xsl:template name="deceased">
-        <span class="deceased" title="Deceased" rel="tooltip"><i class="icon-star-empty">&#8203;</i></span>
+        <span class="deceased" title="Deceased" data-toggle="tooltip"><i class="icon-star-empty">&#8203;</i></span>
     </xsl:template>
 
     <xsl:template match="label" mode="front">

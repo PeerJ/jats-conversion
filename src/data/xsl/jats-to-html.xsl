@@ -748,7 +748,7 @@
     <xsl:template match="object-id[@pub-id-type='doi']" mode="caption">
         <div class="{local-name()} article-component-doi">
             <xsl:text>DOI:&#32;</xsl:text>
-            <a href="{concat('http://dx.doi.org/', .)}" rel="tooltip" title="Cite this object using this DOI">
+            <a href="{concat('http://dx.doi.org/', .)}" data-toggle="tooltip" title="Cite this object using this DOI">
                 <xsl:value-of select="."/>
             </a>
         </div>
@@ -910,7 +910,7 @@
             <xsl:apply-templates select="node()"/>
         </section>
     </xsl:template>
-    
+
     <!-- glossary -->
     <xsl:template match="glossary">
         <section class="{local-name()}">
