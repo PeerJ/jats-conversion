@@ -221,20 +221,33 @@
 	<!-- contributors -->
 
 	<xsl:template match="contrib">
-		<person_name contributor_role="author" sequence="additional">
-            <xsl:choose>
-                <xsl:when test="position() = 1">
-                    <xsl:attribute name="sequence">first</xsl:attribute>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:attribute name="sequence">additional</xsl:attribute>
-                </xsl:otherwise>
-            </xsl:choose>
+		<xsl:choose>
+			<xsl:when test="name">
+				<person_name contributor_role="author" sequence="additional">
+					<xsl:call-template name="contributor-sequence"/>
+					<xsl:apply-templates select="name" mode="contrib"/>
+					<xsl:apply-templates select="xref[@ref-type='aff']" mode="contrib"/>
+					<!--<xsl:apply-templates select="contrib-id" mode="contrib"/>-->
+				</person_name>
+			</xsl:when>
+			<xsl:when test="collab">
+				<organization contributor_role="author" sequence="additional">
+					<xsl:call-template name="contributor-sequence"/>
+					<xsl:value-of select="collab"/><!-- string value -->
+				</organization>
+			</xsl:when>
+		</xsl:choose>
+	</xsl:template>
 
-			<xsl:apply-templates select="name" mode="contrib"/>
-			<xsl:apply-templates select="xref[@ref-type='aff']" mode="contrib"/>
-			<!--<xsl:apply-templates select="contrib-id" mode="contrib"/>-->
-		</person_name>
+	<xsl:template name="contributor-sequence">
+		<xsl:choose>
+			<xsl:when test="position() = 1">
+				<xsl:attribute name="sequence">first</xsl:attribute>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:attribute name="sequence">additional</xsl:attribute>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<!-- contributor name -->
