@@ -876,7 +876,7 @@
 
         <div>
             <a href="{$static-root}{$encoded-filename}" class="btn article-supporting-download"
-               rel="supplement" download="{$filename}" data-filename="{$filename}">
+               data-rel="supplement" download="{$filename}" data-filename="{$filename}">
                 <i class="icon-large icon-download-alt">&#160;</i>
                 <!--<xsl:value-of select="concat(' Download .', ../@mime-subtype)"/>-->
                 <xsl:value-of select="' Download'"/>
