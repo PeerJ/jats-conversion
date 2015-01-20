@@ -12,7 +12,7 @@ Convert and validate against:
 ## Usage
 
 * Run ```cd schema && make fetch``` to fetch all the resources.
-* Run ```scripts/validate.sh filename``` to validate a JATS XML file.
+* Run ```tests/validate.sh filename``` to validate a JATS XML file.
 * Output: any validation errors; NLM style report; HTML article preview.
 
 ## TODO
