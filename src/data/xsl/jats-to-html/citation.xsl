@@ -468,7 +468,7 @@
         <xsl:if test="../volume">
             <xsl:text>:</xsl:text>
         </xsl:if>
-        <span class="{local-name()}" itemprop="startPage">
+        <span class="{local-name()}" itemprop="pageStart">
             <xsl:apply-templates/>
         </span>
     </xsl:template>
@@ -479,16 +479,16 @@
         </xsl:if>
         <xsl:choose>
             <xsl:when test="../lpage and . != ../lpage">
-                <span class="{local-name()}" itemprop="startPage">
+                <span class="{local-name()}" itemprop="pageStart">
                     <xsl:apply-templates/>
                 </span>
                 <xsl:text>-</xsl:text>
-                <span class="lpage" itemprop="endPage">
+                <span class="lpage" itemprop="pageEnd">
                     <xsl:value-of select="../lpage"/>
                 </span>
             </xsl:when>
             <xsl:otherwise>
-                <span class="{local-name()}" itemprop="startPage">
+                <span class="{local-name()}" itemprop="pageStart">
                     <xsl:apply-templates/>
                 </span>
             </xsl:otherwise>
