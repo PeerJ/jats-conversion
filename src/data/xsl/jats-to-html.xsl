@@ -555,7 +555,7 @@
 
         <xsl:choose>
             <xsl:when test="$type = 'doi'">
-                <xsl:value-of select="concat('http://dx.doi.org/', $encoded-id)"/>
+                <xsl:value-of select="concat('https://dx.doi.org/', $encoded-id)"/>
             </xsl:when>
             <xsl:when test="$type = 'DDBJ/EMBL/GenBank'">
                 <xsl:value-of select="concat('https://www.ncbi.nlm.nih.gov/nucleotide?term=', $encoded-id)"/>
@@ -748,7 +748,7 @@
     <xsl:template match="object-id[@pub-id-type='doi']" mode="caption">
         <div class="{local-name()} article-component-doi">
             <xsl:text>DOI:&#32;</xsl:text>
-            <a href="{concat('http://dx.doi.org/', .)}" data-toggle="tooltip" title="Cite this object using this DOI">
+            <a href="{concat('https://dx.doi.org/', .)}" data-toggle="tooltip" title="Cite this object using this DOI">
                 <xsl:value-of select="."/>
             </a>
         </div>

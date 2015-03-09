@@ -24,7 +24,7 @@
     </template>
 
     <template match="article-id[@pub-id-type='doi']">
-        <value-of select="concat('UR  - ', 'http://dx.doi.org/', .)"/>
+        <value-of select="concat('UR  - ', 'https://dx.doi.org/', .)"/>
         <text>&#10;</text>
         <value-of select="concat('DO  - ', .)"/>
         <text>&#10;</text>

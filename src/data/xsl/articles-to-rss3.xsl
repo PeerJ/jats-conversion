@@ -54,7 +54,7 @@
             <xsl:text>&#10;</xsl:text>
         </xsl:for-each>
         <xsl:text>uri: </xsl:text>
-        <xsl:value-of select="concat('http://dx.doi.org/', article-id[@pub-id-type='doi'])"/>
+        <xsl:value-of select="concat('https://dx.doi.org/', article-id[@pub-id-type='doi'])"/>
         <xsl:text>&#10;</xsl:text>
         <xsl:text>license: </xsl:text>
         <xsl:value-of select="permissions/license/@xlink:href"/>

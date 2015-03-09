@@ -140,7 +140,7 @@
                 <xsl:value-of select="concat($title, '. ')"/>
                 <xsl:value-of select="concat($journal-title, ' ')"/>
                 <xsl:value-of select="concat(volume, ':', elocation-id)"/>
-                <xsl:value-of select="concat(' http://dx.doi.org/', $doi)"/>
+                <xsl:value-of select="concat(' https://dx.doi.org/', $doi)"/>
             </terms:bibliographicCitation>
             <terms:dateSubmitted>
                 <xsl:value-of select="history/date[@date-type='received']/@iso-8601-date"/>
