@@ -26,7 +26,7 @@
 
         <variable name="id" select="article-id[@pub-id-type='publisher-id']/text()"/>
         <variable name="doi" select="article-id[@pub-id-type='doi']/text()"/>
-        <variable name="url" select="concat('http://dx.doi.org/', $doi)"/>
+        <variable name="url" select="concat('https://dx.doi.org/', $doi)"/>
         <variable name="title" select="title-group/article-title"/>
         <variable name="pub-date" select="pub-date[@date-type='pub'][@pub-type='epub']|pub-date[@date-type='preprint'][@pub-type='epreprint']"/>
 

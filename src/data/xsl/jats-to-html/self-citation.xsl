@@ -41,8 +41,8 @@
                     <xsl:value-of select="$meta/elocation-id"/>
                 </span>
                 <xsl:text>&#32;</xsl:text>
-                <a href="http://dx.doi.org/{$doi}" itemprop="url">
-                    <xsl:value-of select="concat('http://dx.doi.org/', $doi)"/>
+                <a href="https://dx.doi.org/{$doi}" itemprop="url">
+                    <xsl:value-of select="concat('https://dx.doi.org/', $doi)"/>
                 </a>
             </dd>
         </dl>

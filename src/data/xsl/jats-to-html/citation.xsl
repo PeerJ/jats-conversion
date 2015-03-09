@@ -216,7 +216,7 @@
         <span itemprop="name">
             <a class="{local-name()}" target="_blank">
                 <xsl:attribute name="href">
-	                <xsl:value-of select="concat('http://scholar.google.com/scholar_lookup?title=', ., '&amp;author=', $editors/name[1]/surname, '&amp;publication_year=', ../year/@iso-8601-date)"/>
+	                <xsl:value-of select="concat('https://scholar.google.com/scholar_lookup?title=', ., '&amp;author=', $editors/name[1]/surname, '&amp;publication_year=', ../year/@iso-8601-date)"/>
                 </xsl:attribute>
                 <xsl:apply-templates/>
             </a>
@@ -334,7 +334,7 @@
                     </xsl:call-template>
                 </xsl:variable>
 
-                <xsl:value-of select="concat('http://dx.doi.org/', $encoded-doi)"/>
+                <xsl:value-of select="concat('https://dx.doi.org/', $encoded-doi)"/>
             </xsl:when>
             <xsl:when test="$arxiv">
                 <xsl:value-of select="concat('http://arxiv.org/abs/', $arxiv)"/>
@@ -352,7 +352,7 @@
                     <xsl:when test="$citation/@publication-type = 'book'">
                         <xsl:choose>
                             <xsl:when test="$citation/article-title">
-                                <xsl:value-of select="concat('http://scholar.google.com/scholar_lookup?title=', $citation/article-title, '&amp;author=', $authors/name[1]/surname, '&amp;publication_year=', $citation/year/@iso-8601-date)"/>
+                                <xsl:value-of select="concat('https://scholar.google.com/scholar_lookup?title=', $citation/article-title, '&amp;author=', $authors/name[1]/surname, '&amp;publication_year=', $citation/year/@iso-8601-date)"/>
                             </xsl:when>
                             <xsl:when test="$citation/source">
                                 <xsl:variable name="editors" select="$citation/person-group[@person-group-type='editor']"/>
@@ -366,7 +366,7 @@
                                         </xsl:otherwise>
                                     </xsl:choose>
                                 </xsl:variable>
-	                            <xsl:value-of select="concat('http://scholar.google.com/scholar_lookup?title=', $citation/source, '&amp;author=', $author, '&amp;publication_year=', $citation/year/@iso-8601-date)"/>
+	                            <xsl:value-of select="concat('https://scholar.google.com/scholar_lookup?title=', $citation/source, '&amp;author=', $author, '&amp;publication_year=', $citation/year/@iso-8601-date)"/>
                             </xsl:when>
                             <xsl:otherwise>
                                 <xsl:value-of select="concat('#', $citation/../@id)"/>
@@ -376,7 +376,7 @@
                     <xsl:otherwise>
                         <xsl:choose>
                             <xsl:when test="$citation/article-title">
-                                <xsl:value-of select="concat('http://scholar.google.com/scholar_lookup?title=', $citation/article-title, '&amp;author=', $authors/name[1]/surname, '&amp;publication_year=', $citation/year/@iso-8601-date)"/>
+                                <xsl:value-of select="concat('https://scholar.google.com/scholar_lookup?title=', $citation/article-title, '&amp;author=', $authors/name[1]/surname, '&amp;publication_year=', $citation/year/@iso-8601-date)"/>
                             </xsl:when>
 
                             <xsl:otherwise>

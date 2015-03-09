@@ -36,7 +36,7 @@
     <template match="article-id[@pub-id-type='doi']">
         <call-template name="item">
             <with-param name="key">url</with-param>
-            <with-param name="value" select="concat('http://dx.doi.org/', .)"/>
+            <with-param name="value" select="concat('https://dx.doi.org/', .)"/>
         </call-template>
 
         <call-template name="item">
