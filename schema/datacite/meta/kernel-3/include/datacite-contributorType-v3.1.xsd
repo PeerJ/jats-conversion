@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Version 1.0 - Created 2011-01-13 - FZ, TIB, Germany
-     2013-05 v3.0: Addition of ID to simpleType element, added values "ResearchGroup" & "Other"-->
+     2013-05 v3.0: Addition of ID to simpleType element, added values "ResearchGroup" & "Other"
+	 2014-08-20 v3.1: Addition of value "DataCurator"-->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://datacite.org/schema/kernel-3" targetNamespace="http://datacite.org/schema/kernel-3" elementFormDefault="qualified">
 	<xs:simpleType name="contributorType" id="contributorType">
 		<xs:annotation>
@@ -9,6 +10,7 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="ContactPerson"/>
 			<xs:enumeration value="DataCollector"/>
+			<xs:enumeration value="DataCurator"/>
 			<xs:enumeration value="DataManager"/>
 			<xs:enumeration value="Distributor"/>
 			<xs:enumeration value="Editor"/>
