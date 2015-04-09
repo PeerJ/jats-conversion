@@ -1,0 +1,47 @@
+<schema targetNamespace="http://www.openarchives.org/OAI/2.0/oai-identifier"
+  xmlns:oai-identifier="http://www.openarchives.org/OAI/2.0/oai-identifier"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified">
+
+  <annotation>
+    <documentation>
+      Schema for description section of Identify reply of OAI-PMH v2.0.
+      For repositories that comply with the oai format for unique identifiers 
+      for items records. 
+      See: http://www.openarchives.org/OAI/2.0/guidelines-oai-identifier.htm
+      Validated with http://www.w3.org/2001/03/webdata/xsv on 2002-05-16 
+      Corrected to handle single letter elements in domain name, e.g ebibpol.p.lodz.pl 2007-05-22
+      Simeon Warner $Date: 2007-06-07 19:28:11 $
+    </documentation>
+  </annotation>
+
+  <element name="oai-identifier" type="oai-identifier:oai-identifierType"/>
+
+  <complexType name="oai-identifierType">
+    <sequence>
+      <element name="scheme" minOccurs="1" maxOccurs="1" 
+               type="string" fixed="oai"/>
+      <element name="repositoryIdentifier" minOccurs="1" maxOccurs="1" 
+               type="oai-identifier:repositoryIdentifierType"/>
+      <element name="delimiter" minOccurs="1" maxOccurs="1"
+               type="string" fixed=":"/>
+      <element name="sampleIdentifier" minOccurs="1" maxOccurs="1" 
+               type="oai-identifier:sampleIdentifierType"/>
+    </sequence>
+  </complexType>
+
+  <simpleType name="repositoryIdentifierType">
+    <restriction base="string">
+      <pattern value="[a-zA-Z][a-zA-Z0-9\-]*(\.[a-zA-Z][a-zA-Z0-9\-]*)+"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="sampleIdentifierType">
+    <restriction base="string">
+      <pattern value="oai:[a-zA-Z][a-zA-Z0-9\-]*(\.[a-zA-Z][a-zA-Z0-9\-]*)+:[a-zA-Z0-9\-_\.!~\*&apos;\(\);/\?:@&amp;=\+$,%]+"/>
+      <!--meta ., \, ?, *, +, {, } (, ), [ or ] -->
+    </restriction>
+  </simpleType>
+
+</schema>

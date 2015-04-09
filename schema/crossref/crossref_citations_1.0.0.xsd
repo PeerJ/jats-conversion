@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:simpleType name="doi_t">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="2048"/>
+            <xs:minLength value="6"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="citations">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="citation" maxOccurs="unbounded" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="doi" maxOccurs="1" minOccurs="1">
+                                <xs:simpleType>
+                                    <xs:restriction base="doi_t"/>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="citations-cited" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="doi" maxOccurs="unbounded" minOccurs="1">
+                                            <xs:simpleType>
+                                                <xs:restriction base="doi_t"/>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="citations-cited-by" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="doi" maxOccurs="unbounded" minOccurs="1">
+                                            <xs:simpleType>
+                                                <xs:restriction base="doi_t"/>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

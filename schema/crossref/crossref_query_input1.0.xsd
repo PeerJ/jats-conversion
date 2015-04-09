@@ -1,0 +1,587 @@
+<?xml version="1.0"	encoding="UTF-8"?>
+
+<!--
+     CrossRef query input XSD.
+     Developed for CrossRef (www.crossref.org) by:
+
+     Atypon Systems
+     Santa Clara, CA
+     http://www.atypon.com
+     info@atypon.com
+-->
+    <!-- =============================================================
+
+                          Change History
+
+    Changes record version, author initials, date, and comments
+
+    1.0.1 (CSK) 1/5/04
+
+    Changed the free text portion of the <query> element to use element
+    <unstructured_citation> which was copied from common1.0.xsd. This now
+    makes the query element identical to the <citation> element in the deposit
+    and reference-only deposit schemas.
+
+     ============================================================= -->
+
+<!--
+     =============================================================
+     This file contains the XML schema definition (XSD) for CrossRef's XML query interface.
+     The XML query interface allowes greater control over CrossRef's query engine than
+     piped queries. Each element in the query data has a match attribute which can
+     be a combination of the following:
+      - optional : Instructs the query engine that the query field may be dropped from the query.
+      - fuzzy    : Instructs the query engine that the query field may be fuzzy matched.
+      - null     : Instructs the query engine to match the query field with a NULL value. Note that
+                   this is very different from a wildcard search. It is useful when querying two
+                   articles with exactly the same databasedaos except one (author for example)
+                   that is NULL in the CrossRef database. If you want to query that DOI only
+                   then use null;
+      - exact    : Instructs the query engine to perform an exact match on the query field, Note
+                   that in the case where the match attribute is defined as a list of
+                   NMTOKENs this is identical to match="" (i.e. not optional and not fuzzy).
+                   In This case the combination of exact with fuzzy or optional is illegal and
+                   will render the query as malformed.
+
+     Please look at crossref_query_output.xsd for the XML schema definition of query XML output.
+	 =============================================================
+-->
+
+<xsd:schema	xmlns:xsd       = "http://www.w3.org/2001/XMLSchema"
+		targetNamespace	= "http://www.crossref.org/qschema/1.0"
+		xmlns           = "http://www.crossref.org/qschema/1.0">
+
+   <!--	================== Common attribute	and	elements ============ -->
+   <xsd:simpleType name="qfield_t">
+	  <xsd:restriction base="xsd:string">
+		 <xsd:maxLength	value="256"/>
+		 <xsd:minLength	value="0"/>
+	  </xsd:restriction>
+   </xsd:simpleType>
+
+   <xsd:simpleType name	= "xrefYear">
+	<xsd:restriction base =	"xsd:positiveInteger">
+		<xsd:maxInclusive value	= "2200"/>
+		<xsd:minInclusive value	= "1400"/>
+		<xsd:totalDigits value = "4"/>
+	</xsd:restriction>
+   </xsd:simpleType>
+
+	<xsd:simpleType	name = "pubType">
+			<xsd:restriction base =	"xsd:NMTOKEN">
+				  <xsd:enumeration value = "abstract_only"/>
+				  <xsd:enumeration value = "full_text"/>
+				  <xsd:enumeration value = "bibliographic_record"/>
+			</xsd:restriction>
+	</xsd:simpleType>
+
+   <!--	============= End of common	attribute and elements ============	-->
+
+   <!--
+   ================================================================
+   XSD schema for CrossRef XML based queries.
+   Developed for CrossRef by Atypon	Systems	(http://www.atypon.com)
+   ================================================================
+   -->
+
+   <!--
+   Values that might appear	in the match attribute of a	query field:
+   optional: The field is allowed to be	dropped	from the query to try and match	it.
+   fuzzy:	 The field will	be fuzzy matched.
+   -->
+
+   <xsd:element	name="query_batch">
+	  <xsd:complexType>
+		 <xsd:sequence>
+			<xsd:element ref="head"/>
+			<xsd:element ref="body"/>
+		 </xsd:sequence>
+		 <xsd:attribute	name="version" fixed="1.0" type	= "xsd:string"/>
+	  </xsd:complexType>
+   </xsd:element>
+
+   <xsd:element	name="head">
+	  <xsd:complexType>
+		 <xsd:sequence>
+			<xsd:element ref="email_address" minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="doi_batch_id"	/>
+		 </xsd:sequence>
+	  </xsd:complexType>
+   </xsd:element>
+
+   <xsd:element	name="body">
+	  <xsd:complexType>
+		 <xsd:sequence>
+			<xsd:element ref="query" minOccurs="1" maxOccurs="unbounded" />
+		 </xsd:sequence>
+	  </xsd:complexType>
+   </xsd:element>
+
+   <!--
+	  The presense of any of the following elements	makes this a book/conf.	query:
+	  1. isbn
+	  2. series_title
+	  3. volume_title
+	  4. edition_number
+	  5. component_number
+   -->
+   <xsd:element	name="query">
+	  <xsd:complexType>
+		 <xsd:all>
+			<xsd:element ref="issn"			minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="journal_title"	minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="author"		minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="volume"		minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="issue"		minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="first_page"		minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="year"			minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="publication_type"	minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="doi"			minOccurs="0" maxOccurs="1"/>
+
+			<!-- book/conf.	specific elements -->
+			<xsd:element ref="isbn"			minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="series_title"		minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="volume_title"		minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="edition_number"	minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="component_number"	minOccurs="0" maxOccurs="1"/>
+
+			<!-- Citation text as it appears in	the	article	, future placeholder -->
+                        <xsd:element ref="unstructured_citation" minOccurs="0" maxOccurs="1"/>
+
+		 </xsd:all>
+
+		 <!--
+			The	combination	of (SubmitterID,doi_batch_id,key) must be unique
+			if the attribute 'forward-match' is set to true
+		 -->
+		 <xsd:attribute	name="key" use="optional">
+			<xsd:simpleType>
+		   <xsd:restriction	base="xsd:string">
+			<xsd:maxLength value="128"/>
+			<xsd:minLength value="1"/>
+		   </xsd:restriction>
+		  </xsd:simpleType>
+		 </xsd:attribute>
+
+		 <xsd:attribute	name="enable-multiple-hits"	default="false">
+			<xsd:simpleType>
+			   <xsd:restriction	base="xsd:boolean" />
+			</xsd:simpleType>
+		 </xsd:attribute>
+
+		 <xsd:attribute	name="forward-match" default="false">
+			<xsd:simpleType>
+			   <xsd:restriction	base="xsd:boolean" />
+			</xsd:simpleType>
+		 </xsd:attribute>
+
+	  </xsd:complexType>
+   </xsd:element>
+
+   <!--
+	  Publisher	generated item that	identifies the DOI submission batch.
+	this, coupled with the submitter id	in CrossRef. will be used as the
+	submission reference and be	used for various functions such	as error reporting,
+	forward	matching and in	the	API	for	submission results download.
+   -->
+   <xsd:element	name = "doi_batch_id">
+	<xsd:simpleType>
+		<xsd:restriction base =	"xsd:string">
+			<xsd:maxLength value = "100"/>
+			<xsd:minLength value = "4"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+   </xsd:element>
+
+   <!--	The	email address to send the results to -->
+   <xsd:element	name = "email_address">
+	<xsd:simpleType>
+		<xsd:restriction base =	"xsd:string">
+			<xsd:pattern value="[\p{L}\p{N}!/+-_]+(\.[\p{L}\p{N}!/+-_]+)*@[\p{L}\p{N}!/+-_]+(\.[\p{L}_]+)+"/>
+			<xsd:maxLength value = "200"/>
+			<xsd:minLength value = "6"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+   </xsd:element>
+
+   <!--
+	  The ISSN must	consist	of eight digits	(where the last	digit may be an	X),	or
+	it must	consist	of eight digits	in two groups of four with a hyphen	between
+	the	two	groups.
+
+	Match Attributes:
+
+	ISSNs can only be optional.	There is no	fuzzy matching on ISSNs	nor	is there
+	NULL matching since	no NULL	ISSNs exist	in the database.
+   -->
+   <xsd:simpleType name="issn_t">
+	  <xsd:restriction base="xsd:string">
+		 <xsd:pattern value="\d{4}-?\d{3}[\dX]"/>
+		 <xsd:maxLength	value="9"/>
+		 <xsd:minLength	value="8"/>
+	  </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:element	name="issn">
+	  <xsd:complexType>
+         <xsd:simpleContent>
+		    <xsd:extension base="issn_t">
+		       <xsd:attribute name="match" default="optional">
+	              <xsd:simpleType>
+	                 <xsd:restriction base = "xsd:NMTOKEN">
+	                    <xsd:enumeration value = "optional"/>
+	                    <xsd:enumeration value = "exact"/>
+	                  </xsd:restriction>
+	              </xsd:simpleType>
+			   </xsd:attribute>
+			</xsd:extension>
+		 </xsd:simpleContent>
+	  </xsd:complexType>
+   </xsd:element>
+
+   <!--
+	The	ISBN must be 10	digits (the	last digit may be 'X'),	or it must be four
+	groups of digits, separated	by a hyphens or	spaces.	Although not required,
+	the	ISBN number	should retain spaces or	hyphens	that appear	in the formatted
+	number because they	aid	in human-readability.
+
+	Match Attributes:
+	same as	ISSN
+   -->
+	<xsd:simpleType	name = "isbn_t">
+		<xsd:restriction base =	"xsd:string">
+			<xsd:pattern value="\d[\d -]+[\dX]"/>
+			<xsd:maxLength value = "13"/>
+			<xsd:minLength value = "10"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+   <xsd:element	name="isbn">
+	  <xsd:complexType>
+		 <xsd:simpleContent>
+			<xsd:extension base="isbn_t">
+		       <xsd:attribute name="match" default="optional">
+	              <xsd:simpleType>
+	                 <xsd:restriction base = "xsd:NMTOKEN">
+	                    <xsd:enumeration value = "optional"/>
+	                    <xsd:enumeration value = "exact"/>
+	                  </xsd:restriction>
+	              </xsd:simpleType>
+			   </xsd:attribute>
+			</xsd:extension>
+		 </xsd:simpleContent>
+	  </xsd:complexType>
+   </xsd:element>
+
+   <!--
+   Match Attributes:
+   Journal title can be	fuzzy matched and can be optional in the query.	It make	no sense
+   to query	a null value of	the	journal	title since	there are no null titles in	the	database.
+   -->
+   <xsd:element	name="journal_title">
+	  <xsd:complexType>
+		 <xsd:simpleContent>
+			<xsd:extension base="qfield_t">
+			   <xsd:attribute name="match" default="optional fuzzy">
+				  <xsd:simpleType>
+					 <xsd:list>
+						<xsd:simpleType>
+						   <xsd:restriction	base="xsd:NMTOKEN">
+							<xsd:enumeration value = "optional"/>
+							<xsd:enumeration value = "fuzzy"/>
+							<xsd:enumeration value = "exact"/>
+						   </xsd:restriction>
+						</xsd:simpleType>
+					 </xsd:list>
+				  </xsd:simpleType>
+			   </xsd:attribute>
+			</xsd:extension>
+		 </xsd:simpleContent>
+	  </xsd:complexType>
+   </xsd:element>
+
+
+   <!--
+   Match Attributes:
+   Series title	can	be fuzzy matched and can be	optional in	the	query. Series titles null value query are permissable
+   -->
+   <xsd:element	name="series_title">
+	  <xsd:complexType>
+		 <xsd:simpleContent>
+			<xsd:extension base="qfield_t">
+				<xsd:attribute name="match" default="optional fuzzy">
+				  <xsd:simpleType>
+					 <xsd:list>
+						<xsd:simpleType>
+						   <xsd:restriction	base="xsd:NMTOKEN">
+                              <xsd:enumeration value = "optional"/>
+							  <xsd:enumeration value = "fuzzy"/>
+							  <xsd:enumeration value = "null"/>
+							  <xsd:enumeration value = "exact"/>
+						   </xsd:restriction>
+						</xsd:simpleType>
+					 </xsd:list>
+				  </xsd:simpleType>
+			   </xsd:attribute>
+		    </xsd:extension>
+		 </xsd:simpleContent>
+	  </xsd:complexType>
+   </xsd:element>
+
+   <!--
+   Match Attributes:
+   volume title	can	be fuzzy matched and can be	optional in	the	query. volume title null value query is permissable
+   -->
+   <xsd:element	name="volume_title">
+	  <xsd:complexType>
+		 <xsd:simpleContent>
+			<xsd:extension base="qfield_t">
+				<xsd:attribute name="match" default="optional fuzzy">
+				  <xsd:simpleType>
+					 <xsd:list>
+						<xsd:simpleType>
+						   <xsd:restriction	base="xsd:NMTOKEN">
+                              <xsd:enumeration value = "optional"/>
+							  <xsd:enumeration value = "fuzzy"/>
+							  <xsd:enumeration value = "exact"/>
+						   </xsd:restriction>
+						</xsd:simpleType>
+					 </xsd:list>
+				  </xsd:simpleType>
+			   </xsd:attribute>
+		    </xsd:extension>
+		 </xsd:simpleContent>
+	  </xsd:complexType>
+   </xsd:element>
+
+   <!--
+   Match Attributes:
+   Authors can be fuzzy	matched	and	can	be optional	in the query. It also can be
+   null	so a match="null" is permissable
+   -->
+   <xsd:element	name="author">
+	  <xsd:complexType>
+		 <xsd:simpleContent>
+			<xsd:extension base="qfield_t">
+				  <xsd:attribute name="match" default="optional	fuzzy">
+				  <xsd:simpleType>
+					 <xsd:list>
+						<xsd:simpleType>
+						   <xsd:restriction	base="xsd:NMTOKEN">
+							<xsd:enumeration value = "optional"/>
+							<xsd:enumeration value = "fuzzy"/>
+							<xsd:enumeration value = "null"/>
+							<xsd:enumeration value = "exact"/>
+						   </xsd:restriction>
+						</xsd:simpleType>
+					 </xsd:list>
+				  </xsd:simpleType>
+			   </xsd:attribute>
+			</xsd:extension>
+		 </xsd:simpleContent>
+	  </xsd:complexType>
+   </xsd:element>
+
+   <!--
+   Match Attributes:
+   volume can be fuzzy matched and can be optional in the query
+   -->
+   <xsd:element	name="volume">
+	  <xsd:complexType>
+		 <xsd:simpleContent>
+			<xsd:extension base="qfield_t">
+				  <xsd:attribute name="match" default="optional	fuzzy">
+				  <xsd:simpleType>
+					 <xsd:list>
+						<xsd:simpleType>
+						   <xsd:restriction	base="xsd:NMTOKEN">
+							<xsd:enumeration value = "optional"/>
+							<xsd:enumeration value = "fuzzy"/>
+							<xsd:enumeration value = "exact"/>
+						   </xsd:restriction>
+						</xsd:simpleType>
+					 </xsd:list>
+				  </xsd:simpleType>
+			   </xsd:attribute>
+			</xsd:extension>
+		 </xsd:simpleContent>
+	  </xsd:complexType>
+   </xsd:element>
+
+   <!--
+   Match Attributes:
+   issue can be	fuzzy matched, Optional if volume is optinal
+   -->
+   <xsd:element	name="issue">
+	  <xsd:complexType>
+		 <xsd:simpleContent>
+			<xsd:extension base="qfield_t">
+				  <xsd:attribute name="match" default="fuzzy">
+				  <xsd:simpleType>
+					 <xsd:list>
+						<xsd:simpleType>
+						   <xsd:restriction	base="xsd:NMTOKEN">
+							<xsd:enumeration value = "exact"/>
+							<xsd:enumeration value = "fuzzy"/>
+						   </xsd:restriction>
+						</xsd:simpleType>
+					 </xsd:list>
+				  </xsd:simpleType>
+			   </xsd:attribute>
+			</xsd:extension>
+		 </xsd:simpleContent>
+	  </xsd:complexType>
+   </xsd:element>
+
+   <!--
+   Match Attributes:
+   page	is not fuzzy matched but can be	optional in	the	query. It also can be
+   null	so a match="null" is permissable
+   -->
+   <xsd:element	name="first_page">
+	  <xsd:complexType>
+		 <xsd:simpleContent>
+			<xsd:extension base="qfield_t">
+				  <xsd:attribute name="match" default="optional">
+				  <xsd:simpleType>
+					 <xsd:list>
+						<xsd:simpleType>
+						   <xsd:restriction	base="xsd:NMTOKEN">
+							<xsd:enumeration value = "optional"/>
+							<xsd:enumeration value = "null"/>
+							<xsd:enumeration value = "exact"/>
+						   </xsd:restriction>
+						</xsd:simpleType>
+					 </xsd:list>
+				  </xsd:simpleType>
+			   </xsd:attribute>
+			</xsd:extension>
+		 </xsd:simpleContent>
+	  </xsd:complexType>
+   </xsd:element>
+
+   <!--
+   Match Attributes:
+   year	is not fuzzy matched and can't be null.	However, it can be optional in the query.
+   -->
+   <xsd:element	name="year">
+	  <xsd:complexType>
+		 <xsd:simpleContent>
+			<xsd:extension base="xrefYear">
+				  <xsd:attribute name="match" default="optional">
+	                <xsd:simpleType>
+	                    <xsd:restriction base =	"xsd:NMTOKEN">
+	                	    <xsd:enumeration value = "optional"/>
+	                		<xsd:enumeration value = "exact"/>
+	                    </xsd:restriction>
+	              </xsd:simpleType>
+			    </xsd:attribute>
+			</xsd:extension>
+		 </xsd:simpleContent>
+	  </xsd:complexType>
+   </xsd:element>
+
+   <!--
+   Match Attributes
+   Edition numbers are fuzzy matched.
+   -->
+   <xsd:element	name="edition_number">
+	  <xsd:complexType>
+		 <xsd:simpleContent>
+			<xsd:extension base="qfield_t">
+				  <xsd:attribute name="match" default="fuzzy">
+	                <xsd:simpleType>
+	                    <xsd:restriction base =	"xsd:NMTOKEN">
+	                	    <xsd:enumeration value = "fuzzy"/>
+	                		<xsd:enumeration value = "exact"/>
+	                    </xsd:restriction>
+	              </xsd:simpleType>
+			    </xsd:attribute>
+			</xsd:extension>
+		 </xsd:simpleContent>
+	  </xsd:complexType>
+   </xsd:element>
+
+   <!--
+   Match Attributes
+   component numbers can be fuzzy matched.
+   -->
+   <xsd:element	name="component_number">
+	  <xsd:complexType>
+		 <xsd:simpleContent>
+			<xsd:extension base="qfield_t">
+				  <xsd:attribute name="match" default="fuzzy">
+	                <xsd:simpleType>
+	                    <xsd:restriction base =	"xsd:NMTOKEN">
+	                	    <xsd:enumeration value = "fuzzy"/>
+	                		<xsd:enumeration value = "exact"/>
+	                    </xsd:restriction>
+	              </xsd:simpleType>
+			    </xsd:attribute>
+			</xsd:extension>
+		 </xsd:simpleContent>
+	  </xsd:complexType>
+   </xsd:element>
+
+
+   <xsd:element	name="publication_type">
+	  <xsd:complexType>
+		 <xsd:simpleContent>
+			<xsd:extension base="pubType">
+			</xsd:extension>
+		 </xsd:simpleContent>
+	  </xsd:complexType>
+   </xsd:element>
+
+   <xsd:element	name = "doi">
+	<xsd:simpleType>
+		<xsd:restriction base =	"xsd:string">
+			<xsd:maxLength value = "2048"/>
+			<xsd:minLength value = "6"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+   </xsd:element>
+
+
+    <!--
+    The following are basic data types for face markup. Face markup that appears
+    in the title, subtitle, and original_language_title elements should be
+    retained when depositing databasedaos. Face markup in other elements (e.g. small
+    caps in author names) must be dropped. Face markup support includes bold (b),
+    italic (i), underline (u), over-line (ovl), superscript (sup), subscript (sub),
+    small caps (scp), and typewriter text (tt).
+ -->
+    <xsd:complexType name="xrefFaces" mixed="true">
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:group ref="face_markup"/>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:group name="face_markup">
+        <xsd:choice>
+            <xsd:element ref="b"/>
+            <xsd:element ref="i"/>
+            <xsd:element ref="u"/>
+            <xsd:element ref="ovl"/>
+            <xsd:element ref="sup"/>
+            <xsd:element ref="sub"/>
+            <xsd:element ref="scp"/>
+            <xsd:element ref="tt"/>
+        </xsd:choice>
+    </xsd:group>
+    <xsd:element name="b" type="xrefFaces"/>
+    <xsd:element name="i" type="xrefFaces"/>
+    <xsd:element name="u" type="xrefFaces"/>
+    <xsd:element name="ovl" type="xrefFaces"/>
+    <xsd:element name="sup" type="xrefFaces"/>
+    <xsd:element name="sub" type="xrefFaces"/>
+    <xsd:element name="scp" type="xrefFaces"/>
+    <xsd:element name="tt" type="xrefFaces"/>
+
+    <xsd:element name="unstructured_citation">
+        <xsd:complexType mixed="true">
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                <xsd:group ref="face_markup"/>
+            </xsd:choice>
+        </xsd:complexType>
+    </xsd:element>
+
+
+</xsd:schema>

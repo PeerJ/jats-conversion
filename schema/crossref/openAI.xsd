@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.crossref.org/openAI.xsd" xmlns="http://www.crossref.org/openAI.xsd">
+
+    <xsd:element name="program">
+        <xsd:annotation>
+            <xsd:documentation>will accommodate deposit of open access metadata</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="license_ref"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="license_ref">
+        <xsd:complexType>
+            <xsd:simpleContent>
+                <xsd:extension base="xsd:anyURI">
+                    <xsd:attribute name="start_date" type="xsd:date" use="optional"/>
+                </xsd:extension>
+            </xsd:simpleContent>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

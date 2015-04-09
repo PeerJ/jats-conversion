@@ -32,7 +32,7 @@
      7. Elements used for citation deposit and XML queries
      8. Elements used to deposit components
      9. CrossMark-specific elements
-     10. Elements for standards
+     10. Standard-specific elements
 
      ============================================================= -->
 	<!-- =============================================================
@@ -40,11 +40,14 @@
                           Change History
 
     Changes record version, author initials, date, and comments
-    
+  4.3.1,2,4,5,6 (PDF) 3/2/2015 removed redundant ORCID validation
   4.3.1,2,4 (PDF) 6/24/2014 minor change to ORCID regex to only allow X
-  4.3.2 (PDF) 4/14/2014 changed superseded_by to supersedes
-  4.3.1,2,4 (PDF) 3/13/2014 added application/epub+zip to mime_type.atts
-  4.3.1, 4.3.2 (PDF) 11/27/2013 updated custom_metadata to require either assertion, fr:program or ai:program be present 
+  4.3.4 (PDF) 5/27/2014 added unspecified and syndication as values for property attribute, removed tdm as value for content_version
+  4.3.2,4 (PDF) 4/14/2014 changed superseded_by to supersedes
+  4.3.4 (PDF) 3/26/2014 moved standard_designator, standards_body, and child elements to common file, added standard_designator and standards_body to citation; added type attribute to standard_designator
+  4.3.1,,2,4 (PDF) 3/13/2014 added application/epub+zip to mime_type.atts
+  4.3.4 (PDF) 12/19/2013 changed 'KLB' to 'KB'
+  4.3.4 (PDF) 12/10/2013 added archive_location and archive; changed name to depositor_name to support JATS-like name changes, added alt-name, name elements 
   4.3.2 (PDF) 9/17/2013 added content_version attribute to <resource> element
   4.3.2 (PDF) 5/1/2013 changed openAI.xsd to AccessIndicators.xsd
   4.3.2 (PDF) 4/10/2013 added reference_distribution_opt and metadata_distribution_opt attribute
@@ -171,6 +174,17 @@
 				</xsd:restriction>
 			</xsd:simpleType>
 		</xsd:attribute>
+		<xsd:attribute name="name-style" use="optional">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:token">
+					<xsd:enumeration value="western"/>
+					<xsd:enumeration value="eastern"/>
+					<xsd:enumeration value="islensk"/>
+					<xsd:enumeration value="given-only"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attributeGroup ref="language.atts"/>
 	</xsd:attributeGroup>
 	<xsd:attributeGroup name="language.atts">
 		<xsd:annotation>
@@ -382,9 +396,10 @@
 					<xsd:enumeration value="application/vnd.openxmlformats-officedocument.presentationml.presentation"/>
 					<xsd:enumeration value="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
 					<xsd:enumeration value="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+					<xsd:enumeration value="application/epub+zip"/>
+					<xsd:enumeration value="image/fits"/>
 					<xsd:enumeration value="image/jpeg"/>
 					<xsd:enumeration value="image/gif"/>
-					<xsd:enumeration value="image/fits"/>
 					<xsd:enumeration value="image/ief"/>
 					<xsd:enumeration value="image/g3fax"/>
 					<xsd:enumeration value="image/tiff"/>
@@ -589,12 +604,12 @@ timestamp is optional in doi_data and required in head. The value from the head 
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element ref="name"/>
+				<xsd:element ref="depositor_name"/>
 				<xsd:element ref="email_address"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
-	<xsd:element name="name">
+	<xsd:element name="depositor_name">
 		<xsd:annotation>
 			<xsd:documentation>Name of the organization registering the DOIs.
 
@@ -771,7 +786,7 @@ Cases of single-resolution (i.e. one DOI with a single corresponding URI) should
 
 Only one resource is allowed per doi_data, the exception being resource elements within a collection element.
 
-Values for the "content_version" attribute are vor (version of record), am (advance manuscript), and tdm (text data mining, usage deprecated in 4.3.4).
+Values for the "content_version" attribute are vor (version of record) and am (advance manuscript).
 </xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
@@ -783,7 +798,6 @@ Values for the "content_version" attribute are vor (version of record), am (adva
 							<xsd:restriction base="xsd:string">
 								<xsd:enumeration value="vor"/>
 								<xsd:enumeration value="am"/>
-								<xsd:enumeration value="tdm"/>
 							</xsd:restriction>
 						</xsd:simpleType>
 					</xsd:attribute>
@@ -808,10 +822,11 @@ A collection is a container for one or more items  each holding a doi or a resou
 property attributes:
 
   list-based: uses an interim page and presents the list of items to the user (via Multiple Resolution)
-
-  country-based: proxy picks destination based on the country code of the user's location (this option is not currently available)  
-
+  country-based: proxy picks destination based on the country code of the user's location (this option is not currently active, contact support@crossref.org for more info)  
   crawler-based: identifies resource to be crawled by the specified crawlers.
+  text-mining: identifies resource to be used for text and data mining
+  unspecified: identifies resource with unspecified usage
+  syndication: identifies resource to be used for syndication
 
 The multi-resolution attribute may be used to lock or unlock DOIs for multiple resolution.
 </xsd:documentation>
@@ -827,6 +842,8 @@ The multi-resolution attribute may be used to lock or unlock DOIs for multiple r
 						<xsd:enumeration value="country-based"/>
 						<xsd:enumeration value="crawler-based"/>
 						<xsd:enumeration value="text-mining"/>
+						<xsd:enumeration value="unspecified"/>
+						<xsd:enumeration value="syndication"/>
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>
@@ -1194,6 +1211,7 @@ contributor_role should be set, as appropriate, to author or editor. When a cont
 				<xsd:element ref="suffix" minOccurs="0"/>
 				<xsd:element ref="affiliation" minOccurs="0" maxOccurs="5"/>
 				<xsd:element ref="ORCID" minOccurs="0" maxOccurs="1"/>
+				<xsd:element ref="alt-name" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attributeGroup ref="contributor.atts"/>
 		</xsd:complexType>
@@ -1257,16 +1275,13 @@ Author degrees (e.g. M.D., Ph.D.) should not be included in CrossRef submissions
 	</xsd:element>
 	<xsd:simpleType name="orcid_t">
 		<xsd:restriction base="xsd:string">
-			<xsd:maxLength value="37"/>
-			<xsd:minLength value="34"/>
-			<xsd:pattern value="http://orcid.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[X0-9]{1}"/>
-			<xsd:pattern value="http://orcid.org/[0-9]{15}[X0-9]{1}"/>
+			<xsd:pattern value="http://orcid.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[X0-9]{1}"/>			
 		</xsd:restriction>
 	</xsd:simpleType>
-
+	
 	<xsd:element name="ORCID">
 		<xsd:annotation>
-			<xsd:documentation>The ORCID for an author.</xsd:documentation>
+			<xsd:documentation>The ORCID for an author. The schema performs basic pattern validation, checksum validation is performed upon deposit via a system check.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:simpleContent>
@@ -1308,6 +1323,86 @@ The institution(s) with which a contributor is affiliated. This element may hold
 			</xsd:restriction>
 		</xsd:simpleType>
 	</xsd:element>
+	<xsd:element name="alt-name">
+		<xsd:complexType>
+			<xsd:choice maxOccurs="unbounded">
+				<xsd:element ref="name"/>
+				<xsd:element ref="string-name"/>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="name">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:choice>
+					<xsd:sequence>
+						<xsd:element ref="surname"/>
+						<xsd:element minOccurs="0" ref="given_name"/>
+					</xsd:sequence>
+					<xsd:element ref="given_name"/>
+				</xsd:choice>
+				<xsd:element minOccurs="0" ref="prefix"/>
+				<xsd:element minOccurs="0" ref="suffix"/>
+			</xsd:sequence>
+			<xsd:attribute name="content-type"/>
+			<xsd:attribute name="name-style" default="western">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:token">
+						<xsd:enumeration value="western"/>
+						<xsd:enumeration value="eastern"/>
+						<xsd:enumeration value="islensk"/>
+						<xsd:enumeration value="given-only"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="specific-use"/>
+			<!--using our language.atts attribute group instead of importing xml:lang-->
+			<xsd:attributeGroup ref="language.atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="string-name">
+		<xsd:complexType mixed="true">
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="degrees"/>
+				<xsd:element ref="given_name"/>
+				<xsd:element ref="prefix"/>
+				<xsd:element ref="surname"/>
+				<xsd:element ref="suffix"/>
+			</xsd:choice>
+			<xsd:attribute name="content-type"/>
+			<xsd:attribute name="name-style" default="western">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:token">
+						<xsd:enumeration value="western"/>
+						<xsd:enumeration value="eastern"/>
+						<xsd:enumeration value="islensk"/>
+						<xsd:enumeration value="given-only"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="specific-use"/>
+			<xsd:attributeGroup ref="language.atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="prefix">
+		<xsd:complexType mixed="true">
+			<xsd:attribute name="content-type"/>
+			<xsd:attribute name="specific-use"/>
+			<xsd:attributeGroup ref="language.atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="degrees">
+		<xsd:complexType mixed="true">
+			<xsd:attribute name="content-type"/>
+			<xsd:attribute name="specific-use"/>
+			<xsd:attributeGroup ref="language.atts"/>
+		</xsd:complexType>
+	</xsd:element>
+
+	<!--END NAME ELEMENTs-->
+
+
+
 	<xsd:element name="titles">
 		<xsd:annotation>
 			<xsd:documentation>A container for the title and original language title elements.</xsd:documentation>
@@ -1526,11 +1621,11 @@ Data may be alpha, numeric or a combination.</xsd:documentation>
 	</xsd:simpleType>
 	<xsd:element name="doi">
 		<xsd:annotation>
-			<xsd:documentation>DOI for an entity being registered with CrossRef.
-
-The DOI specification allows many characters in the formulation of a DOI. However certain characters cause problems for systems that process DOIs. CrossRef restricts DOI characters to the following:  "a-z", "A-Z", "0-9" and "-._;()/"
-
-For additional information on DOI syntax, see http://help.crossref.org/#ID5755</xsd:documentation>
+			<xsd:documentation>DOI for an entity being registered with CrossRef.  In 2008 CrossRef restricted DOI suffix 
+				characters to the following: "a-z", "A-Z", "0-9" and "-._;()/" 
+				
+				Existing DOIs with suffix characters outside of the allowed set are still supported.  For additional
+				information on DOI syntax, see http://help.crossref.org/#ID5755</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="doi_t"/>
@@ -1698,6 +1793,40 @@ Data may be alpha, numeric or a combination. Roman numerals are acceptable.
 			</xsd:restriction>
 		</xsd:simpleType>
 	</xsd:element>
+
+
+	<!--archiving elements-->
+	<xsd:element name="archive_locations">
+		<xsd:annotation>
+			<xsd:documentation>Container element for archive. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element maxOccurs="unbounded" minOccurs="0" ref="archive"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="archive">
+		<xsd:annotation>
+			<xsd:documentation>Used to indicate the designated archiving organization(s) for an item.  Values for the name attribute are CLOCKSS, LOCKSS Portico, KB, DWT (Deep Web Technologies), Internet Archive</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="name" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="CLOCKSS"/>
+						<xsd:enumeration value="LOCKSS"/>
+						<xsd:enumeration value="Portico"/>
+						<xsd:enumeration value="KB"/>
+						<xsd:enumeration value="Internet Archive"/>
+						<xsd:enumeration value="DWT"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+
+
 	<!-- =============================================================
 
            7. Elements used for citation deposit and XML queries
@@ -1805,6 +1934,9 @@ Also note that any given citations will override older citations for the given D
 			<xsd:element ref="component_number" minOccurs="0"/>
 			<!--  end of book/conf. specific elements-->
 			<xsd:element ref="article_title" minOccurs="0"/>
+			<!--standard-specific elements-->
+			<xsd:element ref="standard_designator" minOccurs="0"/>
+			<xsd:element ref="standards_body" minOccurs="0" maxOccurs="1"/>
 			<!-- Citation text as it appears in    the    article    , future placeholder -->
 			<xsd:element ref="unstructured_citation" minOccurs="0"/>
 		</xsd:all>
@@ -2192,18 +2324,18 @@ However, different publishers sometimes have to support different, custom update
 			<xsd:documentation>Optional element. Publishers are encouraged to provided any non-bibliographical metadata that they feel might help the researcher evaluate and make better use of the content that the Crossmark record refers to. For example, publishers might want to provide funding information, clinical trial numbers, information about the peer-review process or a summary of the publication history of the document.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
-		<xsd:choice>
-			<xsd:sequence>
-				<xsd:element maxOccurs="unbounded" ref="assertion"/>
-				<xsd:element maxOccurs="unbounded" ref="fr:program" minOccurs="0" />
-				<xsd:element maxOccurs="unbounded" ref="ai:program" minOccurs="0" />
-			</xsd:sequence>
-			<xsd:sequence>
-				<xsd:element maxOccurs="unbounded" ref="fr:program"/>
-				<xsd:element maxOccurs="unbounded" ref="ai:program" minOccurs="0" />
-			</xsd:sequence>
-			<xsd:element ref="ai:program"/>
-		</xsd:choice>
+			<xsd:choice>
+				<xsd:sequence>
+					<xsd:element maxOccurs="unbounded" ref="assertion"/>
+					<xsd:element maxOccurs="unbounded" ref="fr:program" minOccurs="0"/>
+					<xsd:element maxOccurs="unbounded" ref="ai:program" minOccurs="0"/>
+				</xsd:sequence>
+				<xsd:sequence>
+					<xsd:element maxOccurs="unbounded" ref="fr:program"/>
+					<xsd:element maxOccurs="unbounded" ref="ai:program" minOccurs="0"/>
+				</xsd:sequence>
+				<xsd:element ref="ai:program"/>
+			</xsd:choice>
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="assertion">
@@ -2265,6 +2397,7 @@ order: The publisher may want to control the order in which assertions are displ
 			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
+
 	<!-- =============================================================
 		
 		10. Elements for Standards
@@ -2281,6 +2414,20 @@ order: The publisher may want to control the order in which assertions are displ
 				<xsd:element ref="adopted_from" maxOccurs="unbounded" minOccurs="0"/>
 				<xsd:element ref="revision_of" maxOccurs="unbounded" minOccurs="0"/>
 			</xsd:sequence>
+			<xsd:attribute name="type" default="as_published">
+				<xsd:simpleType>
+					<xsd:list>
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:NMTOKEN">
+								<xsd:enumeration value="as_published"/>
+								<xsd:enumeration value="supersedes"/>
+								<xsd:enumeration value="adopted_from"/>
+								<xsd:enumeration value="revision_of"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:list>
+				</xsd:simpleType>
+			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="as_published">
@@ -2306,5 +2453,25 @@ order: The publisher may want to control the order in which assertions are displ
 			</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
-	
+	<xsd:element name="standards_body">
+		<xsd:annotation>
+			<xsd:documentation>A wrapper for standards body information.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="standards_body_name"/>
+				<xsd:element ref="standards_body_acronym"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="standards_body_name">
+		<xsd:annotation>
+			<xsd:documentation>Name of the standards organization / publisher. Required.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="standards_body_acronym">
+		<xsd:annotation>
+			<xsd:documentation>Acronym for standards body. Will be used for query matching - required.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
 </xsd:schema>

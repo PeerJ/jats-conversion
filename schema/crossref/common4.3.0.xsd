@@ -341,6 +341,7 @@
 					<xsd:enumeration value="application/pdf"/>
 					<xsd:enumeration value="application/x-gzip"/>
 					<xsd:enumeration value="application/zip"/>
+					<xsd:enumeration value="application/gzip"/>
 					<xsd:enumeration value="application/macwriteii"/>
 					<xsd:enumeration value="application/msword"/>
 					<xsd:enumeration value="application/sgml"/>
@@ -369,6 +370,7 @@
 					<xsd:enumeration value="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
 					<xsd:enumeration value="image/jpeg"/>
 					<xsd:enumeration value="image/gif"/>
+					<xsd:enumeration value="image/fits"/>
 					<xsd:enumeration value="image/ief"/>
 					<xsd:enumeration value="image/g3fax"/>
 					<xsd:enumeration value="image/tiff"/>
@@ -1439,11 +1441,11 @@ Data may be alpha, numeric or a combination.</xsd:documentation>
 	</xsd:simpleType>
 	<xsd:element name="doi">
 		<xsd:annotation>
-			<xsd:documentation>DOI for an entity being registered with CrossRef.
-
-The DOI specification allows many characters in the formulation of a DOI. However certain characters cause problems for systems that process DOIs. CrossRef restricts DOI characters to the following:  "a-z", "A-Z", "0-9" and "-._;()/"
-
-For additional information on DOI syntax, see http://help.crossref.org/#ID5755</xsd:documentation>
+			<xsd:documentation>DOI for an entity being registered with CrossRef.  In 2008 CrossRef restricted DOI suffix 
+				characters to the following: "a-z", "A-Z", "0-9" and "-._;()/" 
+				
+				Existing DOIs with suffix characters outside of the allowed set are still supported.  For additional
+				information on DOI syntax, see http://help.crossref.org/#ID5755</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="doi_t"/>

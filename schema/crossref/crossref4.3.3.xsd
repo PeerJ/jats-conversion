@@ -42,6 +42,10 @@
 
     Changes record version, author initials, date, and comments
    
+   4.3.2 (PDF) 3/24/2014 moved standard_designator and child elements to common file, added standard_designator to citation
+   4.3.3 (PDF) made doi_data required for standard_metadata
+   4.3.3 (PDF) 2/3/14 added 'revision_of' as child of standard_designator, changed as_published to allow multiples 
+   4.3.2, 4.3.3 (PDF) 11/1/13 changed some elements from local to global (standard_designator, as_published, superseded by, adopted_from, standards_body, standards_body_name, standards_body_acronym)
    4.3.2, 4.3.3 (PDF) 10/14/13 change adopted_by element to adopted_from (child of standard_designator)  
    4.3.2, 4.3.3 (PDF) 10/2/2013 reorganized ai and fr programs 
    4.3.1, 4.3.2, 4.3.3 (PDF) 9/10/2013 added fr:program to content_item, conference_paper, dissertation, report-paper, standard, book_metadata, book_series_metadata, book_set_metadata
@@ -1420,66 +1424,16 @@ component_list is included in standard to handle items that have components but 
 			<xsd:attributeGroup ref="publication_type.atts"/>
 		</xsd:complexType>
 	</xsd:element>
-	<!--
-    standard_metadata is similar to book_metadata. It differs
-    in that standard_metadata adds the elements institution and
-    approval_date.
 
-    contributors contains the author(s) of the standard. In most cases,
-    it is expected that the organization element will be used rather than
-    person_name element for standards. However in some cases, standards are
-    cited by their individual authors. In such cases, individual authors
-    should be deposited with person_name, and the SDO or consortia name should
-    be deposited with the organization element in contributors and also
-    the institution_name element in institution
-
-    Note that when the organization element is used in contributors, it should
-    have the name of the committee (when appropriate) that developed the standard,
-    not the name of the Standards Development Organization (SDO) or consortia.
-    The SDO or consortia name should be placed in the publisher or institution
-    element (as appropriate)
-
-    standards more often have version numbers than edition numbers. However
-    the edition_number element can be used for deposit of the version number of
-    a standard
-
-    approval_date should be used for the date that a standard has been accepted or
-    re-affirmed if different from the date of publication. Both may be provided
-    even if identical
-
-    Within publisher_item, the designation should be placed inside the item_number
-    element, and the id_type should be set to "designation" to indicate a standard
-    designation
-
-    Standards are typically sponsored or hosted by SDOs or Consortia. In some
-    cases standards are published by a traditional publisher rather than by
-    the owning organization. Such cases may be deposited with one or more
-    publishers as well as a hosting organization as in the following example:
-
-    <institution>
-         <institution_name>American National Standards Institute</institution_name>
-         <institution_acronym>ANSI</institution_acronym>
-        <institution_location>Washington, DC</institution_location>
-    </institution>
-    <institution>
-         <institution_name>National Information Standards Organization</institution_name>
-         <institution_acronym>NISO</institution_acronym>
-        <institution_location>Bethesda, MD</institution_location>
-    </institution>
-    <publisher>
-        <publisher_name>NISO Press</publisher_name>
-        <publisher_place>Bethesda, MD</publisher_place>
-    </publisher>
--->
 	<xsd:element name="standard_metadata">
 		<xsd:annotation>
 			<xsd:documentation>Standard_metadata is used as a wrapper for the metadata related to a Standard that is not part of a series.
 
 standard_metadata is similar to book_metadata. It differs in that standard_metadata adds the elements institution and approval_date.
 
-contributors contains the author(s) of the standard. In most cases, it is expected that the organization element will be used rather than person_name element for standards. However in some cases, standards are cited by their individual authors. In such cases, individual authors should be deposited with person_name, and the SDO or consortia name should be deposited with the organization element in contributors and also the institution_name element in institution
+contributors contains the author(s) of the standard. In most cases, it is expected that the organization element will be used rather than person_name element for standards. However in some cases, standards are cited by their individual authors. In such cases, individual authors should be deposited with person_name, and the SDO or consortia name should be deposited with the organization element in contributors and also the standards_body_name element in standards_body
 
-Note that when the organization element is used in contributors, it should have the name of the committee (when appropriate) that developed the standard, not the name of the Standards Development Organization (SDO) or consortia. The SDO or consortia name should be placed in the publisher or institution element (as appropriate)
+Note that when the organization element is used in contributors, it should have the name of the committee (when appropriate) that developed the standard, not the name of the Standards Development Organization (SDO) or consortia. The SDO or consortia name should be placed in the publisher or standards_body element (as appropriate)
 
 Standards more often have version numbers than edition numbers. However the edition_number element can be used for deposit of the version number of a standard
 
@@ -1489,16 +1443,14 @@ Within publisher_item, the designation should be placed inside the item_number e
 			
 Standards are typically sponsored or hosted by SDOs or Consortia. In some cases standards are published by a traditional publisher rather than by the owning organization. Such cases may be deposited with one or more publishers as well as a hosting organization as in the following example:
 			
-	<institution>
-		<institution_name>American National Standards Institute</institution_name>
-		<institution_acronym>ANSI</institution_acronym>
-		<institution_location>Washington, DC</institution_location>
-	</institution>
-	<institution>
-		<institution_name>National Information Standards Organization</institution_name>
-		<institution_acronym>NISO</institution_acronym>
-		<institution_location>Bethesda, MD</institution_location>
-	</institution>
+	<standards_body>
+			<standards_body_name>American National Standards Institute</standards_body_name>
+			<standards_body_acronym>ANSI</standards_body_acronym>
+	</standards_body>
+	<standards_body>
+		<standards_body_name>National Information Standards Organization</standards_body_name>
+		<standards_body_acronym>NISO</standards_body_acronym>
+	</standards_body>
 	<publisher>
 		<publisher_name>NISO Press</publisher_name>
 		<publisher_place>Bethesda, MD</publisher_place>
@@ -1509,56 +1461,13 @@ Standards are typically sponsored or hosted by SDOs or Consortia. In some cases 
 			<xsd:sequence>
 				<xsd:element ref="contributors" minOccurs="0"/>
 				<xsd:element ref="titles"/>
-				<xsd:element name="standard_designator" minOccurs="1" maxOccurs="1">
-					<xsd:annotation>
-						<xsd:documentation>A wrapper for designators or other primary identifiers for a standard.</xsd:documentation>
-					</xsd:annotation>
-					<xsd:complexType>
-						<xsd:sequence>
-							<xsd:element name="as_published">
-								<xsd:annotation>
-									<xsd:documentation>Designator or other primary identifier for the standard being deposited. Required.</xsd:documentation>
-								</xsd:annotation>
-							</xsd:element>
-							<xsd:element maxOccurs="unbounded" minOccurs="0" name="superseded_by">
-								<xsd:annotation>
-									<xsd:documentation>Designator for standard replacing the standard being deposited.
-</xsd:documentation>
-								</xsd:annotation>
-							</xsd:element>
-							<xsd:element maxOccurs="unbounded" minOccurs="0" name="adopted_from">
-								<xsd:annotation>
-									<xsd:documentation>Designator for standard from which the current deposit is adopted.
-								</xsd:documentation>
-								</xsd:annotation>
-							</xsd:element>
-						</xsd:sequence>
-					</xsd:complexType>
-				</xsd:element>
+				<xsd:element ref="standard_designator" minOccurs="1" maxOccurs="1"/>
 				<xsd:element ref="edition_number" minOccurs="0"/>
 				<xsd:element ref="publication_date" maxOccurs="10"/>
 				<xsd:element ref="approval_date" maxOccurs="10"/>
 				<xsd:element ref="isbn" minOccurs="0" maxOccurs="6"/>
 				<xsd:element ref="publisher" minOccurs="0"/>
-				<xsd:element name="standards_body">
-					<xsd:annotation>
-						<xsd:documentation>A wrapper for standards body information.</xsd:documentation>
-					</xsd:annotation>
-					<xsd:complexType>
-						<xsd:sequence>
-							<xsd:element name="standards_body_name">
-								<xsd:annotation>
-									<xsd:documentation>Name of the standards organization / publisher. Required.</xsd:documentation>
-								</xsd:annotation>
-							</xsd:element>
-							<xsd:element name="standards_body_acronym">
-								<xsd:annotation>
-									<xsd:documentation>Acronym for standards body. Will be used for query matching - required.</xsd:documentation>
-								</xsd:annotation>
-							</xsd:element>
-						</xsd:sequence>
-					</xsd:complexType>
-				</xsd:element>
+				<xsd:element ref="standards_body"/>
 				<xsd:element ref="publisher_item" minOccurs="0"/>
 				<xsd:choice>
 					<xsd:element ref="crossmark" minOccurs="0"/>
@@ -1567,7 +1476,7 @@ Standards are typically sponsored or hosted by SDOs or Consortia. In some cases 
 						<xsd:element ref="ai:program" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:choice>
-				<xsd:element ref="doi_data" minOccurs="0"/>
+				<xsd:element ref="doi_data" minOccurs="1" maxOccurs="1"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attribute name="publication_status" use="optional">
@@ -1583,6 +1492,28 @@ Standards are typically sponsored or hosted by SDOs or Consortia. In some cases 
 			<xsd:attributeGroup ref="reference_distribution_opts.att"/>
 		</xsd:complexType>
 	</xsd:element>
+	<xsd:element name="standards_body">
+		<xsd:annotation>
+			<xsd:documentation>A wrapper for standards body information.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="standards_body_name"/>
+				<xsd:element ref="standards_body_acronym"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="standards_body_name">
+		<xsd:annotation>
+			<xsd:documentation>Name of the standards organization. Required. Note: Use the publisher element if the standards body is not also the publisher. </xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="standards_body_acronym">
+		<xsd:annotation>
+			<xsd:documentation>Acronym for standards body. Will be used for query matching - required.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
 	<xsd:element name="database">
 		<xsd:annotation>
 			<xsd:documentation>database is the top level element for deposit of metadata about one or more datasets or records in a database.

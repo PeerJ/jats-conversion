@@ -40,6 +40,10 @@
 
     Changes record version, author initials, date, and comments
   
+  4.3.1,2,4,5,6 (PDF) 3/2/2015 removed redundant ORCID validation
+  4.3.1,2,4 (PDF) 6/24/2014 minor change to ORCID regex to only allow X
+  4.3.1,2,4 (PDF) 3/13/2014 added application/epub+zip to mime_type.atts
+  4.3.1 (PDF) 11/27/2013 updated custom_metadata to require either assertion, fr:program or ai:program be present 
   4.3.1 (PDF) 2/11/2013 added application/eps and application/vnd.openxmlformats-officedocument.wordprocessingml.document
   as mime types
   4.3.1 (PDF) 10/4/2012 added ORCID to contributors 
@@ -333,7 +337,7 @@
 					<xsd:enumeration value="multipart/signed"/>
 					<xsd:enumeration value="multipart/encrypted"/>
 					<xsd:enumeration value="multipart/byteranges"/>
-                                        <xsd:enumeration value="application/eps"/>
+                    <xsd:enumeration value="application/eps"/>
 					<xsd:enumeration value="application/octet-stream"/>
 					<xsd:enumeration value="application/postscript"/>
 					<xsd:enumeration value="application/rtf"/>
@@ -343,6 +347,7 @@
 					<xsd:enumeration value="application/pdf"/>
 					<xsd:enumeration value="application/x-gzip"/>
 					<xsd:enumeration value="application/zip"/>
+					<xsd:enumeration value="application/gzip"/>
 					<xsd:enumeration value="application/macwriteii"/>
 					<xsd:enumeration value="application/msword"/>
 					<xsd:enumeration value="application/sgml"/>
@@ -369,8 +374,10 @@
 					<xsd:enumeration
 						value="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
 					<xsd:enumeration value="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+					<xsd:enumeration value="application/epub+zip"/>
 					<xsd:enumeration value="image/jpeg"/>
 					<xsd:enumeration value="image/gif"/>
+					<xsd:enumeration value="image/fits"/>
 					<xsd:enumeration value="image/ief"/>
 					<xsd:enumeration value="image/g3fax"/>
 					<xsd:enumeration value="image/tiff"/>
@@ -1198,16 +1205,13 @@ Author degrees (e.g. M.D., Ph.D.) should not be included in CrossRef submissions
 	</xsd:element>
 	<xsd:simpleType name="orcid_t">
 		<xsd:restriction base="xsd:string">
-			<xsd:maxLength value="37"/>
-			<xsd:minLength value="34"/>
-			<xsd:pattern value="http://orcid.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[xX0-9]{1}"/>
-			<xsd:pattern value="http://orcid.org/[0-9]{15}[xX0-9]{1}"/>
+			<xsd:pattern value="http://orcid.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[X0-9]{1}"/>			
 		</xsd:restriction>
 	</xsd:simpleType>
 
 	<xsd:element name="ORCID">
 		<xsd:annotation>
-			<xsd:documentation>The ORCID for an author.</xsd:documentation>
+			<xsd:documentation>The ORCID for an author. The schema performs basic pattern validation, checksum validation is performed upon deposit via a system check.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:simpleContent>
@@ -1464,11 +1468,11 @@ Data may be alpha, numeric or a combination.</xsd:documentation>
 	</xsd:simpleType>
 	<xsd:element name="doi">
 		<xsd:annotation>
-			<xsd:documentation>DOI for an entity being registered with CrossRef.
-
-The DOI specification allows many characters in the formulation of a DOI. However certain characters cause problems for systems that process DOIs. CrossRef restricts DOI characters to the following:  "a-z", "A-Z", "0-9" and "-._;()/"
-
-For additional information on DOI syntax, see http://help.crossref.org/#ID5755</xsd:documentation>
+						<xsd:documentation>DOI for an entity being registered with CrossRef.  In 2008 CrossRef restricted DOI suffix 
+				characters to the following: "a-z", "A-Z", "0-9" and "-._;()/" 
+				
+				Existing DOIs with suffix characters outside of the allowed set are still supported.  For additional
+				information on DOI syntax, see http://help.crossref.org/#ID5755</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="doi_t"/>
@@ -2122,10 +2126,13 @@ However, different publishers sometimes have to support different, custom update
 			<xsd:documentation>Optional element. Publishers are encouraged to provided any non-bibliographical metadata that they feel might help the researcher evaluate and make better use of the content that the Crossmark record refers to. For example, publishers might want to provide funding information, clinical trial numbers, information about the peer-review process or a summary of the publication history of the document.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element maxOccurs="unbounded" ref="assertion"/>
-				<xsd:element maxOccurs="unbounded" minOccurs="0" ref="fr:program"/>
-			</xsd:sequence>
+			<xsd:choice>
+				<xsd:sequence>
+					<xsd:element maxOccurs="unbounded" ref="assertion"/>
+					<xsd:element maxOccurs="unbounded" ref="fr:program" minOccurs="0" />
+				</xsd:sequence>
+					<xsd:element maxOccurs="unbounded" ref="fr:program"/>
+			</xsd:choice>
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="assertion">

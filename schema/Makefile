@@ -51,7 +51,7 @@ $(DOWNLOADS)/JATS-Publishing-1-1d1-MathML2-XSD.zip: | $(DOWNLOADS)
 
 crossref: | crossref/schematron.xsl
 	mkdir -p crossref
-	wget --recursive --level=1 --directory-prefix=crossref --no-directories --accept xsd http://www.crossref.org/schema/deposit/
+	wget --recursive --level=1 --directory-prefix=crossref --no-directories --accept xsd http://doi.crossref.org/schemas/
 
 crossref/schematron.xsl: | $(DOWNLOADS)/CrossRef_Schematron_Rules
 	mkdir -p crossref

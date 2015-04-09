@@ -1,0 +1,53 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+          xmlns:rfc1807="http://info.internet.isi.edu:80/in-notes/rfc/files/rfc1807.txt"
+          targetNamespace="http://info.internet.isi.edu:80/in-notes/rfc/files/rfc1807.txt"
+          elementFormDefault="qualified"
+          attributeFormDefault="unqualified">
+
+   <annotation>
+    <documentation>
+     Schema for rfc1807 metadata format.
+     the Open Archives Initiative. 2000. 
+     rfc1807 semantics available at http://info.internet.isi.edu:80/in-notes/rfc/files/rfc1807.txt
+     XML transportation format on which this schema is inspired 
+         available at http://www.openarchives.org/sfc/sfc_rfc1807.htm
+     This Schema was validated with XSV 1.196/1.98 of 2001/06/16 11:56:53
+    </documentation>
+   </annotation>
+
+ <element name="rfc1807" type="rfc1807:rfc1807Type"/>
+
+ <complexType name="rfc1807Type">
+  <sequence>
+   <element name="bib-version" minOccurs="1" maxOccurs="1" type="string"/>
+   <element name="id"  minOccurs="1" maxOccurs="1" type="string"/>
+   <element name="entry"  minOccurs="1" maxOccurs="1" type="string"/>
+   <element name="organization"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="title"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="type"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="revision"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="withdraw"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="author"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="corp-author"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="contact"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="date"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="pages"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="copyright"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="handle"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="other_access"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="retrieval"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="keyword"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="cr-category"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="period"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="series"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="monitoring"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="funding"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="contract"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="grant"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="language"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="notes"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+   <element name="abstract"  minOccurs="0" maxOccurs="unbounded" type="string"/>
+  </sequence>
+ </complexType>
+
+  </schema>

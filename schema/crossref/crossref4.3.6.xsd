@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns="http://www.crossref.org/schema/4.3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.crossref.org/schema/4.3.2" xmlns:fr="http://www.crossref.org/fundref.xsd"
-	xmlns:ai="http://www.crossref.org/AccessIndicators.xsd" xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<xsd:schema xmlns="http://www.crossref.org/schema/4.3.6" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.crossref.org/schema/4.3.6" 
+	xmlns:fr="http://www.crossref.org/fundref.xsd"
+	xmlns:ai="http://www.crossref.org/AccessIndicators.xsd" 
+	xmlns:rel="http://www.crossref.org/relations.xsd" 
+    xmlns:mml="http://www.w3.org/1998/Math/MathML" 
+	xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1">
 
 	<!--Conforms to w3c http://www.w3.org/2001/XMLSchema-->
 	<!-- =============================================================
 
                           Introduction
 
-	CrossRef W3C Deposit Schema Version 4.3.3
+     CrossRef W3C Deposit Schema Version 4.3.6
 
-	Developed for CrossRef (www.crossref.org) by
+     Developed for CrossRef (www.crossref.org) by
 
-		Inera Incorporated
-		Newton, MA 02460
-		http://www.inera.com
-		email: info@inera.com
+     Inera Incorporated
+     Newton, MA 02460
+     http://www.inera.com
+     email: info@inera.com
 
 	For more information on the use of this schema see http://help.crossref.org/#ID38158
 
@@ -41,8 +46,16 @@
                           Change History
 
     Changes record version, author initials, date, and comments
-    
-   4.3.2, 4.3.3, 4.3.4 (PDF) 3/24/2014 moved standard_designator and child elements to common file, added standard_designator to citation 
+   
+   4.3.6  (CSK)  12/2/14  reworked standard designator
+   4.3.5  10/31/14 added rel:program to support deposit of relationships
+   4.3.5 (PDF) updated standard_designator and child elements, moved mml:math to xrefFaces to fix problem with depositing mathML and other markup, restricted CrossMark update types to an enumerated list, removed cm_update_label
+   4.3.5 (PDF) added <relationships> and child elements to support deposit of relationships between DOIs.
+   4.3.5 (PDF) 9/8/14 changed standard_designator to designators, etc.
+   4.3.4 (PDF) 3/24/2014 moved standard_designator, standards_body, and child elements to common file, added standard_designator to citation
+   4.3.3, 4.3.4 (PDF) made doi_data required for standard_metadata
+   4.3.4 12/10/2013 
+   4.3.2 (PDF) 11/27/2013 updated custom_metadata to require either assertion, fr:program or ai:program be present 
    4.3.2, 4.3.3 (PDF) 11/1/13 changed some elements from local to global (standard_designator, as_published, superseded by, adopted_from, standards_body, standards_body_name, standards_body_acronym)
    4.3.2, 4.3.3 (PDF) 10/14/13 change adopted_by element to adopted_from (child of standard_designator)  
    4.3.2, 4.3.3 (PDF) 10/2/2013 reorganized ai and fr programs 
@@ -197,7 +210,7 @@
           0. Include module common to multiple CrossRef schemas
 
      ============================================================= -->
-	<xsd:include schemaLocation="common4.3.2.xsd"/>
+	<xsd:include schemaLocation="common4.3.6.xsd"/>
 	<!-- =============================================================
 
                           1. Shared attributes
@@ -216,17 +229,17 @@
 
      ================================================================= -->
 	<!--      Most elements moved to common.xsd for version 3.0.0      -->
+	<xsd:import namespace="http://www.ncbi.nlm.nih.gov/JATS1" schemaLocation="JATS-journalpublishing1.xsd"/>
 	<xsd:import namespace="http://www.w3.org/1998/Math/MathML" schemaLocation="http://www.w3.org/Math/XMLSchema/mathml3/mathml3.xsd"/>
 	<xsd:import namespace="http://www.crossref.org/fundref.xsd" schemaLocation="fundref.xsd"/>
 	<xsd:import namespace="http://www.crossref.org/AccessIndicators.xsd" schemaLocation="AccessIndicators.xsd"/>
+	<xsd:import namespace="http://www.crossref.org/relations.xsd" schemaLocation="relations.xsd"/>
+	
 	<xsd:element name="doi_batch">
 		<xsd:annotation>
 			<xsd:documentation>Top level element for a metadata submission to CrossRef.
-
 This element indicates the start and end of the XML file. The version number is fixed to the version of the schema.
-
 Be sure to set the name space attributes as shown above in order for the Xerces parser to process the instance correctly.
-
 For the purposes of parsing, you may also set xsi:schemaLocation to http://www.crossref.org/schema/4.3.0 http://www.crossref.org /schema/4.3.0/crossref.xsd. A copy of the schema is located on the CrossRef server at this URL and will remain constant for a given version of the schema. This location permits you to have a constant location for the schema for parsing without relying on a hardwired local directory on your development platform. </xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
@@ -234,7 +247,7 @@ For the purposes of parsing, you may also set xsi:schemaLocation to http://www.c
 				<xsd:element ref="head"/>
 				<xsd:element ref="body"/>
 			</xsd:sequence>
-			<xsd:attribute name="version" type="xsd:string" fixed="4.3.2"/>
+			<xsd:attribute name="version" type="xsd:string" fixed="4.3.6"/>
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="head">
@@ -304,6 +317,7 @@ You may chose to submit only top level journal_metadata and journal_issue metada
 				<xsd:element ref="abbrev_title" minOccurs="0" maxOccurs="10"/>
 				<xsd:element ref="issn" maxOccurs="6"/>
 				<xsd:element ref="coden" minOccurs="0"/>
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attributeGroup ref="language.atts"/>
@@ -367,6 +381,7 @@ You should not include contributors for the regular editors of regular issues.</
 Text defining the type of special issue (e.g. "suppl") should be included in this element along with the number.</xsd:documentation>
 					</xsd:annotation>
 				</xsd:element>
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data" minOccurs="0"/>
 			</xsd:sequence>
 		</xsd:complexType>
@@ -381,6 +396,7 @@ You may register a DOI for an entire volume by including doi_data in journal_vol
 			<xsd:sequence>
 				<xsd:element ref="volume"/>
 				<xsd:element ref="publisher_item" minOccurs="0"/>
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data" minOccurs="0"/>
 			</xsd:sequence>
 		</xsd:complexType>
@@ -410,6 +426,11 @@ journal_article allows for multiple titles per entity. In some cases it may be h
 			<xsd:sequence>
 				<xsd:element ref="titles" maxOccurs="20"/>
 				<xsd:element ref="contributors" minOccurs="0"/>
+				<xsd:element ref="jats:abstract" minOccurs="0" maxOccurs="10">
+					<xsd:annotation>
+						<xsd:documentation>The abstract element allows depositors to include abstracts extracted from NLM or JATS XML in CrossRef deposits. The jats: namespace prefix must be included.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
 				<xsd:element ref="publication_date" maxOccurs="10"/>
 				<xsd:element ref="pages" minOccurs="0"/>
 				<xsd:element ref="publisher_item" minOccurs="0"/>
@@ -420,6 +441,8 @@ journal_article allows for multiple titles per entity. In some cases it may be h
 						<xsd:element ref="ai:program" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:choice>
+				<xsd:element ref="rel:program" minOccurs="0"/>
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 				<xsd:element ref="component_list" minOccurs="0"/>
@@ -652,6 +675,7 @@ proceedings_metadata captures information about conference proceedings. Data abo
 					<xsd:element ref="noisbn"/>
 				</xsd:choice>
 				<xsd:element ref="publisher_item" minOccurs="0"/>
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attributeGroup ref="language.atts"/>
@@ -700,6 +724,7 @@ maintaining the prior sequence of elements.
 					</xsd:sequence>
 				</xsd:choice>
 				<xsd:element ref="publisher_item" minOccurs="0"/>
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
@@ -745,6 +770,11 @@ A conference paper is required to have contributors, title and doi_data. All oth
 			<xsd:sequence>
 				<xsd:element ref="contributors" minOccurs="0"/>
 				<xsd:element ref="titles"/>
+				<xsd:element ref="jats:abstract" minOccurs="0">
+					<xsd:annotation>
+						<xsd:documentation>The abstract element allows depositors to include abstracts extracted from NLM or JATS XML in CrossRef deposits. The jats: namespace prefix must be included.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
 				<xsd:element ref="publication_date" minOccurs="0" maxOccurs="10"/>
 				<xsd:element ref="pages" minOccurs="0"/>
 				<xsd:element ref="publisher_item" minOccurs="0"/>
@@ -755,6 +785,8 @@ A conference paper is required to have contributors, title and doi_data. All oth
 						<xsd:element ref="ai:program" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:choice>
+				<xsd:element ref="rel:program" minOccurs="0"/>				
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 				<xsd:element ref="component_list" minOccurs="0"/>
@@ -829,6 +861,11 @@ In very limited circumstances a book may be deposited without an ISBN, in which 
 			<xsd:sequence>
 				<xsd:element ref="contributors" minOccurs="0"/>
 				<xsd:element ref="titles"/>
+				<xsd:element ref="jats:abstract" minOccurs="0">
+					<xsd:annotation>
+						<xsd:documentation>The abstract element allows depositors to include abstracts extracted from NLM or JATS XML in CrossRef deposits. The jats: namespace prefix must be included.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>				
 				<xsd:element ref="edition_number" minOccurs="0"/>
 				<xsd:element ref="publication_date" maxOccurs="10"/>
 				<xsd:choice>
@@ -844,6 +881,8 @@ In very limited circumstances a book may be deposited without an ISBN, in which 
 						<xsd:element ref="ai:program" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:choice>
+				<xsd:element ref="rel:program" minOccurs="0"/>				
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data" minOccurs="0"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 			</xsd:sequence>
@@ -886,6 +925,11 @@ Normally book content that is published as a series is required to have a series
 						<xsd:choice>
 							<xsd:sequence>
 								<xsd:element ref="titles"/>
+								<xsd:element ref="jats:abstract" minOccurs="0">
+									<xsd:annotation>
+										<xsd:documentation>The abstract element allows depositors to include abstracts extracted from NLM or JATS XML in CrossRef deposits. The jats: namespace prefix must be included.</xsd:documentation>
+									</xsd:annotation>
+								</xsd:element>								
 								<xsd:element ref="volume" minOccurs="0"/>
 							</xsd:sequence>
 							<xsd:element ref="volume"/>
@@ -908,6 +952,8 @@ Normally book content that is published as a series is required to have a series
 						<xsd:element ref="ai:program" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:choice>
+				<xsd:element ref="rel:program" minOccurs="0"/>				
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data" minOccurs="0"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 			</xsd:sequence>
@@ -943,6 +989,11 @@ Note: citation_list should only be used in book_series_metadata instead of conte
 				<xsd:choice>
 					<xsd:sequence>
 						<xsd:element ref="titles"/>
+						<xsd:element ref="jats:abstract" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>The abstract element allows depositors to include abstracts extracted from NLM or JATS XML in CrossRef deposits. The jats: namespace prefix must be included.</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>						
 						<xsd:element ref="volume" minOccurs="0"/>
 					</xsd:sequence>
 					<xsd:element ref="volume"/>
@@ -955,7 +1006,6 @@ Note: citation_list should only be used in book_series_metadata instead of conte
 				</xsd:choice>
 				<xsd:element ref="publisher"/>
 				<xsd:element ref="publisher_item" minOccurs="0"/>
-				<xsd:element ref="doi_data" minOccurs="0"/>
 				<xsd:choice>
 					<xsd:element ref="crossmark" minOccurs="0"/>
 					<xsd:sequence>
@@ -963,6 +1013,9 @@ Note: citation_list should only be used in book_series_metadata instead of conte
 						<xsd:element ref="ai:program" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:choice>
+				<xsd:element ref="rel:program" minOccurs="0"/>				
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
+				<xsd:element ref="doi_data" minOccurs="0"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attributeGroup ref="language.atts"/>
@@ -993,6 +1046,11 @@ The title of each content item must be submitted. If, however, you are submitted
 			<xsd:sequence>
 				<xsd:element ref="contributors" minOccurs="0"/>
 				<xsd:element ref="titles" minOccurs="0"/>
+				<xsd:element ref="jats:abstract" minOccurs="0">
+					<xsd:annotation>
+						<xsd:documentation>The abstract element allows depositors to include abstracts extracted from NLM or JATS XML in CrossRef deposits. The jats: namespace prefix must be included.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>				
 				<xsd:element ref="component_number" minOccurs="0"/>
 				<xsd:element ref="publication_date" minOccurs="0" maxOccurs="10"/>
 				<xsd:element ref="pages" minOccurs="0"/>
@@ -1004,6 +1062,8 @@ The title of each content item must be submitted. If, however, you are submitted
 						<xsd:element ref="ai:program" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:choice>
+				<xsd:element ref="rel:program" minOccurs="0"/>				
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 				<xsd:element ref="component_list" minOccurs="0"/>
@@ -1056,6 +1116,11 @@ You may assign and register a DOI that encompasses an entire series by adding do
 			<xsd:sequence>
 				<xsd:element ref="contributors" minOccurs="0"/>
 				<xsd:element ref="titles"/>
+				<xsd:element ref="jats:abstract" minOccurs="0">
+					<xsd:annotation>
+						<xsd:documentation>The abstract element allows depositors to include abstracts extracted from NLM or JATS XML in CrossRef deposits. The jats: namespace prefix must be included.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>				
 				<xsd:element ref="issn" maxOccurs="6"/>
 				<xsd:element ref="coden" minOccurs="0"/>
 				<xsd:element ref="series_number" minOccurs="0"/>
@@ -1067,6 +1132,7 @@ You may assign and register a DOI that encompasses an entire series by adding do
 						<xsd:element ref="ai:program" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:choice>
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data" minOccurs="0"/>
 			</xsd:sequence>
 		</xsd:complexType>
@@ -1086,6 +1152,7 @@ You may assign and register a DOI that encompasses an entire series by adding do
 				<xsd:element ref="contributors" minOccurs="0"/>
 				<xsd:element ref="part_number" minOccurs="0"/>
 				<xsd:element ref="publisher_item" minOccurs="0"/>
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data" minOccurs="0"/>
 			</xsd:sequence>
 		</xsd:complexType>
@@ -1278,6 +1345,8 @@ If a DAI has been assigned, it should be deposited in the identifier element wit
 						<xsd:element ref="ai:program" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:choice>
+				<xsd:element ref="rel:program" minOccurs="0"/>				
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 				<xsd:element ref="component_list" minOccurs="0"/>
@@ -1312,7 +1381,7 @@ component_list is included in report-paper to handle items that have components 
 					<xsd:element ref="report-paper_series_metadata"/>
 				</xsd:choice>
 				<xsd:element ref="content_item" minOccurs="0" maxOccurs="unbounded"/>
-				<xsd:element ref="component_list" minOccurs="0"/>
+				<xsd:element ref="component_list" minOccurs="0"/>			
 			</xsd:sequence>
 			<xsd:attributeGroup ref="publication_type.atts"/>
 		</xsd:complexType>
@@ -1346,6 +1415,8 @@ If the report number of an item follows Z39.23, the number should be deposited i
 						<xsd:element ref="ai:program" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:choice>
+				<xsd:element ref="rel:program" minOccurs="0"/>					
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data" minOccurs="0"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 			</xsd:sequence>
@@ -1371,6 +1442,11 @@ If the report number of an item follows Z39.23, the number should be deposited i
 				<xsd:choice>
 					<xsd:sequence>
 						<xsd:element ref="titles"/>
+						<xsd:element ref="jats:abstract" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>The abstract element allows depositors to include abstracts extracted from NLM or JATS XML in CrossRef deposits. The jats: namespace prefix must be included.</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>						
 						<xsd:element ref="volume" minOccurs="0"/>
 					</xsd:sequence>
 					<xsd:element ref="volume"/>
@@ -1383,8 +1459,10 @@ If the report number of an item follows Z39.23, the number should be deposited i
 				<xsd:element ref="institution" minOccurs="0" maxOccurs="5"/>
 				<xsd:element ref="publisher_item" minOccurs="0"/>
 				<xsd:element ref="contract_number" minOccurs="0"/>
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data" minOccurs="0"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
+				<xsd:element ref="rel:program" minOccurs="0"/>					
 			</xsd:sequence>
 			<xsd:attributeGroup ref="language.atts"/>
 			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
@@ -1394,16 +1472,16 @@ If the report number of an item follows Z39.23, the number should be deposited i
 	<xsd:element name="standard">
 		<xsd:annotation>
 			<xsd:documentation>standard is the top level element for deposit of metadata about standards developed by Standards Development Organizations (SDOs) or Consortia.
-				
-				CrossRef does not determine if a new DOI should be created for each revision or reaffirmation of a standard. The decision will be left to the individual standards organizations.
-				
-				As of schema verison 4.3.2, CrossRef recommends that the full standard designation be placed in the as_published element (within standard_designator). For backwards compatibility, the full designation may also be included in the identifier element with the id_type attribute set to "ISO-std-ref". 
-				
-				In addition, CrossRef requires that the publisher of the standard be included in standards_body_name, and the acronym within standards_acronym.  
-				
-				The as_published and standards_acronym elements will be combined to identify a standard for query matching. 
-				
-				component_list is included in standard to handle items that have components but do not have content_item elements (i.e. a standard that is not divided into multiple chapters). If an item has content_item elements, then component_list inside of content_item must be used rather than the parent standard element.</xsd:documentation>
+
+CrossRef does not determine if a new DOI should be created for each revision or reaffirmation of a standard. The decision will be left to the individual standards organizations.
+
+As of schema version 4.3.3, CrossRef recommends that the full standard designation be placed in the as_published element (within standard_designator). For backwards compatibility, the full designation may also be included in the identifier element with the id_type attribute set to "ISO-std-ref". 
+
+In addition, CrossRef requires that the publisher of the standard be included in standards_body_name, and the acronym within standards_acronym.  
+
+The as_published and standards_acronym elements will be combined to identify a standard for query matching. 
+
+component_list is included in standard to handle items that have components but do not have content_item elements (i.e. a standard that is not divided into multiple chapters). If an item has content_item elements, then component_list inside of content_item must be used rather than the parent standard element.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -1416,7 +1494,7 @@ If the report number of an item follows Z39.23, the number should be deposited i
 			<xsd:attributeGroup ref="publication_type.atts"/>
 		</xsd:complexType>
 	</xsd:element>
-	
+
 	<xsd:element name="standard_metadata">
 		<xsd:annotation>
 			<xsd:documentation>Standard_metadata is used as a wrapper for the metadata related to a Standard that is not part of a series.
@@ -1433,30 +1511,21 @@ If the report number of an item follows Z39.23, the number should be deposited i
 				
 				Within publisher_item, the designation should be placed inside the item_number element, and the id_type should be set to "designation" to indicate a standard designation.
 				
-				Standards are typically sponsored or hosted by SDOs or Consortia. In some cases standards are published by a traditional publisher rather than by the owning organization. Such cases may be deposited with one or more publishers as well as a hosting organization as in the following example:
-				
-				<standards_body>
-					<standards_body_name>American National Standards Institute</standards_body_name>
-					<standards_body_acronym>ANSI</standards_body_acronym>
-				</standards_body>
-				<standards_body>
-					<standards_body_name>National Information Standards Organization</standards_body_name>
-					<standards_body_acronym>NISO</standards_body_acronym>
-				</standards_body>
-				<publisher>
-					<publisher_name>NISO Press</publisher_name>
-					<publisher_place>Bethesda, MD</publisher_place>
-				</publisher>			
+				Standards are typically sponsored or hosted by SDOs or Consortia. In some cases standards are published by a traditional publisher rather than by the owning organization. Such cases may be deposited with one or more publishers.
 			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="contributors" minOccurs="0"/>
 				<xsd:element ref="titles"/>
-				<xsd:element ref="standard_designator" minOccurs="1" maxOccurs="1"/>
+				<xsd:element ref="jats:abstract" minOccurs="0">
+					<xsd:annotation>
+						<xsd:documentation>The abstract element allows depositors to include abstracts extracted from NLM or JATS XML in CrossRef deposits. The jats: namespace prefix must be included.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>				
+				<xsd:element ref="designators" minOccurs="1" maxOccurs="1"/>
 				<xsd:element ref="edition_number" minOccurs="0"/>
-				<xsd:element ref="publication_date" maxOccurs="10"/>
-				<xsd:element ref="approval_date" maxOccurs="10"/>
+				<xsd:element ref="approval_date" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="isbn" minOccurs="0" maxOccurs="6"/>
 				<xsd:element ref="publisher" minOccurs="0"/>
 				<xsd:element ref="standards_body"/>
@@ -1468,7 +1537,9 @@ If the report number of an item follows Z39.23, the number should be deposited i
 						<xsd:element ref="ai:program" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:choice>
-				<xsd:element ref="doi_data" minOccurs="0"/>
+				<xsd:element ref="rel:program" minOccurs="0"/>	
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
+				<xsd:element ref="doi_data" minOccurs="1" maxOccurs="1"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attribute name="publication_status" use="optional">
@@ -1484,30 +1555,8 @@ If the report number of an item follows Z39.23, the number should be deposited i
 			<xsd:attributeGroup ref="reference_distribution_opts.att"/>
 		</xsd:complexType>
 	</xsd:element>
-	<xsd:element name="standards_body">
-		<xsd:annotation>
-			<xsd:documentation>A wrapper for standards body information.</xsd:documentation>
-		</xsd:annotation>
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element ref="standards_body_name"/>
-				<xsd:element ref="standards_body_acronym"/>
-			</xsd:sequence>
-		</xsd:complexType>
-	</xsd:element>
 
-	<xsd:element name="standards_body_name">
-		<xsd:annotation>
-			<xsd:documentation>Name of the standards organization. Required. Note: Use the publisher element if the standards body is not also the publisher. </xsd:documentation>
-		</xsd:annotation>
-	</xsd:element>
-	<xsd:element name="standards_body_acronym">
-		<xsd:annotation>
-			<xsd:documentation>Acronym for standards body. Will be used for query matching - required.</xsd:documentation>
-		</xsd:annotation>
-	</xsd:element>
-	
-	
+
 	<xsd:element name="database">
 		<xsd:annotation>
 			<xsd:documentation>database is the top level element for deposit of metadata about one or more datasets or records in a database.
@@ -1555,7 +1604,9 @@ publisher_item may be used to record an identifying number for the database othe
 				<xsd:element ref="publisher" minOccurs="0"/>
 				<xsd:element ref="institution" minOccurs="0" maxOccurs="10"/>
 				<xsd:element ref="publisher_item" minOccurs="0"/>
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data" minOccurs="0"/>
+				<xsd:element ref="rel:program" minOccurs="0"/>	
 			</xsd:sequence>
 			<xsd:attributeGroup ref="language.atts"/>
 			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
@@ -1602,6 +1653,8 @@ component_list: a list of components included in the dataset item such as suppor
 						<xsd:element ref="ai:program" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:choice>
+				<xsd:element ref="rel:program" minOccurs="0"/>					
+				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 				<xsd:element ref="component_list" minOccurs="0"/>
@@ -1739,21 +1792,7 @@ Example: Department of Psychology
 		</xsd:simpleType>
 	</xsd:element>
 
-	<xsd:element name="approval_date">
-		<xsd:annotation>
-			<xsd:documentation>
-The date on which a dissertation was accepted by the institution awarding the degree, a report was approved, or a standard was accepted.
 
-approval_date includes the same elements as publication_date, but it has no attributes. It is a distinct element from publication_date to reflect that an important but different semantic meeting from publication_date
-				
-			</xsd:documentation>
-		</xsd:annotation>
-		<xsd:complexType>
-			<xsd:complexContent>
-				<xsd:extension base="date_t"/>
-			</xsd:complexContent>
-		</xsd:complexType>
-	</xsd:element>
 	<xsd:element name="degree">
 		<xsd:annotation>
 			<xsd:documentation>The degree(s) awarded for a dissertation.</xsd:documentation>
