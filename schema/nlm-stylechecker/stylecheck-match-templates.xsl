@@ -104,6 +104,29 @@
 		<xsl:call-template name="alternatives-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
+		
+
+    <!-- *********************************************************** -->
+   <!-- Match: answer (BITS)
+        1) 
+     -->
+   <!-- *********************************************************** -->
+   <!--<xsl:template match="answer">
+  
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>-->
+   
+   
+   <!-- *********************************************************** -->
+   <!-- Match: answer-set (BITS)
+        1) 
+     -->
+   <!-- *********************************************************** -->
+   <!--<xsl:template match="answer-set">
+  
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>-->
+      
 
    <!-- *********************************************************** -->
    <!-- Match: app
@@ -319,13 +342,34 @@
 		</xsl:template>
 
    <!-- *********************************************************** -->
-   <!-- Match: book
+   <!-- Match: book 
         1) cannot be empty 
      -->
    <xsl:template match="book">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+    </xsl:template>
+    
+    
+   <!-- *********************************************************** -->
+   <!-- Match: book-back (BITS)
+        1) cannot be empty 
+     -->
+   <xsl:template match="book-back">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>
+    
+    
+    <!-- *********************************************************** -->
+   <!-- Match: book-body (BITS)
+        1) cannot be empty 
+     -->
+   <xsl:template match="book-body">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>
+
 
 
    <!-- *********************************************************** -->
@@ -343,13 +387,47 @@
          <xsl:with-param name="attribute-name" select="'book-part-type'"/>
          <xsl:with-param name="test-name" select="'book-part-type attribute check'"/>
 			</xsl:call-template>
-      <xsl:call-template name="attribute-present-not-empty">
-         <xsl:with-param name="context" select="@id"/>
-         <xsl:with-param name="attribute-name" select="'id'"/>
-         <xsl:with-param name="test-name" select="'book-part id attribute check'"/>
-			</xsl:call-template>
+      <xsl:if test="normalize-space(parent::book-part-wrapper/@id) = '' ">
+           <xsl:call-template name="attribute-present-not-empty">
+             <xsl:with-param name="context" select="@id"/>
+             <xsl:with-param name="attribute-name" select="'id'"/>
+             <xsl:with-param name="test-name" select="'book-part id attribute check'"/>
+          </xsl:call-template>
+      </xsl:if>
       <xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
+		
+
+   <!-- *********************************************************** -->
+   <!-- Match: book-part-wrapper (BITS)
+
+       Tests: 
+        1) cannot be empty 
+     -->
+   <xsl:template match="book-part-wrapper">
+      <xsl:call-template name="empty-element-check"/>      
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
+
+
+    <!-- *********************************************************** -->
+   <!-- Match: book-volume-id (BITS)
+        1) cannot be empty 
+     -->
+   <xsl:template match="book-volume-id">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>
+
+
+    <!-- *********************************************************** -->
+   <!-- Match: book-volume-number (BITS)
+        1) cannot be empty 
+     -->
+   <xsl:template match="book-volume-number">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -461,6 +539,27 @@
 		<xsl:call-template name="collab-alternatives-content-check"/>
 		<xsl:apply-templates select="." mode="output"/>
 	</xsl:template>
+
+
+    <!-- *********************************************************** -->
+   <!-- Match: collection-id (BITS)
+        1) cannot be empty 
+     -->
+   <xsl:template match="collection-id">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>
+
+
+    <!-- *********************************************************** -->
+   <!-- Match: collection-meta (BITS)
+        1) cannot be empty 
+     -->
+   <xsl:template match="collection-meta">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>       
+    
 
    <!-- *********************************************************** -->
    <!-- Match: compound-kwd-part
@@ -655,6 +754,17 @@
          </xsl:call-template>
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
+   
+   
+   <!-- *********************************************************** -->
+   <!-- Match: dedication (BITS)
+        1) cannot be empty 
+     -->
+   <xsl:template match="dedication">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>       
+    
 
 
    <!-- *********************************************************** -->
@@ -941,6 +1051,17 @@
 
 
    <!-- *********************************************************** -->
+   <!-- Match: foreword (BITS)
+        1) cannot be empty 
+     -->
+   <!-- *********************************************************** -->
+   <xsl:template match="foreword">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
+      
+
+   <!-- *********************************************************** -->
    <!-- Match: fpage
         1) In article-meta, should be followed by lpage
      -->
@@ -970,6 +1091,27 @@
          
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
+   
+   
+   <!-- *********************************************************** -->
+   <!-- Match: front-matter (BITS)
+        1) cannot be empty 
+     -->
+   <xsl:template match="front-matter">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>    
+   
+   
+   <!-- *********************************************************** -->
+   <!-- Match: front-matter-part (BITS)
+        1) cannot be empty 
+     -->
+   <xsl:template match="front-matter-part">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>    
+    
 
    <!-- *********************************************************** -->
    <!-- Match: funding-group
@@ -1042,6 +1184,67 @@
 		<xsl:call-template name="href-content-check"/>
 		<xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
+
+
+   <!-- *********************************************************** -->
+   <!-- Match: index (BITS)
+        1) cannot be empty 
+     -->
+   <xsl:template match="index">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>    
+
+
+   <!-- *********************************************************** -->
+   <!-- Match: index-div (BITS)
+        1) 
+     -->
+   <!--<xsl:template match="index-div">
+      
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>-->    
+    
+
+   <!-- *********************************************************** -->
+   <!-- Match: index-entry (BITS)
+        1) 
+     -->
+   <!--<xsl:template match="index-entry">
+      
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>-->   
+
+
+   <!-- *********************************************************** -->
+   <!-- Match: index-group (BITS)
+        1) 
+     -->
+   <!--<xsl:template match="index-group">
+      
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>-->    
+    
+    
+  <!-- *********************************************************** -->
+   <!-- Match: index-term (BITS)
+        1) 
+     -->
+   <!--<xsl:template match="index-term">
+      
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>-->   
+
+
+  <!-- *********************************************************** -->
+   <!-- Match: index-term-range-end (BITS)
+        1) 
+     -->
+   <!--<xsl:template match="index-term-range-end">
+     
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>-->    
+
 
   <!-- ********************************************* -->
    <!-- Match: inline-formula
@@ -1601,6 +1804,17 @@
 		</xsl:call-template>
 		<xsl:apply-templates select="." mode="output"/>
 	</xsl:template>
+	
+
+   <!-- *********************************************************** -->
+   <!-- Match: named-book-part-body (BITS)
+        1) 
+     -->
+   <!-- *********************************************************** -->
+   <!--<xsl:template match="named-book-part-body">
+  
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>-->
    
 
    <!-- *********************************************************** -->
@@ -1627,6 +1841,29 @@
 			</xsl:if>	 	  
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
+   
+   
+    <!-- *********************************************************** -->
+   <!-- Match: nav-pointer (BITS)
+        1) 
+     -->
+   <!-- *********************************************************** -->
+   <!--<xsl:template match="nav-pointer">
+  
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>-->
+   
+   
+    <!-- *********************************************************** -->
+   <!-- Match: nav-pointer-group (BITS)
+        1) 
+     -->
+   <!-- *********************************************************** -->
+   <!--<xsl:template match="nav-pointer-group">
+  
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>-->   
+   
 
 
    <!-- *********************************************************** -->
@@ -1767,6 +2004,17 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="phone">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+		</xsl:template>
+		
+		
+   <!-- *********************************************************** -->
+   <!-- Match: preface (BITS)
+        1) cannot be empty 
+     -->
+   <!-- *********************************************************** -->
+   <xsl:template match="preface">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
@@ -1926,6 +2174,28 @@
 
 
    <!-- *********************************************************** -->
+   <!-- Match: question (BITS)
+        1) cannot be empty 
+     -->
+   <!-- *********************************************************** -->
+   <xsl:template match="question">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>
+		
+		
+   <!-- *********************************************************** -->
+   <!-- Match: Match: question-wrap (BITS)
+        1)
+     -->
+   <!-- *********************************************************** -->
+   <!--<xsl:template match="question-wrap">
+      
+      <xsl:apply-templates select="." mode="output"/>
+		</xsl:template>-->
+		
+
+   <!-- *********************************************************** -->
    <!-- Match: ref
         1) cannot be empty 
         2) must have id
@@ -1987,6 +2257,9 @@
    	<xsl:if test="starts-with(@xlink:href,'10.')">
    		<xsl:call-template name="related-article-xlink-extlinktype-check"/>
    	</xsl:if>
+   	
+   	<!-- Test 7 -->
+   	<xsl:call-template name="related-article-self-test"/>
               
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
@@ -2154,8 +2427,52 @@
               
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-
-
+   
+   
+   <!-- *********************************************************** -->
+   <!-- Match: see (BITS)
+        1) 
+     -->
+   <!-- *********************************************************** -->
+   <!--<xsl:template match="see">
+  
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>-->
+   
+   
+   <!-- *********************************************************** -->
+   <!-- Match: see-also (BITS)
+        1) 
+     -->
+   <!-- *********************************************************** -->
+   <!--<xsl:template match="see-also">
+  
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>-->
+   
+ 
+    <!-- *********************************************************** -->
+   <!-- Match: see-also-entry (BITS)
+        1) 
+     -->
+   <!-- *********************************************************** -->
+   <!--<xsl:template match="see-also-entry">
+  
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>-->
+   
+   
+      <!-- *********************************************************** -->
+   <!-- Match: see-entry (BITS)
+        1) 
+     -->
+   <!-- *********************************************************** -->
+   <!--<xsl:template match="see-entry">
+  
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>-->
+   
+ 
   <!-- ********************************************************************* -->
    <!-- Match: self-uri
         1) xlink:href cannot be empty
@@ -2711,6 +3028,51 @@
 
 		
 		</xsl:template>
+		
+
+   <!-- *********************************************************** -->
+   <!-- Match: toc (BITS)
+        1) 
+     -->
+   <!-- *********************************************************** -->
+   <!--<xsl:template match="toc">   
+      
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>-->
+
+
+   <!-- *********************************************************** -->
+   <!-- Match: toc-div (BITS)
+        1) 
+     -->
+   <!-- *********************************************************** -->
+   <!--<xsl:template match="toc-div">   
+     
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>-->
+		
+		
+   <!-- *********************************************************** -->
+   <!-- Match: toc-entry (BITS)
+        1) cannot be empty 
+     -->
+   <!-- *********************************************************** -->
+   <xsl:template match="toc-entry">   
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
+		
+		
+   <!-- *********************************************************** -->
+   <!-- Match: toc-group (BITS)
+        1) 
+     -->
+   <!-- *********************************************************** -->
+   <!--<xsl:template match="toc-group">   
+     
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>-->
+		
 
 
    <!-- *********************************************************** -->
@@ -2852,6 +3214,26 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="volume-id">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+		</xsl:template>
+   
+      <!-- *********************************************************** -->
+   <!-- Match: volume-in-collection (BITS)
+        1) cannot be empty 
+     -->
+   <!-- *********************************************************** -->
+   <xsl:template match="volume-in-collection">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+		</xsl:template>
+		
+  <!-- *********************************************************** -->
+   <!-- Match: volume-number (BITS)
+        1) cannot be empty 
+     -->
+   <!-- *********************************************************** -->
+   <xsl:template match="volume-number">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
 		</xsl:template>

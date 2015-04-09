@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <!-- ************************************************************************ -->
 <!--                                     NLM STYLECHECKER
-                                           Version 5.6
+                                           Version 5.8
     
     Stylesheet tests an XML instance to determine whether it conforms to correct
     PMC style as defined in the Tagging Guidelines located at:
@@ -51,6 +51,22 @@
      
      
    PMC Project Revision notes:
+    February 9, 2015: Version 5.8
+                      Public release of 1st quarter changes  
+   
+    January 12, 2015:
+                      Added check for related-articles pointing to the containing article.
+   
+    November 19, 2014:
+                      Increased allowable $substr-after-last-dot in named template
+                        href-ext-check to 10; received file type 'sas7bdat'
+
+    November 13, 2014: Version 5.7
+                      Public release of 4th quarter changes
+   
+    September 5, 2014:
+    				Added related-article-type values "continues" and "continued-by". 
+    
     August 12, 2014: Version 5.6
     				Public release of 3rd quarter changes
    
@@ -348,7 +364,7 @@
                           not(self::text())])"/>
 
    <!-- Indicate our own version -->
-   <xsl:param name="stylechecker-version"     select="'5.6'"/>
+   <xsl:param name="stylechecker-version"     select="'5.8'"/>
    <xsl:param name="stylechecker-mainline"    select="'nlm-stylechecker5.xsl'"/>
 
    <!-- The 'style' selects the rules that can be applied by the stylechecker.
@@ -360,7 +376,7 @@
      -->
 	<xsl:param name="style">
 		<xsl:choose>
-			<xsl:when test="name(/*)='book-part' or name(/*)='book'">
+			<xsl:when test="name(/*)='book-part' or name(/*)='book' or name(/*)='book-part-wrapper'">
 				<xsl:text>book</xsl:text>
             </xsl:when>
 			<!-- How can we sniff for a manuscript? -->
@@ -408,6 +424,7 @@
 	<xsl:param name="content-title">
 		<xsl:value-of select="/book/book-meta/book-title-group/book-title"/>
 		<xsl:value-of select="/book-part/book-part-meta/title-group/title"/>
+		<xsl:value-of select="/book-part-wrapper/book-part/book-part-meta/title-group/title"/>
 		<xsl:value-of select="/article/front/article-meta/title-group/article-title"/>
 		</xsl:param>
 
@@ -416,6 +433,7 @@
 		<xsl:choose>
 			<xsl:when test="not(/node()/@dtd-version)"> and unknown version </xsl:when>
 			<xsl:when test="$attvalue='1' and /article/front/journal-meta/journal-title-group">j1</xsl:when>
+			<xsl:when test="$attvalue='1' and (/book-part-wrapper | /book/namespace::xi)">b1</xsl:when>
 			<xsl:when test="$attvalue='3'">3</xsl:when>
 			<xsl:when test="$attvalue='2' or $attvalue='1'">2</xsl:when>
 			<xsl:otherwise>[<xsl:value-of select="/node()/@dtd-version"/>||<xsl:value-of select="$attvalue"/>]</xsl:otherwise>
@@ -429,16 +447,11 @@
 					<xsl:with-param name="str" select="/article/@xml:lang"/>
 				</xsl:call-template>
 			</xsl:when>
-			<xsl:when test="/book-part/@xml:lang">
+			<xsl:when test="/book-part/@xml:lang | /book/@xml:lang | /book-part-wrapper/@xml:lang">
 				<xsl:call-template name="knockdown">
-					<xsl:with-param name="str" select="/book-part/@xml:lang"/>
+					<xsl:with-param name="str" select="/*/@xml:lang"/>
 				</xsl:call-template>
-			</xsl:when>
-			<xsl:when test="/book/@xml:lang">
-				<xsl:call-template name="knockdown">
-					<xsl:with-param name="str" select="/book/@xml:lang"/>
-				</xsl:call-template>
-			</xsl:when>
+			</xsl:when>			
 			<xsl:otherwise>
 				<xsl:text>en</xsl:text>
 			</xsl:otherwise>
@@ -479,6 +492,9 @@
 					<xsl:when test="$dtd-version='j1'">
 						<xsl:text> version 1.0 </xsl:text>
 					</xsl:when>
+					<xsl:when test="$dtd-version='b1'">
+						<xsl:text>version 1.0 </xsl:text>
+					</xsl:when>
 					<xsl:otherwise>
 						<xsl:value-of select="$dtd-version"/>
 						</xsl:otherwise>
@@ -487,6 +503,9 @@
 				<xsl:choose>
 					<xsl:when test="$dtd-version='j1'">
 						<xsl:text>JATS DTD. </xsl:text>
+					</xsl:when>
+					<xsl:when test="$dtd-version='b1'">
+						<xsl:text>BITS DTD. </xsl:text>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:text>NLM DTD. </xsl:text>
