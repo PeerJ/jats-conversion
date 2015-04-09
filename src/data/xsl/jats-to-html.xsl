@@ -393,8 +393,21 @@
         </a>
     </xsl:template>
 
+    <!-- table -->
+    <xsl:template match="table">
+        <xsl:element name="{local-name()}">
+            <xsl:attribute name="class">
+                <xsl:text>table table-bordered table-condensed table-hover</xsl:text>
+                <xsl:if test="@content-type = 'text'">
+                    <xsl:text> table-text</xsl:text>
+                </xsl:if>
+            </xsl:attribute>
+            <xsl:apply-templates select="node()|@*"/>
+        </xsl:element>
+    </xsl:template>
+
     <!-- table elements -->
-    <xsl:template match="table | tbody | thead | tfoot | column | tr | th | td | colgroup | col">
+    <xsl:template match="tbody | thead | tfoot | column | tr | th | td | colgroup | col">
         <xsl:element name="{local-name()}">
             <xsl:if test="@content-type = 'text'">
                 <xsl:attribute name="class">table-text</xsl:attribute>
