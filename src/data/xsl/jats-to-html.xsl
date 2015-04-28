@@ -731,6 +731,8 @@
             <xsl:apply-templates select="caption" mode="fig"/>
 
             <xsl:apply-templates select="p"/>
+
+            <xsl:apply-templates select="media" mode="fig"/>
         </figure>
     </xsl:template>
 
@@ -813,6 +815,27 @@
 		        <xsl:apply-templates select="@*"/>
 	        </img>
         </a>
+    </xsl:template>
+
+    <!-- figure video -->
+    <xsl:template match="media[@mimetype='video']" mode="fig">
+        <div class="{local-name()}">
+            <xsl:apply-templates select="@*"/>
+
+            <a href="{$static-root}{@xlink:href}"
+               class="btn btn-mini article-supporting-download"
+               data-rel="supplement"
+               download="{@xlink:href}"
+               data-filename="{@xlink:href}">
+                <i class="icon-large icon-facetime-video">&#160;</i>
+                <xsl:text>Download video</xsl:text>
+            </a>
+        </div>
+        <!--
+        <video controls="controls" preload="none" width="100%">
+            <source src="{$static-root}{@xlink:href}" type="video/{@mime-subtype}"/>
+        </video>
+        -->
     </xsl:template>
 
     <!-- definition list -->
