@@ -21,6 +21,7 @@
     <xsl:param name="issn"/>
     <xsl:param name="publication"/>
     <xsl:param name="url"/>
+    <xsl:param name="link"/>
     <xsl:param name="logo"/>
     <xsl:param name="publisher"/>
     <xsl:param name="creator"/>
@@ -29,9 +30,9 @@
 
     <xsl:template match="/articles">
         <rdf:RDF>
-            <channel rdf:about="{$url}/index.rss1">
+            <channel rdf:about="{$url}">
                 <title><xsl:value-of select="$title"/></title>
-                <link><xsl:value-of select="$url"/></link>
+                <link><xsl:value-of select="$link"/></link>
                 <description><xsl:value-of select="$description"/></description>
                 <image rdf:resource="{$logo}"/>
 

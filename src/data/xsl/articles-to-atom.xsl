@@ -29,7 +29,7 @@
         <feed>
             <title><xsl:value-of select="$title"/></title>
             <id><xsl:value-of select="$url"/></id>
-            <link rel="self" type="application/atom+xml" href="{$url}index.atom"/>
+            <link rel="self" type="application/atom+xml" href="{$url}"/>
             <link rel="search" type="application/opensearchdescription+xml" href="osd.xml"/>
             <subtitle><xsl:value-of select="$description"/></subtitle>
             <updated><xsl:value-of select="$now"/></updated>
