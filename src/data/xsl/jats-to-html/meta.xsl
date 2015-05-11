@@ -74,7 +74,7 @@
         <xsl:choose>
             <xsl:when test="$publication-type = 'publication'">
                 <meta name="citation_journal_title" content="{$journal-title}"/>
-                <meta name="citation_journal_abbrev" content="{$journal-title}"/>
+                <meta name="citation_journal_abbrev" content="{$abbrev-journal-title}"/>
             </xsl:when>
             <xsl:when test="$publication-type = 'preprint'">
                 <meta name="citation_technical_report_institution" content="{$journal-title}"/>
