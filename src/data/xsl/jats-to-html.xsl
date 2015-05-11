@@ -27,6 +27,17 @@
     <xsl:variable name="journal-meta" select="/article/front/journal-meta"/>
     <xsl:variable name="journal-title" select="$journal-meta/journal-title-group/journal-title"/>
 
+    <xsl:variable name="journal-abbrev-title">
+        <xsl:choose>
+            <xsl:when test="$journal-meta/journal-title-group/abbrev-journal-title">
+                <xsl:value-of select="$journal-meta/journal-title-group/abbrev-journal-title"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$journal-meta/journal-title-group/journal-title"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:variable>
+
     <xsl:variable name="end-punctuation">
         <xsl:text>.?!"')]}</xsl:text>
     </xsl:variable>
