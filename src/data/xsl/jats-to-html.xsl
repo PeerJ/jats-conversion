@@ -27,7 +27,7 @@
     <xsl:variable name="journal-meta" select="/article/front/journal-meta"/>
     <xsl:variable name="journal-title" select="$journal-meta/journal-title-group/journal-title"/>
 
-    <xsl:variable name="journal-abbrev-title">
+    <xsl:variable name="abbrev-journal-title">
         <xsl:choose>
             <xsl:when test="$journal-meta/journal-title-group/abbrev-journal-title">
                 <xsl:value-of select="$journal-meta/journal-title-group/abbrev-journal-title"/>
