@@ -84,9 +84,16 @@
     </xsl:template>
 
     <xsl:template match="given-names" mode="self-citation">
-        <xsl:for-each select="str:tokenize(., ' .')">
-            <xsl:value-of select="substring(., 1, 1)"/>
-        </xsl:for-each>
+        <xsl:choose>
+            <xsl:when test="@initials">
+                <xsl:value-of select="@initials"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:for-each select="str:tokenize(., ' .')">
+                    <xsl:value-of select="substring(., 1, 1)"/>
+                </xsl:for-each>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="collab" mode="self-citation">
