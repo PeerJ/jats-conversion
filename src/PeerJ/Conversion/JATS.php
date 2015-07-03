@@ -235,4 +235,78 @@ class JATS
         libxml_use_internal_errors(false);
     }
 
+    /**
+     * @param \DOMDocument $input
+     *
+     * @return array
+     */
+    protected function checkStyle(\DOMDocument $input)
+    {
+        $xsl = '../../../schema/nlm-stylechecker/nlm-stylechecker';
+        $output = $this->convert($xsl, $input);
+
+        if ($output->documentElement->nodeName === 'ERR') {
+            return $this->buildStyleCheckErrors($output);
+        }
+
+        return array();
+    }
+
+    /**
+     * @param \DOMDocument $output
+     *
+     * @return array
+     */
+    protected function buildStyleCheckErrors(\DOMDocument $output)
+    {
+        // save and reload, to get line numbers
+        $file = tempnam(sys_get_temp_dir(), 'stylecheck-');
+        $output->save($file);
+        $doc = new \DOMDocument;
+        $doc->load($file);
+        $xpath = new \DOMXPath($doc);
+
+        $errors = array();
+
+        /** @var \DOMNode|\DOMElement $node */
+        foreach ($xpath->query('//error') as $node) {
+            $text = $node->textContent;
+
+            if (!$this->isRealError($text)) {
+                continue;
+            }
+
+            $errors[] = array(
+                'line' => $node->getLineNo(),
+                'message' => $text,
+            );
+        }
+
+        unlink($file);
+
+        return $errors;
+    }
+
+    /**
+     * @param string $text
+     *
+     * @return bool
+     */
+    protected function isRealError($text)
+    {
+        $ignores = array(
+            'tex-math content check',
+            'with subj-group-type attribute',
+            'table footnotes must be direct children of table-wrap-foot',
+            'mml:math elements must have an id attribute',
+        );
+
+        foreach ($ignores as $ignore) {
+            if (strpos($text, $ignore) !== false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
