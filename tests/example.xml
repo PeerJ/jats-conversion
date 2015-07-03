@@ -138,7 +138,7 @@
                         Hypacrosaurus</italic>). The skull and skeleton of a juvenile
                     <italic>Parasaurolophus</italic>
                     from the late Campanian-aged (&#8764;75.5 Ma) Kaiparowits Formation of southern Utah, USA,
-                    represents the smallest and most complete specimen yet described for this taxon. The individual was
+                    represents the <underline>smallest</underline> and most complete specimen yet <overline>described</overline> for this <sc>taxon</sc>sc>. The <monospace>individual</monospace> was
                     approximately 2.5 m in body length (&#8764;25% maximum adult body length) at death, with a skull
                     measuring 246 mm long and a femur 329 mm long. A histological section of the tibia shows
                     well-vascularized, woven and parallel-fibered primary cortical bone typical of juvenile ornithopods.
@@ -177,6 +177,7 @@
                     <funding-source>Gretchen Augustyn and family, Larry and Alicia Ashton, Tom and Susanna Terris, the
                         David B. Jones Foundation, the Mary Stuart Rogers Foundation, and the Les and Barbara Perry Fund
                     </funding-source>
+                    <award-id>123</award-id>
                 </award-group>
                 <funding-statement>This research was funded by Gretchen Augustyn and family, Larry and Alicia Ashton,
                     Tom and Susanna Terris, the David B. Jones Foundation, the Mary Stuart Rogers Foundation, and the
@@ -6095,6 +6096,7 @@
                     <source>Paleobiology</source>
                     <year iso-8601-date="1979">1979</year>
                     <volume>5</volume>
+                    <issue>12</issue>
                     <fpage>296</fpage>
                     <lpage>317</lpage>
                 </element-citation>
@@ -7509,7 +7511,7 @@
                     </person-group>
                     <article-title>Hadrosauridae</article-title>
                     <source>The Dinosauria</source>
-                    <edition>2nd ed</edition>
+                    <edition designator="2">2nd ed</edition>
                     <year iso-8601-date="2004">2004</year>
                     <publisher-loc>Berkeley</publisher-loc>
                     <publisher-name>University of California Press</publisher-name>
