@@ -4,8 +4,8 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
                 xmlns:fr="http://www.crossref.org/fundref.xsd"
-                xmlns="http://www.crossref.org/schema/4.3.3"
-                xsi:schemaLocation="http://www.crossref.org/schema/4.3.3 http://www.crossref.org/schema/deposit/crossref4.3.3.xsd
+                xmlns="http://www.crossref.org/schema/4.3.6"
+                xsi:schemaLocation="http://www.crossref.org/schema/4.3.6 http://www.crossref.org/schema/deposit/crossref4.3.6.xsd
                 http://www.crossref.org/fundref.xsd http://www.crossref.org/schema/deposit/fundref.xsd"
                 exclude-result-prefixes="xlink">
 
@@ -25,7 +25,7 @@
 	<!-- root element -->
 
 	<xsl:template match="/">
-		<doi_batch version="4.3.3" xsi:schemaLocation="http://www.crossref.org/schema/4.3.3 http://www.crossref.org/schema/deposit/crossref4.3.3.xsd">
+		<doi_batch version="4.3.6" xsi:schemaLocation="http://www.crossref.org/schema/4.3.6 http://www.crossref.org/schema/deposit/crossref4.3.6.xsd">
 			<head>
 				<xsl:call-template name="deposition"/>
 			</head>
@@ -47,9 +47,9 @@
 		</timestamp>
 
 		<depositor>
-			<name>
+			<depositor_name>
 				<xsl:value-of select="$depositorName"/>
-			</name>
+			</depositor_name>
 			<email_address><xsl:value-of select="$depositorEmail"/></email_address>
 		</depositor>
 
