@@ -102,6 +102,12 @@
                 <month>10</month>
                 <year iso-8601-date="2013">2013</year>
             </pub-date>
+            <!-- 3 deliberate errors for testing the style checker -->
+            <pub-date pub-type="test">
+                <day>Friday</day>
+                <month>10</month>
+                <year>2013</year>
+            </pub-date>
             <volume>1</volume>
             <elocation-id>e182</elocation-id>
             <history>

@@ -240,7 +240,7 @@ class JATS
      *
      * @return array
      */
-    protected function checkStyle(\DOMDocument $input)
+    public function checkStyle(\DOMDocument $input)
     {
         $xsl = '../../../schema/nlm-stylechecker/nlm-stylechecker';
         $output = $this->convert($xsl, $input);
