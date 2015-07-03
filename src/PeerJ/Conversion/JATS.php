@@ -4,7 +4,11 @@ namespace PeerJ\Conversion;
 
 class JATS
 {
-    /** directory containing XSL files */
+    /**
+     * @string
+     *
+     * Directory containing XSL files
+     */
     protected $dir;
 
     /**
