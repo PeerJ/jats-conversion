@@ -62,7 +62,7 @@ class JATS
         $output = $this->convert('jats-to-unixref', $input, $params);
 
         if ($validate) {
-            $schema = 'http://www.crossref.org/schema/deposit/crossref4.3.3.xsd';
+            $schema = 'http://www.crossref.org/schema/deposit/crossref4.3.6.xsd';
             $this->validateWithSchema($output, $schema);
         }
 
