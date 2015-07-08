@@ -270,43 +270,14 @@ class JATS
 
         /** @var \DOMNode|\DOMElement $node */
         foreach ($xpath->query('//error') as $node) {
-            $text = $node->textContent;
-
-            if (!$this->isRealError($text)) {
-                continue;
-            }
-
             $errors[] = array(
                 'line' => $node->getLineNo(),
-                'message' => $text,
+                'message' => $node->textContent,
             );
         }
 
         unlink($file);
 
         return $errors;
-    }
-
-    /**
-     * @param string $text
-     *
-     * @return bool
-     */
-    protected function isRealError($text)
-    {
-        $ignores = array(
-            'tex-math content check',
-            'with subj-group-type attribute',
-            'table footnotes must be direct children of table-wrap-foot',
-            'mml:math elements must have an id attribute',
-        );
-
-        foreach ($ignores as $ignore) {
-            if (strpos($text, $ignore) !== false) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }
