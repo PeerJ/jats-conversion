@@ -8,8 +8,10 @@
     </template>
 
     <template match="article-meta">
-        <text>TY  - JOUR</text>
-        <text>&#10;</text><!-- newline -->
+        <call-template name="item">
+            <with-param name="key">TY</with-param>
+            <with-param name="value">JOUR</with-param>
+        </call-template>
         <apply-templates select="article-id[@pub-id-type='doi']"/>
         <apply-templates select="title-group/article-title"/>
         <apply-templates select="contrib-group/contrib"/>
@@ -23,16 +25,26 @@
         <text>ER  -&#32;</text><!-- space at the end, might not be necessary -->
     </template>
 
+    <template name="item">
+        <param name="key"/>
+        <param name="value" select="."/>
+        <value-of select="concat($key, '  - ', $value, '&#10;')"/>
+    </template>
+
     <template match="article-id[@pub-id-type='doi']">
-        <value-of select="concat('UR  - ', 'https://dx.doi.org/', .)"/>
-        <text>&#10;</text>
-        <value-of select="concat('DO  - ', .)"/>
-        <text>&#10;</text>
+        <call-template name="item">
+            <with-param name="key">UR</with-param>
+            <with-param name="value" select="concat('https://dx.doi.org/', .)"/>
+        </call-template>
+        <call-template name="item">
+            <with-param name="key">DO</with-param>
+        </call-template>
     </template>
 
 	<template match="article-title">
-		<value-of select="concat('TI  - ', .)"/>
-		<text>&#10;</text>
+        <call-template name="item">
+            <with-param name="key">TI</with-param>
+        </call-template>
 	</template>
 
     <!-- contributors (authors and editors) -->
@@ -49,13 +61,16 @@
 
         <choose>
             <when test="name">
-                <value-of select="concat($tag, '  - ', name/surname)"/>
-                <apply-templates select="name/given-names" mode="name"/>
-                <apply-templates select="name/suffix" mode="name"/>
+                <call-template name="item">
+                    <with-param name="key" select="$tag"/>
+                    <with-param name="value">
+                        <value-of select="name/surname"/>
+                        <apply-templates select="name/given-names" mode="name"/>
+                        <apply-templates select="name/suffix" mode="name"/>
+                    </with-param>
+                </call-template>
             </when>
         </choose>
-
-        <text>&#10;</text>
 	</template>
 
     <template match="given-names | suffix" mode="name">
@@ -63,46 +78,58 @@
     </template>
 
     <template match="pub-date">
-        <value-of select="concat('DA  - ', translate(@iso-8601-date,'-','/'))"/>
-        <text>&#10;</text>
-        <value-of select="concat('PY  - ', year/@iso-8601-date)"/>
-        <text>&#10;</text>
+        <call-template name="item">
+            <with-param name="key">DA</with-param>
+            <with-param name="value" select="translate(@iso-8601-date,'-','/')"/>
+        </call-template>
+        <call-template name="item">
+            <with-param name="key">PY</with-param>
+            <with-param name="value" select="year/@iso-8601-date"/>
+        </call-template>
     </template>
 
     <template match="kwd">
-        <value-of select="concat('KW  - ', .)"/>
-        <text>&#10;</text>
+        <call-template name="item">
+            <with-param name="key">KW</with-param>
+        </call-template>
     </template>
 
     <template match="abstract">
-        <value-of select="concat('AB  - ', .)"/>
-        <text>&#10;</text>
+        <call-template name="item">
+            <with-param name="key">AB</with-param>
+        </call-template>
     </template>
 
     <template match="volume">
-        <value-of select="concat('VL  - ', .)"/>
-        <text>&#10;</text>
+        <call-template name="item">
+            <with-param name="key">VL</with-param>
+        </call-template>
     </template>
 
     <template match="elocation-id">
-        <value-of select="concat('SP  - ', .)"/>
-        <text>&#10;</text>
+        <call-template name="item">
+            <with-param name="key">SP</with-param>
+        </call-template>
     </template>
 
     <template match="journal-title">
          <!-- journal title (new specification) -->
-        <value-of select="concat('T2  - ', .)"/>
-        <text>&#10;</text>
+        <call-template name="item">
+            <with-param name="key">T2</with-param>
+        </call-template>
         <!-- journal title (old specification) -->
-        <value-of select="concat('JO  - ', .)"/>
-        <text>&#10;</text>
+        <call-template name="item">
+            <with-param name="key">JO</with-param>
+        </call-template>
         <!-- abbreviated journal title -->
-        <value-of select="concat('J2  - ', .)"/>
-        <text>&#10;</text>
+        <call-template name="item">
+            <with-param name="key">J2</with-param>
+        </call-template>
     </template>
 
     <template match="issn">
-        <value-of select="concat('SN  - ', .)"/>
-        <text>&#10;</text>
+        <call-template name="item">
+            <with-param name="key">SN</with-param>
+        </call-template>
     </template>
 </stylesheet>
