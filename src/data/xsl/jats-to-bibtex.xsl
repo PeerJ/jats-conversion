@@ -112,6 +112,17 @@
         </call-template>
     </template>
 
+    <template match="month">
+        <call-template name="item">
+            <with-param name="key" select="local-name()"/>
+            <with-param name="value">
+                <call-template name="month-abbrev-en">
+                    <with-param name="MM" select="."/>
+                </call-template>
+            </with-param>
+        </call-template>
+    </template>
+
     <template match="abstract">
         <call-template name="item">
             <with-param name="key">abstract</with-param>
@@ -140,6 +151,12 @@
             <with-param name="key">issn</with-param>
             <with-param name="value" select="."/>
         </call-template>
+    </template>
+
+    <template name="month-abbrev-en">
+        <param name="MM"/>
+        <variable name="months" select="'  janfebmaraprmayjunjulaugsepoctnovdec'"/>
+        <value-of select="substring($months, number($MM) * 3, 3)"/>
     </template>
 
     <!-- formatting markup -->
