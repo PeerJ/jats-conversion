@@ -560,6 +560,10 @@
             <xsl:apply-templates select="node()|@*" mode="abstract"/>
         </xsl:element>
     </xsl:template>
+	
+	<xsl:template match="xref" mode="abstract">
+		<xsl:apply-templates select="node()"/>
+	</xsl:template>
 
     <!-- license URL -->
     <!-- http://tdmsupport.crossref.org/license-uris-technical-details/ -->
