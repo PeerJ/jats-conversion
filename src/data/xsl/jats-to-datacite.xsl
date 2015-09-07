@@ -3,19 +3,19 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
-                xmlns="http://datacite.org/schema/kernel-2.2"
-                xsi:schemaLocation="http://datacite.org/schema/kernel-2.2 http://schema.datacite.org/meta/kernel-2.2/metadata.xsd"
+                xmlns="http://datacite.org/schema/kernel-3"
+                xsi:schemaLocation="http://datacite.org/schema/kernel-3 http://schema.datacite.org/meta/kernel-3/metadata.xsd"
                 exclude-result-prefixes="xlink">
 
     <xsl:output method="xml" indent="yes" encoding="UTF-8" standalone="yes"/>
 
-    <xsl:strip-space elements="aff"/>
+    <!--<xsl:strip-space elements="aff"/>-->
 
-    <xsl:param name="doi" select="/article/front/article-meta/article-id[@pub-id-type='doi']"/>
-    <xsl:param name="url" select="/article/front/article-meta/self-uri/@xlink:href"/>
+    <xsl:param name="previousVersionDoi"/>
+    <xsl:param name="nextVersionDoi"/>
 
-    <xsl:variable name="itemVersion"
-        select="/article/front/article-meta/custom-meta-group/custom-meta[meta-name='version']/meta-value"/>
+    <xsl:variable name="doi" select="/article/front/article-meta/article-id[@pub-id-type='doi']"/>
+    <xsl:variable name="itemVersion" select="/article/front/article-meta/custom-meta-group/custom-meta[meta-name='version']/meta-value"/>
 
     <!-- root element -->
 
@@ -27,7 +27,7 @@
 
     <xsl:template match="article-meta">
         <xsl:variable name="pub-date" select="pub-date[@date-type='pub'][@pub-type='epub']|pub-date[@date-type='preprint'][@pub-type='epreprint']"/>
-        <resource xsi:schemaLocation="http://datacite.org/schema/kernel-2.2 http://schema.datacite.org/meta/kernel-2.2/metadata.xsd">
+        <resource xsi:schemaLocation="http://datacite.org/schema/kernel-3 http://schema.datacite.org/meta/kernel-3/metadata.xsd">
             <identifier identifierType="DOI">
                 <xsl:value-of select="$doi"/>
             </identifier>
@@ -66,11 +66,19 @@
             </dates>
             <language>eng</language>
             <resourceType resourceTypeGeneral="Text">Article</resourceType>
-            <!--
             <relatedIdentifiers>
-                <xsl:apply-templates select="../../back/ref-list/ref/pub-id[@pub-id-type='doi']"/>
+                <!--<xsl:apply-templates select="../../back/ref-list/ref/pub-id[@pub-id-type='doi']"/>-->
+                <xsl:if test="$previousVersionDoi">
+                    <relatedIdentifier relatedIdentifierType="DOI" relationType="IsNewVersionOf">
+                        <xsl:value-of select="$previousVersionDoi"/>
+                    </relatedIdentifier>
+                </xsl:if>
+                <xsl:if test="$nextVersionDoi">
+                    <relatedIdentifier relatedIdentifierType="DOI" relationType="IsPreviousVersionOf">
+                        <xsl:value-of select="$nextVersionDoi"/>
+                    </relatedIdentifier>
+                </xsl:if>
             </relatedIdentifiers>
-            -->
             <formats>
                 <format>application/pdf</format>
                 <format>application/xml</format>
@@ -87,11 +95,12 @@
                     </xsl:otherwise>
                 </xsl:choose>
             </version>
-            <rights>
-                <xsl:value-of select="permissions/license/license-p"/>
-                <xsl:text>&#32;</xsl:text>
-                <xsl:value-of select="permissions/license/@xlink:href"/>
-            </rights>
+            <rightsList>
+                <rights rightsURI="{permissions/license/@xlink:href}">
+                    <!-- TODO: markup? -->
+                    <xsl:value-of select="permissions/license/license-p"/>
+                </rights>
+            </rightsList>
             <descriptions>
                 <description descriptionType="Abstract">
                     <xsl:apply-templates select="abstract/p"/>
@@ -104,6 +113,7 @@
 
     <xsl:template match="article-title" mode="title">
         <title>
+            <!-- TODO: markup? -->
             <xsl:value-of select="."/>
         </title>
     </xsl:template>
@@ -120,10 +130,16 @@
 
     <xsl:template match="contrib[@contrib-type='author']">
         <creator>
-            <creatorName>
-                <xsl:apply-templates select="name|collab" mode="contrib"/>
-            </creatorName>
+            <xsl:apply-templates select="name|collab" mode="contrib"/>
+            <xsl:apply-templates select="contrib-id[@contrib-id-type='orcid']"/>
+            <!-- TODO: affiliation? -->
         </creator>
+    </xsl:template>
+
+    <xsl:template match="contrib-id[@contrib-id-type='orcid']">
+        <nameIdentifier schemeURI="http://orcid.org/" nameIdentifierScheme="ORCID">
+            <xsl:value-of select="."/>
+        </nameIdentifier>
     </xsl:template>
 
     <xsl:template match="contrib[@contrib-type='editor']">
@@ -140,26 +156,32 @@
     <!-- contributor name -->
 
     <xsl:template match="name" mode="contrib">
-        <xsl:if test="given-names">
-            <xsl:value-of select="given-names"/>
-            <xsl:text>&#32;</xsl:text>
-        </xsl:if>
-        <xsl:value-of select="surname"/>
-        <xsl:if test="suffix">
-            <xsl:text>&#32;</xsl:text>
-            <xsl:apply-templates select="suffix"/>
-        </xsl:if>
+        <creatorName>
+            <xsl:if test="given-names">
+                <xsl:value-of select="given-names"/>
+                <xsl:text>&#32;</xsl:text>
+            </xsl:if>
+            <xsl:value-of select="surname"/>
+            <xsl:if test="suffix">
+                <xsl:text>&#32;</xsl:text>
+                <xsl:apply-templates select="suffix"/>
+            </xsl:if>
+        </creatorName>
     </xsl:template>
 
     <xsl:template match="collab" mode="contrib">
-        <xsl:apply-templates select="."/>
+        <creatorName>
+            <xsl:apply-templates select="."/>
+        </creatorName>
     </xsl:template>
 
-    <!-- abstract paragraph -->
+    <!-- abstract paragraph; no markup except for <br/> -->
     <xsl:template match="abstract/p">
         <xsl:value-of select="."/>
         <xsl:if test="position() != last()">
-            <xsl:text>&#10;&#10;</xsl:text>
+            <xsl:text>&#10;</xsl:text>
+            <br/>
+            <xsl:text>&#10;</xsl:text>
         </xsl:if>
     </xsl:template>
 

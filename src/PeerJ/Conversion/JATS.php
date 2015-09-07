@@ -84,7 +84,7 @@ class JATS
     public function generateDataCite(\DOMDocument $input, $params = array())
     {
         $output = $this->convert('jats-to-datacite', $input, $params);
-        $schema = 'http://schema.datacite.org/meta/kernel-2.2/metadata.xsd';
+        $schema = 'http://schema.datacite.org/meta/kernel-3/metadata.xsd';
         $this->validateWithSchema($output, $schema);
 
         return $output;
