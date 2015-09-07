@@ -4,17 +4,22 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
                 xmlns:fr="http://www.crossref.org/fundref.xsd"
+                xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1"
+                xmlns:ai="http://www.crossref.org/AccessIndicators.xsd"
                 xmlns="http://www.crossref.org/schema/4.3.6"
                 xsi:schemaLocation="http://www.crossref.org/schema/4.3.6 http://www.crossref.org/schema/deposit/crossref4.3.6.xsd
-                http://www.crossref.org/fundref.xsd http://www.crossref.org/schema/deposit/fundref.xsd"
+                http://www.crossref.org/fundref.xsd http://www.crossref.org/schema/deposit/fundref.xsd
+                http://www.crossref.org/AccessIndicators.xsd http://www.crossref.org/schemas/AccessIndicators.xsd"
                 exclude-result-prefixes="xlink">
 
 	<xsl:output method="xml" indent="yes" encoding="UTF-8" standalone="yes" />
 
 	<xsl:strip-space elements="aff"/>
 
-	<xsl:variable name="doi" select="/article/front/article-meta/article-id[@pub-id-type='doi']"/>
-	<xsl:variable name="url" select="/article/front/article-meta/self-uri/@xlink:href"/>
+    <xsl:variable name="article-meta" select="/article/front/article-meta"/>
+    <xsl:variable name="article-id" select="$article-meta/article-id[@pub-id-type='publisher-id']"/>
+    <xsl:variable name="doi" select="$article-meta/article-id[@pub-id-type='doi']"/>
+    <xsl:variable name="url" select="$article-meta/self-uri/@xlink:href"/>
 
     <xsl:param name="timestamp"/>
 
@@ -110,6 +115,8 @@
 	<!-- article metadata -->
 
 	<xsl:template match="article-meta">
+        <xsl:variable name="pub-date" select="pub-date[@date-type='pub'][@pub-type='epub']|pub-date[@date-type='preprint'][@pub-type='epreprint']"/>
+
 		<titles>
 			<xsl:apply-templates select="title-group/article-title" mode="title"/><!-- TODO: markup? -->
 		</titles>
@@ -118,8 +125,9 @@
 			<xsl:apply-templates select="contrib-group/contrib[@contrib-type='author']"/>
 		</contributors>
 
+        <xsl:apply-templates select="abstract" mode="abstract"/>
+
 		<publication_date media_type="online">
-            <xsl:variable name="pub-date" select="pub-date[@date-type='pub'][@pub-type='epub']|pub-date[@date-type='preprint'][@pub-type='epreprint']"/>
             <month>
                 <xsl:apply-templates select="$pub-date/month" mode="zero-pad-date"/>
             </month>
@@ -138,14 +146,22 @@
         </pages>
 
 		<publisher_item>
+			<!-- as this can be used as the page number in citations (though first_page takes precedence), use the elocation-id with the "e" prefix rather than the actual article id -->
+			<!-- http://help.crossref.org/using_best_practices_depositing -->
+            <item_number item_number_type="article-number">
+	            <xsl:value-of select="elocation-id"/>
+	            <!--<xsl:value-of select="$article-id"/>-->
+            </item_number>
 			<identifier id_type="doi">
 				<xsl:value-of select="$doi"/>
 			</identifier>
 		</publisher_item>
 
-        <!--
-        <xsl:call-template name="fundref"/>
-        -->
+        <!-- fundref -->
+        <xsl:apply-templates select="funding-group" mode="fundref"/>
+
+        <!-- license URL -->
+        <xsl:apply-templates select="permissions/license/@xlink:href" mode="access-indicators"/>
 
 		<doi_data>
 			<doi>
@@ -154,6 +170,7 @@
 			<resource>
 				<xsl:value-of select="self-uri/@xlink:href"/>
 			</resource>
+            <xsl:call-template name="tdm"/>
 		</doi_data>
 	</xsl:template>
 
@@ -207,6 +224,19 @@
 	<xsl:template match="monospace" mode="title">
 		<tt><xsl:apply-templates mode="title"/></tt>
 	</xsl:template>
+
+    <!-- use tex-math instead of MathML for formulae until using MathML3 -->
+    <xsl:template match="inline-formula" mode="title">
+        <xsl:value-of select="alternatives/tex-math"/>
+    </xsl:template>
+
+    <!--
+    <xsl:template match="tex-math" mode="title"/>
+
+    <xsl:template match="mml:*" mode="title">
+        <xsl:copy-of select="."/>
+    </xsl:template>
+    -->
 
 	<!-- TODO: math markup -->
 
@@ -314,24 +344,6 @@
 
     <!-- ignore text nodes (commas) in affiliations -->
     <xsl:template match="text()" mode="aff"/>
-
-    <!-- fundref assertions -->
-    <xsl:template name="fundref">
-        <xsl:variable name="award-group" select="funding-group/award-group"/>
-
-        <xsl:if test="$award-group/funding-source and $award-group/award-id">
-            <fr:program>
-                <fr:assertion name="fundgroup">
-                    <fr:assertion name="funder_name">
-                        <xsl:value-of select="funding-source"/>
-                    </fr:assertion>
-                    <fr:assertion name="funding_identifier">
-                        <xsl:value-of select="award-id"/>
-                    </fr:assertion>
-                </fr:assertion>
-            </fr:program>
-        </xsl:if>
-    </xsl:template>
 
 	<!-- reference list -->
 
@@ -490,12 +502,8 @@
 
 	<xsl:template match="fig" mode="component">
 		<component parent_relation="isPartOf">
-			<description>
-				<b><xsl:value-of select="label"/>:</b>
-				<xsl:text> </xsl:text>
-				<xsl:apply-templates select="caption/title" mode="title"/>
-			</description>
-			<xsl:if test="graphic/@mimetype and graphic/@mime-subtype">
+            <xsl:apply-templates select="caption/title"/>
+            <xsl:if test="graphic/@mimetype and graphic/@mime-subtype">
 				<format mime_type="{graphic/@mimetype}/{graphic/@mime-subtype}"/>
 			</xsl:if>
 			<doi_data>
@@ -509,12 +517,8 @@
 
 	<xsl:template match="table-wrap" mode="component">
 		<component parent_relation="isPartOf">
-			<description>
-				<b><xsl:value-of select="label"/>:</b>
-				<xsl:text> </xsl:text>
-				<xsl:apply-templates select="caption/title" mode="title"/>
-			</description>
-			<format mime_type="text/html"/>
+            <xsl:apply-templates select="caption/title"/>
+            <format mime_type="text/html"/>
 			<doi_data>
 				<doi><xsl:value-of select="object-id[@pub-id-type='doi']"/></doi>
 				<resource><xsl:value-of select="concat($url, '/', @id)"/></resource>
@@ -526,11 +530,7 @@
 
 	<xsl:template match="supplementary-material" mode="component">
 		<component parent_relation="isPartOf">
-			<description>
-				<b><xsl:value-of select="label"/>:</b>
-				<xsl:text> </xsl:text>
-				<xsl:apply-templates select="caption/title" mode="title"/>
-			</description>
+            <xsl:apply-templates select="caption/title"/>
 			<xsl:if test="@mimetype and @mime-subtype">
 				<format mime_type="{@mimetype}/{@mime-subtype}"/>
 			</xsl:if>
@@ -541,4 +541,99 @@
 		</component>
 	</xsl:template>
 
+    <!-- caption title -->
+    <xsl:template match="caption/title">
+        <titles>
+            <title>
+                <xsl:if test="../../label">
+                    <xsl:value-of select="concat(../../label, ': ')"/>
+                </xsl:if>
+                <xsl:apply-templates select="node()" mode="title"/>
+            </title>
+        </titles>
+    </xsl:template>
+
+    <!-- http://help.crossref.org/include-abstracts-in-deposits -->
+    <xsl:template match="*" mode="abstract">
+        <xsl:element name="jats:{name()}" namespace="http://www.ncbi.nlm.nih.gov/JATS1">
+            <!--<xsl:copy-of select="namespace::*"/>-->
+            <xsl:apply-templates select="node()|@*" mode="abstract"/>
+        </xsl:element>
+    </xsl:template>
+
+    <!-- license URL -->
+    <!-- http://tdmsupport.crossref.org/license-uris-technical-details/ -->
+    <xsl:template match="permissions/license/@xlink:href" mode="access-indicators">
+        <ai:program name="AccessIndicators">
+            <ai:license_ref>
+                <xsl:value-of select="."/>
+            </ai:license_ref>
+        </ai:program>
+    </xsl:template>
+
+    <!-- fundref -->
+    <!-- http://help.crossref.org/fundref -->
+    <xsl:template match="funding-group" mode="fundref">
+        <fr:program>
+            <xsl:apply-templates select="award-group/funding-source" mode="fundref"/>
+        </fr:program>
+    </xsl:template>
+
+    <xsl:template match="funding-group/award-group/funding-source" mode="fundref">
+        <fr:assertion name="fundgroup">
+		    <!-- TODO: in JATS 1.1d1 the name and ID/DOI may be in a wrapper -->
+	        <!--
+		    <xsl:choose>
+			    <xsl:when test="institution-wrap">
+				    <xsl:variable name="institution-id" select="institution-wrap/institution-id[@institution-id-type='FundRef']"/>
+				    <fr:assertion name="funder_name">
+					    <xsl:value-of select="institution-wrap/institution"/>
+				    </fr:assertion>
+				    <xsl:if test="$institution-id">
+					    <fr:assertion name="funder_identifier">
+						    <xsl:value-of select="$institution-id"/>
+					    </fr:assertion>
+				    </xsl:if>
+			    </xsl:when>
+			    <xsl:otherwise>
+				    <fr:assertion name="funder_name">
+					    <xsl:value-of select="."/>
+				    </fr:assertion>
+			    </xsl:otherwise>
+		    </xsl:choose>
+		    -->
+		    <fr:assertion name="funder_name">
+			    <xsl:value-of select="."/>
+		    </fr:assertion>
+            <xsl:apply-templates select="../award-id" mode="fundref"/>
+        </fr:assertion>
+    </xsl:template>
+
+    <xsl:template match="award-id" mode="fundref">
+        <fr:assertion name="award_number">
+            <xsl:value-of select="."/>
+        </fr:assertion>
+    </xsl:template>
+
+    <!-- full-text URLs -->
+    <!-- http://tdmsupport.crossref.org/full-text-uris-technical-details/ -->
+    <xsl:template name="tdm">
+        <collection property="text-mining">
+            <item>
+                <resource content_version="vor" mime_type="application/pdf">
+                    <xsl:value-of select="concat($url, '.pdf')"/>
+                </resource>
+            </item>
+            <item>
+                <resource content_version="vor" mime_type="application/xml">
+                    <xsl:value-of select="concat($url, '.xml')"/>
+                </resource>
+            </item>
+            <item>
+                <resource content_version="vor" mime_type="text/html">
+                    <xsl:value-of select="concat($url, '.html')"/>
+                </resource>
+            </item>
+        </collection>
+    </xsl:template>
 </xsl:stylesheet>
