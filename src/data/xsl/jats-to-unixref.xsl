@@ -556,7 +556,7 @@
     <!-- http://help.crossref.org/include-abstracts-in-deposits -->
     <xsl:template match="*" mode="abstract">
         <xsl:element name="jats:{name()}" namespace="http://www.ncbi.nlm.nih.gov/JATS1">
-            <xsl:copy-of select="namespace::*"/>
+            <!--<xsl:copy-of select="namespace::*"/>-->
             <xsl:apply-templates select="node()|@*" mode="abstract"/>
         </xsl:element>
     </xsl:template>
