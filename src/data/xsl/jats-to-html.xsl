@@ -406,15 +406,17 @@
 
     <!-- table -->
     <xsl:template match="table">
-        <xsl:element name="{local-name()}">
-            <xsl:attribute name="class">
-                <xsl:text>table table-bordered table-condensed table-hover</xsl:text>
-                <xsl:if test="@content-type = 'text'">
-                    <xsl:text> table-text</xsl:text>
-                </xsl:if>
-            </xsl:attribute>
-            <xsl:apply-templates select="node()|@*"/>
-        </xsl:element>
+	    <div class="table-container">
+		    <xsl:element name="{local-name()}">
+	            <xsl:attribute name="class">
+	                <xsl:text>table table-bordered table-condensed table-hover</xsl:text>
+	                <xsl:if test="@content-type = 'text'">
+	                    <xsl:text> table-text</xsl:text>
+	                </xsl:if>
+	            </xsl:attribute>
+	            <xsl:apply-templates select="node()|@*"/>
+	        </xsl:element>
+	    </div>
     </xsl:template>
 
     <!-- table elements -->
@@ -436,10 +438,7 @@
     </xsl:template>
 
     <xsl:template match="table-wrap/alternatives">
-        <div class="table-container">
-            <xsl:apply-templates select="table"/>
-        </div>
-
+        <xsl:apply-templates select="table"/>
         <xsl:apply-templates select="../object-id[@pub-id-type='doi']" mode="caption"/>
     </xsl:template>
 
