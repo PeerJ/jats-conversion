@@ -566,7 +566,7 @@
 	</xsl:template>
 
 	<xsl:template match="@*" mode="abstract">
-		<xsl:attribute name="jats:{local-name()}" namespace="http://www.ncbi.nlm.nih.gov/JATS1">
+		<xsl:attribute name="{name()}">
 			<xsl:value-of select="."/>
 		</xsl:attribute>
 	</xsl:template>
