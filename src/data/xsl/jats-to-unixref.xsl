@@ -553,14 +553,24 @@
         </titles>
     </xsl:template>
 
-    <!-- http://help.crossref.org/include-abstracts-in-deposits -->
-    <xsl:template match="*" mode="abstract">
-        <xsl:element name="jats:{name()}" namespace="http://www.ncbi.nlm.nih.gov/JATS1">
-            <!--<xsl:copy-of select="namespace::*"/>-->
-            <xsl:apply-templates select="node()|@*" mode="abstract"/>
-        </xsl:element>
-    </xsl:template>
-	
+	<!-- http://help.crossref.org/include-abstracts-in-deposits -->
+	<xsl:template match="node()" mode="abstract">
+		<xsl:element name="jats:{local-name()}" namespace="http://www.ncbi.nlm.nih.gov/JATS1">
+			<!--<xsl:copy-of select="namespace::*"/>-->
+			<xsl:apply-templates select="node()|@*" mode="abstract"/>
+		</xsl:element>
+	</xsl:template>
+
+	<xsl:template match="text()" mode="abstract">
+		<xsl:value-of select="."/>
+	</xsl:template>
+
+	<xsl:template match="@*" mode="abstract">
+		<xsl:attribute name="jats:{local-name()}" namespace="http://www.ncbi.nlm.nih.gov/JATS1">
+			<xsl:value-of select="."/>
+		</xsl:attribute>
+	</xsl:template>
+
 	<xsl:template match="xref" mode="abstract">
 		<xsl:apply-templates select="node()"/>
 	</xsl:template>
