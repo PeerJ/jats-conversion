@@ -74,7 +74,7 @@
         <xsl:variable name="pub-date" select="$meta/pub-date[@date-type='pub'][@pub-type='epub']|$meta/pub-date[@date-type='preprint'][@pub-type='epreprint']"/>
 		<journal>
 			<!-- journal -->
-			<journal_metadata language="en">
+			<journal_metadata language="en" reference_distribution_opts="any" metadata_distribution_opts="any">
 				<full_title>
 					<xsl:value-of select="front/journal-meta/journal-title-group/journal-title"/>
 				</full_title>
