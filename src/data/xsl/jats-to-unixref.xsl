@@ -6,6 +6,7 @@
                 xmlns:fr="http://www.crossref.org/fundref.xsd"
                 xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1"
                 xmlns:ai="http://www.crossref.org/AccessIndicators.xsd"
+                xmlns:str="http://exslt.org/strings"
                 xmlns="http://www.crossref.org/schema/4.3.6"
                 xsi:schemaLocation="http://www.crossref.org/schema/4.3.6 http://www.crossref.org/schema/deposit/crossref4.3.6.xsd
                 http://www.crossref.org/fundref.xsd http://www.crossref.org/schema/deposit/fundref.xsd
@@ -22,6 +23,9 @@
     <xsl:variable name="url" select="$article-meta/self-uri/@xlink:href"/>
 
     <xsl:param name="timestamp"/>
+
+	<!-- a comma-separated list of archive locations -->
+	<xsl:param name="archiveLocations"/>
 
 	<xsl:param name="depositorName"/>
 	<xsl:param name="depositorEmail"/>
@@ -78,6 +82,8 @@
 				<issn media_type="electronic">
 					<xsl:value-of select="front/journal-meta/issn"/>
 				</issn>
+
+				<xsl:call-template name="archive-locations"/>
 			</journal_metadata>
 
 			<!-- journal issue -->
@@ -650,4 +656,15 @@
             </item>
         </collection>
     </xsl:template>
+
+	<!-- archive locations -->
+	<xsl:template name="archive-locations">
+		<xsl:if test="$archiveLocations">
+			<archive_locations>
+				<xsl:for-each select="str:tokenize($archiveLocations, ',')">
+					<archive name="{.}"/>
+				</xsl:for-each>
+			</archive_locations>
+		</xsl:if>
+	</xsl:template>
 </xsl:stylesheet>
