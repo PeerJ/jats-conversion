@@ -61,7 +61,7 @@
                 <title>
                     <xsl:value-of select="$title"/>
                 </title>
-                <link rel="canonical" href="{$id}"/>
+                <link rel="canonical" href="{$self-uri}"/>
                 <xsl:apply-templates select="front/article-meta" mode="head"/>
                 <xsl:apply-templates select="front/journal-meta" mode="head"/>
             </head>
