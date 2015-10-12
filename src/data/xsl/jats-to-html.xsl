@@ -257,7 +257,7 @@
 
     <!-- the article title -->
     <xsl:template match="article-title">
-        <h1 class="{local-name()}" itemprop="name">
+        <h1 class="{local-name()}" itemprop="name headline">
             <xsl:apply-templates select="node()|@*"/>
         </h1>
     </xsl:template>
