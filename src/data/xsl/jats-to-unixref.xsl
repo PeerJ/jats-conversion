@@ -319,7 +319,7 @@
 
 	<xsl:template match="contrib-id[@contrib-id-type='orcid']" mode="contrib">
 		<ORCID authenticated="true">
-			<xsl:value-of select="."></xsl:value-of>
+			<xsl:value-of select="concat('http://orcid.org/', .)"/>
 		</ORCID>
 	</xsl:template>
 
