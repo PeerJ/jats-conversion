@@ -804,7 +804,7 @@
     <xsl:template match="graphic" mode="fig">
         <xsl:variable name="fig" select=".."/>
         <xsl:variable name="fig-id" select="$fig/@id"/>
-        <xsl:variable name="root" select="concat($static-root, $fig-id)"/>
+        <xsl:variable name="root" select="concat($static-root, substring-before(@xlink:href, '.'))"/>
         <a href="{$root}-2x.jpg"
            title="View the full image"
            class="fresco"
