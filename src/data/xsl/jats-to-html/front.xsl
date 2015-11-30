@@ -25,9 +25,10 @@
                         <xsl:text>&#32;DOI</xsl:text>
                     </dt>
                     <dd>
-                        <a href="https://dx.doi.org/{$doi}" itemprop="sameAs">
+                        <a href="https://doi.org/{$doi}" itemprop="sameAs">
                             <xsl:value-of select="concat('', $doi)"/>
                         </a>
+                        <meta itemprop="sameAs" content="info:doi/{$doi}"/>
                     </dd>
                 </dl>
 

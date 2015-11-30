@@ -26,7 +26,8 @@
 
         <variable name="id" select="article-id[@pub-id-type='publisher-id']/text()"/>
         <variable name="doi" select="article-id[@pub-id-type='doi']/text()"/>
-        <variable name="url" select="concat('https://dx.doi.org/', $doi)"/>
+        <variable name="url" select="concat('https://doi.org/', $doi)"/>
+        <variable name="uri" select="concat('info:doi/', $doi)"/>
         <variable name="title" select="title-group/article-title"/>
         <variable name="pub-date" select="pub-date[@date-type='pub'][@pub-type='epub']|pub-date[@date-type='preprint'][@pub-type='epreprint']"/>
 
@@ -37,7 +38,7 @@
 
         <!--<x:xmpmeta>-->
             <rdf:RDF>
-                <rdf:Description rdf:about="{$url}">
+                <rdf:Description rdf:about="{$uri}">
                     <rdf:type rdf:resource="http://purl.org/ontology/bibo/AcademicArticle"/>
 
                     <comment>Dublin Core: basic, literal properties</comment>
@@ -192,7 +193,7 @@
                         <value-of select="$doi"/>
                     </bibo:doi>
                     <bibo:uri>
-                        <value-of select="$url"/>
+                        <value-of select="$uri"/>
                     </bibo:uri>
                     <bibo:volume>
                         <value-of select="volume"/>

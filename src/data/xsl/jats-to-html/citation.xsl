@@ -334,7 +334,7 @@
                     </xsl:call-template>
                 </xsl:variable>
 
-                <xsl:value-of select="concat('https://dx.doi.org/', $encoded-doi)"/>
+                <xsl:value-of select="concat('https://doi.org/', $encoded-doi)"/>
             </xsl:when>
             <xsl:when test="$arxiv">
                 <xsl:value-of select="concat('http://arxiv.org/abs/', $arxiv)"/>
