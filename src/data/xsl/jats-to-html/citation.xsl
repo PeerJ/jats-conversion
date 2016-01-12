@@ -26,7 +26,7 @@
 		        </xsl:otherwise>
 	        </xsl:choose>
             <xsl:apply-templates select="elocation-id" mode="citation"/>
-            <xsl:apply-templates select="fpage" mode="citation"/>
+            <xsl:call-template name="pagination"/>
             <xsl:text>&#32;</xsl:text>
             <xsl:apply-templates select="comment" mode="citation"/>
         </span>
@@ -47,7 +47,7 @@
             <xsl:apply-templates select="publisher-name | institution" mode="citation"/>
             <xsl:text>&#32;</xsl:text>
             <xsl:apply-templates select="volume" mode="citation"/>
-            <xsl:apply-templates select="fpage" mode="citation"/>
+            <xsl:call-template name="pagination"/>
             <xsl:text>&#32;</xsl:text>
             <xsl:apply-templates select="pub-id[@pub-id-type='isbn']" mode="citation"/>
             <xsl:apply-templates select="comment" mode="citation"/>
@@ -72,7 +72,7 @@
             <xsl:apply-templates select="publisher-name | institution" mode="citation"/>
             <xsl:text>&#32;</xsl:text>
             <xsl:apply-templates select="volume" mode="citation"/>
-            <xsl:apply-templates select="fpage" mode="citation"/>
+            <xsl:call-template name="pagination"/>
             <xsl:text>&#32;</xsl:text>
             <xsl:apply-templates select="pub-id[@pub-id-type='isbn']" mode="citation"/>
             <xsl:apply-templates select="comment" mode="citation"/>
@@ -89,7 +89,7 @@
         </span>
         <xsl:apply-templates select="institution" mode="report-citation"/>
         <xsl:apply-templates select="volume" mode="citation"/>
-        <xsl:apply-templates select="fpage" mode="citation"/>
+        <xsl:call-template name="pagination"/>
         <xsl:apply-templates select="comment" mode="citation"/>
     </xsl:template>
 
@@ -137,6 +137,18 @@
             <xsl:text>&#32;</xsl:text>
             <xsl:apply-templates select="source" mode="book-citation"/>
         </span>
+    </xsl:template>
+
+    <!-- page range(s) -->
+    <xsl:template name="pagination">
+        <xsl:choose>
+            <xsl:when test="page-range">
+                <xsl:apply-templates select="page-range" mode="citation"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:apply-templates select="fpage" mode="citation"/>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template name="preprint-label">
@@ -469,6 +481,15 @@
             <xsl:text>:</xsl:text>
         </xsl:if>
         <span class="{local-name()}" itemprop="pageStart">
+            <xsl:apply-templates/>
+        </span>
+    </xsl:template>
+
+    <xsl:template match="page-range" mode="citation">
+        <xsl:if test="../volume">
+            <xsl:text>:</xsl:text>
+        </xsl:if>
+        <span class="{local-name()}">
             <xsl:apply-templates/>
         </span>
     </xsl:template>
