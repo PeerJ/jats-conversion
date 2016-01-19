@@ -357,6 +357,18 @@
             <xsl:apply-templates select="node()|@*"/>
         </u>
     </xsl:template>
+    
+    <xsl:template match="underline[@underline-style='single']">
+        <span style="border-bottom:1px solid">
+            <xsl:apply-templates select="node()|@*"/>
+        </span>
+    </xsl:template>
+
+    <xsl:template match="underline[@underline-style='double']">
+        <span style="border-bottom:3px double">
+            <xsl:apply-templates select="node()|@*"/>
+        </span>
+    </xsl:template>
 
     <xsl:template match="break">
         <br/>
