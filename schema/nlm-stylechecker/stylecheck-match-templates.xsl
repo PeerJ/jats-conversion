@@ -174,7 +174,9 @@
       <xsl:call-template name="product-to-article-type-check"/>
       <xsl:call-template name="article-type-to-product-check"/>
       <xsl:call-template name="article-type-to-related-article-check"/>
-		<xsl:call-template name="article-release-delay-check"/>
+   	<xsl:call-template name="article-release-delay-check"/>
+   	<xsl:call-template name="collection-content-check"/>
+   	<xsl:call-template name="correction-content-check"/>
 		<xsl:if test="$stream='manuscript'">
 			<xsl:call-template name="manuscript-pi-test"/>
          <xsl:call-template name="ms-floats-group-test"/>
@@ -1696,11 +1698,12 @@
          </xsl:call-template>
       </xsl:if>
 
-      <xsl:if test="local-name(.) = 'msup'
+   <!-- BECK - turning off mathml-subsup-fence-check
+	  <xsl:if test="local-name(.) = 'msup'
          or local-name(.) = 'msub'
          or local-name(.) = 'msubsup'">
          <xsl:call-template name="mathml-subsup-fence-check"/>   
-      </xsl:if>
+      </xsl:if>  -->
 
       <xsl:if test="local-name(.) = 'mfrac'
          or local-name(.) = 'mroot'
@@ -2418,12 +2421,13 @@
 			<xsl:call-template name="ms-extended-data-sec-test"/>
       	</xsl:if>
       
-      <xsl:choose>
+     <!-- As of 2015-07-21 we no longer enforce @sec-type values on first level sections.
+	  <xsl:choose>
          <xsl:when test="$stream='book' or $stream='rrn'"/>
          <xsl:otherwise>
             <xsl:call-template name="sec-type-check"/>
          </xsl:otherwise>
-      </xsl:choose>
+      </xsl:choose> -->
               
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
@@ -2617,10 +2621,12 @@
    <!-- *********************************************************** -->
    <!-- Match: string-name
         1) cannot be empty 
+        2) must not have multiple name components
      -->
    <!-- *********************************************************** -->
    <xsl:template match="string-name">
       <xsl:call-template name="empty-element-check"/>
+   	<xsl:call-template name="string-name-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
    

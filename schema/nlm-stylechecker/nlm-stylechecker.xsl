@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?> 
+<!--
+===========================================================================
+ 
+                            PUBLIC DOMAIN NOTICE
+               National Center for Biotechnology Information
+ 
+  This software is a "United States Government Work" under the
+  terms of the United States Copyright Act.  It was written as part of
+  the author's official duties as a United States Government employee and
+  thus cannot be copyrighted.  This software is freely available
+  to the public for use.  The National Library of Medicine and the U.S.
+  Government have not placed any restriction on its use or reproduction.
+ 
+  Although all reasonable efforts have been taken to ensure the accuracy
+  and reliability of the software and data, the NLM and the U.S.
+  Government do not and cannot warrant the performance or results that
+  may be obtained by using this software or data.  The NLM and the U.S.
+  Government disclaim all warranties, express or implied, including
+  warranties of performance, merchantability or fitness for any particular
+  purpose.
+ 
+  Please cite NCBI in any work or product based on this material.
+ 
+ ===========================================================================
+ -->
 <!-- ************************************************************************ -->
 <!--                                     NLM STYLECHECKER
-                                           Version 5.8
+                                           Version 5.9
     
     Stylesheet tests an XML instance to determine whether it conforms to correct
     PMC style as defined in the Tagging Guidelines located at:
@@ -51,6 +76,31 @@
      
      
    PMC Project Revision notes:
+    August 3, 2015: Version 5.9
+                      Public release of 3rd quarter changes  
+
+    July 30, 2015:
+              In contrib-id-check, ORCID check allows all-cap or lower-case
+   
+    July 27, 2015:
+              Added related-article-type value 'data-paper'     
+    
+    July 13, 2015:
+              Added string-name-content-check: string-name must not have
+                   more than 1 surname or given-names element
+              inline-formula and disp-formula must have descendant
+                   inline-formula or disp-formula, respectively
+   
+    July 9, 2015:
+              New test correction-content-check: correction content must be
+                   in body, not abstract
+              New test collection-content-check: collection articles must have
+                   more than 1 sub-article|response                      
+   
+    March 18, 2015:
+              Modified related-article-self-test; alt-language related-articles 
+                   generate warnings, not errors
+   
     February 9, 2015: Version 5.8
                       Public release of 1st quarter changes  
    
