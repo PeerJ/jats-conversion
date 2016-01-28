@@ -5,6 +5,7 @@
                 xmlns:xlink="http://www.w3.org/1999/xlink"
                 xmlns:fr="http://www.crossref.org/fundref.xsd"
                 xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1"
+                xmlns:mml="http://www.w3.org/1998/Math/MathML"
                 xmlns:ai="http://www.crossref.org/AccessIndicators.xsd"
                 xmlns:str="http://exslt.org/strings"
                 xmlns="http://www.crossref.org/schema/4.3.6"
@@ -235,6 +236,10 @@
     <xsl:template match="inline-formula" mode="title">
         <xsl:value-of select="alternatives/tex-math"/>
     </xsl:template>
+
+	<xsl:template match="inline-formula" mode="abstract">
+		<xsl:value-of select="alternatives/tex-math"/>
+	</xsl:template>
 
     <!--
     <xsl:template match="tex-math" mode="title"/>
