@@ -9,11 +9,11 @@
      application for describing mathematical notation and capturing
      both its structure and content.
 
-     Copyright &#xa9; 1998-2010 W3C&#xae; (MIT, ERCIM, Keio), All Rights 
+     Copyright &#xa9; 1998-2014 W3C&#xae; (MIT, ERCIM, Keio, Beihang), All Rights 
      Reserved. W3C liability, trademark, document use and software
      licensing rules apply. 
 
-     Permission to use, copy, modify and distribute the MathML 2.0 DTD and
+     Permission to use, copy, modify and distribute the MathML 3.0 DTD and
      its accompanying documentation for any purpose and without fee is
      hereby granted in perpetuity, provided that the above copyright notice
      and this paragraph appear in all copies.  The copyright holders make
@@ -26,12 +26,7 @@
        PUBLIC "-//W3C//DTD MathML 3.0//EN"
        SYSTEM "mathml3.dtd"
 
-     Revisions: editor and revision history at EOF
 -->
-<!-- Entity used to enable marked sections which enforces stricter		
-     checking of MathML syntax rules		
--->
-<!ENTITY % MathMLstrict "IGNORE">		
 
 <!-- MathML Qualified Names module ............................... -->
 <!ENTITY % mathml-qname.module "INCLUDE" >
@@ -58,52 +53,18 @@
 <!ENTITY % mathml-charent.module "INCLUDE" >
 <![%mathml-charent.module;[
 
-
-<!ENTITY % isobox PUBLIC "-//W3C//ENTITIES Box and Line Drawing//EN//XML" "isobox.ent">
-%isobox;
-<!ENTITY % isocyr1 PUBLIC "-//W3C//ENTITIES Russian Cyrillic//EN//XML" "isocyr1.ent">
-%isocyr1;
-<!ENTITY % isocyr2 PUBLIC "-//W3C//ENTITIES Non-Russian Cyrillic//EN//XML" "isocyr2.ent">
-%isocyr2;
-<!ENTITY % isodia PUBLIC "-//W3C//ENTITIES Diacritical Marks//EN//XML" "isodia.ent">
-%isodia;
-<!ENTITY % isolat1 PUBLIC "-//W3C//ENTITIES Added Latin 1//EN//XML" "isolat1.ent">
-%isolat1;
-<!ENTITY % isolat2 PUBLIC "-//W3C//ENTITIES Added Latin 2//EN//XML" "isolat2.ent">
-%isolat2;
-<!ENTITY % isonum PUBLIC "-//W3C//ENTITIES Numeric and Special Graphic//EN//XML" "isonum.ent">
-%isonum;
-<!ENTITY % isopub PUBLIC "-//W3C//ENTITIES Publishing//EN//XML" "isopub.ent">
-%isopub;
-<!ENTITY % isoamsa PUBLIC "-//W3C//ENTITIES Added Math Symbols: Arrow Relations//EN//XML" "isoamsa.ent">
-%isoamsa;
-<!ENTITY % isoamsb PUBLIC "-//W3C//ENTITIES Added Math Symbols: Binary Operators//EN//XML" "isoamsb.ent">
-%isoamsb;
-<!ENTITY % isoamsc PUBLIC "-//W3C//ENTITIES Added Math Symbols: Delimiters//EN//XML" "isoamsc.ent">
-%isoamsc;
-<!ENTITY % isoamsn PUBLIC "-//W3C//ENTITIES Added Math Symbols: Negated Relations//EN//XML" "isoamsn.ent">
-%isoamsn;
-<!ENTITY % isoamso PUBLIC "-//W3C//ENTITIES Added Math Symbols: Ordinary//EN//XML" "isoamso.ent">
-%isoamso;
-<!ENTITY % isoamsr PUBLIC "-//W3C//ENTITIES Added Math Symbols: Relations//EN//XML" "isoamsr.ent">
-%isoamsr;
-<!ENTITY % isogrk3 PUBLIC "-//W3C//ENTITIES Greek Symbols//EN//XML" "isogrk3.ent">
-%isogrk3;
-<!ENTITY % isomfrk PUBLIC "-//W3C//ENTITIES Math Alphabets: Fraktur//EN//XML" "isomfrk.ent">
-%isomfrk;
-<!ENTITY % isomopf PUBLIC "-//W3C//ENTITIES Math Alphabets: Open Face//EN//XML" "isomopf.ent">
-%isomopf;
-<!ENTITY % isomscr PUBLIC "-//W3C//ENTITIES Math Alphabets: Script//EN//XML" "isomscr.ent">
-%isomscr;
-<!ENTITY % isotech PUBLIC "-//W3C//ENTITIES General Technical//EN//XML" "isotech.ent">
-%isotech;
-<!ENTITY % mmlextra PUBLIC "-//W3C//ENTITIES Additional MathML Symbols//EN//XML" "mmlextra.ent">
-%mmlextra;
-<!ENTITY % mmlalias PUBLIC "-//W3C//ENTITIES MathML Aliases//EN" "mmlalias.ent">
-%mmlalias;
+<!ENTITY % htmlmathmlent PUBLIC "-//W3C//ENTITIES HTML MathML Set//EN//XML" "htmlmathml-f.ent">
+%htmlmathmlent;
 
 <!-- end of MathML Character Entity section -->]]>
 
+<!-- MathML3 DTD makes id type CDATA (so ids can be repeated in different
+     MathML expressions in the same document).
+     These parameter entities may be declared to be ID and IDREF respectively
+     before including this DTD to match the MathML2 DTD.
+-->
+<!ENTITY % MMLIDTYPE "CDATA">
+<!ENTITY % MMLIDREFTYPE "CDATA">
 
 
 <!ENTITY % MalignExpression "%maligngroup.qname;|%malignmark.qname;">
@@ -151,30 +112,30 @@
 <!ENTITY % DomainQ "(%domainofapplication.qname;|%condition.qname;
                      |(%lowlimit.qname;,%uplimit.qname;?))*">
 
-<!ENTITY % constant-arith.class "%exponentiale.qname;|%imaginaryi.qname;
+<!ENTITY % constant-arith.mmlclass "%exponentiale.qname;|%imaginaryi.qname;
                                  |%notanumber.qname;|%true.qname;
                                  |%false.qname;|%pi.qname;|%eulergamma.qname;
                                  |%infinity.qname;">
 
-<!ENTITY % constant-set.class "%integers.qname;|%reals.qname;
+<!ENTITY % constant-set.mmlclass "%integers.qname;|%reals.qname;
                                |%rationals.qname;|%naturalnumbers.qname;
                                |%complexes.qname;|%primes.qname;
                                |%emptyset.qname;">
 
-<!ENTITY % binary-linalg.class "%vectorproduct.qname;|%scalarproduct.qname;
+<!ENTITY % binary-linalg.mmlclass "%vectorproduct.qname;|%scalarproduct.qname;
                                 |%outerproduct.qname;">
 
-<!ENTITY % nary-linalg.class "%selector.qname;">
+<!ENTITY % nary-linalg.mmlclass "%selector.qname;">
 
-<!ENTITY % unary-linalg.class "%determinant.qname;|%transpose.qname;">
+<!ENTITY % unary-linalg.mmlclass "%determinant.qname;|%transpose.qname;">
 
-<!ENTITY % nary-constructor.class "%vector.qname;|%matrix.qname;
+<!ENTITY % nary-constructor.mmlclass "%vector.qname;|%matrix.qname;
                                    |%matrixrow.qname;">
 
-<!ENTITY % nary-stats.class "%mean.qname;|%sdev.qname;|%variance.qname;
+<!ENTITY % nary-stats.mmlclass "%mean.qname;|%sdev.qname;|%variance.qname;
                              |%median.qname;|%mode.qname;">
 
-<!ENTITY % unary-elementary.class "%sin.qname;|%cos.qname;|%tan.qname;
+<!ENTITY % unary-elementary.mmlclass "%sin.qname;|%cos.qname;|%tan.qname;
                                    |%sec.qname;|%csc.qname;|%cot.qname;
                                    |%sinh.qname;|%cosh.qname;|%tanh.qname;
                                    |%sech.qname;|%csch.qname;|%coth.qname;
@@ -185,69 +146,69 @@
                                    |%arcsec.qname;|%arcsech.qname;
                                    |%arcsinh.qname;|%arctanh.qname;">
 
-<!ENTITY % limit.class "%limit.qname;">
+<!ENTITY % limit.mmlclass "%limit.qname;">
 
-<!ENTITY % product.class "%product.qname;">
+<!ENTITY % product.mmlclass "%product.qname;">
 
-<!ENTITY % sum.class "%sum.qname;">
+<!ENTITY % sum.mmlclass "%sum.qname;">
 
-<!ENTITY % unary-set.class "%card.qname;">
+<!ENTITY % unary-set.mmlclass "%card.qname;">
 
-<!ENTITY % nary-set-reln.class "%subset.qname;|%prsubset.qname;">
+<!ENTITY % nary-set-reln.mmlclass "%subset.qname;|%prsubset.qname;">
 
-<!ENTITY % binary-set.class "%in.qname;|%notin.qname;|%notsubset.qname;
+<!ENTITY % binary-set.mmlclass "%in.qname;|%notin.qname;|%notsubset.qname;
                              |%notprsubset.qname;|%setdiff.qname;">
 
-<!ENTITY % nary-set.class "%union.qname;|%intersect.qname;
+<!ENTITY % nary-set.mmlclass "%union.qname;|%intersect.qname;
                            |%cartesianproduct.qname;">
 
-<!ENTITY % nary-setlist-constructor.class "%set.qname;|%list.qname;">
+<!ENTITY % nary-setlist-constructor.mmlclass "%set.qname;|%list.qname;">
 
-<!ENTITY % unary-veccalc.class "%divergence.qname;|%grad.qname;|%curl.qname;
+<!ENTITY % unary-veccalc.mmlclass "%divergence.qname;|%grad.qname;|%curl.qname;
                                 |%laplacian.qname;">
 
-<!ENTITY % partialdiff.class "%partialdiff.qname;">
+<!ENTITY % partialdiff.mmlclass "%partialdiff.qname;">
 
-<!ENTITY % Differential-Operator.class "%diff.qname;">
+<!ENTITY % Differential-Operator.mmlclass "%diff.qname;">
 
-<!ENTITY % int.class "%int.qname;">
+<!ENTITY % int.mmlclass "%int.qname;">
 
-<!ENTITY % binary-reln.class "%neq.qname;|%approx.qname;|%factorof.qname;
+<!ENTITY % binary-reln.mmlclass "%neq.qname;|%approx.qname;|%factorof.qname;
                               |%tendsto.qname;">
 
-<!ENTITY % nary-reln.class "%eq.qname;|%gt.qname;|%lt.qname;|%geq.qname;
+<!ENTITY % nary-reln.mmlclass "%eq.qname;|%gt.qname;|%lt.qname;|%geq.qname;
                             |%leq.qname;">
 
-<!ENTITY % quantifier.class "%forall.qname;|%exists.qname;">
+<!ENTITY % quantifier.mmlclass "%forall.qname;|%exists.qname;">
 
-<!ENTITY % binary-logical.class "%implies.qname;|%equivalent.qname;">
+<!ENTITY % binary-logical.mmlclass "%implies.qname;|%equivalent.qname;">
 
-<!ENTITY % unary-logical.class "%not.qname;">
+<!ENTITY % unary-logical.mmlclass "%not.qname;">
 
-<!ENTITY % nary-logical.class "%and.qname;|%or.qname;|%xor.qname;">
+<!ENTITY % nary-logical.mmlclass "%and.qname;|%or.qname;|%xor.qname;">
 
-<!ENTITY % nary-arith.class "%plus.qname;|%times.qname;|%gcd.qname;
+<!ENTITY % nary-arith.mmlclass "%plus.qname;|%times.qname;|%gcd.qname;
                              |%lcm.qname;">
 
-<!ENTITY % nary-minmax.class "%max.qname;|%min.qname;">
+<!ENTITY % nary-minmax.mmlclass "%max.qname;|%min.qname;">
 
-<!ENTITY % unary-arith.class "%factorial.qname;|%abs.qname;|%conjugate.qname;
+<!ENTITY % unary-arith.mmlclass "%factorial.qname;|%abs.qname;|%conjugate.qname;
                               |%arg.qname;|%real.qname;|%imaginary.qname;
                               |%floor.qname;|%ceiling.qname;|%exp.qname;">
 
-<!ENTITY % binary-arith.class "%quotient.qname;|%divide.qname;|%minus.qname;
+<!ENTITY % binary-arith.mmlclass "%quotient.qname;|%divide.qname;|%minus.qname;
                                |%power.qname;|%rem.qname;|%root.qname;">
 
-<!ENTITY % nary-functional.class "%compose.qname;">
+<!ENTITY % nary-functional.mmlclass "%compose.qname;">
 
-<!ENTITY % lambda.class "%lambda.qname;">
+<!ENTITY % lambda.mmlclass "%lambda.qname;">
 
-<!ENTITY % unary-functional.class "%inverse.qname;|%ident.qname;
+<!ENTITY % unary-functional.mmlclass "%inverse.qname;|%ident.qname;
                                    |%domain.qname;|%codomain.qname;
                                    |%image.qname;|%ln.qname;|%log.qname;
                                    |%moment.qname;">
 
-<!ENTITY % interval.class "%interval.qname;">
+<!ENTITY % interval.mmlclass "%interval.qname;">
 
 <!ENTITY % DeprecatedContExp "%reln.qname;|%fn.qname;|%declare.qname;">
 
@@ -257,35 +218,35 @@
 <!ENTITY % Qualifier "(%DomainQ;)|%degree.qname;|%momentabout.qname;
                       |%logbase.qname;">
 
-<!ENTITY % ContExp "%piecewise.qname;|%DeprecatedContExp;|%interval.class;
-                    |%unary-functional.class;|%lambda.class;
-                    |%nary-functional.class;|%binary-arith.class;
-                    |%unary-arith.class;|%nary-minmax.class;
-                    |%nary-arith.class;|%nary-logical.class;
-                    |%unary-logical.class;|%binary-logical.class;
-                    |%quantifier.class;|%nary-reln.class;
-                    |%binary-reln.class;|%int.class;
-                    |%Differential-Operator.class;|%partialdiff.class;
-                    |%unary-veccalc.class;
-                    |%nary-setlist-constructor.class;|%nary-set.class;
-                    |%binary-set.class;|%nary-set-reln.class;
-                    |%unary-set.class;|%sum.class;|%product.class;
-                    |%limit.class;|%unary-elementary.class;
-                    |%nary-stats.class;|%nary-constructor.class;
-                    |%unary-linalg.class;|%nary-linalg.class;
-                    |%binary-linalg.class;|%constant-set.class;
-                    |%constant-arith.class;|%semantics.qname;|%cn.qname;
+<!ENTITY % ContExp "%piecewise.qname;|%DeprecatedContExp;|%interval.mmlclass;
+                    |%unary-functional.mmlclass;|%lambda.mmlclass;
+                    |%nary-functional.mmlclass;|%binary-arith.mmlclass;
+                    |%unary-arith.mmlclass;|%nary-minmax.mmlclass;
+                    |%nary-arith.mmlclass;|%nary-logical.mmlclass;
+                    |%unary-logical.mmlclass;|%binary-logical.mmlclass;
+                    |%quantifier.mmlclass;|%nary-reln.mmlclass;
+                    |%binary-reln.mmlclass;|%int.mmlclass;
+                    |%Differential-Operator.mmlclass;|%partialdiff.mmlclass;
+                    |%unary-veccalc.mmlclass;
+                    |%nary-setlist-constructor.mmlclass;|%nary-set.mmlclass;
+                    |%binary-set.mmlclass;|%nary-set-reln.mmlclass;
+                    |%unary-set.mmlclass;|%sum.mmlclass;|%product.mmlclass;
+                    |%limit.mmlclass;|%unary-elementary.mmlclass;
+                    |%nary-stats.mmlclass;|%nary-constructor.mmlclass;
+                    |%unary-linalg.mmlclass;|%nary-linalg.mmlclass;
+                    |%binary-linalg.mmlclass;|%constant-set.mmlclass;
+                    |%constant-arith.mmlclass;|%semantics.qname;|%cn.qname;
                     |%ci.qname;|%csymbol.qname;|%apply.qname;|%bind.qname;
                     |%share.qname;|%cerror.qname;|%cbytes.qname;|%cs.qname;">
 
 <!ENTITY % CommonAtt "
-%MATHML.NamespaceDecl.attrib;
-   %XLINK.prefix;:href   CDATA #IMPLIED	
-  %XLINK.prefix;:type   CDATA #IMPLIED
-  xml:lang   CDATA #IMPLIED
-  xml:space   (default|preserve) #IMPLIED
-  id CDATA #IMPLIED
-  xref CDATA #IMPLIED
+  %MATHML.NamespaceDecl.attrib;
+  %XLINK.prefix;:href CDATA #IMPLIED
+  %XLINK.prefix;:type CDATA #IMPLIED
+  xml:lang CDATA #IMPLIED
+  xml:space (default|preserve) #IMPLIED
+  id %MMLIDTYPE; #IMPLIED
+  xref %MMLIDREFTYPE; #IMPLIED
   class CDATA #IMPLIED
   style CDATA #IMPLIED
   href CDATA #IMPLIED
@@ -349,6 +310,8 @@
 
 <!ELEMENT %bvar.qname; ((%degree.qname;,(%ci.qname;|%semantics.qname;))
                       |((%ci.qname;|%semantics.qname;),(%degree.qname;)?))>
+<!ATTLIST %bvar.qname;
+  %CommonAtt;>
 
 <!ATTLIST %cbytes.qname;
   %CommonAtt;

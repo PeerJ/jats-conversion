@@ -52,6 +52,7 @@
             </xs:choice>
             <xs:element ref="m:degree"/>
          </xs:choice>
+         <xs:attributeGroup ref="m:CommonAtt"/>
       </xs:complexType>
    </xs:element>
    <xs:attributeGroup name="cbytes.attributes">

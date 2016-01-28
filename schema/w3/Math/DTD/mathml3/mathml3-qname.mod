@@ -7,7 +7,7 @@
      application for describing mathematical notation and capturing 
      both its structure and content.
 
-     Copyright 1998-2010 W3C (MIT, INRIA, Keio), All Rights Reserved.
+     Copyright 1998-2014 W3C (MIT, INRIA, Keio, Beihang), All Rights Reserved.
 
      This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
@@ -39,7 +39,7 @@
 
 <!-- XLink ............... -->
 
-<!ENTITY % XLINK.prefix         "xlink" >		
+<!ENTITY % XLINK.prefix         "xlink" >
 <!ENTITY % XLINK.xmlns "http://www.w3.org/1999/xlink" >
 <!ENTITY % XLINK.xmlns.attrib
      "xmlns:%XLINK.prefix;  CDATA           #FIXED '%XLINK.xmlns;'"
@@ -47,7 +47,7 @@
 
 <!-- W3C XML Schema ............... -->
 
-<!ENTITY % Schema.prefix         "xsi" >		
+<!ENTITY % Schema.prefix         "xsi" >
 <!ENTITY % Schema.xmlns "http://www.w3.org/2001/XMLSchema-instance" >
 <!ENTITY % Schema.xmlns.attrib
      "xmlns:%Schema.prefix;  CDATA           #IMPLIED"
