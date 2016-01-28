@@ -125,13 +125,13 @@ $(DOWNLOADS)/mathml3-xsd.zip: | $(DOWNLOADS)
 
 doaj:
 	mkdir -p doaj
-	wget -c -P doaj http://www.doaj.org/schemas/doajArticles.xsd
+	wget -c -P doaj https://doaj.org/static/doaj/doajArticles.xsd
 
-	mkdir -p doaj/appinfo/1
-	wget -c -P doaj/appinfo/1  http://www.doaj.org/schemas/appinfo/1/appinfo.xsd
+	#mkdir -p doaj/appinfo/1
+	#wget -c -P doaj/appinfo/1  http://www.doaj.org/schemas/appinfo/1/appinfo.xsd
 
 	mkdir -p doaj/iso_639-2b/1.0
-	wget -c -P doaj/iso_639-2b/1.0 http://www.doaj.org/schemas/iso_639-2b/1.0/iso_639-2b.xsd
+	wget -c -P doaj/iso_639-2b/1.0 http://www.doaj.org/static/doaj/iso_639-2b.xsd
 
 # NLM PMC Style Checker
 
@@ -153,7 +153,7 @@ nlm/publishing/3.0: | $(DOWNLOADS)/journal-publishing-dtd-3.0.zip
 	mkdir -p nlm/publishing
 	unzip $(DOWNLOADS)/journal-publishing-dtd-3.0.zip -d nlm/publishing
 	mv nlm/publishing/publishing nlm/publishing/3.0
-	# TODO: remove xml:base from catalog
+# TODO: remove xml:base from catalog
 
 $(DOWNLOADS)/journal-publishing-dtd-3.0.zip: | $(DOWNLOADS)
 	wget -c -P $(DOWNLOADS) ftp://ftp.ncbi.nih.gov/pub/archive_dtd/publishing/3.0/journal-publishing-dtd-3.0.zip

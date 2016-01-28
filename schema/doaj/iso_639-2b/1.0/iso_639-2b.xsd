@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.doaj.org/schemas/iso_639-2b/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:i="http://www.doaj.org/schemas/appinfo/1">
+<xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.doaj.org/schemas/iso_639-2b/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <xsd:annotation>
     <xsd:documentation>Codes for the representation of names of languages from the International Organization for Standardization (ISO) 639-2/B (bibliographic codes).</xsd:documentation>
   </xsd:annotation>
-  <xsd:import namespace="http://www.doaj.org/schemas/appinfo/1" schemaLocation="http://www.doaj.org/schemas/appinfo/1/appinfo.xsd">
-    <xsd:annotation>
-      <xsd:documentation>The appinfo for the schemas</xsd:documentation>
-    </xsd:annotation>
-  </xsd:import>
+  
   <xsd:simpleType name="LanguageCodeType">
     <xsd:annotation>
       <xsd:documentation>A code list that enumerates languages.</xsd:documentation>
@@ -846,11 +842,6 @@
       <xsd:enumeration value="hmo">
         <xsd:annotation>
           <xsd:documentation>Hiri Motu</xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
-      <xsd:enumeration value="hrv">
-        <xsd:annotation>
-          <xsd:documentation>Croatian</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
       <xsd:enumeration value="hun">
@@ -1911,11 +1902,6 @@
       <xsd:enumeration value="srd">
         <xsd:annotation>
           <xsd:documentation>Sardinian</xsd:documentation>
-        </xsd:annotation>
-      </xsd:enumeration>
-      <xsd:enumeration value="srp">
-        <xsd:annotation>
-          <xsd:documentation>Serbian</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
       <xsd:enumeration value="srr">
