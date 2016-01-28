@@ -4,17 +4,14 @@
 
 	<!-- =============================================================
 
-                          Introduction
+Introduction
 
-     CrossRef Schema Version 4.3.0
-     for Journal, book and conferernce submissions
+CrossRef Schema Version 4.3
+Developed for CrossRef (www.crossref.org) by
 
-     Developed for CrossRef (www.crossref.org) by
-
-     Inera Incorporated
-     Newton, MA 02460
-     http://www.inera.com
-     email: info@inera.com
+Inera Incorporated
+http://www.inera.com
+email: info@inera.com
 
 
      ============================================================= -->
@@ -40,6 +37,7 @@
 
     Changes record version, author initials, date, and comments
   
+  4.3.0-6 (PDF) disallow empty value for citation "key" attribute
   4.3.1,2,4,5,6 (PDF) 3/2/2015 removed redundant ORCID validation
   4.3.1,2,4 (PDF) 6/24/2014 minor change to ORCID regex to only allow X
   4.3.1,2,4 (PDF) 3/13/2014 added application/epub+zip to mime_type.atts
@@ -1807,7 +1805,15 @@ Citations that are "in press" should be submitted with as much information as is
 
 For those publications that use name/date style citations, it is recommended that this attribute be used to indicate the sequential number of the citation in the reference list. However, some schema must be utilized as this is a required attribute. The system will use this key value to track the specific reference query and will return this value along with the DOI.</xsd:documentation>
 		</xsd:annotation>
-		<xsd:attribute name="key" type="xsd:string" use="required"/>
+		<xsd:attribute name="key" use="required">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1"/>
+                                        <xsd:maxLength value="128"/>
+					<xsd:whiteSpace value="collapse" />
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
 	</xsd:attributeGroup>
 	<!-- =============================================================
 

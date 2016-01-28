@@ -205,7 +205,8 @@
 				<xsd:element ref="isbn" minOccurs="0"/>
 				<xsd:element ref="series_title" minOccurs="0"/>
 				<xsd:element ref="volume_title" minOccurs="0"/>
-				<xsd:element ref="contributors" minOccurs="0"/>
+				<xsd:element ref="paper_title" minOccurs="0"/>
+                                <xsd:element ref="contributors" minOccurs="0"/>
 				<xsd:element ref="volume" minOccurs="0"/>
 				<xsd:element ref="issue" minOccurs="0"/>
 				<xsd:element ref="first_page" minOccurs="0"/>

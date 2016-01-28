@@ -57,6 +57,14 @@ award_number: grant number or other fund identifier</xsd:documentation>
             <xsd:sequence>
                 <xsd:element ref="assertion" minOccurs="0" maxOccurs="unbounded"/>
             </xsd:sequence>
+            <xsd:attribute name="provider" default="publisher">
+                <xsd:simpleType>
+                <xsd:restriction base="xsd:NMTOKEN">
+                    <xsd:enumeration value="publisher"/>
+                    <xsd:enumeration value="crossref"/>
+                </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
             <xsd:attribute name="name" use="required">
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:NMTOKEN">

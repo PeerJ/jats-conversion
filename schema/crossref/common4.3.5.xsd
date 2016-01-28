@@ -8,13 +8,10 @@
 
                           Introduction
 
-     CrossRef Schema Version 4.3.0
-     for Journal, book and conferernce submissions
-
-     Developed for CrossRef (www.crossref.org) by
+     CrossRef Schema Version 4.3
+	 Developed for CrossRef (www.crossref.org) by
 
      Inera Incorporated
-     Newton, MA 02460
      http://www.inera.com
      email: info@inera.com
 
@@ -43,6 +40,9 @@
 
     Changes record version, author initials, date, and comments
   
+  4.3.5 (PDF) add WebCite as value for archive
+  4.3.0-6 (PDF) disallow empty value for citation "key" attribute
+  4.3.5, 4.3.6 (PDF) 5/14/2015 added text/rtf as mime type
   4.3.5,6 (PDF) 3/31/2015 added ai:program to components
   4.3.1,2,4,5,6 (PDF) 3/2/2015 removed redundant ORCID validation
   4.3.5	(PDF) 10/9/2014 updated standard_designator and child elements, moved mml:math to xrefFaces to fix problem with depositing mathML and other markup, restricted CrossMark update types to an enumerated list, removed cm_update_label
@@ -356,6 +356,7 @@
 					<xsd:enumeration value="text/html"/>
 					<xsd:enumeration value="text/sgml"/>
 					<xsd:enumeration value="text/css"/>
+                                        <xsd:enumeration value="text/rtf"/>
 					<xsd:enumeration value="text/xml"/>
 					<xsd:enumeration value="text/xml-external-parsed-entity"/>
 					<xsd:enumeration value="multipart/mixed"/>
@@ -1814,7 +1815,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 		<xsd:annotation>
 			<xsd:documentation>Used to indicate the designated archiving organization(s) for an
 				item. Values for the name attribute are CLOCKSS, LOCKSS Portico, KB, DWT (Deep Web
-				Technologies), Internet Archive</xsd:documentation>
+				Technologies), Internet Archive,WebCite</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:attribute name="name" use="required">
@@ -1826,6 +1827,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 						<xsd:enumeration value="KB"/>
 						<xsd:enumeration value="Internet Archive"/>
 						<xsd:enumeration value="DWT"/>
+                                                <xsd:enumeration value="WebCite"/>
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>
@@ -2041,7 +2043,15 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 				key value to track the specific reference query and will return this value along
 				with the DOI.</xsd:documentation>
 		</xsd:annotation>
-		<xsd:attribute name="key" type="xsd:string" use="required"/>
+		<xsd:attribute name="key" use="required">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1"/>
+                                        <xsd:maxLength value="128"/>
+					<xsd:whiteSpace value="collapse" />
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
 	</xsd:attributeGroup>
 	<!-- =============================================================
 

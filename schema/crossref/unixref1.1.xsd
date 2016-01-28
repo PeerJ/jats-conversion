@@ -3,6 +3,7 @@
 Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata schema with some
 "relaxations" to support converting the DTD and different versions of the XSD into this schema.
 
+1.1 (PDF) 7/24/15 change minimum required number of contributors to 0 for conference papers
 1.1 (PDF) 2/18/15 changed number of allowed jats abstracts, added new standard designator elements from crossref4.3.6.xsd
 1.1 (PDF) 6/9/14 added unspecified and subscription as values for property attribute
 1.1 (PDF) 5/22/14 changed related_doi to parent_doi
@@ -32,14 +33,17 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 	targetNamespace="http://www.crossref.org/xschema/1.1"
 	xmlns:fr="http://www.crossref.org/fundref.xsd"
 	xmlns:ai="http://www.crossref.org/AccessIndicators.xsd"
+        xmlns:ct="http://www.crossref.org/clinicaltrials.xsd"
 	xmlns:rel="http://www.crossref.org/relations.xsd"
+	xmlns:mml="http://www.w3.org/1998/Math/MathML"
     xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1">
 
 	<xsd:import namespace="http://www.crossref.org/fundref.xsd" schemaLocation="fundref.xsd"/>
 	<xsd:import namespace="http://www.crossref.org/AccessIndicators.xsd" schemaLocation="AccessIndicators.xsd"/>
 	<xsd:import namespace="http://www.crossref.org/relations.xsd" schemaLocation="relations.xsd"/>
+	<xsd:import namespace="http://www.w3.org/1998/Math/MathML" schemaLocation="http://www.w3.org/Math/XMLSchema/mathml3/mathml3.xsd"/>
 	<xsd:import namespace="http://www.ncbi.nlm.nih.gov/JATS1" schemaLocation="JATS-journalpublishing1.xsd"/>
-
+	<xsd:import namespace="http://www.crossref.org/clinicaltrials.xsd" schemaLocation="clinicaltrials.xsd"/>
 	<!-- =============================================================
 
                           1. Shared attributes
@@ -85,6 +89,17 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 				</xsd:restriction>
 			</xsd:simpleType>
 		</xsd:attribute>
+		<xsd:attribute name="name-style" use="optional">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:token">
+					<xsd:enumeration value="western"/>
+					<xsd:enumeration value="eastern"/>
+					<xsd:enumeration value="islensk"/>
+					<xsd:enumeration value="given-only"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attributeGroup ref="language.atts"/>
 	</xsd:attributeGroup>
 	<!-- lanuage attributes are based on iso 639  -->
 	<xsd:attributeGroup name="language.atts">
@@ -434,6 +449,7 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 			<xsd:element ref="scp"/>
 			<xsd:element ref="tt"/>
 			<xsd:element ref="font"/>
+			<xsd:element ref="mml:math"/>
 		</xsd:choice>
 	</xsd:group>
 	<xsd:element name="b" type="xrefFaces"/>
@@ -1677,6 +1693,7 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 				<xsd:element ref="crossmark" minOccurs="0"/>
 				<xsd:element ref="fr:program" minOccurs="0"/>
 				<xsd:element ref="ai:program" minOccurs="0"/>
+                                <xsd:element ref="ct:program" minOccurs="0"/>
 				<xsd:element ref="rel:program" minOccurs="0"/>		
 				<xsd:element ref="archive_locations" minOccurs="0"/>
 				<xsd:element ref="doi_data"/>
@@ -1866,7 +1883,7 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 	<xsd:element name="conference_paper">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element ref="contributors"/>
+				<xsd:element ref="contributors" minOccurs="0"/>
 				<xsd:element ref="titles"/>
 				<xsd:element ref="publication_date" minOccurs="0" maxOccurs="10"/>
 				<xsd:element ref="pages" minOccurs="0"/>
@@ -1874,6 +1891,7 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 				<xsd:element ref="crossmark" minOccurs="0"/>
 				<xsd:element ref="fr:program" minOccurs="0"/>
 				<xsd:element ref="ai:program" minOccurs="0"/>
+                                <xsd:element ref="ct:program" minOccurs="0"/>
 				<xsd:element ref="rel:program" minOccurs="0"/>	
 				<xsd:element ref="archive_locations" minOccurs="0"/>
 				<xsd:element ref="doi_data"/>
@@ -2038,6 +2056,7 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 				<xsd:element ref="crossmark" minOccurs="0"/>
 				<xsd:element ref="fr:program" minOccurs="0"/>
 				<xsd:element ref="ai:program" minOccurs="0"/>
+                                <xsd:element ref="ct:program" minOccurs="0"/>
 				<xsd:element ref="rel:program" minOccurs="0"/>	
 				<xsd:element ref="archive_locations" minOccurs="0"/>
 				<xsd:element ref="doi_data"/>
@@ -2265,7 +2284,7 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 				<xsd:element ref="edition_number" minOccurs="0"/>
 				<xsd:element ref="publication_date" maxOccurs="10"/>
 				<xsd:element ref="approval_date" minOccurs="0" maxOccurs="10"/>
-				<xsd:element ref="isbn" maxOccurs="6"/>
+				<xsd:element ref="isbn" minOccurs="0" maxOccurs="6"/>  
 				<xsd:element ref="publisher" minOccurs="0"/>
 				<xsd:element ref="institution" minOccurs="0" maxOccurs="5"/>
 				<xsd:element ref="publisher_item" minOccurs="0"/>
@@ -2304,8 +2323,10 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 				<xsd:element ref="standard_designator" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="volume" minOccurs="0"/>
 				<xsd:element ref="edition_number" minOccurs="0"/>
-				<xsd:element ref="publication_date" maxOccurs="10"/>
-				<xsd:element ref="approval_date" maxOccurs="10"/>
+				<xsd:choice >
+					<xsd:element ref="publication_date"  maxOccurs="10"/>
+					<xsd:element ref="approval_date" maxOccurs="10"/>
+				</xsd:choice>
 				<xsd:element ref="isbn" minOccurs="0" maxOccurs="6"/>
 				<xsd:element ref="issn" minOccurs="0" maxOccurs="6"/>
 				<xsd:element ref="publisher" minOccurs="0"/>
@@ -2487,13 +2508,13 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 		<xsd:sequence>
 			<xsd:element ref="std_designator" minOccurs="0" maxOccurs="1"/>
 			<xsd:element ref="std_alt_script" minOccurs="0" maxOccurs="unbounded"/>
-			<xsd:element ref="std_varient_form" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="std_variant_form" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
 	<xsd:element name="std_designator" type="std_designatorvalue_t"/>
 	<xsd:element name="std_alt_script" type="std_designatorvalue_t"/>
-	<xsd:element name="std_varient_form" type="std_designatorvalue_t"/>
+	<xsd:element name="std_variant_form" type="std_designatorvalue_t"/>
 	
 	<xsd:element name="standards_body">
 		<xsd:complexType>
@@ -2723,6 +2744,7 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 				<xsd:element maxOccurs="unbounded" ref="assertion" minOccurs="0"/>
 				<xsd:element maxOccurs="unbounded" ref="fr:program" minOccurs="0"/>
 				<xsd:element maxOccurs="unbounded" ref="ai:program" minOccurs="0"/>
+                                <xsd:element maxOccurs="unbounded" ref="ct:program"  minOccurs="0"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>

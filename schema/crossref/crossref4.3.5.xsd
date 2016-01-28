@@ -436,8 +436,8 @@ journal_article allows for multiple titles per entity. In some cases it may be h
 				<xsd:choice>
 					<xsd:element ref="crossmark" minOccurs="0"/>
 					<xsd:sequence>
-						<xsd:element ref="fr:program" minOccurs="0"/>
-						<xsd:element ref="ai:program" minOccurs="0"/>
+						<xsd:element ref="fr:program" minOccurs="0" maxOccurs="1"/>
+						<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
 					</xsd:sequence>
 				</xsd:choice>
 				<xsd:element ref="rel:program" minOccurs="0"/>
@@ -775,8 +775,8 @@ A conference paper is required to have contributors, title and doi_data. All oth
 				<xsd:choice>
 					<xsd:element ref="crossmark" minOccurs="0"/>
 					<xsd:sequence>
-						<xsd:element ref="fr:program" minOccurs="0"/>
-						<xsd:element ref="ai:program" minOccurs="0"/>
+						<xsd:element ref="fr:program" minOccurs="0" maxOccurs="1"/>
+						<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
 					</xsd:sequence>
 				</xsd:choice>
 				<xsd:element ref="rel:program" minOccurs="0"/>				
@@ -866,8 +866,8 @@ In very limited circumstances a book may be deposited without an ISBN, in which 
 				<xsd:choice>
 					<xsd:element ref="crossmark" minOccurs="0"/>
 					<xsd:sequence>
-						<xsd:element ref="fr:program" minOccurs="0"/>
-						<xsd:element ref="ai:program" minOccurs="0"/>
+						<xsd:element ref="fr:program" minOccurs="0" maxOccurs="1"/>
+						<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
 					</xsd:sequence>
 				</xsd:choice>
 				<xsd:element ref="rel:program" minOccurs="0"/>				
@@ -932,8 +932,8 @@ Normally book content that is published as a series is required to have a series
 				<xsd:choice>
 					<xsd:element ref="crossmark" minOccurs="0"/>
 					<xsd:sequence>
-						<xsd:element ref="fr:program" minOccurs="0"/>
-						<xsd:element ref="ai:program" minOccurs="0"/>
+						<xsd:element ref="fr:program" minOccurs="0" maxOccurs="1"/>
+						<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
 					</xsd:sequence>
 				</xsd:choice>
 				<xsd:element ref="rel:program" minOccurs="0"/>				
@@ -988,8 +988,8 @@ Note: citation_list should only be used in book_series_metadata instead of conte
 				<xsd:choice>
 					<xsd:element ref="crossmark" minOccurs="0"/>
 					<xsd:sequence>
-						<xsd:element ref="fr:program" minOccurs="0"/>
-						<xsd:element ref="ai:program" minOccurs="0"/>
+						<xsd:element ref="fr:program" minOccurs="0" maxOccurs="1"/>
+						<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
 					</xsd:sequence>
 				</xsd:choice>
 				<xsd:element ref="rel:program" minOccurs="0"/>				
@@ -1032,8 +1032,8 @@ The title of each content item must be submitted. If, however, you are submitted
 				<xsd:choice>
 					<xsd:element ref="crossmark" minOccurs="0"/>
 					<xsd:sequence>
-						<xsd:element ref="fr:program" minOccurs="0"/>
-						<xsd:element ref="ai:program" minOccurs="0"/>
+						<xsd:element ref="fr:program" minOccurs="0" maxOccurs="1"/>
+						<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
 					</xsd:sequence>
 				</xsd:choice>
 				<xsd:element ref="rel:program" minOccurs="0"/>				
@@ -1097,8 +1097,8 @@ You may assign and register a DOI that encompasses an entire series by adding do
 				<xsd:choice>
 					<xsd:element ref="crossmark" minOccurs="0"/>
 					<xsd:sequence>
-						<xsd:element ref="fr:program" minOccurs="0"/>
-						<xsd:element ref="ai:program" minOccurs="0"/>
+						<xsd:element ref="fr:program" minOccurs="0" maxOccurs="1"/>
+						<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
 					</xsd:sequence>
 				</xsd:choice>
 				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
@@ -1310,8 +1310,8 @@ If a DAI has been assigned, it should be deposited in the identifier element wit
 				<xsd:choice>
 					<xsd:element ref="crossmark" minOccurs="0"/>
 					<xsd:sequence>
-						<xsd:element ref="fr:program" minOccurs="0"/>
-						<xsd:element ref="ai:program" minOccurs="0"/>
+						<xsd:element ref="fr:program" minOccurs="0" maxOccurs="1"/>
+						<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
 					</xsd:sequence>
 				</xsd:choice>
 				<xsd:element ref="rel:program" minOccurs="0"/>				
@@ -1380,8 +1380,8 @@ If the report number of an item follows Z39.23, the number should be deposited i
 				<xsd:choice>
 					<xsd:element ref="crossmark" minOccurs="0"/>
 					<xsd:sequence>
-						<xsd:element ref="fr:program" minOccurs="0"/>
-						<xsd:element ref="ai:program" minOccurs="0"/>
+						<xsd:element ref="fr:program" minOccurs="0" maxOccurs="1"/>
+						<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
 					</xsd:sequence>
 				</xsd:choice>
 				<xsd:element ref="rel:program" minOccurs="0"/>					
@@ -1493,8 +1493,8 @@ component_list is included in standard to handle items that have components but 
 				<xsd:choice>
 					<xsd:element ref="crossmark" minOccurs="0"/>
 					<xsd:sequence>
-						<xsd:element ref="fr:program" minOccurs="0"/>
-						<xsd:element ref="ai:program" minOccurs="0"/>
+						<xsd:element ref="fr:program" minOccurs="0" maxOccurs="1"/>
+						<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
 					</xsd:sequence>
 				</xsd:choice>
 				<xsd:element ref="rel:program" minOccurs="0"/>	
@@ -1609,8 +1609,8 @@ component_list: a list of components included in the dataset item such as suppor
 				<xsd:choice>
 					<xsd:element ref="crossmark" minOccurs="0"/>
 					<xsd:sequence>
-						<xsd:element ref="fr:program" minOccurs="0"/>
-						<xsd:element ref="ai:program" minOccurs="0"/>
+						<xsd:element ref="fr:program" minOccurs="0" maxOccurs="1"/>
+						<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
 					</xsd:sequence>
 				</xsd:choice>
 				<xsd:element ref="rel:program" minOccurs="0"/>					

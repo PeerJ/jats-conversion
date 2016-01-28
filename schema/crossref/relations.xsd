@@ -32,8 +32,12 @@
         and which is acted-upon.  This directionality is semantically based on the relationship name. Crossref's model makes
         no attempt to automatically 'understand' this semantic. 
         
-        NOTE: The identifier parent to the PROGRAM element is considered the claimant of the relationship (e.g. the entity that
-              establishes the relationship).
+        The identifier parent to the PROGRAM element is considered the claimant of the relationship (e.g. the entity that
+        establishes the relationship).
+        
+            yes:  10.1234/abcd references 10.5678/efgh    =>  10.1234/abcd claims that it references 10.5678/efgh
+            yes:  10.1234/abcd referencedBy 10.5678/efgh  =>  10.1234/abcd claims that it is referenced by 10.5678/efgh
+       
         ==========================================================================================================================
        
         </xsd:documentation></xsd:annotation>

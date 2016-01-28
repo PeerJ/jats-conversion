@@ -661,7 +661,8 @@
 				<xsd:element ref="surname"/>
 				<xsd:element ref="suffix" minOccurs="0"/>
 				<xsd:element ref="affiliation" minOccurs="0" maxOccurs="5"/>
-                                <xsd:element ref="ORCID" minOccurs="0"/>
+                <xsd:element ref="ORCID" minOccurs="0"/>
+				<xsd:element ref="alt-name" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attributeGroup ref="contributor.atts"/>
 		</xsd:complexType>
@@ -737,7 +738,85 @@
 			<xsd:maxLength value="37"/>
 			<xsd:minLength value="34"/>
 		</xsd:restriction>
-	</xsd:simpleType>
+        </xsd:simpleType>
+	
+	<xsd:element name="alt-name">
+		<xsd:complexType>
+			<xsd:choice maxOccurs="unbounded">
+				<xsd:element ref="name"/>
+				<xsd:element ref="string-name"/>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="name">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:choice>
+					<xsd:sequence>
+						<xsd:element ref="surname"/>
+						<xsd:element minOccurs="0" ref="given_name"/>
+					</xsd:sequence>
+					<xsd:element ref="given_name"/>
+				</xsd:choice>
+				<xsd:element minOccurs="0" ref="prefix"/>
+				<xsd:element minOccurs="0" ref="suffix"/>
+			</xsd:sequence>
+			<xsd:attribute name="content-type"/>
+			<xsd:attribute name="name-style" default="western">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:token">
+						<xsd:enumeration value="western"/>
+						<xsd:enumeration value="eastern"/>
+						<xsd:enumeration value="islensk"/>
+						<xsd:enumeration value="given-only"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="specific-use"/>
+			<!--using our language.atts attribute group instead of importing xml:lang-->
+			<xsd:attributeGroup ref="language.atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="string-name">
+		<xsd:complexType mixed="true">
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="degrees"/>
+				<xsd:element ref="given_name"/>
+				<xsd:element ref="prefix"/>
+				<xsd:element ref="surname"/>
+				<xsd:element ref="suffix"/>
+			</xsd:choice>
+			<xsd:attribute name="content-type"/>
+			<xsd:attribute name="name-style" default="western">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:token">
+						<xsd:enumeration value="western"/>
+						<xsd:enumeration value="eastern"/>
+						<xsd:enumeration value="islensk"/>
+						<xsd:enumeration value="given-only"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="specific-use"/>
+			<xsd:attributeGroup ref="language.atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="prefix">
+		<xsd:complexType mixed="true">
+			<xsd:attribute name="content-type"/>
+			<xsd:attribute name="specific-use"/>
+			<xsd:attributeGroup ref="language.atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="degrees">
+		<xsd:complexType mixed="true">
+			<xsd:attribute name="content-type"/>
+			<xsd:attribute name="specific-use"/>
+			<xsd:attributeGroup ref="language.atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	
+	
 	<!-- ============================================================================================ -->
 	<!-- The query element is used to return the results for meta data (meta-data in / DOI return) or
         DOI (DOI in / meta-data return) queries.                                                     -->
@@ -1300,14 +1379,7 @@
 			</xsd:restriction>
 		</xsd:simpleType>
 	</xsd:element>
-	<xsd:element name="prefix">
-		<xsd:simpleType>
-			<xsd:restriction base="xsd:string">
-				<xsd:maxLength value="12"/>
-				<xsd:minLength value="7"/>
-			</xsd:restriction>
-		</xsd:simpleType>
-	</xsd:element>
+
 	<!--
     The name of the publisher of a book or conference proceedings.
 

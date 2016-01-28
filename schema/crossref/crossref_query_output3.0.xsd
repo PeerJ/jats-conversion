@@ -202,8 +202,10 @@
 								<xsd:enumeration value="citedby-count"/>
 								<xsd:enumeration value="publisher-name"/>
 								<xsd:enumeration value="prefix-name"/>
-                                                                <xsd:enumeration value="member-id"/>
-							</xsd:restriction>
+                                <xsd:enumeration value="member-id"/>
+                                <xsd:enumeration value="created"/>
+								<xsd:enumeration value="relation"/>
+                             </xsd:restriction>
 						</xsd:simpleType>
 					</xsd:attribute>
 					<xsd:attribute name="type" use="required">
@@ -213,10 +215,18 @@
 								<xsd:enumeration value="string"/>
 								<xsd:enumeration value="number"/>
 								<xsd:enumeration value="date"/>
+								<xsd:enumeration value="doi"/>
 							</xsd:restriction>
 						</xsd:simpleType>
 					</xsd:attribute>
-				</xsd:extension>
+					<xsd:attribute name="claim" use="optional">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="128"/>
+								<xsd:minLength value="0"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:attribute>				</xsd:extension>
 			</xsd:simpleContent>
 		</xsd:complexType>
 	</xsd:element>
@@ -279,6 +289,7 @@
 				<xsd:element ref="isbn" minOccurs="0"/>
 				<xsd:element ref="series_title" minOccurs="0"/>
 				<xsd:element ref="volume_title" minOccurs="0"/>
+                               	<xsd:element ref="paper_title" minOccurs="0"/>
 				<xsd:element ref="contributors" minOccurs="0"/>
 				<xsd:element ref="volume" minOccurs="0"/>
 				<xsd:element ref="issue" minOccurs="0"/>
@@ -409,6 +420,16 @@
 			</xsd:simpleContent>
 		</xsd:complexType>
 	</xsd:element>
+        
+        <xsd:element name="paper_title">
+		<xsd:complexType>
+			<xsd:simpleContent>
+				<xsd:extension base="qfield_t"/>
+			</xsd:simpleContent>
+		</xsd:complexType>
+	</xsd:element>
+	        
+        
 	<xsd:element name="title">
 		<xsd:complexType>
 			<xsd:simpleContent>
@@ -530,49 +551,47 @@
 	<xsd:element name="query">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:choice>
-					<xsd:element ref="doi" minOccurs="1" maxOccurs="1"/>
-					<!-- msg holds verious information about the query (such as error msg if it malformed) -->
-					<xsd:element ref="msg" minOccurs="1" maxOccurs="1"/>		
-				</xsd:choice>				
-				<xsd:choice>
-					<xsd:sequence>
-					<xsd:element ref="issn" minOccurs="0" maxOccurs="2"/>
-					<xsd:element ref="isbn" minOccurs="0" maxOccurs="6"/>
-					<!-- book/conf. elements -->
-					<xsd:element ref="series_title" minOccurs="0"/>
-					<!-- book/conf. elements -->
-					<xsd:element ref="journal_title" minOccurs="0"/>
-					<xsd:element ref="volume_title" minOccurs="0"/>
-					<!-- book/conf. elements -->
-					<xsd:choice>
-						<xsd:element ref="author" minOccurs="0"/>
-						<xsd:element ref="contributors" minOccurs="0"/>
-						<!-- supply all contibutors when expanded-results=true -->
-					</xsd:choice>
-					<xsd:element ref="volume" minOccurs="0"/>
-					<xsd:element ref="issue" minOccurs="0"/>
-					<xsd:element ref="first_page" minOccurs="0"/>
-				    <xsd:element ref="item_number" minOccurs="0"/>
-					<xsd:element ref="last_page" minOccurs="0"/>
-					<xsd:element ref="edition_number" minOccurs="0"/>
-					<!-- book/conf. elements -->
-					<xsd:element ref="component_number" minOccurs="0"/>
-					<!-- book/conf. elements -->
-					<xsd:element ref="year" minOccurs="0" maxOccurs="6"/>
-					<xsd:element ref="publication_type" minOccurs="0"/>
-					<xsd:element ref="article_title" minOccurs="0"/>
-					<!-- ECT -->
-					<xsd:element ref="institution_name" minOccurs="0"/>
-					<xsd:element ref="identifier" minOccurs="0" maxOccurs="unbounded"/>
-				
-				    <xsd:element ref="component_list" minOccurs="0"/>
-					</xsd:sequence>
+                            <xsd:element ref="doi" minOccurs="1" maxOccurs="1"/>
+                            <!-- msg holds verious information about the query (such as error msg if it malformed) -->
+                            <xsd:element ref="msg" minOccurs="0" maxOccurs="1"/>		
+                            <xsd:choice>
 				<xsd:sequence>
-					<xsd:element ref="crm-item" minOccurs="1" maxOccurs="unbounded"/>
-					<xsd:element ref="doi_record" minOccurs="1" maxOccurs="1"/>				
+                                    <xsd:element ref="issn" minOccurs="0" maxOccurs="2"/>
+                                    <xsd:element ref="isbn" minOccurs="0" maxOccurs="6"/>
+                                    <!-- book/conf. elements -->
+                                    <xsd:element ref="series_title" minOccurs="0"/>
+                                    <!-- book/conf. elements -->
+                                    <xsd:element ref="journal_title" minOccurs="0"/>
+                                    <xsd:element ref="volume_title" minOccurs="0"/>
+                                    <!-- book/conf. elements -->
+                                    <xsd:choice>
+                                        <xsd:element ref="author" minOccurs="0"/>
+                                        <xsd:element ref="contributors" minOccurs="0"/>
+                                        <!-- supply all contibutors when expanded-results=true -->
+                                    </xsd:choice>
+                                    <xsd:element ref="volume" minOccurs="0"/>
+                                    <xsd:element ref="issue" minOccurs="0"/>
+                                    <xsd:element ref="first_page" minOccurs="0"/>
+                                    <xsd:element ref="item_number" minOccurs="0"/>
+                                    <xsd:element ref="last_page" minOccurs="0"/>
+                                    <xsd:element ref="edition_number" minOccurs="0"/>
+                                    <!-- book/conf. elements -->
+                                    <xsd:element ref="component_number" minOccurs="0"/>
+                                    <!-- book/conf. elements -->
+                                    <xsd:element ref="year" minOccurs="0" maxOccurs="6"/>
+                                    <xsd:element ref="publication_type" minOccurs="0"/>
+                                    <xsd:element ref="article_title" minOccurs="0"/>
+                                    <!-- ECT -->
+                                    <xsd:element ref="institution_name" minOccurs="0"/>
+                                    <xsd:element ref="identifier" minOccurs="0" maxOccurs="unbounded"/>
+
+                                    <xsd:element ref="component_list" minOccurs="0"/>
 				</xsd:sequence>
-				</xsd:choice>
+				<xsd:sequence>
+                                    <xsd:element ref="crm-item" minOccurs="1" maxOccurs="unbounded"/>
+                                    <xsd:element ref="doi_record" minOccurs="0" maxOccurs="1"/>				
+				</xsd:sequence>
+                            </xsd:choice>
 	
 			</xsd:sequence>
 			<xsd:attribute name="key" use="optional">
