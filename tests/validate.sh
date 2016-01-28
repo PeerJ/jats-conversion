@@ -25,8 +25,7 @@ echo "Validating against JATS DTD"
 xmllint --loaddtd --valid  --nonet $TRACE --noout --catalogs "$ARTICLE"
 
 echo "Validating against JATS XSD"
-xmllint --nonet $TRACE --noout --catalogs --schema 'http://jats.nlm.nih.gov/publishing/1.0/xsd/JATS-journalpublishing1.xsd' "$ARTICLE"
-#xmllint --nonet $TRACE --noout --catalogs --schema 'http://jats.nlm.nih.gov/publishing/1.1d1/xsd/JATS-journalpublishing1.xsd' "$ARTICLE"
+xmllint --nonet $TRACE --noout --catalogs --schema 'http://jats.nlm.nih.gov/publishing/1.1/xsd/JATS-journalpublishing1.xsd' "$ARTICLE"
 
 echo "Validating for CrossRef DOI deposition"
 xsltproc --catalogs \
@@ -34,7 +33,7 @@ xsltproc --catalogs \
 	--stringparam 'depositorName' 'test' \
 	--stringparam 'depositorEmail' 'test@example.com' \
 	"$XSL/jats-to-unixref.xsl" "$ARTICLE" \
-	| xmllint --nonet $TRACE --noout --schema "$RESOURCES/crossref/crossref4.3.3.xsd" -
+	| xmllint --nonet $TRACE --noout --schema "$RESOURCES/crossref/crossref4.3.6.xsd" -
 
 echo "Generating CrossRef schematron report"
 OUTPUT="$OUTPUT_DIR/$FILE-crossref-schematron-report.xml"

@@ -15,7 +15,7 @@ $(DOWNLOADS):
 
 # JATS DTD
 
-jats: | jats/publishing/1.0 jats/publishing/1.1d1
+jats: | jats/publishing/1.0 jats/publishing/1.1
 
 # JATS 1.0
 
@@ -31,21 +31,21 @@ $(DOWNLOADS)/jats-publishing-dtd-1.0.zip: | $(DOWNLOADS)
 $(DOWNLOADS)/jats-publishing-xsd-1.0.zip: | $(DOWNLOADS)
 	wget -c -P $(DOWNLOADS) ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.0/jats-publishing-xsd-1.0.zip
 
-# JATS 1.1d1
+# JATS 1.1
 # there are 4 versions of this DTD, with MathML 2 or 3 and XHTML ± CALS tables
 # need to unzip as there are subfolders
-jats/publishing/1.1d1: | $(DOWNLOADS)/JATS-Publishing-1-1d1-MathML2-DTD.zip $(DOWNLOADS)/JATS-Publishing-1-1d1-MathML2-XSD.zip
-	unzip $(DOWNLOADS)/JATS-Publishing-1-1d1-MathML2-DTD.zip -d $(DOWNLOADS)
-	mv $(DOWNLOADS)/JATS-Publishing-1-1d1-MathML2-DTD jats/publishing/1.1d1
+jats/publishing/1.1: | $(DOWNLOADS)/JATS-Publishing-1-1-MathML2-DTD.zip $(DOWNLOADS)/JATS-Publishing-1-1-MathML2-XSD.zip
+	unzip $(DOWNLOADS)/JATS-Publishing-1-1-MathML2-DTD.zip -d $(DOWNLOADS)
+	mv $(DOWNLOADS)/JATS-Publishing-1-1-MathML2-DTD/ jats/publishing/1.1
 
-	unzip $(DOWNLOADS)/JATS-Publishing-1-1d1-MathML2-XSD.zip -d $(DOWNLOADS)
-	mv $(DOWNLOADS)/JATS-Publishing-1-1d1-MathML2-XSD jats/publishing/1.1d1/xsd
+	unzip $(DOWNLOADS)/JATS-Publishing-1-1-MathML2-XSD.zip -d $(DOWNLOADS)
+	mv $(DOWNLOADS)/JATS-Publishing-1-1-MathML2-XSD jats/publishing/1.1/xsd
 
-$(DOWNLOADS)/JATS-Publishing-1-1d1-MathML2-DTD.zip: | $(DOWNLOADS)
-	wget -c -P $(DOWNLOADS) ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.1d1/JATS-Publishing-1-1d1-MathML2-DTD.zip
+$(DOWNLOADS)/JATS-Publishing-1-1-MathML2-DTD.zip: | $(DOWNLOADS)
+	wget -c -P $(DOWNLOADS) ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.1/JATS-Publishing-1-1-MathML2-DTD.zip
 
-$(DOWNLOADS)/JATS-Publishing-1-1d1-MathML2-XSD.zip: | $(DOWNLOADS)
-	wget -c -P $(DOWNLOADS) ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.1d1/xsd/JATS-Publishing-1-1d1-MathML2-XSD.zip
+$(DOWNLOADS)/JATS-Publishing-1-1-MathML2-XSD.zip: | $(DOWNLOADS)
+	wget -c -P $(DOWNLOADS) ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.1/xsd/JATS-Publishing-1-1-MathML2-XSD.zip
 
 # CrossRef Schema
 
