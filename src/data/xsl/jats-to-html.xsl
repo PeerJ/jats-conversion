@@ -742,7 +742,7 @@
 
     <!-- figure -->
     <xsl:template match="fig">
-        <figure class="{local-name()}">
+        <figure class="{local-name()}" itemprop="image" itemscope="itemscope" itemtype="https://schema.org/ImageObject">
             <xsl:apply-templates select="@*"/>
 
             <div class="image-container">
@@ -759,7 +759,7 @@
 
     <!-- figure caption -->
     <xsl:template match="caption" mode="fig">
-        <figcaption>
+        <figcaption itemprop="description">
             <xsl:if test="not(title)">
                 <xsl:apply-templates select="preceding-sibling::label" mode="caption"/>
             </xsl:if>
@@ -769,7 +769,7 @@
             <div class="figcaption-footer">
                 <div class="article-image-download">
                     <xsl:variable name="fig-id" select="../@id"/>
-                    <a href="{$static-root}{$fig-id}-full.png" class="btn btn-mini" download="{$download-prefix}-{$id}-{$fig-id}.png">
+                    <a href="{$static-root}{$fig-id}-full.png" class="btn btn-mini" download="{$download-prefix}-{$id}-{$fig-id}.png" itemprop="url">
                         <i class="icon-large icon-picture">&#160;</i>
                         <xsl:text>&#32;Download full-size image</xsl:text>
                     </a>
@@ -825,6 +825,7 @@
            data-fresco-options="fit: 'width', ui: 'outside', thumbnails: false, loop: true, position: true, preload: false">
 	        <img class="{local-name()}"
 	             src="{$root}-1x.jpg"
+	             itemprop="contentUrl"
 	             sizes="(min-width: 1200px) 581px, (max-width: 1199px) and (min-width: 980px) 462px, (max-width: 979px) and (min-width: 768px) 347px, (max-width: 767px) calc(100vw - 50px)"
 	             srcset="{$root}-2x.jpg 1200w, {$root}-1x.jpg 600w, {$root}-small.jpg 355w"
 	             data-image-id="{$fig-id}"
