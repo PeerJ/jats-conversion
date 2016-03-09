@@ -88,9 +88,9 @@
     <!-- funding-statement -->
     <xsl:template match="funding-statement" mode="back">
         <h3 class="heading">Funding</h3>
-        <div>
+        <p>
             <xsl:apply-templates select="node()"/>
-        </div>
+        </p>
     </xsl:template>
 
     <xsl:template match="body">
