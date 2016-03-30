@@ -113,7 +113,7 @@
         </span>
         <xsl:apply-templates select="comment" mode="citation"/>
         <xsl:text>&#32;</xsl:text>
-        <xsl:call-template name="preprint-label"/>
+        <xsl:call-template name="publication-type-label"/>
     </xsl:template>
 
     <!-- software citations -->
@@ -127,6 +127,19 @@
             <xsl:apply-templates select="publisher-name | institution" mode="citation"/>
         </span>
         <xsl:apply-templates select="comment" mode="citation"/>
+        <xsl:call-template name="publication-type-label"/>
+    </xsl:template>
+
+    <!-- data citations -->
+    <xsl:template match="element-citation[@publication-type='data']">
+        <xsl:call-template name="authors-year"></xsl:call-template>
+        <cite class="article-title">
+            <xsl:apply-templates select="data-title" mode="citation"/>
+        </cite>
+        <xsl:text>&#32;</xsl:text>
+        <xsl:apply-templates select="source" mode="citation"/>
+        <xsl:apply-templates select="comment" mode="citation"/>
+        <xsl:call-template name="publication-type-label"/>
     </xsl:template>
 
     <!-- other citations (?) -->
@@ -151,15 +164,17 @@
         </xsl:choose>
     </xsl:template>
 
-    <xsl:template name="preprint-label">
-        <xsl:choose>
-            <xsl:when test="pub-id[@pub-id-type='arxiv']">
-                <span class="label label-preprint">arXiv preprint</span>
-            </xsl:when>
-            <xsl:otherwise>
-                <span class="label label-preprint">preprint</span>
-            </xsl:otherwise>
-        </xsl:choose>
+    <xsl:template name="publication-type-label">
+        <span class="{concat('label label-', @publication-type)}">
+            <xsl:choose>
+                <xsl:when test="pub-id[@pub-id-type='arxiv']">
+                    <xsl:text>arXiv preprint</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="@publication-type"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </span>
     </xsl:template>
 
     <xsl:template match="issn" mode="citation">
@@ -181,6 +196,15 @@
 
     <!-- report source -->
     <xsl:template match="source" mode="report-citation">
+        <span class="{local-name()}">
+            <xsl:apply-templates/>
+        </span>
+        <xsl:text>.</xsl:text>
+        <xsl:text>&#32;</xsl:text>
+    </xsl:template>
+
+    <!-- other source -->
+    <xsl:template match="source" mode="citation">
         <span class="{local-name()}">
             <xsl:apply-templates/>
         </span>
@@ -401,7 +425,7 @@
         </xsl:choose>
     </xsl:template>
 
-    <xsl:template match="article-title" mode="citation">
+    <xsl:template match="article-title | data-title" mode="citation">
         <a class="{local-name()}" target="_blank" itemprop="url">
             <xsl:attribute name="href">
                 <xsl:call-template name="citation-url">
