@@ -383,7 +383,7 @@
 			<xsl:apply-templates select="fpage | elocation-id" mode="citation"/>
 			<xsl:apply-templates select="year" mode="citation"/>
             <xsl:apply-templates select="pub-id[@pub-id-type='doi'][1]" mode="citation"/>
-            <xsl:apply-templates select="article-title" mode="citation"/>
+            <xsl:apply-templates select="article-title | data-title" mode="citation"/>
 
             <!-- unstructured citations -->
             <xsl:if test="not(article-title) and not(source)">
@@ -442,6 +442,12 @@
     </xsl:template>
 
 	<xsl:template match="article-title" mode="citation">
+		<article_title>
+			<xsl:apply-templates/>
+		</article_title>
+	</xsl:template>
+
+	<xsl:template match="data-title" mode="citation">
 		<article_title>
 			<xsl:apply-templates/>
 		</article_title>

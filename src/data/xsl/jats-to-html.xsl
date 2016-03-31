@@ -375,9 +375,8 @@
     </xsl:template>
 
     <!-- preformatted code block -->
-    <!-- contains zero-width spaces to ensure white-space is preserved in HTML -->
-    <xsl:template match="preformat">
-        <pre><code><xsl:apply-templates select="node()|@*"/>&#8203;</code>&#8203;</pre>
+    <xsl:template match="preformat | code">
+        <pre><code><xsl:apply-templates select="node()|@*"/></code></pre>
     </xsl:template>
 
     <!-- style elements -->

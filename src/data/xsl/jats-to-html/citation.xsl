@@ -28,16 +28,15 @@
             <xsl:apply-templates select="elocation-id" mode="citation"/>
             <xsl:call-template name="pagination"/>
             <xsl:text>&#32;</xsl:text>
-            <xsl:apply-templates select="comment" mode="citation"/>
+            <xsl:call-template name="comment"/>
         </span>
     </xsl:template>
 
-    <!-- book-like citations -->
-    <xsl:template match="element-citation[@publication-type='book']
-    				   | element-citation[@publication-type='other']">
+    <!-- book citations -->
+    <xsl:template match="element-citation[@publication-type='book']">
         <xsl:call-template name="authors-year"></xsl:call-template>
         <cite class="article-title">
-            <xsl:apply-templates select="article-title" mode="book-citation"/>
+            <xsl:apply-templates select="article-title" mode="citation"/>
         </cite>
         <xsl:text>&#32;</xsl:text>
         <xsl:apply-templates select="source" mode="book-citation"/>
@@ -50,15 +49,16 @@
             <xsl:call-template name="pagination"/>
             <xsl:text>&#32;</xsl:text>
             <xsl:apply-templates select="pub-id[@pub-id-type='isbn']" mode="citation"/>
-            <xsl:apply-templates select="comment" mode="citation"/>
+            <xsl:call-template name="comment"/>
         </span>
     </xsl:template>
 
+    <!-- conference proceedings -->
     <xsl:template match="element-citation[@publication-type='conf-proceedings']
 					   | element-citation[@publication-type='confproc']">
         <xsl:call-template name="authors-year"></xsl:call-template>
         <cite class="article-title">
-            <xsl:apply-templates select="article-title" mode="book-citation"/>
+            <xsl:apply-templates select="article-title" mode="citation"/>
         </cite>
         <xsl:text>&#32;</xsl:text>
         <xsl:apply-templates select="conf-name | source" mode="book-citation"/>
@@ -75,7 +75,7 @@
             <xsl:call-template name="pagination"/>
             <xsl:text>&#32;</xsl:text>
             <xsl:apply-templates select="pub-id[@pub-id-type='isbn']" mode="citation"/>
-            <xsl:apply-templates select="comment" mode="citation"/>
+            <xsl:call-template name="comment"/>
         </span>
     </xsl:template>
 
@@ -90,43 +90,63 @@
         <xsl:apply-templates select="institution" mode="report-citation"/>
         <xsl:apply-templates select="volume" mode="citation"/>
         <xsl:call-template name="pagination"/>
-        <xsl:apply-templates select="comment" mode="citation"/>
+        <xsl:call-template name="comment"/>
     </xsl:template>
 
     <!-- thesis citations -->
     <xsl:template match="element-citation[@publication-type='thesis']">
         <xsl:call-template name="authors-year"></xsl:call-template>
-        <span class="article-title">
+        <cite class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
-        </span>
+        </cite>
         <xsl:text>&#32;</xsl:text>
         <xsl:apply-templates select="source" mode="thesis-citation"/>
         <xsl:apply-templates select="institution" mode="thesis-citation"/>
-        <xsl:apply-templates select="comment" mode="citation"/>
+        <xsl:call-template name="comment"/>
+        <xsl:call-template name="publication-type-label"/>
     </xsl:template>
 
     <!-- working paper (preprint) citations -->
     <xsl:template match="element-citation[@publication-type='working-paper']">
         <xsl:call-template name="authors-year"></xsl:call-template>
-        <span class="article-title">
+        <cite class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
-        </span>
-        <xsl:apply-templates select="comment" mode="citation"/>
-        <xsl:text>&#32;</xsl:text>
+        </cite>
+        <xsl:apply-templates select="version" mode="citation"/>
+        <xsl:call-template name="comment"/>
         <xsl:call-template name="publication-type-label"/>
     </xsl:template>
 
     <!-- software citations -->
     <xsl:template match="element-citation[@publication-type='software']">
         <xsl:call-template name="authors-year"></xsl:call-template>
-        <span class="article-title">
+        <cite class="article-title">
+            <!-- the title may be in "data-title" (since JATS 1.1) or "source" -->
+            <xsl:choose>
+                <xsl:when test="data-title">
+                    <xsl:apply-templates select="data-title" mode="citation"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates select="source" mode="citation"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </cite>
+        <!-- if the title is in "data-title", "source" is used for the host -->
+        <xsl:if test="data-title">
             <xsl:apply-templates select="source" mode="citation"/>
-        </span>
+        </xsl:if>
         <span>
-            <xsl:apply-templates select="edition" mode="software-citation"/>
+            <xsl:choose>
+                <xsl:when test="version">
+                    <xsl:apply-templates select="version" mode="citation"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates select="edition" mode="software-citation"/>
+                </xsl:otherwise>
+            </xsl:choose>
             <xsl:apply-templates select="publisher-name | institution" mode="citation"/>
         </span>
-        <xsl:apply-templates select="comment" mode="citation"/>
+        <xsl:call-template name="comment"/>
         <xsl:call-template name="publication-type-label"/>
     </xsl:template>
 
@@ -138,18 +158,40 @@
         </cite>
         <xsl:text>&#32;</xsl:text>
         <xsl:apply-templates select="source" mode="citation"/>
-        <xsl:apply-templates select="comment" mode="citation"/>
+        <xsl:apply-templates select="version" mode="citation"/>
+        <xsl:call-template name="comment"/>
         <xsl:call-template name="publication-type-label"/>
+    </xsl:template>
+
+    <!-- "other" citations -->
+    <xsl:template match="element-citation[@publication-type='other']">
+        <xsl:call-template name="authors-year"></xsl:call-template>
+        <cite class="article-title">
+            <xsl:apply-templates select="article-title" mode="citation"/>
+        </cite>
+        <xsl:text>&#32;</xsl:text>
+        <xsl:apply-templates select="source" mode="citation"/>
+        <span>
+            <xsl:apply-templates select="edition" mode="citation"/>
+            <xsl:text>&#32;</xsl:text>
+            <xsl:apply-templates select="publisher-name | institution" mode="citation"/>
+            <xsl:text>&#32;</xsl:text>
+            <xsl:apply-templates select="volume" mode="citation"/>
+            <xsl:call-template name="pagination"/>
+            <xsl:text>&#32;</xsl:text>
+            <xsl:apply-templates select="pub-id[@pub-id-type='isbn']" mode="citation"/>
+            <xsl:call-template name="comment"/>
+        </span>
     </xsl:template>
 
     <!-- other citations (?) -->
     <xsl:template match="element-citation">
         <xsl:call-template name="authors-year"></xsl:call-template>
-        <span class="article-title">
+        <cite class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
-            <xsl:text>&#32;</xsl:text>
-            <xsl:apply-templates select="source" mode="book-citation"/>
-        </span>
+        </cite>
+        <xsl:text>&#32;</xsl:text>
+        <xsl:apply-templates select="source" mode="citation"/>
     </xsl:template>
 
     <!-- page range(s) -->
@@ -165,10 +207,11 @@
     </xsl:template>
 
     <xsl:template name="publication-type-label">
+        <xsl:text>&#32;</xsl:text>
         <span class="{concat('label label-', @publication-type)}">
             <xsl:choose>
-                <xsl:when test="pub-id[@pub-id-type='arxiv']">
-                    <xsl:text>arXiv preprint</xsl:text>
+                <xsl:when test="@publication-type='working-paper'">
+                    <xsl:text>preprint</xsl:text>
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:value-of select="@publication-type"/>
@@ -294,6 +337,17 @@
         <xsl:text>).</xsl:text>
     </xsl:template>
 
+    <xsl:template match="version" mode="citation">
+        <xsl:text>&#32;</xsl:text>
+        <span class="version-container">
+            <xsl:text>v</xsl:text>
+            <span class="{local-name()}">
+                <xsl:apply-templates/>
+            </span>
+        </span>
+        <xsl:text>&#32;</xsl:text>
+    </xsl:template>
+
     <xsl:template match="part-title" mode="book-citation-edition">
         <xsl:text>,&#32;</xsl:text>
         <span class="{local-name()}">
@@ -360,7 +414,8 @@
 
         <xsl:variable name="doi" select="$citation/pub-id[@pub-id-type='doi']"/>
         <xsl:variable name="arxiv" select="$citation/pub-id[@pub-id-type='arxiv']"/>
-        <xsl:variable name="uri" select="$citation/comment//uri"/>
+        <xsl:variable name="uri" select="$citation/uri"/>
+        <xsl:variable name="comment-uri" select="$citation/comment//uri"/>
 
         <xsl:choose>
             <xsl:when test="$doi">
@@ -380,6 +435,12 @@
             </xsl:when>
             <xsl:when test="$uri">
                 <xsl:value-of select="$uri"/>
+            </xsl:when>
+            <xsl:when test="$comment-uri/@xlink:href">
+                <xsl:value-of select="$comment-uri/@xlink:href"/>
+            </xsl:when>
+            <xsl:when test="$comment-uri">
+                <xsl:value-of select="$comment-uri"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:variable name="authors" select="$citation/person-group[@person-group-type='author']"/>
@@ -426,23 +487,6 @@
     </xsl:template>
 
     <xsl:template match="article-title | data-title" mode="citation">
-        <a class="{local-name()}" target="_blank" itemprop="url">
-            <xsl:attribute name="href">
-                <xsl:call-template name="citation-url">
-                    <xsl:with-param name="citation" select=".."/>
-                </xsl:call-template>
-            </xsl:attribute>
-            <xsl:if test="../pub-id[@pub-id-type='doi']">
-                <xsl:attribute name="itemprop">url</xsl:attribute>
-            </xsl:if>
-            <xsl:apply-templates select="node()|@*"/>
-            <xsl:apply-templates select="../named-content[@content-type='abstract-details']" mode="citation"/>
-        </a>
-
-        <xsl:call-template name="title-punctuation"/>
-    </xsl:template>
-
-    <xsl:template match="article-title" mode="book-citation">
         <a class="{local-name()}" target="_blank" itemprop="url">
             <xsl:attribute name="href">
                 <xsl:call-template name="citation-url">
@@ -555,6 +599,12 @@
         </span>
     </xsl:template>
 
+    <!-- comments, access date -->
+    <xsl:template name="comment">
+        <xsl:apply-templates select="comment" mode="citation"/>
+        <xsl:apply-templates select="date-in-citation[@content-type='access-date']" mode="citation"/>
+    </xsl:template>
+
     <!-- citation author names -->
     <xsl:template name="authors-year">
         <xsl:variable name="authors" select="person-group[not(@person-group-type='editor')]"/>
@@ -586,7 +636,7 @@
         </span>
 
         <xsl:if test="$person-type != '' and $person-type != 'author' and $person-type != 'editor'">
-            <xsl:text> (</xsl:text>
+            <xsl:text>&#32;(</xsl:text>
             <span class="person-type">
                 <xsl:call-template name="ucfirst">
                     <xsl:with-param name="text" select="$person-type"/>
@@ -603,6 +653,18 @@
             <xsl:apply-templates/>
         </span>
         <xsl:call-template name="comma-separator"/>
+    </xsl:template>
+
+    <!-- access date -->
+    <xsl:template match="date-in-citation[@content-type='access-date']" mode="citation">
+        <xsl:text>&#32;</xsl:text>
+        <span class="access-date">
+            <xsl:text>(accessed&#32;</xsl:text>
+            <time class="{local-name()}" datetime="{@iso-8601-date}">
+                <xsl:apply-templates/>
+            </time>
+            <xsl:text>)</xsl:text>
+        </span>
     </xsl:template>
 
     <!-- convert the first letter of a string to uppercase -->
