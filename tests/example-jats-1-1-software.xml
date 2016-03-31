@@ -1,0 +1,937 @@
+<?xml version="1.0" encoding="ASCII"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN" "http://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article" dtd-version="1.1">
+   <front>
+      <journal-meta>
+         <journal-id journal-id-type="publisher-id">peerj-cs</journal-id>
+         <journal-title-group>
+            <journal-title>PeerJ Computer Science</journal-title>
+            <abbrev-journal-title abbrev-type="publisher">PeerJ Comput. Sci.</abbrev-journal-title>
+         </journal-title-group>
+         <issn pub-type="epub">2376-5992</issn>
+         <publisher>
+            <publisher-name>PeerJ Inc.</publisher-name>
+            <publisher-loc>San Francisco, USA</publisher-loc>
+         </publisher>
+      </journal-meta>
+      <article-meta>
+         <article-id pub-id-type="publisher-id">cs-52</article-id>
+         <article-id pub-id-type="doi">10.7717/peerj-cs.52</article-id>
+         <article-categories>
+            <subj-group subj-group-type="categories">
+               <subject>Data Science</subject>
+               <subject>Databases</subject>
+            </subj-group>
+         </article-categories>
+         <title-group>
+            <article-title>PhilDB: the time series database with built-in change logging</article-title>
+         </title-group>
+         <contrib-group content-type="authors">
+            <contrib id="author-1" contrib-type="author" corresp="yes">
+               <name>
+                  <surname>MacDonald</surname>
+                  <given-names>Andrew</given-names>
+               </name><xref ref-type="aff" rid="aff-1"/><email>andrew@maccas.net</email>
+            </contrib>
+            <aff id="aff-1">
+               <addr-line>Melbourne Victoria</addr-line>, <country>Australia</country></aff>
+         </contrib-group>
+         <contrib-group content-type="editors">
+            <contrib id="editor-1" contrib-type="editor">
+               <name>
+                  <surname>Ventura</surname>
+                  <given-names>Sebastian</given-names>
+               </name>
+            </contrib>
+         </contrib-group>
+         <pub-date pub-type="epub" date-type="pub" iso-8601-date="2016-03-30">
+            <day>30</day>
+            <month>3</month>
+            <year iso-8601-date="2016">2016</year>
+         </pub-date>
+         <volume>2</volume>
+         <elocation-id>e52</elocation-id>
+         <history>
+            <date date-type="received" iso-8601-date="2015-11-07">
+               <day>7</day>
+               <month>11</month>
+               <year iso-8601-date="2015">2015</year>
+            </date>
+            <date date-type="accepted" iso-8601-date="2016-03-04">
+               <day>4</day>
+               <month>3</month>
+               <year iso-8601-date="2016">2016</year>
+            </date>
+         </history>
+         <permissions>
+            <copyright-statement>&#169;2016 MacDonald</copyright-statement>
+            <copyright-year>2016</copyright-year>
+            <copyright-holder>MacDonald</copyright-holder>
+            <license license-type="open-access" xlink:href="http://creativecommons.org/licenses/by/4.0/">
+               <license-p>This is an open access article distributed under the terms of the <ext-link ext-link-type="uri" xlink:href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution License</ext-link>, which permits unrestricted use, distribution, reproduction and adaptation in any medium and for any purpose provided that it is properly attributed. For attribution, the original author(s), title, publication source (PeerJ Computer Science) and either DOI or URL of the article must be cited.</license-p>
+            </license>
+         </permissions>
+         <self-uri xlink:href="https://peerj.com/articles/cs-52"/>
+         <abstract>
+            <p>PhilDB is an open-source time series database that supports storage of time series datasets that are dynamic; that is, it records updates to existing values in a log as they occur. PhilDB eases loading of data for the user by utilising an intelligent data write method. It preserves existing values during updates and abstracts the update complexity required to achieve logging of data value changes. It implements fast reads to make it practical to select data for analysis. Recent open-source systems have been developed to indefinitely store long-period high-resolution time series data without change logging. Unfortunately, such systems generally require a large initial installation investment before use because they are designed to operate over a cluster of servers to achieve high-performance writing of static data in real time. In essence, they have a &#8216;big data&#8217; approach to storage and access. Other open-source projects for handling time series data that avoid the &#8216;big data&#8217; approach are also relatively new and are complex or incomplete. None of these systems gracefully handle revision of existing data while tracking values that change. Unlike &#8216;big data&#8217; solutions, PhilDB has been designed for single machine deployment on commodity hardware, reducing the barrier to deployment. PhilDB takes a unique approach to meta-data tracking; optional attribute attachment. This facilitates scaling the complexities of storing a wide variety of data. That is, it allows time series data to be loaded as time series instances with minimal initial meta-data, yet additional attributes can be created and attached to differentiate the time series instances when a wider variety of data is needed. PhilDB was written in Python, leveraging existing libraries. While some existing systems come close to meeting the needs PhilDB addresses, none cover all the needs at once. PhilDB was written to fill this gap in existing solutions. This paper explores existing time series database solutions, discusses the motivation for PhilDB, describes the architecture and philosophy of the PhilDB software, and performs an evaluation between InfluxDB, PhilDB, and SciDB.</p>
+         </abstract>
+         <kwd-group kwd-group-type="author">
+            <kwd>Time series</kwd>
+            <kwd>Database</kwd>
+            <kwd>Logging</kwd>
+            <kwd>Python</kwd>
+            <kwd>Data science</kwd>
+            <kwd>Temporal</kwd>
+         </kwd-group>
+         <funding-group>
+            <funding-statement>The author received no funding for this work.</funding-statement>
+         </funding-group>
+      </article-meta>
+   </front>
+   <body>
+      <sec sec-type="intro">
+         <title>Introduction</title>
+         <p>PhilDB was created to store changing time series data, which is of great importance to the scientific community. In hydrology, for example, streamflow discharge can be regularly updated through changes in quality control processes and there is a need to identify when such data has changed. Efficient access to time series information supports effective and thorough analysis. Currently, existing proprietary and open-source database solutions for storing time series fail to provide for effortless scientific analysis. In practice, the steep learning curves, time-consuming set up procedures, and slow read/write processes are considerable barriers to using these systems. More critically, most fail to provide the ability to store any changes to a time series over time. Most current open-source database systems are designed for handling &#8216;big data,&#8217; which in turn requires extreme computing power on a cluster of servers.</p>
+         <p>This paper will explore existing time series database solutions. It will examine the need for a liberally licensed, open-source, easily deployed time series database, that is capable of tracking data changes, and look at why the existing systems that were surveyed failed to meet these requirements. This paper will then describe the architecture and features of the new system, PhilDB, that was designed to meet these outlined needs. Finally, an evaluation will be performed to compare PhilDB to the most promising alternatives of the existing open-source systems.</p>
+      </sec>
+      <sec>
+         <title>Background: Existing Systems</title>
+         <sec>
+            <title>Proprietary systems</title>
+            <p>There are a number of proprietary solutions for storage of time series data that have been around since the mid-nineties to the early 2000s. <xref ref-type="bibr" rid="ref-2">Castillejos (2006)</xref> identified three proprietary systems of note, FAME, TimeIQ, and DBank, that have references that range from 1995 to 2000. There are other proprietary systems, such as kdb+ (<uri xlink:href="http://kx.com/software.php">http://kx.com/software.php</uri>), that are commercially available today. This shows that time series data storage is an existing problem. Compared to proprietary systems, open-source systems can generally be used with the scientific Python ecosystem as described by <xref ref-type="bibr" rid="ref-12">Perez, Granger &amp; Hunter (2011)</xref>. Ready access to open-source systems also make them easier to evaluate and integrate with. Therefore existing proprietary systems were not evaluated any further. Discussion on the need for an open-source system is further covered in the &#8216;Motivation&#8217; section.</p>
+         </sec>
+         <sec>
+            <title>Open-source systems</title>
+            <p>In recent years the development of open-source time series databases has taken off, with most development beginning within the last five years. This can be seen by the number of projects discussed here along with noting the initial commit dates.</p>
+            <sec>
+               <title>&#8216;Big data&#8217; time series databases</title>
+               <p>Some of the most successful projects in the open-source time series database space are OpenTSDB,<xref ref-type="fn" rid="fn-1"><sup>1</sup></xref> <fn id="fn-1"><label>1</label><p>OpenTSDB initial commit: 2010-04-11; <uri xlink:href="https://github.com/OpenTSDB/opentsdb">https://github.com/OpenTSDB/opentsdb</uri>.</p></fn>Druid,<xref ref-type="fn" rid="fn-2"><sup>2</sup></xref> <fn id="fn-2"><label>2</label><p>Druid initial commit: 2012-10-24; <uri xlink:href="https://github.com/druid-io/druid/">https://github.com/druid-io/druid/</uri>.</p></fn>Kairosdb,<xref ref-type="fn" rid="fn-3"><sup>3</sup></xref> <fn id="fn-3"><label>3</label><p>Kairosdb initial commit: 2013-02-06; <uri xlink:href="https://github.com/kairosdb/kairosdb">https://github.com/kairosdb/kairosdb</uri>.</p></fn>and InfluxDB.<xref ref-type="fn" rid="fn-4"><sup>4</sup></xref> <fn id="fn-4"><label>4</label><p>InfluxDB initial commit: 2013-04-12; <uri xlink:href="https://github.com/influxdb/influxdb">https://github.com/influxdb/influxdb</uri>.</p></fn>The earliest start to development on these systems was for OpenTSDB with an initial commit in April 2010. These systems are designed to operate over a cluster of servers to achieve high-performance writing of static data in real time. In essence, they have a &#8216;big data&#8217; approach to storage and access. The architectural approach to address big data requirements means a large initial installation investment before use.</p>
+            </sec>
+            <sec>
+               <title>Alternate time series databases</title>
+               <p>In contrast to the &#8216;big data&#8217; time series systems some small dedicated open-source code bases are attempting to address the need for local or single server time series data storage. These systems, however, have stalled in development, are poorly documented, or require a moderate investment of time to operate. For example Timestore<xref ref-type="fn" rid="fn-5"><sup>5</sup></xref> <fn id="fn-5"><label>5</label><p>Timestore <uri xlink:href="http://www.mike-stirling.com/redmine/projects/timestore">http://www.mike-stirling.com/redmine/projects/timestore</uri>; <uri xlink:href="https://github.com/mikestir/timestore">https://github.com/mikestir/timestore</uri> initial commit 2012-12-27.</p></fn>was, at the time of writing, last modified August 2013 with a total development history of 36 commits. Some of the better progressed projects still only had minimal development before progress had ceased; for example, tsdb<xref ref-type="fn" rid="fn-6"><sup>6</sup></xref> <fn id="fn-6"><label>6</label><p>tsdb initial commit: 2013-01-11; most recent commit at time of writing: 2013-02-17; <uri xlink:href="https://github.com/gar1t/tsdb">https://github.com/gar1t/tsdb</uri>.</p></fn>with a development start in January 2013 and the most recent commit at time of writing in February 2013 for a total of 58 commits. Cube<xref ref-type="fn" rid="fn-7"><sup>7</sup></xref> <fn id="fn-7"><label>7</label><p>Cube initial commit: 2011-09-13; <uri xlink:href="https://github.com/square/cube">https://github.com/square/cube</uri>.</p></fn>has a reasonable feature set and has had more development effort invested than the other systems discussed here, with a total of 169 commits, but it is no longer under active development according the Readme file. Searching GitHub for &#8216;tsdb&#8217; reveals a large number of projects named &#8216;tsdb&#8217; or similar. The most popular of these projects (when ranked by stars or number of forks) relate to the &#8216;big data&#8217; systems described earlier (in particular, OpenTSDB, InfluxDB, and KairosDB). There are numerous small attempts at solving time series storage in simpler systems that fall short of a complete solutions. Of the systems discussed here, only Cube had reasonable documentation, Timestore had usable documentation, and tsdb had no clear documentation.</p>
+            </sec>
+            <sec>
+               <title>Scientific time series databases</title>
+               <p>At present, the only open-source solution that addresses the scientific need to track changes to stored time series data as a central principle is SciDB (<xref ref-type="bibr" rid="ref-14">Stonebraker et al., 2009</xref>; <xref ref-type="bibr" rid="ref-15">Stonebraker et al., 2011</xref>). SciDB comes with comprehensive documentation (<uri xlink:href="http://www.paradigm4.com/HTMLmanual/15.7/scidb_ug/">http://www.paradigm4.com/HTMLmanual/15.7/scidb_ug/</uri>) that is required for such a feature rich system. The documentation is however lacking in clarity around loading data with most examples being based around the assumption that the data already exists within SciDB or is being generated by SciDB. While installation on a single server is relatively straight forward (for older versions with binaries supplied for supported platforms) the process is hard to identify as the community edition installation documentation is mixed in with the documentation on installation of the enterprise edition of SciDB. Access to source code is via tarballs; there is no source control system with general access to investigate the history of the project in detail.</p>
+            </sec>
+         </sec>
+      </sec>
+      <sec>
+         <title>Motivation</title>
+         <p>PhilDB aims at handling data for exploratory purposes with the intention to later integrate with other systems, with minimal initial deployment overhead. It is assumed that the smaller time series database systems discussed previously derive from similar needs. It has been found &#8220;[m]ost scientists are adamant about not discarding any data&#8221; (<xref ref-type="bibr" rid="ref-3">Cudr&#233;-Mauroux et al., 2009</xref>). In particular, experience in hydrology has found that hydrological data requires the ability to track changes to it, since streamflow discharge can be regularly updated through quality control processes or updates to the rating curves used to convert from water level to discharge. Open-source &#8216;big data&#8217; time series database offerings don&#8217;t support the ability to track any changed values out of the box (such support would have to be developed external to the system). Their design targets maximum efficiency of write-once and read-many operations. When streamflow data is used within forecasting systems, changes to the data can alter the forecast results. Being able to easily identify if a change in forecast results is due to data or code changes greatly simplifies resolving issues during development and testing. Therefore, both requirements of minimal deployment overhead and logging of any changed values rule out the current &#8216;big data&#8217; systems.</p>
+         <p>While SciDB does address the data tracking need, recent versions of the community edition are complex to install since they require building from source, a process more involved than the usual &#8216;./configure; make; make install&#8217;. Older versions are more readily installed on supported platforms, however the system is still complex to use, requires root access to install, a working installation of PostgreSQL and a dedicated user account for running. Installation difficulty isn&#8217;t enough to rule out the system being a suitable solution, but it does diminish its value as an exploratory tool. SciDB is also licensed under the GNU Affero General Public License (AGPL), that can be perceived as a problem in corporate or government development environments. In these environments, integration with more liberally licensed (e.g. Apache License 2.0 or 3-clause BSD) libraries is generally preferred with many online discussions around the choice of liberal licences for software in the scientific computing space. For example, it can be argued that a simple liberal license like the BSD license encourages the most participation and reuse of code (<xref ref-type="bibr" rid="ref-1">Brown, 2015</xref>; <xref ref-type="bibr" rid="ref-18">VanderPlas, 2014</xref>; <xref ref-type="bibr" rid="ref-7">Hunter, 2004</xref>).</p>
+         <p>Finally, SciDB has a broader scope than just storage and retrieval of time series data, since &#8220;SciDB supports both a functional and a SQL-like query language&#8221; (<xref ref-type="bibr" rid="ref-15">Stonebraker et al., 2011</xref>). Having SQL-like query languanges does allow for SciDB to readily support many high performance operations directly when handling large already loaded data. These query languages do, however, add additional cognitive load (<xref ref-type="bibr" rid="ref-16">Sweller, Ayres &amp; Kalyuga, 2011</xref>) for any developer interfacing with the system as the query languages are specific to SciDB. If using SciDB for performing complex operations on very large multi-dimensional array datasets entirely within SciDB, learning these query languages would be well worth the time. The Python API does enable a certain level of abstraction between getting data out of SciDB and into the scientific Python ecosystem.</p>
+         <p>Of the other existing systems discussed here, none support logging of changed values. Limited documentation makes them difficult to evaluate, but from what can be seen and inferred from available information, the designs are targeted at the &#8216;write once, read many&#8217; style of the &#8216;big data&#8217; time series systems at a smaller deployment scale. These systems were extremely early in development or yet to be started at time work began on PhilDB in October 2013.</p>
+         <p>The need to be fulfilled is purely to store time series of floating point values and extract them again for processing with other systems.</p>
+         <sec>
+            <title>Use case</title>
+            <p>To summarise, PhilDB has been created to provide a time series database system that is easily deployed, used, and has logging features to track any new or changed values. It has a simple API for writing both new and updated data with minimal user intervention. This is to allow for revising time series from external sources where the data can change over time, such as streamflow discharge data from water agencies. Furthermore, the simple API extends to reading, to enable easy retrieval of time series, including the ability to read time series as they appeared at a point in time from the logs.</p>
+         </sec>
+      </sec>
+      <sec>
+         <title>Architecture</title>
+         <p>PhilDB uses a central &#8216;meta-data store&#8217; to track the meta information about time series instances. Relational databases are a robust and reliable way to hold related facts. Since the meta data is simply a collection of related facts about a time series, a relational database is used for the meta-data store. Time series instances are associated with a user chosen identifier and attributes and each time series instance is assigned a UUID (<xref ref-type="bibr" rid="ref-8">Leach, Mealling &amp; Salz, 2005</xref>) upon creation, all of which is stored in the meta-data store. The actual time series data (and corresponding log) is stored on disk with filenames based on the UUID (details of the format are discussed in the &#8216;Database Format&#8217; section). Information kept in the meta-data store can then be used to look up the UUID assigned to a given time series instance based on the requested identifier and attributes. Once the UUID has been retrieved, accessing the time series data is a simple matter of reading the file from disk based on the expected UUID derived filename.</p>
+         <sec>
+            <title>Architecture philosophy</title>
+            <p>The reasoning behind this architectural design is so that: </p>
+            <list id="list-1" list-type="bullet">
+               <list-item><label>&#8727;</label><p>An easy to use write method can handle both new and updated data (at the same time if needed).</p>
+               </list-item>
+               <list-item><label>&#8727;</label><p>Read access is fast and easy for stored time series.</p>
+               </list-item>
+               <list-item><label>&#8727;</label><p>Time series are easily read as they appeared at a point in time.</p>
+               </list-item>
+               <list-item><label>&#8727;</label><p>Each time series instance can be stored with minimal initial effort.</p>
+               </list-item>
+            </list>
+            <p>Ease of writing data can come at the expense of efficiency to ensure that create, update or append operations can be performed with confidence that any changes are logged without having to make decisions on which portions of the data are current or new. The expectation is that read performance has a greater impact on use as they are more frequent. Attaching a time series identifier as the initial minimal information allows for data from a basic dataset to be loaded and explored immediately. Additional attributes can be attached to a time series instance to further differentiate datasets that share conceptual time series identifiers. By default, these identifier and attribute combinations are then stored in a tightly linked relational database. Conceptually this meta-data store could optionally be replaced by alternative technology, such as flat files. As the data is stored in individual structured files, the meta-data store acts as a minimal index with most of the work being delegated to the operating system and in turn the file system.</p>
+         </sec>
+      </sec>
+      <sec>
+         <title>Implementation</title>
+         <p>PhilDB is written in Python because it fits well with the scientific computing ecosystem (<xref ref-type="bibr" rid="ref-12">Perez, Granger &amp; Hunter, 2011</xref>). The core of the PhilDB package is the PhilDB database class (<uri xlink:href="http://phildb.readthedocs.org/en/latest/api/phildb.html#module-phildb.database">http://phildb.readthedocs.org/en/latest/api/phildb.html#module-phildb.database</uri>), that exposes high level methods for data operations. These high level functions are designed to be easily used interactively in the IPython interpreter (<xref ref-type="bibr" rid="ref-11">Perez &amp; Granger, 2007</xref>) yet still work well in scripts and applications. The goal of interactivity and scriptability are to enable exploratory work and the ability to automate repeated tasks (<xref ref-type="bibr" rid="ref-13">Shin et al., 2011</xref>). Utilising Pandas (<xref ref-type="bibr" rid="ref-10">McKinney, 2012</xref>) to handle complex time series operations simplifies the internal code that determines if values require creation or updating. Returning Pandas objects from the read methods allows for data analysis to be performed readily without further data munging. Lower level functions are broken up into separate modules for major components such as reading, writing, and logging, that can be easily tested as individual components. The PhilDB class pulls together the low level methods, allowing for the presentation of a stable interface that abstracts away the hard work of ensuring that new or changed values, and only those values, are logged.</p>
+         <p>Installation of PhilDB is performed easily within the Python ecosystem using the standard Python setup.py process, including installation from PyPI using &#8216;pip.&#8217;</p>
+         <sec>
+            <title>Features</title>
+            <p>Key features of PhilDB are: </p>
+            <list id="list-2" list-type="bullet">
+               <list-item><label>&#8727;</label><p>A single write method accepting a pandas.Series object, data frequency and attributes for writing or updating a time series.</p>
+               </list-item>
+               <list-item><label>&#8727;</label><p>A read method for reading a single time series based on requested time series identifier, frequency and attributes.</p>
+               </list-item>
+               <list-item><label>&#8727;</label><p>Advanced read methods for reading collections of time series.</p>
+               </list-item>
+               <list-item><label>&#8727;</label><p>Support for storing regular and irregular time series.</p>
+               </list-item>
+               <list-item><label>&#8727;</label><p>Logging of any new or changed values.</p>
+               </list-item>
+               <list-item><label>&#8727;</label><p>Log read method to extract a time series as it appeared on a given date.</p>
+               </list-item>
+            </list>
+         </sec>
+         <sec>
+            <title>Database format</title>
+            <p>The technical implementation of the database format, as implemented in version 0.6.1 of PhilDB (<xref ref-type="bibr" rid="ref-9">MacDonald, 2015</xref>), is described in this section. Due to the fact that PhilDB is still in the alpha stage of development the specifics here may change significantly in the future.</p>
+            <p>The meta-data store tracks attributes using a relational database, with the current implementation using SQLite (<xref ref-type="bibr" rid="ref-6">Hipp, Kennedy &amp; Mistachkin, 2015</xref>). Actual time series data are stored as flat files on disk, indexed by the meta-data store to determine the path to a given series. The flat files are implemented as plain binary files that store a &#8216;long,&#8217; &#8216;double,&#8217; and &#8216;int&#8217; for each record. The &#8216;long&#8217; is the datetime stored as a &#8216;proleptic Gregorian ordinal&#8217; as determined by the Python datetime.datetime.toordinal method (<uri xlink:href="https://docs.python.org/2/library/datetime.html#datetime.date.toordinal">https://docs.python.org/2/library/datetime.html#datetime.date.toordinal</uri>) (<xref ref-type="bibr" rid="ref-17">Van Rossum, 2015</xref>). The &#8216;double&#8217; stores the actual value corresponding to the datetime stored in the preceding &#8216;long&#8217;. Finally, the &#8216;int&#8217; is a meta value for marking additional information about the record. In this version of PhilDB the meta value is only used to flag missing data values. Individual changes to time series values are logged to HDF5 files (<xref ref-type="bibr" rid="ref-5">HDF Group, 1997</xref>) that are kept alongside the main time series data file with every new value written as a row in a table, each row having a column to store the date, value, and meta value as per the file format. In addition, a final column is included to record the date and time the record was written.</p>
+         </sec>
+      </sec>
+      <sec>
+         <title>Evaluation</title>
+         <p>Of the open-source systems evaluated (as identified in the section &#8216;Open-source Systems&#8217;), InfluxDB came the closest in terms of minimal initial installation requirements and feature completeness, however, it doesn&#8217;t support the key feature of update logging. Contrasting with InfluxDB, SciDB met the requirement of time series storage with update logging but didn&#8217;t meet the requirement for simplicity to deploy and use. Both these systems were evaluated in comparison to PhilDB.</p>
+         <sec>
+            <title>Evaluation dataset</title>
+            <p>The Hydrological Reference Stations (<xref ref-type="bibr" rid="ref-19">Zhang et al., 2014</xref>) dataset from the Australian Bureau of Meteorology (<uri xlink:href="http://www.bom.gov.au/water/hrs/">http://www.bom.gov.au/water/hrs/</uri>) was used for the evaluation. This dataset consists of daily streamflow data for 221 time series with a mean length of 16,310 days, the breakdown of the series lengths are in <xref ref-type="table" rid="table-1">Table 1</xref> and visualised in <xref ref-type="fig" rid="fig-1">Fig. 1</xref>.</p>
+            <table-wrap id="table-1">
+               <object-id pub-id-type="doi">10.7717/peerj-cs.52/table-1</object-id><label>Table 1</label><caption>
+                  <title>Breakdown of length of time series in the evaluation dataset (all values rounded to nearest day).</title>
+               </caption>
+               <alternatives>
+                  <graphic mimetype="image" mime-subtype="png" xlink:href="table-1.png"/>
+                  <table>
+                     <colgroup>
+                        <col/>
+                        <col/>
+                     </colgroup>
+                     <tbody>
+                        <tr>
+                           <td>Mean</td>
+                           <td>16,310 days</td>
+                        </tr>
+                        <tr>
+                           <td>Std</td>
+                           <td>2,945 days</td>
+                        </tr>
+                        <tr>
+                           <td>Min</td>
+                           <td>10,196 days</td>
+                        </tr>
+                        <tr>
+                           <td>25%</td>
+                           <td>14,120 days</td>
+                        </tr>
+                        <tr>
+                           <td>50%</td>
+                           <td>15,604 days</td>
+                        </tr>
+                        <tr>
+                           <td>75%</td>
+                           <td>18,256 days</td>
+                        </tr>
+                        <tr>
+                           <td>Max</td>
+                           <td>22,631 days</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </alternatives>
+            </table-wrap>
+            <fig id="fig-1">
+               <object-id pub-id-type="doi">10.7717/peerj-cs.52/fig-1</object-id><label>Figure 1</label><caption>
+                  <title>Distribution of time series length for the 221 time series in the evaluation dataset.</title>
+               </caption>
+               <graphic mimetype="image" mime-subtype="png" xlink:href="fig-1.png"/>
+            </fig>
+         </sec>
+         <sec>
+            <title>Evaluation method</title>
+            <p>Three key aspects were measured during the evaluation: </p>
+            <list id="list-3" list-type="bullet">
+               <list-item><label>&#8727;</label><p>Write performance</p>
+               </list-item>
+               <list-item><label>&#8727;</label><p>Read performance</p>
+               </list-item>
+               <list-item><label>&#8727;</label><p>Disk usage</p>
+               </list-item>
+            </list>
+            <p>Ease of installation and use, while subjective, is also discussed in the installation and usage sections related to each database.</p>
+            <p>To simplify the evaluation process and make it easily repeatable, the SciDB 14.3 virtual appliance image (SciDB14.3-CentOS6-VirtualBox-4.2.10.ova from <uri xlink:href="https://downloads.paradigm4.com/">https://downloads.paradigm4.com/</uri>) was used to enable easy use of the SciDB database. This virtual appliance was based on a CentOS Linux 6.5 install. The PhilDB and InfluxDB databases were installed into the same virtual machine to enable comparison between systems. The virtual machine host was a Mid-2013 Apple Macbook Air, with a 1.7 GHz Intel Core i7 CPU, 8GB of DDR3 RAM and a 500GB SSD hard drive. VirtualBox 4.3.6 r91406 was used on the host machine for running the virtual appliance image with the guest virtual machine being allocated 2 processors and 4GB of RAM.</p>
+            <p>Write performance was evaluated by writing all time series from the evaluation dataset (described in the section &#8216;Evaluation Dataset&#8217;) into the time series databases being evaluated. This first write will be referred to as the initial write for each database. To track the performance of subsequent updates and reading the corresponding logged time series a further four writes were performed. These writes will be referred to as &#8216;first update&#8217; through to &#8216;fourth update&#8217;. The update data was created by multiplying some or all of the original time series by 1.1 as follows: </p>
+            <list id="list-4" list-type="bullet">
+               <list-item><label>&#8727;</label><p>First update: multiplied the last 10 values in the time series by 1.1 leaving the rest of the record the same.</p>
+               </list-item>
+               <list-item><label>&#8727;</label><p>Second update: multiplied the first 10 values by 1.1, resulting in reverting the previously modified 10 values.</p>
+               </list-item>
+               <list-item><label>&#8727;</label><p>Third update: multiplied the entire original series by 1.1 resulting in an update to all values aside from the first 10.</p>
+               </list-item>
+               <list-item><label>&#8727;</label><p>Fourth update: the original series multiplied by 1.1 again, which should result in zero updates.</p>
+               </list-item>
+            </list>
+            <p>The SciDB load method used in this experiment did not support updating individual values. The entire time series needed to be passed or the resulting array would consist of only the supplied values. Due to this only full updates were tested and not individual record updates or appends.</p>
+            <p>Performance reading the data back out of each database system was measured by recording the time taken to read each individual time series, after each update, and analysing those results.</p>
+            <p>As can be seen by <xref ref-type="fig" rid="fig-2">Fig. 2</xref>, InfluxDB performance was a long way behind SciDB and PhilDB. Given the performance difference and that InfluxDB doesn&#8217;t support change logging only the initial load and first read were performed for InfluxDB.</p>
+            <fig id="fig-2">
+               <object-id pub-id-type="doi">10.7717/peerj-cs.52/fig-2</object-id><label>Figure 2</label><caption>
+                  <title>Total write/read time for 221 daily time series.</title>
+               </caption>
+               <graphic mimetype="image" mime-subtype="png" xlink:href="fig-2.png"/>
+            </fig>
+            <p>Disk usage was measured by recording the size of the data directories as reported by the &#8216;du&#8217; Unix command. The size of the data directory was measured before loading any data and subtracted from subsequent sizes. Between each data write (initial load and four updates) the disk size was measured to note the incremental changes.</p>
+            <p>For both PhilDB and SciDB the evaluation process described in this section was performed four times and the mean of the results analysed. Results between the four runs were quite similar so taking the mean gave results similar to the individual runs. Analysing and visualising an individual run rather than the mean would result in the same conclusions.</p>
+         </sec>
+         <sec>
+            <title>Evaluated databases</title>
+            <p>This section discusses each of the evaluated databases. Firstly, they are introduced and then their installation and usage is considered.</p>
+            <sec>
+               <title>InfluxDB</title>
+               <p>Paul Dix (CEO of InfluxDB) found that performance and ease of installation were the main concerns of users of existing open-source time series database systems (<xref ref-type="bibr" rid="ref-4">Dix, 2014</xref>). InfluxDB was built to alleviate both those concerns.</p>
+               <p>While InfluxDB is designed for high performance data collection, it is not designed for bulk loading of data. Searching the InfluxDB issue tracker on GitHub (<uri xlink:href="https://github.com/influxdata/influxdb/issues">https://github.com/influxdata/influxdb/issues</uri>), it can be seen that bulk loading has been a recurring problem with improvement over time. Bulk loading performance is, however, still poor compared to SciDB and PhilDB, as seen later in the performance results (section &#8216;Performance&#8217;). A key feature of interest with InfluxDB was the ability to identify time series with tags. This feature is in line with the attributes concept used by PhilDB, thereby allowing multiple time series to be grouped by a single key identifier but separated by additional attributes or tags.</p>
+               <p><bold>Installation:</bold> InfluxDB is easily installed compared to the other open-source systems reviewed, as demonstrated by the short install process shown below. Installation of pre-built packages on Linux requires root access (<uri xlink:href="https://influxdb.com/docs/v0.9/introduction/installation.html">https://influxdb.com/docs/v0.9/introduction/installation.html</uri>). Installation of InfluxDB was performed in the CentOS Linux 6.5 based virtual machine containing the pre-installed SciDB instance.</p>
+               <code language="bash">wget http://influxdb.s3.amazonaws.com/influxdb-0.9.6.1-1.x86_64.rpm
+sudo yum localinstall influxdb-0.9.6.1-1.x86_64.rpm</code>
+               <p>Starting the InfluxDB service with:</p>
+               <code language="bash">sudo /etc/init.d/influxdb start</code>
+               <p><bold>Usage:</bold> Loading of data into the InfluxDB instance was performed using the InfluxDB Python API that was straight forward to use. However, poor performance of bulk loads lead to a lot of experimentation on how to most effectively load large amounts of data quickly, including trying curl and the Influx line protocol format directly. The final solution used was to chunk the data into batches of 10 points using the Pandas groupby functionality before writing into InfluxDB using the InfluxDB Python API DataFrameClient write_points method, for example:</p>
+               <code language="python">streamflow = pandas.read_csv(filename, parse_dates=True, index_col=0, header = None)
+for k, g in streamflow.groupby(np.arange(len(streamflow))//100):
+    influx_client.write_points(g, station_id)</code>
+               <p>In addition to experimenting with various API calls, configuration changes were attempted resulting in performance gains by lowering values related to the WAL options (the idea was based on an older GitHub issue discussing batch loading (<uri xlink:href="https://github.com/influxdata/influxdb/issues/3282">https://github.com/influxdata/influxdb/issues/3282</uri>) and WAL tuning to improve performance). Despite all this effort, bulk data loading with InfluxDB was impractically slow with a run time generally in excess of one hour to load the 221 time series (compared to the less than 2 minutes for SciDB and PhilDB). Reading was performed using the Python API InfluxDBClient query method:</p><code language="python">streamflow = influx_client.query('SELECT * FROM Q{0}'.format('410730'))</code>
+            </sec>
+            <sec>
+               <title>PhilDB</title>
+               <p>PhilDB has been designed with a particular use case in mind as described in the &#8216;Use Case&#8217; section. Installation of PhilDB is quite easy where a compatible Python environment exists. Using a Python virtualenv removes the need to have root privileges to install PhilDB and no dedicated user accounts are required to run or use PhilDB. A PhilDB database can be written to any location the user has write access, allowing for experimentation without having to request a database be created or needing to share a centralised install.</p>
+               <p><bold>Installation:</bold> Installation of PhilDB is readily performed using pip:</p>
+               <code language="bash">pip install phildb</code>
+               <p><bold>Usage:</bold> The experimental dataset was loaded into a PhilDB instance using a Python script. Using PhilDB to load data can be broken into three key steps.</p>
+               <p>First, initialise basic meta information:</p>
+               <code language="python">db.add_measurand('Q', 'STREAMFLOW', 'Streamflow')
+db.add_source('BOM_HRS', 'Bureau of Meteorology; Hydrological Reference Stations dataset.')</code>
+               <p>This step only need to be performed once, when configuring attributes for the PhilDB instance for the first time, noting additional attributes can be added later.</p>
+               <p>Second, add an identifier for a time series and a time series instance record based on the identifier and meta information:</p>
+               <code language="python">db.add_timeseries(station_id)
+db.add_timeseries_instance(station_id, 'D', '', measurand = 'Q', source = 'BOM_HRS')</code>
+               <p>Multiple time series instances, based on different combinations of attributes, can be associated with an existing time series identifier. Once a time series instance has been created it can be written to and read from.</p>
+               <p>Third, load the data from a Pandas time series:</p>
+               <code language="python">streamflow = pandas.read_csv(filename, parse_dates=True, index_col=0, header = None)
+db.write(station_id, 'D', streamflow, measurand = 'Q', source = 'BOM_HRS')</code>
+               <p>In this example the Pandas time series is acquired by reading a CSV file using the Pandas read_csv method, but any data acquisition method that forms a Pandas.Series object could be used. Reading a time series instance back out is easily performed with the read method:</p>
+               <code language="python">streamflow = db.read(station_id, 'D', measurand = 'Q', source = 'BOM_HRS')</code>
+               <p>The keyword arguments are optional provided the time series instance can be uniquely identified.</p>
+            </sec>
+            <sec>
+               <title>SciDB</title>
+               <p>SciDB, as implied by the name, was designed with scientific data in mind. As a result SciDB has the feature of change logging, allowing past versions of series to be retrieved. Unfortunately SciDB only identifies time series by a single string identifier, therefore storing multiple related time series would require externally managed details about what time series are stored and with what identifier. Due to the sophistication of the SciDB system it is relatively complex to use with two built in languages, AFL and AQL, that allow for two different approaches to performing database operations. This, in turn, increases the amount of documentation that needs to be read to identify which method to use for a given task (such as writing a time series into the database). While the documentation is comprehensive in detailing the available operations, it is largely based on the assumption that the data is already within SciDB and will only be operated on within SciDB, with limited examples on how to load or extract data via external systems.</p>
+               <p><bold>Installation:</bold> SciDB does not come with binary installers for newer versions and the build process is quite involved. Instructions for the build proccess are only available from the SciDB forums using a registered account (<uri xlink:href="http://forum.paradigm4.com/t/release-15-7/843">http://forum.paradigm4.com/t/release-15-7/843</uri>). Installation of older versions is comparable to InfluxDB with the following steps listed in the user guide:</p>
+               <code language="bash">yum install -y 'https://downloads.paradigm4.com/scidb-14.12-repository.rpm'
+yum install -y 'scidb-14.12-installer'</code>
+               <p>Same as InfluxDB, SciDB requires root access to install and a dedicated user account for running the database. A PostgreSQL installation is also required by SciDB for storing information about the time series data that SciDB stores. Unlike InfluxDB, SciDB has authentication systems turned on by default that requires using dedicated accounts even for basic testing and evaluation.</p>
+               <p>Only Ubuntu and CentOS/RHEL Linux variants are listed as supported platforms in the install guide.</p>
+               <p><bold>Usage:</bold> It took a considerable amount of time to identify the best way to load data into a SciDB instance, however once that was worked out, the actual load was quick and effective consisting of two main steps.</p>
+               <p>First, a time series needs to be created:</p>
+               <code language="bash">iquery -q "CREATE ARRAY Q${station} &lt;date:datetime, streamflow:double&gt; [i=0:*,10000,0];"</code>
+               <p>It is worth noting that datetime and double need to be specified for time series storage, since SciDB can hold many different array types aside from plain time series. Additionally, SciDB identifiers can not start with a numeric character so all time series identifiers were prefixed with a &#8216;Q&#8217; (where &#8216;Q&#8217; was chosen in this case because it is conventionally used in the hydrological context to represent streamflow discharge).</p>
+               <p>Second, the data is written using the iquery LOAD method as follows:</p>
+               <code language="bash">iquery -n -q "LOAD Q${station} FROM '/home/scidb/${station}.scidb';"</code>
+               <p>This method required creating data files in a specific SciDB text format before using the csv2scidb command that ships with SciDB.</p>
+               <p>Identifying the correct code to read data back out required extensive review of the documentation, but was quick and effective once the correct code to execute was identified. The SciDB Python code to read a time series back as a Pandas.DataFrame object is as follows:</p>
+               <code language="python">streamflow = sdb.wrap_array('Q' + station_id).todataframe()</code>
+               <p>A contributing factor to the difficulty of identifying the correct code is that syntax errors with the AQL based queries (using the SciDB iquery command or via the Python API) are at times uninformative about the exact portion of the query that is in error.</p>
+            </sec>
+         </sec>
+         <sec>
+            <title>Performance</title>
+            <p>It should be noted that PhilDB currently only supports local write, which is advantageous for performance, compared to InfluxDB that only supports network access. InfluxDB was hosted locally, which prevents network lag, but the protocol design still reduced performance compared to the direct write as done by PhilDB. Although SciDB has network access, only local write performance (using the SciDB iquery command) and network based read access (using the Python API) were evaluated. SciDB was also accessed locally to avoid network lag when testing the network based API. For a comparable network read access comparison the experimental PhilDB Client/Server software was also used.</p>
+            <sec>
+               <title>Write performance</title>
+               <p>Write performance was measured by writing each of the 221 time series into the database under test and recording the time spent per time series.</p>
+               <p>As can be seen in <xref ref-type="fig" rid="fig-2">Fig. 2</xref>, SciDB and PhilDB have a significant performance advantage over InfluxDB for bulk loading of time series data. SciDB write performance is comparable to PhilDB, so a closer comparison between just SciDB and PhilDB write performance is shown in <xref ref-type="fig" rid="fig-3">Fig. 3</xref>.</p>
+               <fig id="fig-3">
+                  <object-id pub-id-type="doi">10.7717/peerj-cs.52/fig-3</object-id><label>Figure 3</label><caption>
+                     <title>Distribution of write times for 221 time series.</title>
+                  </caption>
+                  <graphic mimetype="image" mime-subtype="png" xlink:href="fig-3.png"/>
+               </fig>
+               <p>It can be seen that while PhilDB has at times slightly better write performance, SciDB has more reliable write performance with a tighter distribution of write times. It can also be seen from <xref ref-type="fig" rid="fig-3">Fig. 3</xref> that write performance for SciDB does marginally decrease as more updates are written. PhilDB write performance while more variable across the dataset is also variable in performance based on how much of the series required updating. Where the fourth update writes the same data as the third update it can be seen that the performance distribution is closer to that of the initial load than the third load, since the data has actually remained unchanged.</p>
+               <p>Both SciDB and PhilDB perform well at loading datasets of this size with good write performance.</p>
+            </sec>
+            <sec>
+               <title>Read performance</title>
+               <p>InfluxDB read performance is adequate and SciDB read speed is quite good, however PhilDB significantly out-performs both InfluxDB and SciDB in read speed, as can be seen in <xref ref-type="fig" rid="fig-2">Fig. 2</xref>. Even the PhilDB server/client model, which has yet to be optimised for performance, out-performed both InfluxDB and SciDB. Read performance with PhilDB is consistent as the time series are updated, as shown in <xref ref-type="fig" rid="fig-4">Fig. 4</xref>, due to the architecture keeping the latest version of time series in a single file. Reading from the log with PhilDB does show a decrease in performance as the size of the log grows, but not as quickly as SciDB. While PhilDB maintains consistent read performance and decreasing log read performance, SciDB consistently decreases in performance with each update for reading both current and logged time series.</p>
+               <fig id="fig-4">
+                  <object-id pub-id-type="doi">10.7717/peerj-cs.52/fig-4</object-id><label>Figure 4</label><caption>
+                     <title>Distribution of read durations for the 221 time series from the evaluation dataset.</title>
+                  </caption>
+                  <graphic mimetype="image" mime-subtype="png" xlink:href="fig-4.png"/>
+               </fig>
+            </sec>
+            <sec>
+               <title>Disk usage</title>
+               <p>After the initial load InfluxDB was using 357.21 megabytes of space. This may be due to the indexing across multiple attributes to allow for querying and aggregating multiple time series based on specified attributes. This is quite a lot of disk space being used compared to SciDB (93.64 megabytes) and PhilDB (160.77 megabytes) after the initial load. As can be seen in <xref ref-type="fig" rid="fig-5">Fig. 5</xref>, SciDB disk usage increases linearly with each update when writing the entire series each time. In contrast, updates with PhilDB only result in moderate increases and depends on how many values are changed. If the time series passed to PhilDB for writing is the same as the already stored time series then no changes are made and the database size remains the same, as can be seen between update 3 and 4 in <xref ref-type="fig" rid="fig-5">Fig. 5</xref>.</p>
+               <fig id="fig-5">
+                  <object-id pub-id-type="doi">10.7717/peerj-cs.52/fig-5</object-id><label>Figure 5</label><caption>
+                     <title>Disk usage after initial data load and each subsequent data update.</title>
+                  </caption>
+                  <graphic mimetype="image" mime-subtype="png" xlink:href="fig-5.png"/>
+               </fig>
+            </sec>
+            <sec>
+               <title>Performance summary</title>
+               <p>Each database has different design goals that results in different performance profiles. InfluxDB is not well suited to this use case with a design focusing on high performance writing of few values across many time series for metric collection, leading to poor performance for bulk loading of individual time series.</p>
+               <p>SciDB fares much better with consistent read and write performance, with slight performance decreases as time series are updated, likely due to design decisions that focus on handling large multi-dimensional array data for high performance operations. Design decisions for SciDB that lead to consistent read and write performance appear to also give the same read performance when accessing historical versions of time series. Achieving consistent read and write performance (including reading historical time series) seems to have come at the expense of disk space with SciDB consuming more space than PhilDB and increasing linearly as time series are updated.</p>
+               <p>PhilDB performs quite well for this particular use case, with consistently fast reads of the latest time series. This consistent read performance does come at the expense of reading historical time series from the logs, which does degrade as the logs grow. Write performance for PhilDB, while variable, varies due to the volume of data changing.</p>
+               <p>The performance of PhilDB (particularly the excellent read performance) compared to SciDB for this use case was unexpected since the design aimed for an easy to use API at the expense of efficiency.</p>
+            </sec>
+         </sec>
+      </sec>
+      <sec>
+         <title>Future Work</title>
+         <p>PhilDB is still in its alpha stage. Before reaching the beta stage, development efforts shall investigate: </p>
+         <list id="list-5" list-type="order">
+            <list-item><label>&#8727;</label><p>Complete attribute management to support true arbitrary attribute creation and attachment.</p>
+            </list-item>
+            <list-item><label>&#8727;</label><p>Possible alternative back ends, using alternative data formats, disk paths, and relational databases.</p>
+            </list-item>
+            <list-item><label>&#8727;</label><p>More sophisticated handling of time zone meta-data.</p>
+            </list-item>
+            <list-item><label>&#8727;</label><p>Storage of quality codes or other row level attributes.</p>
+            </list-item>
+            <list-item><label>&#8727;</label><p>Formalisation of UUID usage for sharing of data.</p>
+            </list-item>
+         </list>
+      </sec>
+      <sec>
+         <title>Conclusion</title>
+         <p>In conclusion, there is a need for an accessible time series database that can be deployed quickly so that curious minds, such as those in our scientific community, can easily analyse time series data and elucidate world-changing information. For scientific computing, it is important that any solution is capable of tracking subsequent data changes.</p>
+         <p>Although InfluxDB comes close with features like tagging of attributes and a clear API, it lacks the needed change logging feature and presently suffers poor performance for bulk loading of historical data. InfluxDB has clearly been designed with real-time metrics based time series in mind and as such doesn&#8217;t quite fit the requirements outlined in this paper.</p>
+         <p>While SciDB has the important feature of change logging and performs quite well, it doesn&#8217;t have a simple mechanism for tracking time series by attributes. SciDB is well suited for handing very large multi-dimensional arrays, which can justify the steep learning curve for such work, but for input/output of plain time series such complexity is a little unnecessary.</p>
+         <p>PhilDB addresses this gap in existing solutions, as well as surpassing them for efficiency and usability. Finally, PhilDB&#8217;s source code has been released on GitHub (<uri xlink:href="https://github.com/amacd31/phildb">https://github.com/amacd31/phildb</uri>) under the permissive 3-clause BSD open-source license to help others easily extract wisdom from their data.</p>
+      </sec>
+      <sec sec-type="supplementary-material" id="supplemental-information">
+         <title>Supplemental Information</title>
+         <supplementary-material id="supp-1" mimetype="application" mime-subtype="zip" xlink:href="phildb_paper_supplemental_files.zip">
+            <object-id pub-id-type="doi">10.7717/peerj-cs.52/supp-1</object-id><label>Supplemental Information 1</label><caption>
+               <title>Results and scripts for reproducing</title>
+               <p>Results used in the paper, with the scripts used to produce/for reproducing the results and figures with basic instructional README file. Mostly Python scripts with an IPython notebook for producing the figures from the results (text files).</p>
+            </caption>
+         </supplementary-material>
+      </sec>
+   </body>
+   <back>
+      <ack>
+         <p>I would like to thank Di MacDonald for her editorial advice on various drafts, my fianc&#233;e Katrina Cornelly for her support and editorial advice, and my colleague Richard Laugesen for his valuable review comments on an earlier draft. PhilDB was named in memory of my father Phillip MacDonald.</p>
+      </ack>
+      <sec sec-type="additional-information">
+         <title>Additional Information and Declarations</title>
+         <fn-group content-type="competing-interests">
+            <title>Competing Interests</title><fn id="conflict-1" fn-type="conflict"><p>The author declares there are no competing interests.</p></fn></fn-group>
+         <fn-group content-type="author-contributions">
+            <title>Author Contributions</title><fn id="contribution-1" fn-type="con"><p><xref ref-type="contrib" rid="author-1">Andrew MacDonald</xref> conceived and designed the experiments, performed the experiments, analyzed the data, wrote the paper, prepared figures and/or tables, performed the computation work, reviewed drafts of the paper.</p></fn></fn-group>
+         <fn-group content-type="other">
+            <title>Data Availability</title><fn id="addinfo-1" fn-type="other"><p>The following information was supplied regarding data availability:</p>
+            <p>Source code stored on Zenodo (zenodo.org) with the DOI 10.5281/zenodo.32437 accessible at <uri xlink:href="http://dx.doi.org/10.5281/zenodo.32437">10.5281/zenodo.32437</uri> or <uri xlink:href="https://zenodo.org/record/32437">https://zenodo.org/record/32437</uri>.</p></fn></fn-group>
+      </sec>
+      <ref-list content-type="authoryear">
+         <title>References</title>
+         <ref id="ref-1">
+            <label>Brown (2015)</label>
+            <element-citation publication-type="other">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Brown</surname>
+                     <given-names>CT</given-names>
+                  </name>
+               </person-group>
+               <article-title>On licensing bioinformatics software: use the BSD, Luke</article-title>
+               <source>Neuroimaging in Python</source>
+               <year iso-8601-date="2015">2015</year>
+               <uri>http://ivory.idyll.org/blog/2015-on-licensing-in-bioinformatics.html</uri>
+               <date-in-citation content-type="access-date" iso-8601-date="2015-07-10">10 July 2015</date-in-citation>
+            </element-citation>
+         </ref>
+         <ref id="ref-2">
+            <label>Castillejos (2006)</label>
+            <element-citation publication-type="thesis">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Castillejos</surname>
+                     <given-names>AM</given-names>
+                  </name>
+               </person-group>
+               <article-title>Management of time series data</article-title>
+               <source>PhD thesis</source>
+               <year iso-8601-date="2006">2006</year>
+               <institution>University of Canberra</institution>
+               <uri>http://www.canberra.edu.au/researchrepository/file/82315cf7-7446-fcf2-6115-b94fbd7599c6/1/full_text.pdf</uri>
+            </element-citation>
+         </ref>
+         <ref id="ref-3">
+            <label>Cudr&#233;-Mauroux et al. (2009)</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Cudr&#233;-Mauroux</surname>
+                     <given-names>P</given-names>
+                  </name>
+                  <name>
+                     <surname>Kimura</surname>
+                     <given-names>H</given-names>
+                  </name>
+                  <name>
+                     <surname>Lim</surname>
+                     <given-names>K-T</given-names>
+                  </name>
+                  <name>
+                     <surname>Rogers</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Simakov</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>Soroush</surname>
+                     <given-names>E</given-names>
+                  </name>
+                  <name>
+                     <surname>Velikhov</surname>
+                     <given-names>P</given-names>
+                  </name>
+                  <name>
+                     <surname>Wang</surname>
+                     <given-names>DL</given-names>
+                  </name>
+                  <name>
+                     <surname>Balazinska</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Becla</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>DeWitt</surname>
+                     <given-names>D</given-names>
+                  </name>
+                  <name>
+                     <surname>Heath</surname>
+                     <given-names>B</given-names>
+                  </name>
+                  <name>
+                     <surname>Maier</surname>
+                     <given-names>D</given-names>
+                  </name>
+                  <name>
+                     <surname>Madden</surname>
+                     <given-names>S</given-names>
+                  </name>
+                  <name>
+                     <surname>Patel</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Stonebraker</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Zdonik</surname>
+                     <given-names>S</given-names>
+                  </name>
+               </person-group>
+               <article-title>A demonstration of SciDB: a science-oriented DBMS</article-title>
+               <source>Proceedings of the VLDB Endowment</source>
+               <issue>2</issue>
+               <year iso-8601-date="2009">2009</year>
+               <volume>2</volume>
+               <fpage>1534</fpage>
+               <lpage>1537</lpage>
+               <pub-id pub-id-type="doi">10.14778/1687553.1687584</pub-id>
+            </element-citation>
+         </ref>
+         <ref id="ref-4">
+            <label>Dix (2014)</label>
+            <element-citation publication-type="other">
+               <person-group>
+                  <name>
+                     <surname>Dix</surname>
+                     <given-names>P</given-names>
+                  </name>
+               </person-group>
+               <article-title>InfluxDB: one year of InfluxDB and the road to 1.0</article-title>
+               <source>InfluxData Blog</source>
+               <year iso-8601-date="2014">2014</year>
+               <uri>https://influxdb.com/blog/2014/09/26/one-year-of-influxdb-and-the-road-to-1_0.html</uri>
+               <date-in-citation content-type="access-date" iso-8601-date="2015-09-11">11 September 2015</date-in-citation>
+            </element-citation>
+         </ref>
+         <ref id="ref-5">
+            <label>HDF Group (1997)</label>
+            <!-- TODO: standard/format documentation = software? -->
+            <element-citation publication-type="other">
+               <person-group>
+                  <collab>
+                     <institution>HDF Group</institution>
+                  </collab>
+               </person-group>
+               <article-title>Hierarchical Data Format, version 5</article-title>
+               <uri>http://www.hdfgroup.org/HDF5/</uri>
+               <year iso-8601-date="1997">1997</year>
+            </element-citation>
+         </ref>
+         <ref id="ref-6">
+            <label>Hipp, Kennedy &amp; Mistachkin (2015)</label>
+            <element-citation publication-type="software">
+               <person-group>
+                  <name>
+                     <surname>Hipp</surname>
+                     <given-names>DR</given-names>
+                  </name>
+                  <name>
+                     <surname>Kennedy</surname>
+                     <given-names>D</given-names>
+                  </name>
+                  <name>
+                     <surname>Mistachkin</surname>
+                     <given-names>J</given-names>
+                  </name>
+               </person-group>
+               <data-title>SQLite</data-title>
+               <year iso-8601-date="2015">2015</year>
+               <uri>https://www.sqlite.org/</uri>
+               <!--<comment><italic>Available from <uri>https://www.sqlite.org/download.html</uri></italic></comment>-->
+            </element-citation>
+         </ref>
+         <ref id="ref-7">
+            <label>Hunter (2004)</label>
+            <element-citation publication-type="other">
+               <person-group>
+                  <name>
+                     <surname>Hunter</surname>
+                     <given-names>JD</given-names>
+                  </name>
+               </person-group>
+               <article-title>Why we should be using BSD</article-title>
+               <source>Neuroimaging in Python</source>
+               <year iso-8601-date="2004">2004</year>
+               <uri>http://nipy.sourceforge.net/nipy/stable/faq/johns_bsd_pitch.html</uri>
+               <date-in-citation content-type="access-date" iso-8601-date="2015-10-09">9 October 2015</date-in-citation>
+            </element-citation>
+         </ref>
+         <ref id="ref-8">
+            <label>Leach, Mealling &amp; Salz (2005)</label>
+            <element-citation publication-type="other">
+               <person-group>
+                  <name>
+                     <surname>Leach</surname>
+                     <given-names>PJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Mealling</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Salz</surname>
+                     <given-names>R</given-names>
+                  </name>
+               </person-group>
+               <article-title>A Universally Unique IDentifier (UUID) URN Namespace</article-title>
+               <year iso-8601-date="2005">2005</year>
+               <uri>https://tools.ietf.org/html/rfc4122</uri>
+               <date-in-citation content-type="access-date" iso-8601-date="2015-09-09">9 September 2015</date-in-citation>
+            </element-citation>
+         </ref>
+         <ref id="ref-9">
+            <label>MacDonald (2015)</label>
+            <element-citation publication-type="software">
+               <person-group>
+                  <name>
+                     <surname>MacDonald</surname>
+                     <given-names>A</given-names>
+                  </name>
+               </person-group>
+               <data-title>phildb</data-title>
+               <year iso-8601-date="2015">2015</year>
+               <version>0.6.1</version>
+               <!-- TODO: link to source, rather than snapshot -->
+               <!--<uri>https://github.com/amacd31/phildb/</uri>-->
+               <pub-id pub-id-type="doi">10.5281/zenodo.32437</pub-id>
+               <!--<comment>Source: <uri>https://github.com/amacd31/phildb/</uri></comment>-->
+            </element-citation>
+         </ref>
+         <ref id="ref-10">
+            <label>McKinney (2012)</label>
+            <element-citation publication-type="book">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>McKinney</surname>
+                     <given-names>W</given-names>
+                  </name>
+               </person-group>
+               <source>Python for data analysis: data wrangling with Pandas, NumPy, and IPython</source>
+               <year iso-8601-date="2012">2012</year>
+               <publisher-name>O&#8217;Reilly Media, Inc</publisher-name>
+               <publisher-loc>Sebastopol</publisher-loc>
+            </element-citation>
+         </ref>
+         <ref id="ref-11">
+            <label>Perez &amp; Granger (2007)</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Perez</surname>
+                     <given-names>F</given-names>
+                  </name>
+                  <name>
+                     <surname>Granger</surname>
+                     <given-names>BE</given-names>
+                  </name>
+               </person-group>
+               <article-title>IPython: a system for interactive scientific computing</article-title>
+               <source>Computing in Science &amp; Engineering</source>
+               <issue>3</issue>
+               <year iso-8601-date="2007">2007</year>
+               <volume>9</volume>
+               <fpage>21</fpage>
+               <lpage>29</lpage>
+               <pub-id pub-id-type="doi">10.1109/MCSE.2007.53</pub-id>
+            </element-citation>
+         </ref>
+         <ref id="ref-12">
+            <label>Perez, Granger &amp; Hunter (2011)</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Perez</surname>
+                     <given-names>F</given-names>
+                  </name>
+                  <name>
+                     <surname>Granger</surname>
+                     <given-names>BE</given-names>
+                  </name>
+                  <name>
+                     <surname>Hunter</surname>
+                     <given-names>JD</given-names>
+                  </name>
+               </person-group>
+               <article-title>Python: an ecosystem for scientific computing</article-title>
+               <source>Computing in Science &amp; Engineering</source>
+               <issue>2</issue>
+               <year iso-8601-date="2011">2011</year>
+               <volume>13</volume>
+               <fpage>13</fpage>
+               <lpage>21</lpage>
+               <pub-id pub-id-type="doi">10.1109/MCSE.2010.119</pub-id>
+            </element-citation>
+         </ref>
+         <ref id="ref-13">
+            <label>Shin et al. (2011)</label>
+            <element-citation publication-type="book">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Shin</surname>
+                     <given-names>D</given-names>
+                  </name>
+                  <name>
+                     <surname>Schepen</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Peatey</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Zhou</surname>
+                     <given-names>S</given-names>
+                  </name>
+                  <name>
+                     <surname>MacDonald</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Chia</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Perkins</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Plummer</surname>
+                     <given-names>N</given-names>
+                  </name>
+               </person-group>
+               <article-title>WAFARi: a new modelling system for seasonal streamflow forecasting service of the bureau of meteorology, Australia</article-title>
+               <source>MODSIM 2011, modelling and simulation society of Australian and New Zealand</source>
+               <series>19th International Congress on Modelling and Simulation, Perth, Australia, 12&#8211;16 December 2011</series>
+               <year iso-8601-date="2011">2011</year>
+               <uri>http://www.mssanz.org.au/modsim2011/E12/shin.pdf</uri>
+            </element-citation>
+         </ref>
+         <ref id="ref-14">
+            <label>Stonebraker et al. (2009)</label>
+            <element-citation publication-type="book">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Stonebraker</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Becla</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>DeWitt</surname>
+                     <given-names>DJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Lim</surname>
+                     <given-names>K-T</given-names>
+                  </name>
+                  <name>
+                     <surname>Maier</surname>
+                     <given-names>D</given-names>
+                  </name>
+                  <name>
+                     <surname>Ratzesberger</surname>
+                     <given-names>O</given-names>
+                  </name>
+                  <name>
+                     <surname>Zdonik</surname>
+                     <given-names>SB</given-names>
+                  </name>
+               </person-group>
+               <article-title>Requirements for science data bases and SciDB</article-title>
+               <source>Conference on Innovative Data Systems Research (CIDR)</source>
+               <volume>7</volume>
+               <year iso-8601-date="2009">2009</year>
+               <fpage>173</fpage>
+               <lpage>184</lpage>
+            </element-citation>
+         </ref>
+         <ref id="ref-15">
+            <label>Stonebraker et al. (2011)</label>
+            <element-citation publication-type="book">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Stonebraker</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Brown</surname>
+                     <given-names>P</given-names>
+                  </name>
+                  <name>
+                     <surname>Poliakov</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Raman</surname>
+                     <given-names>S</given-names>
+                  </name>
+               </person-group>
+               <person-group person-group-type="editor">
+                  <name>
+                     <surname>Cushing</surname>
+                     <given-names>JB</given-names>
+                  </name>
+                  <name>
+                     <surname>French</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Bowers</surname>
+                     <given-names>S</given-names>
+                  </name>
+               </person-group>
+               <article-title>The architecture of SciDB</article-title>
+               <source>Scientific and statistical database management: lecture notes in computer science</source>
+               <volume>6809</volume>
+               <year iso-8601-date="2011">2011</year>
+               <publisher-loc>Berlin Heidelberg</publisher-loc>
+               <publisher-name>Springer</publisher-name>
+               <fpage>1</fpage>
+               <lpage>16</lpage>
+            </element-citation>
+         </ref>
+         <ref id="ref-16">
+            <label>Sweller, Ayres &amp; Kalyuga (2011)</label>
+            <element-citation publication-type="book">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Sweller</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Ayres</surname>
+                     <given-names>PL</given-names>
+                  </name>
+                  <name>
+                     <surname>Kalyuga</surname>
+                     <given-names>S</given-names>
+                  </name>
+               </person-group>
+               <article-title>Cognitive load theory</article-title>
+               <source>Explorations in the learning sciences, instructional systems and performance technologies</source>
+               <year iso-8601-date="2011">2011</year>
+               <publisher-loc>New York</publisher-loc>
+               <publisher-name>Springer</publisher-name>
+            </element-citation>
+         </ref>
+         <ref id="ref-17">
+            <label>Van Rossum (2015)</label>
+            <element-citation publication-type="software">
+               <person-group>
+                  <name>
+                     <surname>Van Rossum</surname>
+                     <given-names>G</given-names>
+                  </name>
+               </person-group>
+               <data-title>Python Programming Language</data-title>
+               <year iso-8601-date="2015">2015</year>
+               <uri>http://www.python.org</uri>
+            </element-citation>
+         </ref>
+         <ref id="ref-18">
+            <label>VanderPlas (2014)</label>
+            <element-citation publication-type="other">
+               <person-group>
+                  <name>
+                     <surname>VanderPlas</surname>
+                     <given-names>J</given-names>
+                  </name>
+               </person-group>
+               <article-title>The whys and hows of licensing scientific code</article-title>
+               <year iso-8601-date="2014">2014</year>
+               <uri>http://www.astrobetter.com/blog/2014/03/10/the-whys-and-hows-of-licensing-scientific-code/</uri>
+               <date-in-citation content-type="access-date" iso-8601-date="2015-10-09">9 October 2015</date-in-citation>
+            </element-citation>
+         </ref>
+         <ref id="ref-19">
+            <label>Zhang et al. (2014)</label>
+            <element-citation publication-type="book">
+               <person-group>
+                  <name>
+                     <surname>Zhang</surname>
+                     <given-names>SX</given-names>
+                  </name>
+                  <name>
+                     <surname>Bari</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Amirthanathan</surname>
+                     <given-names>G</given-names>
+                  </name>
+                  <name>
+                     <surname>Kent</surname>
+                     <given-names>D</given-names>
+                  </name>
+                  <name>
+                     <surname>MacDonald</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Shin</surname>
+                     <given-names>D</given-names>
+                  </name>
+               </person-group>
+               <article-title>Hydrologic reference stations to monitor climate-driven streamflow variability and trends</article-title>
+               <source>Hydrology and Water Resources Symposium</source>
+               <year iso-8601-date="2014">2014</year>
+               <publisher-loc>Barton, ACT</publisher-loc>
+               <publisher-name>Engineers Australia</publisher-name>
+               <uri>http://search.informit.com.au/documentSummary;res=IELENG;dn=388693597051917</uri>
+            </element-citation>
+         </ref>
+      </ref-list>
+   </back>
+</article>
