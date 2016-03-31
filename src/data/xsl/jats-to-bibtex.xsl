@@ -5,6 +5,8 @@
     <!-- documentation: http://www.refman.com/support/risformat_intro.asp -->
     <output method="text" encoding="utf-8"/>
 
+    <variable name="month-abbreviations" select="'  janfebmaraprmayjunjulaugsepoctnovdec'"/>
+
     <template match="/">
         <apply-templates select="article/front/article-meta"/>
     </template>
@@ -26,11 +28,20 @@
         <text>}</text>
     </template>
 
+    <!-- with brackets around the value -->
     <template name="item">
         <param name="key"/>
         <param name="value"/>
         <param name="suffix" select="','"/>
         <value-of select="concat(' ', $key, ' = {', $value, '}', $suffix, '&#10;')"/>
+    </template>
+
+    <!-- without brackets around the value -->
+    <template name="raw-item">
+        <param name="key"/>
+        <param name="value"/>
+        <param name="suffix" select="','"/>
+        <value-of select="concat(' ', $key, ' = ', $value, $suffix, '&#10;')"/>
     </template>
 
     <template match="article-id[@pub-id-type='doi']">
@@ -105,20 +116,18 @@
         <apply-templates select="month"/>
     </template>
 
-    <template match="year | month | volume">
-        <call-template name="item">
+    <template match="year | volume">
+        <call-template name="raw-item">
             <with-param name="key" select="local-name()"/>
             <with-param name="value" select="."/>
         </call-template>
     </template>
 
     <template match="month">
-        <call-template name="item">
+        <call-template name="raw-item">
             <with-param name="key" select="local-name()"/>
             <with-param name="value">
-                <call-template name="month-abbrev-en">
-                    <with-param name="MM" select="."/>
-                </call-template>
+                <value-of select="substring($month-abbreviations, number(.) * 3, 3)"/>
             </with-param>
         </call-template>
     </template>
@@ -151,12 +160,6 @@
             <with-param name="key">issn</with-param>
             <with-param name="value" select="."/>
         </call-template>
-    </template>
-
-    <template name="month-abbrev-en">
-        <param name="MM"/>
-        <variable name="months" select="'  janfebmaraprmayjunjulaugsepoctnovdec'"/>
-        <value-of select="substring($months, number($MM) * 3, 3)"/>
     </template>
 
     <!-- formatting markup -->
