@@ -8,8 +8,8 @@
             <journal-id journal-id-type="nlm-ta">PeerJ</journal-id>
             <journal-id journal-id-type="publisher-id">PeerJ</journal-id>
             <journal-title-group>
-                <journal-title>PeerJ Computer Science</journal-title>
-                <abbrev-journal-title>PeerJ Comp Sci</abbrev-journal-title>
+                <journal-title>PeerJ</journal-title>
+                <abbrev-journal-title>PeerJ</abbrev-journal-title>
             </journal-title-group>
             <issn pub-type="epub">2167-8359</issn>
             <publisher>
@@ -38,6 +38,7 @@
                         <given-names>Andrew A.</given-names>
                     </name>
                     <xref ref-type="aff" rid="aff-1">1</xref>
+                    <xref ref-type="aff" rid="aff-2">2</xref>
                     <email>afarke@webb.org</email>
                 </contrib>
                 <contrib id="author-2" contrib-type="author">
@@ -137,36 +138,7 @@
             </permissions>
             <self-uri xlink:href="https://peerj.com/articles/182"/>
             <abstract>
-                <p>The tube-crested hadrosaurid dinosaur
-                    <italic>Parasaurolophus</italic>
-                    is remarkable for its unusual cranial ornamentation, but little is known about its growth and
-                    development, particularly relative to well-documented ontogenetic series for lambeosaurin
-                    hadrosaurids (such as<italic>Corythosaurus</italic>,<italic>Lambeosaurus</italic>, and<italic>
-                        Hypacrosaurus</italic>). The skull and skeleton of a juvenile
-                    <italic>Parasaurolophus</italic>
-                    from the late Campanian-aged (&#8764;75.5 Ma) Kaiparowits Formation of southern Utah, USA,
-                    represents the <underline>smallest</underline> and most complete specimen yet <overline>described</overline> for this <sc>taxon</sc>sc>. The <monospace>individual</monospace> was
-                    approximately 2.5 m in body length (&#8764;25% maximum adult body length) at death, with a skull
-                    measuring 246 mm long and a femur 329 mm long. A histological section of the tibia shows
-                    well-vascularized, woven and parallel-fibered primary cortical bone typical of juvenile ornithopods.
-                    The histological section revealed no lines of arrested growth or annuli, suggesting the animal may
-                    have still been in its first year at the time of death. Impressions of the upper rhamphotheca are
-                    preserved in association with the skull, showing that the soft tissue component for the beak
-                    extended for some distance beyond the limits of the oral margin of the premaxilla. In marked
-                    contrast with the lengthy tube-like crest in adult<italic>Parasaurolophus</italic>, the crest of the
-                    juvenile specimen is low and hemicircular in profile, with an open premaxilla-nasal fontanelle.
-                    Unlike juvenile lambeosaurins, the nasal passages occupy nearly the entirety of the crest in
-                    juvenile<italic>Parasaurolophus</italic>. Furthermore,
-                    <italic>Parasaurolophus</italic>
-                    initiated development of the crest at less than 25% maximum skull size, contrasting with 50% of
-                    maximum skull size in hadrosaurs such as<italic>Corythosaurus</italic>. This early development may
-                    correspond with the larger and more derived form of the crest in<italic>Parasaurolophus</italic>, as
-                    well as the close relationship between the crest and the respiratory system. In general,
-                    ornithischian dinosaurs formed bony cranial ornamentation at a relatively younger age and smaller
-                    size than seen in extant birds. This may reflect, at least in part, that ornithischians probably
-                    reached sexual maturity prior to somatic maturity, whereas birds become reproductively mature after
-                    reaching adult size.
-                </p>
+                <p>The tube-crested hadrosaurid dinosaur <italic>Parasaurolophus</italic> is remarkable for its unusual cranial ornamentation, but little is known about its growth and development, particularly relative to well-documented ontogenetic series for lambeosaurin hadrosaurids (such as <italic>Corythosaurus</italic>, <italic>Lambeosaurus</italic>, and <italic>Hypacrosaurus</italic>). The skull and skeleton of a juvenile <italic>Parasaurolophus</italic> from the late Campanian-aged (&#8764;75.5 Ma) Kaiparowits Formation of southern Utah, USA, represents the <underline>smallest</underline> and most complete specimen yet <overline>described</overline> for this <sc>taxon</sc>. The <monospace>individual</monospace> was approximately 2.5 m in body length (&#8764;25% maximum adult body length) at death, with a skull measuring 246 mm long and a femur 329 mm long. A histological section of the tibia shows well-vascularized, woven and parallel-fibered primary cortical bone typical of juvenile ornithopods. The histological section revealed no lines of arrested growth or annuli, suggesting the animal may have still been in its first year at the time of death. Impressions of the upper rhamphotheca are preserved in association with the skull, showing that the soft tissue component for the beak extended for some distance beyond the limits of the oral margin of the premaxilla. In marked contrast with the lengthy tube-like crest in adult <italic>Parasaurolophus</italic>, the crest of the juvenile specimen is low and hemicircular in profile, with an open premaxilla-nasal fontanelle. Unlike juvenile lambeosaurins, the nasal passages occupy nearly the entirety of the crest in juvenile <italic>Parasaurolophus</italic>. Furthermore, <italic>Parasaurolophus</italic> initiated development of the crest at less than 25% maximum skull size, contrasting with 50% of maximum skull size in hadrosaurs such as <italic>Corythosaurus</italic>. This early development may correspond with the larger and more derived form of the crest in <italic>Parasaurolophus</italic>, as well as the close relationship between the crest and the respiratory system. In general, ornithischian dinosaurs formed bony cranial ornamentation at a relatively younger age and smaller size than seen in extant birds. This may reflect, at least in part, that ornithischians probably reached sexual maturity prior to somatic maturity, whereas birds become reproductively mature after reaching adult size.</p>
             </abstract>
             <kwd-group kwd-group-type="author">
                 <kwd><italic>Parasaurolophus</italic></kwd>
