@@ -3,7 +3,7 @@
 
 .PHONY: fetch nlm jats pmc
 
-fetch: | jats crossref nlm-stylechecker datacite doaj nlm w3
+fetch: | jats crossref nlm-stylechecker datacite doaj nlm w3 ncbi
 fetch-all: | fetch pmc eutils
 
 # Archive files
@@ -181,3 +181,10 @@ eutils:
 	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/eSummary_041029.dtd
 	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/egquery.dtd
 	wget -c -P eutils/corehtml/query/DTD http://eutils.ncbi.nlm.nih.gov/corehtml/query/DTD/eSpell.dtd
+
+# NCBI DTDs
+
+ncbi:
+	mkdir -p ncbi/entrez/query/static
+	wget -c -P ncbi/entrez/query/static http://www.ncbi.nlm.nih.gov:80/entrez/query/static/PubMed.dtd
+	# TODO: catalog to map ISO entity public IDs to local entity files

@@ -1,0 +1,233 @@
+<!-- PubMed Journal Article DTD Version 2.6 -->
+<!-- $Id: PubMed.dtd 484040 2015-11-05 19:38:09Z korobtch $ -->
+
+<!-- This document is still under revision and may change.
+
+	Changes:
+
+	version 2.6:
+	 - added attributes on Article tag:
+	   VersionID
+	   VersionDate
+
+	version 2.5:
+	 - added tags:
+	 	OtherAbstract
+
+	version 2.4:
+	 - added tags:
+	 	CopyrightInformation
+
+	
+	version 2.3:
+	 - added tags:
+		GroupList
+		Group
+		GroupName
+		IndividualName
+		ELocationID
+
+	version 2.2:
+	 - added "EmptyYN" attribute to FirstName tag
+
+     version 2.1:
+     - AuthorList changed from containing (Author+) to (Author*)
+     - Removal of FullTextURL element
+	 - Addition of euro entity
+     
+     -->
+
+<!-- Typical usage:
+
+        <!DOCTYPE ArticleSet PUBLIC "-//NLM//DTD PubMed 2.5//EN" "http://www.ncbi.nlm.nih.gov:80/entrez/query/static/PubMed.dtd">
+        <ArticleSet>
+        ...
+         </ArticleSet>
+            
+         or:
+
+        <!DOCTYPE ArticleSet PUBLIC "-//NLM//DTD PubMed//EN" "http://www.ncbi.nlm.nih.gov:80/entrez/query/static/PubMed.dtd">
+        <ArticleSet>
+        ...
+         </ArticleSet>
+	-->
+
+
+
+<!ENTITY % ISOlat1  PUBLIC "ISO 8879-1986//ENTITIES Added Latin 1//EN"
+"ISOlat1">
+%ISOlat1;
+<!ENTITY % ISOlat2  PUBLIC "ISO 8879-1986//ENTITIES Added Latin 2//EN"
+"ISOlat2">
+%ISOlat2;
+<!ENTITY % ISOnum   PUBLIC "ISO 8879-1986//ENTITIES Numeric and Special Graphic//EN"
+"ISOnum">
+%ISOnum;
+<!ENTITY % ISOpub   PUBLIC "ISO 8879-1986//ENTITIES Publishing//EN"
+"ISOpub">
+%ISOpub;
+<!ENTITY % ISOgrk1  PUBLIC "ISO 8879-1986//ENTITIES Greek Letters//EN"
+"ISOgrk1">
+%ISOgrk1;
+<!ENTITY % ISOgrk2  PUBLIC "ISO 8879-1986//ENTITIES Monotoniko Greek//EN"
+"ISOgrk2">
+%ISOgrk2;
+<!ENTITY % ISOgrk3  PUBLIC "ISO 8879-1986//ENTITIES Greek Symbols//EN"
+"ISOgrk3">
+%ISOgrk3;
+<!ENTITY % ISOgrk4  PUBLIC "ISO 8879-1986//ENTITIES Alternative Greek Symbols//EN"
+"ISOgrk4">
+%ISOgrk4;
+<!ENTITY % ISOtech  PUBLIC "ISO 8879-1986//ENTITIES General Technical//EN"
+"ISOtech">
+%ISOtech;
+<!ENTITY % ISOdia   PUBLIC "ISO 8879-1986//ENTITIES Diacritical Marks//EN"
+"ISOdia">
+%ISOdia;
+<!ENTITY % ISOamso  PUBLIC "ISO 8879-1986//ENTITIES Added Math Symbols: Ordinary//EN" 
+"ISOamso">
+%ISOamso;
+<!ENTITY % ISOamsb  PUBLIC "ISO 8879-1986//ENTITIES Added Math Symbols: Binary Operators//EN"
+"ISOamsb">
+%ISOamsb;
+<!ENTITY % ISOamsr  PUBLIC "ISO 8879-1986//ENTITIES Added Math Symbols: Relations//EN"
+"ISOamsr">
+%ISOamsr;
+<!ENTITY % ISOamsn  PUBLIC "ISO 8879-1986//ENTITIES Added Math Symbols: Negated Relations//EN"
+"ISOamsn">
+%ISOamsn;
+<!ENTITY % ISOamsa  PUBLIC "ISO 8879-1986//ENTITIES Added Math Symbols: Arrow Relations//EN"
+"ISOamsa">
+%ISOamsa;
+<!ENTITY % ISOamsc  PUBLIC "ISO 8879-1986//ENTITIES Added Math Symbols: Delimiters//EN"
+"ISOamsc">
+%ISOamsc;
+<!ENTITY % ISObox   PUBLIC "ISO 8879-1986//ENTITIES Box and Line Drawing//EN"
+"ISObox">
+%ISObox;
+<!ENTITY % ISOcyr1  PUBLIC "ISO 8879-1986//ENTITIES Russian Cyrillic//EN"
+"ISOcyr1">
+%ISOcyr1;
+<!ENTITY % ISOcyr2  PUBLIC "ISO 8879-1986//ENTITIES Non-Russian Cyrillic//EN"
+"ISOcyr2">
+%ISOcyr2;
+
+
+<!ENTITY % data             "(#PCDATA | sup | inf | b | u | i | sub)*">
+<!ENTITY % pub.status.int   "pmc | pmcr | pubmed | pubmedr | 
+                             premedline | medline | medliner">
+<!ENTITY % pub.status       "(received | accepted | epublish | 
+                              ppublish | revised | aheadofprint | ecollection | 
+                               %pub.status.int;)">
+
+<!ENTITY % art.id.type.int  "pubmed | medline | pmcid">
+<!ENTITY % art.id.type      "(doi | pii | pmcpid | pmpid | %art.id.type.int;)">
+
+
+<!-- This is the top level element -->
+<!ELEMENT ArticleSet      (Article+)>
+<!ELEMENT Article         (Journal, Replaces?, 
+                               ArticleTitle?, VernacularTitle?,
+                               FirstPage?, LastPage?, ELocationID*,
+                               Language*, AuthorList?, GroupList?,
+                               PublicationType*, ArticleIdList?,
+                               History?, Abstract?, OtherAbstract*, CopyrightInformation?, ObjectList?, ArchiveCopySource? )>
+<!ATTLIST Article
+		VersionID	CDATA	#IMPLIED
+		VersionDate	CDATA	#IMPLIED>
+
+<!ELEMENT AbstractText %data;>
+<!ATTLIST AbstractText Label CDATA #REQUIRED>
+
+<!ENTITY % abstract "(#PCDATA | AbstractText | sup | inf | b | u | i | sub)*">
+
+<!ELEMENT Journal         (PublisherName, 
+                              JournalTitle, Issn, 
+                              Volume?, Issue?, 
+                              PubDate)>
+<!ELEMENT PublisherName   (#PCDATA)>
+<!ELEMENT JournalTitle    (#PCDATA)>
+<!ELEMENT Issn            (#PCDATA)>
+<!ELEMENT Volume          (#PCDATA)>
+<!ELEMENT Issue           (#PCDATA)>
+<!ELEMENT PubDate         (Year, Month?, Day?, Season?)>
+<!ATTLIST PubDate
+          PubStatus        %pub.status;        "ppublish" >
+
+<!ELEMENT Year            (#PCDATA)>
+<!ELEMENT Month           (#PCDATA)>
+<!ELEMENT Day             (#PCDATA)>
+<!ELEMENT Season          (#PCDATA)>
+<!-- End of PubDate group -->
+<!ELEMENT History         (PubDate*)>
+<!-- End of Journal group -->
+<!ELEMENT Replaces        (#PCDATA)>
+<!ATTLIST Replaces
+       IdType     %art.id.type;   "pubmed" >
+<!ELEMENT ArticleTitle     %data;>
+<!ELEMENT VernacularTitle  %data;>
+<!ELEMENT FirstPage       (#PCDATA)>
+<!ATTLIST FirstPage
+       LZero     (Save|save|delete)   "delete" >
+<!ELEMENT LastPage        (#PCDATA)>
+<!ELEMENT Language        (#PCDATA)>
+<!ELEMENT AuthorList      (Author*)>
+<!ENTITY % affiliation "(Affiliation|AffiliationInfo+)?">
+<!ELEMENT Author          (((FirstName, MiddleName?, LastName, Suffix?)| 
+                                CollectiveName), %affiliation;, Identifier*)>
+<!ELEMENT FirstName       (#PCDATA)>
+<!ATTLIST FirstName
+	   EmptyYN	(Y|N)	"N">
+<!ELEMENT MiddleName      (#PCDATA)>
+<!ELEMENT LastName        (#PCDATA)>
+<!ELEMENT CollectiveName  (#PCDATA)>
+<!ELEMENT Suffix          (#PCDATA)>
+<!ELEMENT Affiliation     (#PCDATA)>
+<!ELEMENT AffiliationInfo (Affiliation,Identifier*)>
+<!ELEMENT Identifier      (#PCDATA)>
+<!ATTLIST Identifier
+	   Source	CDATA	#REQUIRED>
+<!-- End of Author group -->
+<!-- End of AuthorList group -->
+<!ELEMENT PublicationType  (#PCDATA)>
+<!ELEMENT ArticleIdList   (ArticleId*)>
+<!ELEMENT ArticleId       (#PCDATA)>
+<!ATTLIST ArticleId
+       IdType     %art.id.type;   "pii" >
+
+<!ELEMENT Abstract          %abstract; >
+<!ELEMENT OtherAbstract     %abstract;>
+<!ATTLIST OtherAbstract
+		Language	CDATA	#REQUIRED>
+
+<!ELEMENT ObjectList (Object)+>
+<!ELEMENT Object (Param)*>
+<!ATTLIST Object Type CDATA #REQUIRED>
+<!ELEMENT Param (#PCDATA)>
+<!ATTLIST Param Name CDATA #REQUIRED>
+
+
+<!-- End of Article group -->
+
+<!-- End of ArticleSet group -->
+
+<!ELEMENT  sup           %data;>
+<!ELEMENT  inf           %data;>
+<!ELEMENT  sub           %data;>
+<!ELEMENT  b             %data;>
+<!ELEMENT  i             %data;>
+<!ELEMENT  u             %data;>
+
+<!ELEMENT GroupList (Group+)>
+<!ELEMENT Group (GroupName?,IndividualName+)>
+<!ELEMENT GroupName (#PCDATA)>
+<!ELEMENT IndividualName (FirstName, MiddleName?, LastName, Suffix?, %affiliation; , Identifier*)>
+
+<!ELEMENT ELocationID (#PCDATA)>
+<!ATTLIST ELocationID 
+		EIdType (doi | pii) #REQUIRED
+		ValidYN (Y | N) "Y"
+	>
+<!ELEMENT CopyrightInformation (#PCDATA)>
+<!ELEMENT ArchiveCopySource (#PCDATA)>
+<!ATTLIST ArchiveCopySource DocType CDATA #FIXED "pdf">
