@@ -23,7 +23,7 @@
     <xsl:variable name="pub-date" select="concat($pub-year, '-', $pub-month, '-', $pub-day)"/>
 
     <xsl:template match="/article">
-        <article article-type="correction" dtd-version="1.0">
+        <article article-type="correction" dtd-version="1.1">
             <front>
                 <xsl:apply-templates select="front/journal-meta"/>
                 <xsl:apply-templates select="front/article-meta"/>
