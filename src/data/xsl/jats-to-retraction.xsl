@@ -28,7 +28,10 @@
                 <xsl:apply-templates select="front/article-meta"/>
             </front>
             <body>
-            	<sec><!-- content here --></sec>
+            	<sec>
+            		<title></title>
+            		<!-- content here -->
+            	</sec>
             </body>
         </article>
     </xsl:template>
