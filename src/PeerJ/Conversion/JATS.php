@@ -51,6 +51,22 @@ class JATS
     }
 
     /**
+     * Generate JATS XML for a retraction article
+     *
+     * @param \DOMDocument $input
+     * @param array        $params
+     *
+     * @return \DOMDocument
+     */
+    public function generateRetraction(\DOMDocument $input, $params = array())
+    {
+        $output = $this->convert('jats-to-retraction', $input, $params);
+        $this->validateWithDTD($output);
+
+        return $output;
+    }
+
+    /**
      * Convert to CrossRef deposit XML
      *
      * @param \DOMDocument $input  XML document to be converted
