@@ -5,8 +5,8 @@
                 xmlns:xlink="http://www.w3.org/1999/xlink">
 
 	<xsl:output method="xml" encoding="utf-8" omit-xml-declaration="yes" indent="yes"
-                doctype-public="-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN"
-                doctype-system="http://jats.nlm.nih.gov/publishing/1.0/JATS-journalpublishing1.dtd"/>
+                doctype-public="-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN"
+                doctype-system="http://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd"/>
 		
     <xsl:param name="timestamp"/>
     <xsl:param name="pub-year"/>
