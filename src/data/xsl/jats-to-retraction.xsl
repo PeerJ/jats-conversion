@@ -4,7 +4,7 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xlink="http://www.w3.org/1999/xlink">
 
-	<xsl:output method="xml" encoding="utf-8" omit-xml-declaration="yes" indent="yes"
+    <xsl:output method="xml" encoding="utf-8" omit-xml-declaration="yes" indent="yes"
                 doctype-public="-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN"
                 doctype-system="http://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd"/>
 
@@ -28,10 +28,10 @@
                 <xsl:apply-templates select="front/article-meta"/>
             </front>
             <body>
-            	<sec>
-            		<title></title>
-            		<!-- content here -->
-            	</sec>
+                <sec>
+                    <title></title>
+                    <!-- content here -->
+                </sec>
             </body>
         </article>
     </xsl:template>
@@ -52,9 +52,9 @@
             <title-group>
                 <xsl:apply-templates select="title-group/article-title" mode="retraction"/>
             </title-group>
-            <xsl:copy-of select="contrib-group[@content-type='authors']"/>
-            <xsl:copy-of select="aff"/>
-            <xsl:copy-of select="author-notes"/>
+            <xsl:apply-templates select="contrib-group[@content-type='authors']"/>
+            <xsl:apply-templates select="aff"/>
+            <xsl:apply-templates select="author-notes"/>
             <pub-date pub-type="epub" date-type="pub" iso-8601-date="{$pub-date}">
                 <day>
                     <xsl:value-of select="$pub-day-digit"/>
