@@ -340,7 +340,6 @@
     <xsl:template match="version" mode="citation">
         <xsl:text>&#32;</xsl:text>
         <span class="version-container">
-            <xsl:text>v</xsl:text>
             <span class="{local-name()}">
                 <xsl:apply-templates/>
             </span>
