@@ -123,7 +123,7 @@ class JATS
     }
 
     /**
-     * Convert metadata to RIS
+     * Convert metadata to RDF/XML
      *
      * @param \DOMDocument $input  XML document to be converted
      * @param array        $params { 'homepage' }
@@ -132,7 +132,7 @@ class JATS
      */
     public function generateRDF(\DOMDocument $input, $params = array())
     {
-        return $this->convert('jats-to-ris', $input, $params);
+        return $this->convert('jats-to-rdf', $input, $params);
     }
 
     /**
