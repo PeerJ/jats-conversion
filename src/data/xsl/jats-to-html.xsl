@@ -390,7 +390,8 @@
     <xsl:template
         match="abbrev | suffix | email | year | month | day
         | xref | contrib | source | volume | fpage | lpage | etal | pub-id
-        | named-content | styled-content | funding-source | award-id | institution | country | addr-line
+        | named-content | styled-content | funding-source | award-id 
+        | institution | city | state | country | addr-line
         | chem-struct">
         <span class="{local-name()}">
             <xsl:apply-templates select="node()|@*"/>
