@@ -822,7 +822,7 @@
            class="fresco"
            data-fresco-caption="{$fig/label}: {$fig/caption/title}"
            data-fresco-group="figure"
-           data-fresco-options="fit: 'width', ui: 'outside', thumbnails: false, loop: true, position: true, preload: false">
+           data-fresco-options="fit: 'width', ui: 'outside', thumbnails: false, loop: true, position: true, overflow: true, preload: false">
 	        <img class="{local-name()}"
 	             src="{$root}-1x.jpg"
 	             itemprop="contentUrl"
