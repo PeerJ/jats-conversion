@@ -46,6 +46,7 @@
             </title>
             <link rel="self" href="{self-uri/@xlink:href}"/>
             <link rel="license" href="{permissions/license/@xlink:href}"/>
+            <link rel="alternate" type="text/html" href="{self-uri/@xlink:href}/"/>
             <link rel="enclosure" type="application/pdf" href="{self-uri/@xlink:href}.pdf"/>
             <id>
                 <xsl:value-of select="self-uri/@xlink:href"/>

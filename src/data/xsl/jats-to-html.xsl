@@ -390,7 +390,8 @@
     <xsl:template
         match="abbrev | suffix | email | year | month | day
         | xref | contrib | source | volume | fpage | lpage | etal | pub-id
-        | named-content | styled-content | funding-source | award-id | institution | country | addr-line
+        | named-content | styled-content | funding-source | award-id 
+        | institution | city | state | country | addr-line
         | chem-struct">
         <span class="{local-name()}">
             <xsl:apply-templates select="node()|@*"/>
@@ -821,7 +822,7 @@
            class="fresco"
            data-fresco-caption="{$fig/label}: {$fig/caption/title}"
            data-fresco-group="figure"
-           data-fresco-options="fit: 'width', ui: 'outside', thumbnails: false, loop: true, position: true, preload: false">
+           data-fresco-options="fit: 'width', ui: 'outside', thumbnails: false, loop: true, position: true, overflow: true, preload: false">
 	        <img class="{local-name()}"
 	             src="{$root}-1x.jpg"
 	             itemprop="contentUrl"
