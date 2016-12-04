@@ -34,10 +34,12 @@
    <!-- Template: ms-article-meta-abstract-test
         
         One and only one abstract is required.
+        Manuscripts may have more than one abstract.
+        KP 2015-11-03
         
         Context: article-categories                   -->
    <!-- ********************************************* -->   
-	<xsl:template name="ms-article-meta-abstract-test">
+	<!--<xsl:template name="ms-article-meta-abstract-test">
 		<xsl:if test="count(abstract) &gt; 1 and not(abstract/@abstract-type='graphical')">
 			<xsl:call-template name="make-error">
 				<xsl:with-param name="error-type">abstract count</xsl:with-param>
@@ -47,7 +49,7 @@
 				<xsl:with-param name="tg-target" select="'tags.html#el-abs'"/>
 				</xsl:call-template>
       	</xsl:if>
-   </xsl:template>
+   </xsl:template>-->
 
 
 
@@ -59,8 +61,7 @@
         pub-date, volume, volume-id, issue,
         issue-id, issue-title, supplement, fpage,
         lpage, page-range, elocation-id, email, ext-link,
-        uri, product, history, trans-abstract, conference,
-        aff
+        uri, product, history, conference, aff
         
         Do not allow related-article unless article is
         correction or retraction
@@ -75,30 +76,41 @@
         <xsl:call-template name="make-error">
 				<xsl:with-param name="error-type">article-meta content check</xsl:with-param>
 				<xsl:with-param name="description">
-              <xsl:text>The following elements should not appear inside &lt;article-meta&gt;: &lt;conference&gt;, &lt;ext-link&gt;, &lt;email&gt;, &lt;elocation-id&gt;, &lt;fpage&gt;, &lt;history&gt;, &lt;issue&gt;, &lt;issue-title&gt;, &lt;issue-id&gt;, &lt;lpage&gt;, &lt;page-range&gt;, &lt;product&gt;, &lt;related-article&gt;, &lt;supplement&gt;, &lt;uri&gt;, &lt;volume&gt;, &lt;volume-id&gt;</xsl:text>
+              <xsl:text>The following elements should not appear inside &lt;article-meta&gt;: &lt;conference&gt;, &lt;ext-link&gt;, &lt;email&gt;, &lt;elocation-id&gt;, &lt;fpage&gt;, &lt;history&gt;, &lt;issue&gt;, &lt;issue-title&gt;, &lt;issue-id&gt;, &lt;lpage&gt;, &lt;page-range&gt;, &lt;product&gt;, &lt;supplement&gt;, &lt;uri&gt;, &lt;volume&gt;, &lt;volume-id&gt;</xsl:text>
            </xsl:with-param>
 			<xsl:with-param name="tg-target" select="'tags.html#el-artmeta'"/>
         </xsl:call-template>
       </xsl:if>
-   	<xsl:if test="related-article[not(@related-article-type='republished-article') and not(@related-article-type='updated-article') and not(@related-article-type='addended-article')] and not(/article/@article-type='correction') and not(/article/@article-type='retraction') and not(/article/@article-type='article-commentary')">
+   	<xsl:if test="related-article[not(@related-article-type='republished-article') and
+   	   not(@related-article-type='concurrent-pub') and not(@related-article-type='updated-article') and 
+			not(@related-article-type='addended-article')] 
+			and not(/article/@article-type='correction') and 
+			not(/article/@article-type='retraction') and 
+			not(/article/@article-type='article-commentary') and 
+			not(/article/@article-type='expression-of-concern')">
    		<xsl:call-template name="make-error">
    			<xsl:with-param name="error-type">article-meta content check</xsl:with-param>
    			<xsl:with-param name="description">
-   				<xsl:text>Only corrections, retractions, addenda, and article-commentary may contain &lt;related-article&gt;.</xsl:text>
+   				<xsl:text>Only corrections, retractions, addenda, expressions-of-concern, and article-commentary may contain &lt;related-article&gt;.</xsl:text>
    			</xsl:with-param>
    			<xsl:with-param name="tg-target" select="'tags.html#el-artmeta'"/>
    		</xsl:call-template>
    	</xsl:if>
-   	
-		<xsl:if test="trans-abstract and $art-lang-att='en'">
+
+   <!--======================================================-->
+      <!--Removed this test, KP 2015-11-03-->
+      <!--Manuscript to follow PMC rules-->
+   <!--======================================================-->
+		<!--<xsl:if test="trans-abstract and $art-lang-att='en'">
         <xsl:call-template name="make-error">
 				<xsl:with-param name="error-type">article-meta content check</xsl:with-param>
 				<xsl:with-param name="description">
               <xsl:text>&lt;trans-abstract&gt;should only be used to carry an English abstract in a non-English manuscript.</xsl:text>
            </xsl:with-param>
         </xsl:call-template>
-			</xsl:if>
-		
+			</xsl:if>-->
+      <!--======================================================-->
+      
 	<!--	<xsl:if test="$art-lang-att!='en' and not(title-group/trans-title-group[@xml:lang='en']) and not(title-group/trans-title[@xml:lang='en'])">
    		<xsl:call-template name="make-error">
    			<xsl:with-param name="error-type">article-meta content check</xsl:with-param>
@@ -227,6 +239,7 @@
 	<xsl:template name="ms-footnote-license-check">
 		<xsl:variable name="fntext" select="."/>
 		<xsl:choose>
+		<xsl:when test="ancestor::table-wrap"/><!-- it is possible to have cc licenses for table material -->
 		<xsl:when test="contains($fntext,'creativecommons.org') or contains(descendant::node()/@xlink:href,'creativecommons.org')">
                <xsl:call-template name="make-error">
                   <xsl:with-param name="error-type">license in footnote test</xsl:with-param>
@@ -515,13 +528,14 @@
         	<xsl:when test="contains(//processing-instruction('origin'), 'vapa')"/><!-- ok -->
         	<xsl:when test="contains(//processing-instruction('origin'), 'nasapa')"/><!-- ok -->
         	<xsl:when test="contains(//processing-instruction('origin'), 'nistpa')"/><!-- ok -->
+        	<xsl:when test="contains(//processing-instruction('origin'), 'ahrqpa')"/><!-- ok -->
 			<xsl:otherwise>
             <xsl:call-template name="make-error">
 					<xsl:with-param name="error-type">manuscript ProcessingInstruction check</xsl:with-param>
                <xsl:with-param name="description">
 						<xsl:text>&lt;?origin </xsl:text>
 						<xsl:value-of select="//processing-instruction('origin')"/>
-                  <xsl:text>?&gt; is not an acceptable input stream. It must be one of 'nihpa', 'ukpmcpa', 'capmc', 'hrams', 'hal', 'asms', 'aspa', 'vapa', 'nistpa', or 'hhmipa'.</xsl:text>
+                  <xsl:text>?&gt; is not an acceptable input stream. It must be one of 'nihpa', 'hhspa', 'ukpmcpa', 'capmc', 'hrams', 'hal', 'asms', 'aspa', 'vapa', 'nistpa', 'ahrqpa' or 'hhmipa'.</xsl:text>
                </xsl:with-param>
             	</xsl:call-template>
 				</xsl:otherwise>
@@ -697,12 +711,13 @@
 
    <!-- ********************************************* -->
    <!-- Template: abstract-attribute-test
-        
-        No attributes should be present in abstract
+         Removed this test, overhaul of manuscript
+         stylecheck rules KP 2015-11-03
+         Manuscript to follow PMC rules
         
         Context: abstract                             -->
    <!-- ********************************************* -->   
-   <xsl:template name="abstract-attribute-test">
+   <!--<xsl:template name="abstract-attribute-test">
       
       <xsl:if test="(@abstract-type and @abstract-type!='graphical') or @xml:lang">
          <xsl:call-template name="make-error">
@@ -713,8 +728,8 @@
 				<xsl:with-param name="tg-target" select="'tags.html#el-abs'"/>
          </xsl:call-template>
       </xsl:if>
-   </xsl:template>
-	
+   </xsl:template>-->
+   <!-- ********************************************* -->
 	
 	<!-- ********************************************* -->
 	<!-- Template: abstract-sec-test
@@ -1442,7 +1457,8 @@
          <xsl:when test="                          
             $normalized = 'abstract'                          
             or $normalized = 'addendum'                          
-            or $normalized = 'admin'                          
+            or $normalized = 'admin'                              
+            or $normalized = 'advert'                          
             or $normalized = 'announcement'                          
             or $normalized = 'article-commentary'                          
             or $normalized = 'book-review'                          
@@ -1451,7 +1467,8 @@
             or $normalized = 'calendar'                          
             or $normalized = 'case-report'                          
             or $normalized = 'collection'                          
-            or $normalized = 'correction'                          
+            or $normalized = 'correction'                         
+            or $normalized = 'cover'                          
             or $normalized = 'data-paper'                          
             or $normalized = 'discussion'                          
             or $normalized = 'editorial'                          
@@ -1474,7 +1491,8 @@
             or $normalized = 'research-article'                         
             or $normalized = 'retraction'                          
             or $normalized = 'review-article'                          
-            or $normalized = 'systematic-review'                          
+            or $normalized = 'systematic-review'       
+            or $normalized = 'toc'                          
             or $normalized = 'tutorial'                          
             or $normalized = 'other'">
             <!-- This is correct-->
@@ -1566,7 +1584,7 @@
                      <xsl:with-param name="description">
                         <xsl:text>Expression of Concern should have a related-article element with the related-article-type attribute set to 'object-of-concern' or a related-object element with the link-type attribute set to 'object-of-concern'</xsl:text>
                      </xsl:with-param>
-							<xsl:with-param name="class" select="'warning'"/>
+							<xsl:with-param name="class" select="'error'"/>
                   </xsl:call-template>
                </xsl:otherwise>
             </xsl:choose>
@@ -2647,11 +2665,12 @@
       	<xsl:when test="not(collab)  
       				and not(collab-alternatives)
          				and not(name)
-         				and not(name-alternatives)">
+         				and not(name-alternatives)
+         				and not(anonymous)">
             <xsl:call-template name="make-error">
 					<xsl:with-param name="error-type" select="'contrib content check'"/>
                <xsl:with-param name="description">
-                  <xsl:text>&lt;contrib&gt; must have one of the following: [collab, collab-alternatives, name, name-alternatives].</xsl:text>
+                  <xsl:text>&lt;contrib&gt; must have one of the following: [collab, collab-alternatives, name, name-alternatives, anonymous].</xsl:text>
                </xsl:with-param>
 				<xsl:with-param name="tg-target" select="'tags.html#el-contrib'"/>
             </xsl:call-template>
@@ -3300,8 +3319,16 @@
 					<xsl:text> date with a day must have a month.</xsl:text>
 				</xsl:with-param>
 			</xsl:call-template>
-		</xsl:if>	
-		<xsl:call-template name="is-valid-date"/>
+		</xsl:if>
+	   <xsl:if test="count($context/month) &gt; 1">
+	      <xsl:call-template name="make-error">
+	         <xsl:with-param name="error-type" select="concat(local-name($context),' check')"/>
+	         <xsl:with-param name="description">
+	            <xsl:text> date must not contain multiple month elements</xsl:text>
+	         </xsl:with-param>
+	      </xsl:call-template>
+	   </xsl:if>
+	   <xsl:call-template name="is-valid-date"/>
 	</xsl:template>
 	
 	<!-- *********************************************************** -->
@@ -3730,7 +3757,7 @@
   <xsl:template name="formula-content-test">
       <xsl:param name="context" select="."/>
 		<xsl:variable name="has-plaintextmath">
-			<xsl:if test="(normalize-space(translate(text(),',.?!:;)([]{}','')) or bold or italic or sup or sub) and not(descendant::xref)">yes</xsl:if>
+		   <xsl:if test="(normalize-space(translate(text(),',.?!:;&#x2003;)([]{}','')) or bold or italic or sup or sub) and not(descendant::xref)">yes</xsl:if>
 			</xsl:variable>
 		<xsl:variable name="has-mmlmath">
 			<xsl:if test="mml:math">yes</xsl:if>
@@ -3870,7 +3897,8 @@
       <xsl:if test="not(fpage) and not(elocation-id) and 
 							not(contains(//processing-instruction('properties'),'OLF')) and 
 							not(//processing-instruction('OLF')) and 
-							not(contains(//processing-instruction('aheadofprint-preload'),'true'))">
+							not(contains(//processing-instruction('aheadofprint-preload'),'true')) and 
+							not(contains(//processing-instruction('properties'),'scanned_data'))">
          <xsl:call-template name="make-error">
             <xsl:with-param name="error-type" select="'article-meta checking'"/>
             <xsl:with-param name="description">
@@ -3952,7 +3980,9 @@
 
 	  <xsl:variable name="ok-date-types-article" select="concat(
 	     'accepted ',
-	     'online ', 
+		'fascicular ', 
+	     'online ',
+	     'read ', 
 		 'received ',
 		 'rev-request ',
 		 'rev-recd ',
@@ -5466,7 +5496,85 @@
 	<xsl:template name="mathml-repeated-element-check">
 		<xsl:param name="context" select="."/> 
 		<xsl:param name="report-level" select="'error'"/>
+		<xsl:variable name="mv">
+			<xsl:choose>
+				<xsl:when test="@mathvariant">
+					<xsl:value-of select="@mathvariant"/>
+					</xsl:when>
+				<xsl:otherwise>
+					<xsl:text>none</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+		<xsl:variable name="fs1mv">
+			<xsl:choose>
+				<xsl:when test="normalize-space(following-sibling::node()[1]/@mathvariant)">
+					<xsl:value-of select="normalize-space(following-sibling::node()[1]/@mathvariant)"/>
+					</xsl:when>
+				<xsl:otherwise>
+					<xsl:text>none</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+		<xsl:variable name="fs2mv">
+			<xsl:choose>
+				<xsl:when test="normalize-space(following-sibling::node()[2]/@mathvariant)">
+					<xsl:value-of select="normalize-space(following-sibling::node()[2]/@mathvariant)"/>
+					</xsl:when>
+				<xsl:otherwise>
+					<xsl:text>none</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+		
 		<xsl:choose>
+			<!-- special processing for mn -->
+			<xsl:when test="name($context)='mml:mn' and name(following-sibling::node()[1])='' and name($context)=name(following-sibling::node()[2])">
+				<xsl:choose>
+					<xsl:when test="$mv!=$fs2mv"/>
+					<xsl:when test="parent::mml:msubsup or
+										 parent::mml:msub or
+										 parent::mml:msup or
+										 parent::mml:mfrac or 
+										 parent::mml:munderover or
+					                                         parent::mml:mroot or
+										 parent::mml:mmultiscripts or 
+										 parent::mml:mfenced[@separators]"/>
+					<xsl:otherwise>
+					<xsl:call-template name="make-error">
+						<xsl:with-param name="error-type" select="'mathml element check'"/>
+						<xsl:with-param name="class" select="$report-level"/>
+						<xsl:with-param name="description">
+							<xsl:value-of select="name($context)"/>
+							<xsl:text> should not follow itself. This is meaningless tagging.</xsl:text>
+						</xsl:with-param>
+					</xsl:call-template>
+				</xsl:otherwise>
+				</xsl:choose>
+				</xsl:when>
+			<xsl:when test="name($context)=name(following-sibling::node()[1]) and name($context)='mml:mn'">
+				<xsl:choose>
+					<xsl:when test="$mv!=$fs1mv"/>
+					<xsl:when test="parent::mml:msubsup or
+										 parent::mml:msub or
+										 parent::mml:msup or
+										 parent::mml:mfrac or 
+										 parent::mml:munderover or
+					                parent::mml:mroot or parent::mml:mmultiscripts or
+										 parent::mml:mfenced[@separators]"/>
+					<xsl:otherwise>
+					<xsl:call-template name="make-error">
+						<xsl:with-param name="error-type" select="'mathml element check'"/>
+						<xsl:with-param name="class" select="$report-level"/>
+						<xsl:with-param name="description">
+							<xsl:value-of select="name($context)"/>
+							<xsl:text> should not follow itself. This is meaningless tagging.</xsl:text>
+						</xsl:with-param>
+					</xsl:call-template>
+				</xsl:otherwise>
+				</xsl:choose>
+				</xsl:when>
+				
 			<!-- elements followed by whitespace nodes followed by same elements pass,
 				but should not, check following node 2 -->
 			<xsl:when test="name(following-sibling::node()[1])=''">
@@ -5972,6 +6080,7 @@
               'chapter-subtitle subtitle st-sep ',
               'studies teaser drug_brandname drug_genericname drug_synonymname ',
               'light-blue light-pink light-yellow light-green light-orange ',
+	      'blue red yellow green orange pink ',
               'consensus light-grey pageobject highlight ',
               'intro-subsect-header ',
               'ncbi-app ncbi-class ncbi-cmd ncbi-code ',
@@ -6715,9 +6824,13 @@
    		'continues ',
    		'corrected-article ',
    		'correction-forward ',
+   		'data-paper ',
+   		'data-paper-referrer ',
    		'letter ',
    		'letter-reply ',
    		'object-of-concern ',
+   		'peer-review ',
+   		'peer-reviewed-article ',
    		'repub-note ',
    		'repub-note-target ',
    		'republication ',
@@ -6728,10 +6841,6 @@
    		'update-of ',
    		'updated-article ',
    		'update ',
-   		'peer-review ',
-   		'peer-reviewed-article ',
-   		'data-paper ',
-   		'data-paper-referrer ',
    		'')"/>
    	
    	<xsl:variable name="rat-ok">
@@ -6816,11 +6925,18 @@
    <!-- *********************************************************** -->
    <xsl:template name="ms-related-article-check">
 
-   	<xsl:if test="@related-article-type!='corrected-article' and @related-article-type!='retracted-article' and @related-article-type!='commentary-article' and @related-article-type!='concurrent-pub' and @related-article-type!='republished-article' and @related-article-type!='updated-article' and @related-article-type!='addended-article'">
+   	<xsl:if test="@related-article-type!='corrected-article' and 
+		              @related-article-type!='retracted-article' and 
+						  @related-article-type!='commentary-article' and 
+						  @related-article-type!='concurrent-pub' and 
+						  @related-article-type!='republished-article' and 
+						  @related-article-type!='updated-article' and 
+						  @related-article-type!='addended-article' and 
+						  @related-article-type!='object-of-concern'">
    		<xsl:call-template name="make-error">
    			<xsl:with-param name="error-type">related-article type check</xsl:with-param>
    			<xsl:with-param name="description">
-   				<xsl:text>&lt;related-article&gt; must contain an @related-article-type with the value "commentary-article", "corrected-article", "addended-article", or "retracted-article", not </xsl:text>
+   				<xsl:text>&lt;related-article&gt; must contain an @related-article-type with the value "commentary-article", "corrected-article", "addended-article", "expression-of-concern", or "retracted-article", not </xsl:text>
  					<xsl:value-of select="@related-article-type"/>
 					<xsl:text>.</xsl:text>
    			</xsl:with-param>
@@ -8120,14 +8236,20 @@
             		</xsl:with-param>
         		</xsl:call-template>
 			</xsl:if>
-		<xsl:if test="$stream='manuscript' and $local-lang!='en'">
+	   
+	   <!--======================================================-->
+	   <!--Removed this test, KP 2015-11-03-->
+	   <!--Manuscript to follow PMC rules-->
+	   <!--======================================================-->
+		<!--<xsl:if test="$stream='manuscript' and $local-lang!='en'">
 				<xsl:call-template name="make-error">
             	<xsl:with-param name="error-type">trans-abstract check</xsl:with-param>
             	<xsl:with-param name="description">
 						<xsl:text>The &lt;trans-abstract&gt; should only be used to carry an English abstract in a non-English manuscript.</xsl:text>
             		</xsl:with-param>
         		</xsl:call-template>
-		</xsl:if>	
+		</xsl:if>-->
+	   <!--======================================================-->
 		</xsl:template>
 	
 	
@@ -8198,14 +8320,19 @@
             		</xsl:with-param>
         		</xsl:call-template>
 			</xsl:if>
-		<xsl:if test="$stream='manuscript' and $local-lang!='en' and not(ancestor::ref)">
+	   <!--======================================================-->
+	   <!--Removed this test, KP 2015-11-03-->
+	   <!--Manuscript to follow PMC rules-->
+	   <!--======================================================-->
+		<!--<xsl:if test="$stream='manuscript' and $local-lang!='en' and not(ancestor::ref)">
 				<xsl:call-template name="make-error">
             	<xsl:with-param name="error-type">trans-title check</xsl:with-param>
             	<xsl:with-param name="description">
 						<xsl:text>The &lt;trans-title&gt; should only be used to carry an English title in a non-English manuscript.</xsl:text>
             		</xsl:with-param>
         		</xsl:call-template>
-		</xsl:if>	
+		</xsl:if>-->
+	   <!--======================================================-->
 		</xsl:template>
 
    <!-- *********************************************************** -->
@@ -8422,6 +8549,10 @@
 	        										or self::sec/ancestor::app 
 	        										or self::sec/parent::back 
 	        										or self::book-part[@book-part-type='appendix']
+												or self::book-app
+												or self::book-app-group
+												or self::book-part-wrapper[book-app]
+												or self::book-part-wrapper[book-app-group]
 												or self::book-part-wrapper[book-part/@book-part-type='appendix']])
 	        			and not(id($context/@rid)[self::target/ancestor::app-group
 	        										or self::target/parent::sec/parent::back

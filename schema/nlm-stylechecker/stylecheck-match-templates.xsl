@@ -41,16 +41,21 @@
            "Abstract" 
 		  5) If manuscript, do not allow attributes.
         -->
-	<xsl:template match="abstract">
+	 <xsl:template match="abstract">
 		<xsl:call-template name="check-abstract-content"/>
 		<xsl:call-template name="check-abstract-type"/>
 		<xsl:call-template name="empty-element-check"/>
 		<!--<xsl:call-template name="abstract-title-test"/>-->
 		<xsl:call-template name="abstract-sec-test"/>
 		<xsl:call-template name="article-pi-check"/>
-		<xsl:if test="$stream='manuscript'">
+	 <!--=======================================-->  
+	   <!--Removed this test, KP 2015-11-03
+	   Manuscript to follow PMC rules-->
+	<!--=======================================--> 
+		<!--<xsl:if test="$stream='manuscript'">
 			<xsl:call-template name="abstract-attribute-test"/>
-		</xsl:if>
+		</xsl:if>-->
+	<!--=======================================--> 
 		<xsl:apply-templates select="." mode="output"/>
 	</xsl:template>
 
@@ -100,7 +105,9 @@
          2) content is based on parent
      -->
    <xsl:template match="alternatives">
-		<xsl:call-template name="alternatives-parent-check"/>
+        	<xsl:if test="$stream != 'book'">
+			<xsl:call-template name="alternatives-parent-check"/>
+		</xsl:if>
 		<xsl:call-template name="alternatives-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
@@ -235,7 +242,8 @@
         3) needs at least on heading subj-group
 		  4) article must have an fpage or elocation-id
 		  5) manuscript may not have most citation info
-		  6) manuscript may not have more than one abstract
+		  6) manuscript may have more than one abstract
+		  (change on 2015-11-03 KP)
      -->
 	<xsl:template match="article-meta">
 		<xsl:call-template name="empty-element-check"/>
@@ -256,7 +264,7 @@
 				</xsl:when>
 				<xsl:when test="$stream='manuscript'">
 					<xsl:call-template name="ms-article-meta-content-test"/>
-					<xsl:call-template name="ms-article-meta-abstract-test"/>
+					<!--<xsl:call-template name="ms-article-meta-abstract-test"/>-->
 					<!--	<xsl:call-template name="ms-article-id-test"/>  -->
 				</xsl:when>
 			</xsl:choose>
@@ -348,6 +356,24 @@
         1) cannot be empty 
      -->
    <xsl:template match="book">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>
+    
+   <!-- *********************************************************** -->
+   <!-- Match: book-app (BITS2)
+        1) cannot be empty 
+     -->
+   <xsl:template match="book-app">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>
+    
+   <!-- *********************************************************** -->
+   <!-- Match: book-app-group (BITS2)
+        1) cannot be empty 
+     -->
+   <xsl:template match="book-app-group">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
     </xsl:template>
@@ -1811,13 +1837,13 @@
 
    <!-- *********************************************************** -->
    <!-- Match: named-book-part-body (BITS)
-        1) 
+        1) cannot be empty 
      -->
    <!-- *********************************************************** -->
-   <!--<xsl:template match="named-book-part-body">
-  
+   <xsl:template match="named-book-part-body">
+      <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-   </xsl:template>-->
+   </xsl:template>
    
 
    <!-- *********************************************************** -->
@@ -2185,17 +2211,33 @@
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
     </xsl:template>
-		
-		
+    
+     
    <!-- *********************************************************** -->
-   <!-- Match: Match: question-wrap (BITS)
-        1)
+   <!-- Match: question-preamble (BITS2)
      -->
    <!-- *********************************************************** -->
-   <!--<xsl:template match="question-wrap">
-      
+   <!--<xsl:template match="question-preamble">      
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>-->
+    </xsl:template>-->
+    
+    
+   <!-- *********************************************************** -->
+   <!-- Match: question-preamble (BITS2)
+     -->
+   <!-- *********************************************************** -->
+   <!--<xsl:template match="question-preamble">      
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>-->
+    
+    
+   <!-- *********************************************************** -->
+   <!-- Match: question-wrap-group (BITS2)
+     -->
+   <!-- *********************************************************** -->
+   <!--<xsl:template match="question-wrap-group">      
+      <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>-->
 		
 
    <!-- *********************************************************** -->
@@ -3026,9 +3068,15 @@
    <!-- *********************************************************** -->
    <xsl:template match="title-group">
       <xsl:call-template name="empty-element-check"/>
-		<xsl:if test="$stream='manuscript'">
+      <!--======================================================-->
+      <!--Removed this test, overhaul of manuscript
+         stylecheck rules KP 2015-11-03-->
+      <!--Manuscript to follow PMC rules-->
+      <!--======================================================-->
+		<!--<xsl:if test="$stream='manuscript'">
 			<xsl:call-template name="ms-title-group-check"/>
-			</xsl:if>
+			</xsl:if>-->
+      <!--======================================================-->
 		
       <xsl:apply-templates select="." mode="output"/>
 

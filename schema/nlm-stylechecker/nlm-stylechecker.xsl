@@ -26,7 +26,7 @@
  -->
 <!-- ************************************************************************ -->
 <!--                                     NLM STYLECHECKER
-                                           Version 5.9
+                                           Version 5.12
     
     Stylesheet tests an XML instance to determine whether it conforms to correct
     PMC style as defined in the Tagging Guidelines located at:
@@ -76,8 +76,45 @@
      
      
    PMC Project Revision notes:
+
+    November 8, 2016: Version 5.12
+              Public release of 3rd quarter changes
+              
+    September 28, 2016
+              pub-date must contain no more than one month element
+    
+    September 21, 2016
+              Expression of concern without related-article is reclassified from warning to error
+    
+    September 6, 2016
+              Allow anonymous in contrib
+    
+    August 9, 2016: Version 5.11
+              Public release of 3rd quarter changes
+              
+    July 14, 2016
+              Updates for NLM Biomedical Journal Digitization:
+                 Project-specific @article-type values, history-date-type-attribute-check,
+                 pub-id-type-value, and pagination rule
+   
+    July 10, 2016
+              Recognize Unicode em-space as plain-text math.   		
+   
+    February 17, 2016
+              Allow @article-type="expression-of-concern" and @related-article-type
+                   of "object-of-concern" for manuscripts.
+					
+    February 9, 2016: Version 5.10
+              Public release of 1st quarter changes
+	
+    January 4, 2016:
+              Allow consecutive mml:mn when they have different @mathvariant
+                   values. 
+                   <mml:mn>1</mml:mn><mml:mn mathvariant="bold">8</mml:mn> is ok
+                   <mml:mn>1</mml:mn><mml:mn>8</mml:mn> is not ok
+	 
     August 3, 2015: Version 5.9
-                      Public release of 3rd quarter changes  
+              Public release of 3rd quarter changes  
 
     July 30, 2015:
               In contrib-id-check, ORCID check allows all-cap or lower-case
@@ -414,7 +451,7 @@
                           not(self::text())])"/>
 
    <!-- Indicate our own version -->
-   <xsl:param name="stylechecker-version"     select="'5.8'"/>
+   <xsl:param name="stylechecker-version"     select="'5.12'"/>
    <xsl:param name="stylechecker-mainline"    select="'nlm-stylechecker5.xsl'"/>
 
    <!-- The 'style' selects the rules that can be applied by the stylechecker.
@@ -508,7 +545,7 @@
 		</xsl:choose>
 	</xsl:param>
 	
-	<xsl:param name="pub-id-type-values" select="' aggregator archive art-access-id arxiv coden doaj doi index isbn manuscript medline other pii pmc pmcid pmid publisher-id publisher-manuscript sici std-designation '"/>
+	<xsl:param name="pub-id-type-values" select="' accession aggregator archive art-access-id arxiv coden doaj doi index isbn manuscript medline other pii pmc pmc-scan pmcid pmid publisher-id publisher-manuscript sici std-designation '"/>
 
 
    <!-- ********************************************************************* -->
