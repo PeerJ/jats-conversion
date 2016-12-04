@@ -21,7 +21,8 @@
 
 	Changes record version, author initials, date, and comments
 		
-		4.3.5 (CSK) 3/23/15  changed name of relations element to be like other names
+		4.3.5 (PDF) 8/10/16 fixed number of allowed collections
+		4.3.5 (CSK) 3/23/15 changed name of relations element to be like other names
 		4.3.5 10/31/14 added rel:program to support deposit of relationships
 		4.3.5 (PDF) 9/16/14 created doiresources4.3.5.xsd, added <relationship_data>
 		4.3.4 (PDF) 6/19/14 created doiresources4.3.4.xsd
@@ -98,7 +99,7 @@
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="doi"/>
-				<xsd:element ref="collection"/>
+				<xsd:element ref="collection" minOccurs="0" maxOccurs="unbounded"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>

@@ -20,6 +20,7 @@
 
 	Changes record version, author initials, date, and comments
 	
+	    4.3.2,4,5 (PDF) 8/10/16 fixed number of allowed collections
 	    4.3.2 (PDF) 9/26/13 added lic_ref_data to allow access indicators-only deposits
 	    4.3.2 (CSK) added fundref_data to allow fundref only deposits
 
@@ -93,7 +94,7 @@
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="doi"/>
-				<xsd:element ref="collection"/>
+				<xsd:element ref="collection" minOccurs="0" maxOccurs="unbounded"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>

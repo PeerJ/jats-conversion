@@ -1263,7 +1263,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
-				<xsd:maxLength value="55"/>
+				<xsd:maxLength value="60"/>
 				<xsd:minLength value="1"/>
 				<xsd:pattern value="[^\d\?]*"/>
 				<xsd:whiteSpace value="collapse"/>
@@ -1283,7 +1283,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
-				<xsd:maxLength value="55"/>
+				<xsd:maxLength value="60"/>
 				<xsd:minLength value="1"/>
 				<xsd:pattern value="[^\d\?]*[^\?\s]+[^\d]*"/>
 				<xsd:whiteSpace value="collapse"/>
@@ -2305,9 +2305,9 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 				<xsd:element ref="crossmark_version" minOccurs="0"/>
 				<xsd:element ref="crossmark_policy"/>
 				<xsd:element ref="crossmark_domains"/>
-				<xsd:element ref="crossmark_domain_exclusive">
+				<xsd:element ref="crossmark_domain_exclusive" minOccurs="0">
 					<xsd:annotation>
-						<xsd:documentation>Required element. Some publishers encourage broad third
+						<xsd:documentation> Some publishers encourage broad third
 							party hosting of the publisher's content. Other publishers do not. And
 							still others vary their policy depending on whether a particular article
 							has been published under an OA policy or not. This boolean flag allows

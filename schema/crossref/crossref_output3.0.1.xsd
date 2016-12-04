@@ -72,7 +72,12 @@
      Please look at crossref_query_input.xsd for the XML schema definition of query XML input.     
      ============================================================= 
 -->
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.crossref.org/output/3.0" targetNamespace="http://www.crossref.org/output/3.0">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+            xmlns="http://www.crossref.org/output/3.0" targetNamespace="http://www.crossref.org/output/3.0" 
+            xmlns:ai="http://www.crossref.org/AccessIndicators.xsd">
+
+	<xsd:import namespace="http://www.crossref.org/AccessIndicators.xsd"
+		        schemaLocation="AccessIndicators.xsd"/>
 	<!--    ================== Common attribute    and    elements ============ -->
 	<xsd:simpleType name="qfield_t">
 		<xsd:restriction base="xsd:string">
@@ -291,6 +296,8 @@
 		<xsd:sequence>
 			<xsd:element ref="publisher" minOccurs="0"/>
 			<xsd:element ref="doi" minOccurs="0"/>
+			<xsd:element ref="collection" minOccurs="0"/>
+			<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
 			<xsd:element ref="issn" minOccurs="0" maxOccurs="2"/>
 			<xsd:element ref="isbn" minOccurs="0"/>
 			<!-- book/conf. elements -->
@@ -1417,4 +1424,520 @@
 			<xsd:minLength value="6"/>
 		</xsd:restriction>
 	</xsd:simpleType>
+	
+	<!--  =============================  added to include collection info in MD data for Elsevier   cs-2902  ============== -->
+	
+	<xsd:element name="collection">
+		<xsd:annotation>
+			<xsd:documentation> A collection is a container for one or more items each holding a doi
+				or a resource (URI) which is related to the DOI in the ancestor &lt;doi_data&gt;
+				element. A collection must be qualified by a property attibute or the
+				multi-resolution attribute. property attributes: list-based: uses an interim page
+				and presents the list of items to the user (via Multiple Resolution) country-based:
+				proxy picks destination based on the country code of the user's location (this
+				option is not currently active, contact support@crossref.org for more info)
+				crawler-based: identifies resource to be crawled by the specified crawlers.
+				text-mining: identifies resource to be used for text and data mining unspecified:
+				identifies resource with unspecified usage syndication: identifies resource to be
+				used for syndication The multi-resolution attribute may be used to lock or unlock
+				DOIs for multiple resolution. </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="item" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="property" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:NMTOKEN">
+						<xsd:enumeration value="list-based"/>
+						<xsd:enumeration value="country-based"/>
+						<xsd:enumeration value="crawler-based"/>
+						<xsd:enumeration value="text-mining"/>
+						<xsd:enumeration value="unspecified"/>
+						<xsd:enumeration value="syndication"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="setbyID" use="optional">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="128"/>
+						<xsd:minLength value="1"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>			
+			<xsd:attribute name="multi-resolution">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:NMTOKEN">
+						<xsd:enumeration value="lock"/>
+						<xsd:enumeration value="unlock"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="item">
+		<xsd:annotation>
+			<xsd:documentation>A container used to associate a collection, doi, or resource (URI)
+				with zero or more property elements. item is currently used for supplying as-crawled
+				URLs (http://help.crossref.org/#as-crawled-urls)</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:choice minOccurs="0">
+					<xsd:element ref="doi"/>
+					<xsd:element ref="resource"/>
+				</xsd:choice>
+			</xsd:sequence>
+			<xsd:attribute name="crawler" use="optional">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:NMTOKEN">
+						<xsd:enumeration value="altavista"/>
+						<xsd:enumeration value="google"/>
+						<xsd:enumeration value="msn"/>
+						<xsd:enumeration value="scirus"/>
+						<xsd:enumeration value="yahoo"/>
+						<xsd:enumeration value="iParadigms"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="label" use="optional">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="128"/>
+						<xsd:minLength value="3"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="country" use="optional">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:NMTOKEN">
+						<xsd:enumeration value="AX"/>
+						<xsd:enumeration value="AF"/>
+						<xsd:enumeration value="AL"/>
+						<xsd:enumeration value="DZ"/>
+						<xsd:enumeration value="AS"/>
+						<xsd:enumeration value="AD"/>
+						<xsd:enumeration value="AO"/>
+						<xsd:enumeration value="AI"/>
+						<xsd:enumeration value="AQ"/>
+						<xsd:enumeration value="AG"/>
+						<xsd:enumeration value="AR"/>
+						<xsd:enumeration value="AM"/>
+						<xsd:enumeration value="AW"/>
+						<xsd:enumeration value="AU"/>
+						<xsd:enumeration value="AT"/>
+						<xsd:enumeration value="AZ"/>
+						<xsd:enumeration value="BS"/>
+						<xsd:enumeration value="BH"/>
+						<xsd:enumeration value="BD"/>
+						<xsd:enumeration value="BB"/>
+						<xsd:enumeration value="BY"/>
+						<xsd:enumeration value="BE"/>
+						<xsd:enumeration value="BZ"/>
+						<xsd:enumeration value="BJ"/>
+						<xsd:enumeration value="BM"/>
+						<xsd:enumeration value="BT"/>
+						<xsd:enumeration value="BO"/>
+						<xsd:enumeration value="BA"/>
+						<xsd:enumeration value="BW"/>
+						<xsd:enumeration value="BV"/>
+						<xsd:enumeration value="BR"/>
+						<xsd:enumeration value="IO"/>
+						<xsd:enumeration value="BN"/>
+						<xsd:enumeration value="BG"/>
+						<xsd:enumeration value="BF"/>
+						<xsd:enumeration value="BI"/>
+						<xsd:enumeration value="KH"/>
+						<xsd:enumeration value="CM"/>
+						<xsd:enumeration value="CA"/>
+						<xsd:enumeration value="CV"/>
+						<xsd:enumeration value="KY"/>
+						<xsd:enumeration value="CF"/>
+						<xsd:enumeration value="TD"/>
+						<xsd:enumeration value="CL"/>
+						<xsd:enumeration value="CN"/>
+						<xsd:enumeration value="CX"/>
+						<xsd:enumeration value="CC"/>
+						<xsd:enumeration value="CO"/>
+						<xsd:enumeration value="KM"/>
+						<xsd:enumeration value="CD"/>
+						<xsd:enumeration value="CG"/>
+						<xsd:enumeration value="CK"/>
+						<xsd:enumeration value="CR"/>
+						<xsd:enumeration value="CI"/>
+						<xsd:enumeration value="HR"/>
+						<xsd:enumeration value="CU"/>
+						<xsd:enumeration value="CY"/>
+						<xsd:enumeration value="CZ"/>
+						<xsd:enumeration value="DK"/>
+						<xsd:enumeration value="DJ"/>
+						<xsd:enumeration value="DM"/>
+						<xsd:enumeration value="DO"/>
+						<xsd:enumeration value="EC"/>
+						<xsd:enumeration value="EG"/>
+						<xsd:enumeration value="SV"/>
+						<xsd:enumeration value="GQ"/>
+						<xsd:enumeration value="ER"/>
+						<xsd:enumeration value="EE"/>
+						<xsd:enumeration value="ET"/>
+						<xsd:enumeration value="FK"/>
+						<xsd:enumeration value="FO"/>
+						<xsd:enumeration value="FJ"/>
+						<xsd:enumeration value="FI"/>
+						<xsd:enumeration value="FR"/>
+						<xsd:enumeration value="GF"/>
+						<xsd:enumeration value="PF"/>
+						<xsd:enumeration value="TF"/>
+						<xsd:enumeration value="GA"/>
+						<xsd:enumeration value="GM"/>
+						<xsd:enumeration value="GE"/>
+						<xsd:enumeration value="DE"/>
+						<xsd:enumeration value="GH"/>
+						<xsd:enumeration value="GI"/>
+						<xsd:enumeration value="GR"/>
+						<xsd:enumeration value="GL"/>
+						<xsd:enumeration value="GD"/>
+						<xsd:enumeration value="GP"/>
+						<xsd:enumeration value="GU"/>
+						<xsd:enumeration value="GT"/>
+						<xsd:enumeration value="GN"/>
+						<xsd:enumeration value="GW"/>
+						<xsd:enumeration value="GY"/>
+						<xsd:enumeration value="HT"/>
+						<xsd:enumeration value="HM"/>
+						<xsd:enumeration value="HN"/>
+						<xsd:enumeration value="HK"/>
+						<xsd:enumeration value="HU"/>
+						<xsd:enumeration value="IS"/>
+						<xsd:enumeration value="IN"/>
+						<xsd:enumeration value="ID"/>
+						<xsd:enumeration value="IR"/>
+						<xsd:enumeration value="IQ"/>
+						<xsd:enumeration value="IE"/>
+						<xsd:enumeration value="IL"/>
+						<xsd:enumeration value="IT"/>
+						<xsd:enumeration value="JM"/>
+						<xsd:enumeration value="JP"/>
+						<xsd:enumeration value="JO"/>
+						<xsd:enumeration value="KZ"/>
+						<xsd:enumeration value="KE"/>
+						<xsd:enumeration value="KI"/>
+						<xsd:enumeration value="KP"/>
+						<xsd:enumeration value="KR"/>
+						<xsd:enumeration value="KW"/>
+						<xsd:enumeration value="KG"/>
+						<xsd:enumeration value="LA"/>
+						<xsd:enumeration value="LV"/>
+						<xsd:enumeration value="LB"/>
+						<xsd:enumeration value="LS"/>
+						<xsd:enumeration value="LR"/>
+						<xsd:enumeration value="LY"/>
+						<xsd:enumeration value="LI"/>
+						<xsd:enumeration value="LT"/>
+						<xsd:enumeration value="LU"/>
+						<xsd:enumeration value="MO"/>
+						<xsd:enumeration value="MK"/>
+						<xsd:enumeration value="MG"/>
+						<xsd:enumeration value="MW"/>
+						<xsd:enumeration value="MY"/>
+						<xsd:enumeration value="MV"/>
+						<xsd:enumeration value="ML"/>
+						<xsd:enumeration value="MT"/>
+						<xsd:enumeration value="MH"/>
+						<xsd:enumeration value="MQ"/>
+						<xsd:enumeration value="MR"/>
+						<xsd:enumeration value="MU"/>
+						<xsd:enumeration value="YT"/>
+						<xsd:enumeration value="MX"/>
+						<xsd:enumeration value="FM"/>
+						<xsd:enumeration value="MD"/>
+						<xsd:enumeration value="MC"/>
+						<xsd:enumeration value="MN"/>
+						<xsd:enumeration value="MS"/>
+						<xsd:enumeration value="MA"/>
+						<xsd:enumeration value="MZ"/>
+						<xsd:enumeration value="MM"/>
+						<xsd:enumeration value="NA"/>
+						<xsd:enumeration value="NR"/>
+						<xsd:enumeration value="NP"/>
+						<xsd:enumeration value="NL"/>
+						<xsd:enumeration value="AN"/>
+						<xsd:enumeration value="NC"/>
+						<xsd:enumeration value="NZ"/>
+						<xsd:enumeration value="NI"/>
+						<xsd:enumeration value="NE"/>
+						<xsd:enumeration value="NG"/>
+						<xsd:enumeration value="NU"/>
+						<xsd:enumeration value="NF"/>
+						<xsd:enumeration value="MP"/>
+						<xsd:enumeration value="NO"/>
+						<xsd:enumeration value="OM"/>
+						<xsd:enumeration value="PK"/>
+						<xsd:enumeration value="PW"/>
+						<xsd:enumeration value="PS"/>
+						<xsd:enumeration value="PA"/>
+						<xsd:enumeration value="PG"/>
+						<xsd:enumeration value="PY"/>
+						<xsd:enumeration value="PE"/>
+						<xsd:enumeration value="PH"/>
+						<xsd:enumeration value="PN"/>
+						<xsd:enumeration value="PL"/>
+						<xsd:enumeration value="PT"/>
+						<xsd:enumeration value="PR"/>
+						<xsd:enumeration value="QA"/>
+						<xsd:enumeration value="RE"/>
+						<xsd:enumeration value="RO"/>
+						<xsd:enumeration value="RU"/>
+						<xsd:enumeration value="RW"/>
+						<xsd:enumeration value="SH"/>
+						<xsd:enumeration value="KN"/>
+						<xsd:enumeration value="LC"/>
+						<xsd:enumeration value="PM"/>
+						<xsd:enumeration value="VC"/>
+						<xsd:enumeration value="WS"/>
+						<xsd:enumeration value="SM"/>
+						<xsd:enumeration value="ST"/>
+						<xsd:enumeration value="SA"/>
+						<xsd:enumeration value="SN"/>
+						<xsd:enumeration value="CS"/>
+						<xsd:enumeration value="SC"/>
+						<xsd:enumeration value="SL"/>
+						<xsd:enumeration value="SG"/>
+						<xsd:enumeration value="SK"/>
+						<xsd:enumeration value="SI"/>
+						<xsd:enumeration value="SB"/>
+						<xsd:enumeration value="SO"/>
+						<xsd:enumeration value="ZA"/>
+						<xsd:enumeration value="GS"/>
+						<xsd:enumeration value="ES"/>
+						<xsd:enumeration value="LK"/>
+						<xsd:enumeration value="SD"/>
+						<xsd:enumeration value="SR"/>
+						<xsd:enumeration value="SJ"/>
+						<xsd:enumeration value="SZ"/>
+						<xsd:enumeration value="SE"/>
+						<xsd:enumeration value="CH"/>
+						<xsd:enumeration value="SY"/>
+						<xsd:enumeration value="TW"/>
+						<xsd:enumeration value="TJ"/>
+						<xsd:enumeration value="TZ"/>
+						<xsd:enumeration value="TH"/>
+						<xsd:enumeration value="TL"/>
+						<xsd:enumeration value="TG"/>
+						<xsd:enumeration value="TK"/>
+						<xsd:enumeration value="TO"/>
+						<xsd:enumeration value="TT"/>
+						<xsd:enumeration value="TN"/>
+						<xsd:enumeration value="TR"/>
+						<xsd:enumeration value="TM"/>
+						<xsd:enumeration value="TC"/>
+						<xsd:enumeration value="TV"/>
+						<xsd:enumeration value="UG"/>
+						<xsd:enumeration value="UA"/>
+						<xsd:enumeration value="AE"/>
+						<xsd:enumeration value="GB"/>
+						<xsd:enumeration value="US"/>
+						<xsd:enumeration value="UM"/>
+						<xsd:enumeration value="UY"/>
+						<xsd:enumeration value="UZ"/>
+						<xsd:enumeration value="VU"/>
+						<xsd:enumeration value="VA"/>
+						<xsd:enumeration value="VE"/>
+						<xsd:enumeration value="VN"/>
+						<xsd:enumeration value="VG"/>
+						<xsd:enumeration value="VI"/>
+						<xsd:enumeration value="WF"/>
+						<xsd:enumeration value="EH"/>
+						<xsd:enumeration value="YE"/>
+						<xsd:enumeration value="ZM"/>
+						<xsd:enumeration value="ZW"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="resource">
+		<xsd:annotation>
+			<xsd:documentation>The element that contains a URI associated with a DOI. URLs are
+				referred to as resources in the 2.0 CrossRef schema because they can be any valid
+				URI. Cases of single-resolution (i.e. one DOI with a single corresponding URI)
+				should be tagged with a doi/resource pair in doi_data. Only one resource is allowed
+				per doi_data, the exception being resource elements within a collection element.
+				Values for the "content_version" attribute are vor (version of record) and am
+				(advance manuscript). </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:simpleContent>
+				<xsd:extension base="resource_t">
+					<xsd:attributeGroup ref="mime_type.atts"/>
+					<xsd:attribute name="content_version">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:enumeration value="vor"/>
+								<xsd:enumeration value="am"/>
+                                                                <xsd:enumeration value="tdm"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:attribute>
+				</xsd:extension>
+			</xsd:simpleContent>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:simpleType name="resource_t">
+		<xsd:restriction base="xsd:anyURI">
+			<xsd:maxLength value="2048"/>
+			<xsd:minLength value="1"/>
+			<xsd:pattern value="([hH][tT][tT][pP]|[hH][tT][tT][pP][sS]|[fF][tT][pP])://.*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:attributeGroup name="mime_type.atts">
+		<xsd:annotation>
+			<xsd:documentation>Mime types for component format. For mime types refer to
+				http://www.iana.org/assignments/media-types/</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="mime_type" use="optional">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="text/plain"/>
+					<xsd:enumeration value="text/richtext"/>
+					<xsd:enumeration value="text/enriched"/>
+					<xsd:enumeration value="text/tab-separated-values"/>
+					<xsd:enumeration value="text/html"/>
+					<xsd:enumeration value="text/sgml"/>
+					<xsd:enumeration value="text/css"/>
+					<xsd:enumeration value="text/rtf"/>
+					<xsd:enumeration value="text/xml"/>
+					<xsd:enumeration value="text/xml-external-parsed-entity"/>
+					<xsd:enumeration value="multipart/mixed"/>
+					<xsd:enumeration value="multipart/alternative"/>
+					<xsd:enumeration value="multipart/digest"/>
+					<xsd:enumeration value="multipart/parallel"/>
+					<xsd:enumeration value="multipart/appledouble"/>
+					<xsd:enumeration value="multipart/header-set"/>
+					<xsd:enumeration value="multipart/form-data"/>
+					<xsd:enumeration value="multipart/report"/>
+					<xsd:enumeration value="multipart/voice-message"/>
+					<xsd:enumeration value="multipart/signed"/>
+					<xsd:enumeration value="multipart/encrypted"/>
+					<xsd:enumeration value="multipart/byteranges"/>
+					<xsd:enumeration value="application/eps"/>
+					<xsd:enumeration value="application/epub+zip"/>
+					<xsd:enumeration value="application/octet-stream"/>
+					<xsd:enumeration value="application/postscript"/>
+					<xsd:enumeration value="application/rtf"/>
+					<xsd:enumeration value="application/applefile"/>
+					<xsd:enumeration value="application/mac-binhex40"/>
+					<xsd:enumeration value="application/wordperfect5.1"/>
+					<xsd:enumeration value="application/pdf"/>
+					<xsd:enumeration value="application/x-gzip"/>
+					<xsd:enumeration value="application/zip"/>
+					<xsd:enumeration value="application/gzip"/>
+					<xsd:enumeration value="application/macwriteii"/>
+					<xsd:enumeration value="application/msword"/>
+					<xsd:enumeration value="application/sgml"/>
+					<xsd:enumeration value="application/cals-1840"/>
+					<xsd:enumeration value="application/pgp-encrypted"/>
+					<xsd:enumeration value="application/pgp-signature"/>
+					<xsd:enumeration value="application/pgp-keys"/>
+					<xsd:enumeration value="application/sgml-open-catalog"/>
+					<xsd:enumeration value="application/rc"/>
+					<xsd:enumeration value="application/xml"/>
+					<xsd:enumeration value="application/xml-external-parsed-entity"/>
+					<xsd:enumeration value="application/xml-dtd"/>
+					<xsd:enumeration value="application/batch-SMTP"/>
+					<xsd:enumeration value="application/ipp"/>
+					<xsd:enumeration value="application/ocsp-request"/>
+					<xsd:enumeration value="application/ocsp-response"/>
+					<xsd:enumeration value="application/vnd.oasis.opendocument.text"/>
+					<xsd:enumeration value="application/vnd.oasis.opendocument.presentation"/>
+					<xsd:enumeration value="application/vnd.oasis.opendocument.spreadsheet"/>
+					<xsd:enumeration value="application/vnd.ms-excel"/>
+					<xsd:enumeration value="application/vnd.ms-powerpoint"/>
+					<xsd:enumeration value="application/vnd.openxmlformats-officedocument.presentationml.presentation"/>
+					<xsd:enumeration value="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+					<xsd:enumeration value="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+					<xsd:enumeration value="application/epub+zip"/>
+					<xsd:enumeration value="application/regex.clinical-trial-number"/>
+					<xsd:enumeration value="image/fits"/>
+					<xsd:enumeration value="image/jpeg"/>
+					<xsd:enumeration value="image/gif"/>
+					<xsd:enumeration value="image/ief"/>
+					<xsd:enumeration value="image/g3fax"/>
+					<xsd:enumeration value="image/tiff"/>
+					<xsd:enumeration value="image/Graphics-Metafile"/>
+					<xsd:enumeration value="image/png"/>
+					<xsd:enumeration value="audio/basic"/>
+					<xsd:enumeration value="audio/32kadpcm"/>
+					<xsd:enumeration value="audio/mpeg"/>
+					<xsd:enumeration value="audio/parityfec"/>
+					<xsd:enumeration value="audio/MP4A-LATM"/>
+					<xsd:enumeration value="audio/mpa-robust"/>
+					<xsd:enumeration value="video/x-ms-wmv"/>
+					<xsd:enumeration value="video/avi"/>
+					<xsd:enumeration value="video/mpeg"/>
+					<xsd:enumeration value="video/quicktime"/>
+					<xsd:enumeration value="video/pointer"/>
+					<xsd:enumeration value="video/parityfec"/>
+					<xsd:enumeration value="video/MP4V-ES"/>
+					<xsd:enumeration value="video/mp4"/>
+					<xsd:enumeration value="chemical/x-alchemy"/>
+					<xsd:enumeration value="chemical/x-cache-csf"/>
+					<xsd:enumeration value="chemical/x-cactvs-binary"/>
+					<xsd:enumeration value="chemical/x-cactvs-binary"/>
+					<xsd:enumeration value="chemical/x-cactvs-binary"/>
+					<xsd:enumeration value="chemical/x-cdx"/>
+					<xsd:enumeration value="chemical/x-cerius"/>
+					<xsd:enumeration value="chemical/x-chemdraw"/>
+					<xsd:enumeration value="chemical/x-cif"/>
+					<xsd:enumeration value="chemical/x-mmcif"/>
+					<xsd:enumeration value="chemical/x-chem3d"/>
+					<xsd:enumeration value="chemical/x-cmdf"/>
+					<xsd:enumeration value="chemical/x-compass"/>
+					<xsd:enumeration value="chemical/x-crossfire"/>
+					<xsd:enumeration value="chemical/x-cml"/>
+					<xsd:enumeration value="chemical/x-csml"/>
+					<xsd:enumeration value="chemical/x-ctx"/>
+					<xsd:enumeration value="chemical/x-cxf"/>
+					<xsd:enumeration value="chemical/x-daylight-smiles"/>
+					<xsd:enumeration value="chemical/x-embl-dl-nucleotide"/>
+					<xsd:enumeration value="chemical/x-galactic-spc"/>
+					<xsd:enumeration value="Data/spcvue.htm"/>
+					<xsd:enumeration value="chemical/x-gamess-input"/>
+					<xsd:enumeration value="chemical/x-gaussian-input"/>
+					<xsd:enumeration value="chemical/x-gaussian-checkpoint"/>
+					<xsd:enumeration value="chemical/x-gaussian-cube"/>
+					<xsd:enumeration value="chemical/x-gcg8-sequence"/>
+					<xsd:enumeration value="chemical/x-genbank"/>
+					<xsd:enumeration value="chemical/x-isostar"/>
+					<xsd:enumeration value="chemical/x-jcamp-dx"/>
+					<xsd:enumeration value="chemical/x-kinemage"/>
+					<xsd:enumeration value="chemical/x-macmolecule"/>
+					<xsd:enumeration value="chemical/x-macromodel-input"/>
+					<xsd:enumeration value="chemical/x-mdl-molfile"/>
+					<xsd:enumeration value="chemical/x-mdl-rdfile"/>
+					<xsd:enumeration value="chemical/x-mdl-rxnfile"/>
+					<xsd:enumeration value="chemical/x-mdl-sdfile"/>
+					<xsd:enumeration value="chemical/x-mdl-tgf"/>
+					<xsd:enumeration value="chemical/x-mif"/>
+					<xsd:enumeration value="chemical/x-mol2"/>
+					<xsd:enumeration value="chemical/x-molconn-Z"/>
+					<xsd:enumeration value="chemical/x-mopac-input"/>
+					<xsd:enumeration value="chemical/x-mopac-graph"/>
+					<xsd:enumeration value="chemical/x-ncbi-asn1"/>
+					<xsd:enumeration value="chemical/x-ncbi-asn1-binary"/>
+					<xsd:enumeration value="chemical/x-pdb"/>
+					<xsd:enumeration value="chemical/x-swissprot"/>
+					<xsd:enumeration value="chemical/x-vamas-iso14976"/>
+					<xsd:enumeration value="chemical/x-vmd"/>
+					<xsd:enumeration value="chemical/x-xtel"/>
+					<xsd:enumeration value="chemical/x-xyz"/>
+					<xsd:enumeration value="model/vrml"/>
+					<xsd:enumeration value="audio/x-wav"/>
+					<xsd:enumeration value="video/x-flv"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+	</xsd:attributeGroup>
 </xsd:schema>

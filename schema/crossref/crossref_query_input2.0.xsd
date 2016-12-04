@@ -188,6 +188,11 @@
 					<xsd:restriction base="xsd:date"/>
 				</xsd:simpleType>
 			</xsd:attribute>
+            <xsd:attribute name="include_postedcontent" default="false">
+  			    <xsd:simpleType>
+			        <xsd:restriction base="xsd:boolean"/>
+			    </xsd:simpleType>
+            </xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
 	<!--

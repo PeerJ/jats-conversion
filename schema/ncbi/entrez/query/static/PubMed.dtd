@@ -1,5 +1,5 @@
 <!-- PubMed Journal Article DTD Version 2.6 -->
-<!-- $Id: PubMed.dtd 484040 2015-11-05 19:38:09Z korobtch $ -->
+<!-- $Id: PubMed.dtd 515158 2016-09-28 17:23:59Z korobtch $ -->
 
 <!-- This document is still under revision and may change.
 
@@ -131,7 +131,7 @@
                                FirstPage?, LastPage?, ELocationID*,
                                Language*, AuthorList?, GroupList?,
                                PublicationType*, ArticleIdList?,
-                               History?, Abstract?, OtherAbstract*, CopyrightInformation?, ObjectList?, ArchiveCopySource? )>
+                               History?, Abstract?, OtherAbstract*, CopyrightInformation?, CoiStatement?, ObjectList?, ArchiveCopySource? )>
 <!ATTLIST Article
 		VersionID	CDATA	#IMPLIED
 		VersionDate	CDATA	#IMPLIED>
@@ -199,6 +199,8 @@
 <!ELEMENT OtherAbstract     %abstract;>
 <!ATTLIST OtherAbstract
 		Language	CDATA	#REQUIRED>
+
+<!ELEMENT  CoiStatement       %data; >
 
 <!ELEMENT ObjectList (Object)+>
 <!ELEMENT Object (Param)*>
