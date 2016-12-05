@@ -8898,6 +8898,24 @@
               <pub-id pub-id-type="doi">10.1007/s00338-008-0381-8</pub-id>
             </element-citation>
           </ref>
+            <ref id="ref-111">
+                <label>Zaman (2014e)</label>
+                <element-citation publication-type="tweet">
+                    <person-group person-group-type="author">
+                        <name-alternatives>
+                            <name>
+                                <surname>Zaman</surname>
+                                <given-names>L</given-names>
+                            </name>
+                            <string-name content-type="twitter-username">LuisZaman</string-name>
+                        </name-alternatives>
+                    </person-group>
+                    <year iso-8601-date="2014">2014e</year>
+                    <date date-type="pub" iso-8601-date="2014-02-01T14:50">2:50 PM - 1 Feb 2014</date>
+                    <article-title>Surface sterilized PLA that was "snapped" to expose fresh filament not growing in LB @ryneches @runforsushi</article-title>
+                    <uri>https://twitter.com/LuisZaman/status/429748626449903618</uri>
+                </element-citation>
+            </ref>
         </ref-list>
     </back>
 </article>

@@ -5,7 +5,7 @@
 
     <!-- journal citation -->
     <xsl:template match="element-citation[@publication-type='journal']">
-        <xsl:call-template name="authors-year"></xsl:call-template>
+        <xsl:call-template name="authors-year"/>
         <cite itemprop="name">
             <xsl:apply-templates select="article-title" mode="citation"/>
         </cite>
@@ -34,7 +34,7 @@
 
     <!-- book citations -->
     <xsl:template match="element-citation[@publication-type='book']">
-        <xsl:call-template name="authors-year"></xsl:call-template>
+        <xsl:call-template name="authors-year"/>
         <cite class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
         </cite>
@@ -56,7 +56,7 @@
     <!-- conference proceedings -->
     <xsl:template match="element-citation[@publication-type='conf-proceedings']
 					   | element-citation[@publication-type='confproc']">
-        <xsl:call-template name="authors-year"></xsl:call-template>
+        <xsl:call-template name="authors-year"/>
         <cite class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
         </cite>
@@ -81,7 +81,7 @@
 
     <!-- report citations -->
     <xsl:template match="element-citation[@publication-type='report']">
-        <xsl:call-template name="authors-year"></xsl:call-template>
+        <xsl:call-template name="authors-year"/>
         <span class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
             <xsl:text>&#32;</xsl:text>
@@ -95,7 +95,7 @@
 
     <!-- thesis citations -->
     <xsl:template match="element-citation[@publication-type='thesis']">
-        <xsl:call-template name="authors-year"></xsl:call-template>
+        <xsl:call-template name="authors-year"/>
         <cite class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
         </cite>
@@ -108,7 +108,7 @@
 
     <!-- working paper (preprint) citations -->
     <xsl:template match="element-citation[@publication-type='working-paper']">
-        <xsl:call-template name="authors-year"></xsl:call-template>
+        <xsl:call-template name="authors-year"/>
         <cite class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
         </cite>
@@ -119,7 +119,7 @@
 
     <!-- software citations -->
     <xsl:template match="element-citation[@publication-type='software']">
-        <xsl:call-template name="authors-year"></xsl:call-template>
+        <xsl:call-template name="authors-year"/>
         <cite class="article-title">
             <!-- the title may be in "data-title" (since JATS 1.1) or "source" -->
             <xsl:choose>
@@ -152,7 +152,7 @@
 
     <!-- data citations -->
     <xsl:template match="element-citation[@publication-type='data']">
-        <xsl:call-template name="authors-year"></xsl:call-template>
+        <xsl:call-template name="authors-year"/>
         <cite class="article-title">
             <xsl:apply-templates select="data-title" mode="citation"/>
         </cite>
@@ -163,9 +163,36 @@
         <xsl:call-template name="publication-type-label"/>
     </xsl:template>
 
+    <!-- tweet citations -->
+    <xsl:template match="element-citation[@publication-type='tweet']">
+        <!-- assuming only one author -->
+        <xsl:variable name="name-alternatives" select="person-group[@person-group-type='author']/name-alternatives"/>
+
+        <span class="citation-authors-year">
+            <b>
+                <xsl:apply-templates select="$name-alternatives/name" mode="citation"/>
+                <xsl:text>&#32;</xsl:text>
+                <xsl:value-of select="concat('(@', $name-alternatives/string-name[@content-type='twitter-username'], ')')"/>
+                <xsl:text>.</xsl:text>
+            </b>
+            <xsl:apply-templates select="year" mode="citation"/>
+        </span>
+        <xsl:text>&#32;</xsl:text>
+        <cite class="article-title">
+            <xsl:apply-templates select="article-title" mode="citation"/>
+        </cite>
+        <xsl:text>&#32;</xsl:text>
+        <!-- TODO: hyperlink the date instead? -->
+        <time datetime="{date[@date-type='pub']/@iso-8601-date}">
+            <xsl:value-of select="date[@date-type='pub']"/>
+        </time>
+        <xsl:text>&#32;</xsl:text>
+        <xsl:call-template name="publication-type-label"/>
+    </xsl:template>
+
     <!-- "other" citations -->
     <xsl:template match="element-citation[@publication-type='other']">
-        <xsl:call-template name="authors-year"></xsl:call-template>
+        <xsl:call-template name="authors-year"/>
         <cite class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
         </cite>
@@ -186,7 +213,7 @@
 
     <!-- other citations (?) -->
     <xsl:template match="element-citation">
-        <xsl:call-template name="authors-year"></xsl:call-template>
+        <xsl:call-template name="authors-year"/>
         <cite class="article-title">
             <xsl:apply-templates select="article-title" mode="citation"/>
         </cite>
@@ -623,6 +650,7 @@
         </xsl:if>
     </xsl:template>
 
+    <!-- name -->
     <xsl:template match="name" mode="citation">
         <xsl:variable name="person-type" select="parent::person-group/@person-group-type"/>
 
@@ -647,6 +675,7 @@
         <xsl:call-template name="comma-separator"/>
     </xsl:template>
 
+    <!-- collaboration name -->
     <xsl:template match="collab" mode="citation">
         <span class="{local-name()}" itemprop="author" itemscope="itemscope">
             <xsl:apply-templates/>
