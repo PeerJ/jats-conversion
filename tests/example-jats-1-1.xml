@@ -8912,7 +8912,9 @@
                     </person-group>
                     <year iso-8601-date="2014">2014e</year>
                     <!-- <string-date>2:50 PM - 1 Feb 2014</string-date> -->
-                    <date date-type="pub" iso-8601-date="2014-02-01T14:50"/>
+                    <date date-type="pub" iso-8601-date="2014-02-01T14:50">
+                        <year>2014</year>
+                    </date>
                     <article-title>Surface sterilized PLA that was "snapped" to expose fresh filament not growing in LB @ryneches @runforsushi</article-title>
                     <uri>https://twitter.com/LuisZaman/status/429748626449903618</uri>
                 </element-citation>
