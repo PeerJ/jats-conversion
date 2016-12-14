@@ -177,7 +177,8 @@
 			<resource>
 				<xsl:value-of select="self-uri/@xlink:href"/>
 			</resource>
-            <xsl:call-template name="tdm"/>
+            		<xsl:call-template name="tdm"/>
+            		<xsl:call-template name="crawler"/>
 		</doi_data>
 	</xsl:template>
 
@@ -665,6 +666,18 @@
             </item>
         </collection>
     </xsl:template>
+	
+	<!-- crawler full-text URLs for Similarity Check -->
+	<!-- https://support.crossref.org/hc/en-us/articles/215774943-Depositing-as-crawled-URLs-for-Similarity-Check -->
+	<xsl:template name="crawler">
+		<collection property="crawler-based">
+			<item crawler="iParadigms">
+				<resource>
+					<xsl:value-of select="concat($url, '.pdf')"/>
+				</resource>
+			</item>
+		</collection>
+	</xsl:template>
 
 	<!-- archive locations -->
 	<xsl:template name="archive-locations">
