@@ -16,7 +16,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 XSL="$DIR/../src/data/xsl"
 RESOURCES="$DIR/../schema"
 
-OUTPUT_DIR=$(mktemp -d -t validate)
+OUTPUT_DIR=$(mktemp -d -t validate-XXX)
 
 export SGML_CATALOG_FILES="$RESOURCES/catalog.xml"
 #export SGML_CATALOG_FILES=catalog.xml
