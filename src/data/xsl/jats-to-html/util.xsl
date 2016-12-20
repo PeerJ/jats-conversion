@@ -4,7 +4,7 @@
                 xmlns:php="http://php.net/xsl"
                 exclude-result-prefixes="php">
 
-        <!-- url-encode a string, if PHP functions are registered -->
+    <!-- url-encode a string, if PHP functions are registered -->
     <xsl:template name="urlencode">
         <xsl:param name="value"/>
 
@@ -16,6 +16,14 @@
                 <xsl:value-of select="$value"/>
             </xsl:otherwise>
         </xsl:choose>
+    </xsl:template>
+
+    <!-- convert a date string to a different format -->
+    <xsl:template name="format-date">
+        <xsl:param name="value"/>
+        <xsl:param name="format"/>
+
+        <xsl:value-of select="php:function('PeerJ\Conversion\JATS::formatDate', string($value), $format)"/>
     </xsl:template>
 
     <!-- add full stop to a title if not already there -->

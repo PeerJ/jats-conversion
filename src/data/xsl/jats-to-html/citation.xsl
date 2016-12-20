@@ -184,7 +184,10 @@
         <xsl:text>&#32;</xsl:text>
         <!-- TODO: hyperlink the date instead? -->
         <time datetime="{date[@date-type='pub']/@iso-8601-date}">
-            <xsl:value-of select="date[@date-type='pub']"/>
+            <xsl:call-template name="format-date">
+                <xsl:with-param name="value" select="date[@date-type='pub']/@iso-8601-date"/>
+                <xsl:with-param name="format" select="'g:i A - j M Y'"/>
+            </xsl:call-template>
         </time>
         <xsl:text>&#32;</xsl:text>
         <xsl:call-template name="publication-type-label"/>

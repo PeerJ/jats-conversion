@@ -12,6 +12,18 @@ class JATS
     protected $dir;
 
     /**
+     * @param string $text
+     *
+     * @return string
+     */
+    public static function formatDate($text, $format = DATE_W3C)
+    {
+        $date = new \DateTime($text);
+
+        return $date->format($format);
+    }
+
+    /**
      * Constructor
      *
      * Set the base directory for XSL files relative to this file
@@ -187,7 +199,10 @@ class JATS
         $stylesheet->load($path);
 
         $processor = new \XSLTProcessor();
-        $processor->registerPHPFunctions('rawurlencode');
+        $processor->registerPHPFunctions([
+            'rawurlencode',
+            'PeerJ\Conversion\JATS::formatDate'
+        ]);
         $processor->importStyleSheet($stylesheet);
         $processor->setParameter(null, $params);
 
