@@ -15,9 +15,10 @@
     <xsl:param name="pub-day-digit"/>
     <xsl:param name="id"/>
     <xsl:param name="uri"/>
+    <xsl:param name="doi"/>
 
     <xsl:variable name="meta" select="/article/front/article-meta"/>
-    <xsl:variable name="doi" select="$meta/article-id[@pub-id-type='doi']"/>
+    <xsl:variable name="related-doi" select="$meta/article-id[@pub-id-type='doi']"/>
     <xsl:variable name="issn" select="/article/front/journal-meta/issn"/>
     <xsl:variable name="pub-date" select="concat($pub-year, '-', $pub-month, '-', $pub-day)"/>
 
@@ -42,7 +43,7 @@
                 <xsl:value-of select="$id"/>
             </article-id>
             <article-id pub-id-type="doi">
-                <xsl:value-of select="concat($doi, '/retraction')"/>
+                <xsl:value-of select="$doi"/>
             </article-id>
             <article-categories>
                 <subj-group subj-group-type="heading">
@@ -52,6 +53,12 @@
             <title-group>
                 <xsl:apply-templates select="title-group/article-title" mode="retraction"/>
             </title-group>
+            <!--<contrib-group content-type="authors">
+                <contrib id="author-1" contrib-type="author" corresp="yes">
+                    <collab>PeerJ Editorial Office</collab>
+                    <email>editor@peerj.com</email>
+                </contrib>
+            </contrib-group>-->
             <xsl:apply-templates select="contrib-group[@content-type='authors']"/>
             <xsl:apply-templates select="aff"/>
             <xsl:apply-templates select="author-notes"/>
@@ -68,7 +75,8 @@
             </pub-date>
             <pub-date pub-type="collection">
                 <year>
-                    <xsl:value-of select="$pub-year"/><!-- TODO: year of original article? -->
+                    <xsl:value-of select="$pub-year"/>
+                    <!-- TODO: year of original article? -->
                 </year>
             </pub-date>
             <xsl:apply-templates select="volume"/>
@@ -76,13 +84,14 @@
                  <xsl:value-of select="concat('e', $id)"/>
             </elocation-id>
             <permissions>
-                <xsl:apply-templates select="permissions/license"/><!-- TODO: different? -->
+                <xsl:apply-templates select="permissions/license"/>
+                <!-- TODO: different? -->
             </permissions>
             <self-uri xlink:href="{$uri}"/>
             <related-article related-article-type="retracted-article"
                              journal-id-type="issn" journal-id="{$issn}"
                              vol="{volume}" elocation-id="{elocation-id}"
-                             ext-link-type="doi" xlink:href="{$doi}">
+                             ext-link-type="doi" xlink:href="{$related-doi}">
                 <xsl:apply-templates select="title-group/article-title"/>
             </related-article>
         </article-meta>
