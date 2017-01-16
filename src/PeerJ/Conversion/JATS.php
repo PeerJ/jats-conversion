@@ -102,6 +102,29 @@ class JATS
     }
 
     /**
+     * Convert to minimal CrossRef deposit XML
+     *
+     * @param \DOMDocument $input  XML document to be converted
+     * @param array        $params { 'depositorName', 'depositorEmail' }
+     * @param bool         $validate
+     *
+     * @return \DOMDocument
+     */
+    public function generateMinimalCrossRef(\DOMDocument $input, $params = array(), $validate = true)
+    {
+        $params['timestamp'] = date('YmdHis');
+
+        $output = $this->convert('jats-to-unixref-minimal', $input, $params);
+
+        if ($validate) {
+            $schema = 'http://www.crossref.org/schema/deposit/crossref4.3.6.xsd';
+            $this->validateWithSchema($output, $schema);
+        }
+
+        return $output;
+    }
+
+    /**
      * Convert to DataCite deposit XML
      *
      * @param \DOMDocument $input  XML document to be converted
