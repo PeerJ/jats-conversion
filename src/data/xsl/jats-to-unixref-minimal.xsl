@@ -229,7 +229,6 @@
 				<person_name contributor_role="author" sequence="additional">
 					<xsl:call-template name="contributor-sequence"/>
 					<xsl:apply-templates select="name" mode="contrib"/>
-					<xsl:apply-templates select="xref[@ref-type='aff']" mode="contrib"/>
 				</person_name>
 			</xsl:when>
 			<xsl:when test="collab">
