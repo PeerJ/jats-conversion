@@ -57,7 +57,7 @@ class JATS
     public function generateCorrection(\DOMDocument $input, $params = array())
     {
         $output = $this->convert('jats-to-correction', $input, $params);
-        $this->validateWithDTD($output);
+        //$this->validateWithDTD($output);
 
         return $output;
     }
@@ -73,7 +73,7 @@ class JATS
     public function generateRetraction(\DOMDocument $input, $params = array())
     {
         $output = $this->convert('jats-to-retraction', $input, $params);
-        $this->validateWithDTD($output);
+        //$this->validateWithDTD($output);
 
         return $output;
     }
