@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" exclude-result-prefixes="php"
-		        xmlns:php="http://php.net/xsl"
+                xmlns:php="http://php.net/xsl"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xlink="http://www.w3.org/1999/xlink">
 
-	<xsl:output method="xml" encoding="utf-8" omit-xml-declaration="yes" indent="yes"
+    <xsl:output method="xml" encoding="utf-8" omit-xml-declaration="yes" indent="yes"
                 doctype-public="-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN"
                 doctype-system="http://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd"/>
 
@@ -21,6 +21,21 @@
     <xsl:variable name="related-doi" select="$meta/article-id[@pub-id-type='doi']"/>
     <xsl:variable name="issn" select="/article/front/journal-meta/issn"/>
     <xsl:variable name="pub-date" select="concat($pub-year, '-', $pub-month, '-', $pub-day)"/>
+    <!-- Using xsl:copy-of causes issues as copy-of also copies the namespaces,
+    which leads to a invalid correction.  Copy-namespaces='no' is xslt 2.0 or greater.
+    So until we update XSLT we use this xsl:copy-of replacement notes:
+    https://stackoverflow.com/questions/19998180/xsl-copy-nodes-without-xmlns
+    -->
+    <!-- BEGIN xsl:copy-of replacement -->
+    <xsl:template match="*" mode="copy">
+        <xsl:element name="{name()}" namespace="{namespace-uri()}">
+            <xsl:apply-templates select="@*|node()" mode="copy" />
+        </xsl:element>
+    </xsl:template>
+    <xsl:template match="@*|text()|comment()" mode="copy">
+        <xsl:copy/>
+    </xsl:template>
+    <!-- END xsl:copy-of replacement -->
 
     <xsl:template match="/article">
         <article article-type="correction" dtd-version="1.1">
@@ -53,15 +68,12 @@
             <title-group>
                 <xsl:apply-templates select="title-group/article-title" mode="correction"/>
             </title-group>
-            <!--<contrib-group content-type="authors">
-                <contrib id="author-1" contrib-type="author" corresp="yes">
-                    <collab>PeerJ Editorial Office</collab>
-                    <email>editor@peerj.com</email>
-                </contrib>
-            </contrib-group>-->
-            <xsl:copy-of select="contrib-group[@content-type='authors']"/>
+            <!-- use xsl:copy-of replacement, see above, for contrib-group: -->
+            <xsl:apply-templates mode="copy"
+                                 select="contrib-group[@content-type='authors']" />
             <xsl:apply-templates select="aff"/>
-            <xsl:copy-of select="author-notes"/>
+            <!-- use xsl:copy-of replacement, see above, for author-notes too: -->
+            <xsl:apply-templates mode="copy" select="author-notes"/>
             <pub-date pub-type="epub" date-type="pub" iso-8601-date="{$pub-date}">
                 <day>
                     <xsl:value-of select="$pub-day-digit"/>
@@ -81,7 +93,7 @@
             </pub-date>
             <xsl:apply-templates select="volume"/>
             <elocation-id>
-                 <xsl:value-of select="concat('e', $id)"/>
+                <xsl:value-of select="concat('e', $id)"/>
             </elocation-id>
             <permissions>
                 <xsl:apply-templates select="permissions/license"/>
