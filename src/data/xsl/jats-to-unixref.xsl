@@ -384,22 +384,7 @@
 			<xsl:apply-templates select="fpage | elocation-id" mode="citation"/>
 			<xsl:apply-templates select="year" mode="citation"/>
             <xsl:apply-templates select="pub-id[@pub-id-type='doi'][1]" mode="citation"/>
-
-			<!-- it's valid to have both a data-title and article-title for a data or software citation -->
-			<!-- but it's not best practice, but let's handle this case by perfering the the data-title. -->
-			<!-- These tests could be concise, but this is simple: -->
-			<!-- If only data-title exists, use it -->
-			<xsl:if test="not(article-title) and data-title">
-				<xsl:apply-templates select="data-title" mode="citation"/>
-			</xsl:if>
-			<!-- If only article-title exists, use it -->
-			<xsl:if test="article-title and not(data-title)">
-				<xsl:apply-templates select="article-title" mode="citation"/>
-			</xsl:if>
-			<!-- If both exist only use data-title -->
-			<xsl:if test="article-title and data-title">
-				<xsl:apply-templates select="data-title" mode="citation"/>
-			</xsl:if>
+            <xsl:apply-templates select="article-title | data-title" mode="citation"/>
 
             <!-- unstructured citations -->
             <xsl:if test="not(article-title) and not(source)">
