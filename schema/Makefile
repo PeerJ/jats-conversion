@@ -58,7 +58,7 @@ crossref/schematron.xsl: | $(DOWNLOADS)/CrossRef_Schematron_Rules
 	xsltproc -output crossref/schematron.xsl $(DOWNLOADS)/CrossRef_Schematron_Rules/iso_svrl.xsl $(DOWNLOADS)/CrossRef_Schematron_Rules/deposit.sch
 
 $(DOWNLOADS)/CrossRef_Schematron_Rules.zip: | $(DOWNLOADS)
-	wget -c -P $(DOWNLOADS) http://www.crossref.org/schematron/CrossRef_Schematron_Rules.zip
+	wget -c https://support.crossref.org/hc/en-us/article_attachments/115001519883/Crossref_Schematron.zip -O $(DOWNLOADS)/CrossRef_Schematron_Rules.zip
 
 $(DOWNLOADS)/CrossRef_Schematron_Rules: | $(DOWNLOADS)/CrossRef_Schematron_Rules.zip
 	unzip $(DOWNLOADS)/CrossRef_Schematron_Rules.zip -d $(DOWNLOADS)
