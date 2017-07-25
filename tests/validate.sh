@@ -19,6 +19,8 @@ RESOURCES="$DIR/../schema"
 OUTPUT_DIR=$(mktemp -d -t validate-XXX)
 
 export SGML_CATALOG_FILES="$RESOURCES/catalog.xml"
+# it seems that the linux util xmlcatalog now uses XML_CATALOG_FILES rather than SGML_CATALOG_FILES:
+export XML_CATALOG_FILES="$RESOURCES/catalog.xml"
 #export SGML_CATALOG_FILES=catalog.xml
 
 echo "Validating against JATS DTD"
