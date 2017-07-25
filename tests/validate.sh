@@ -19,7 +19,7 @@ RESOURCES="$DIR/../schema"
 OUTPUT_DIR=$(mktemp -d -t validate-XXX)
 
 export SGML_CATALOG_FILES="$RESOURCES/catalog.xml"
-# it seems that the linux util xmlcatalog now uses XML_CATALOG_FILES rather than SGML_CATALOG_FILES:
+# some user have reported issues when only setting SGML_CATALOG_FILES so also set XML_CATALOG_FILES:
 export XML_CATALOG_FILES="$RESOURCES/catalog.xml"
 #export SGML_CATALOG_FILES=catalog.xml
 
