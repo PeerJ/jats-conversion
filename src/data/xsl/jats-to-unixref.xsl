@@ -269,7 +269,7 @@
 					<xsl:call-template name="contributor-sequence"/>
 					<xsl:apply-templates select="name" mode="contrib"/>
 					<xsl:apply-templates select="xref[@ref-type='aff']" mode="contrib"/>
-					<xsl:apply-templates select="contrib-id" mode="contrib"/>
+					<xsl:apply-templates select="contrib-id[@contrib-id-type='orcid']" mode="contrib"/>
 				</person_name>
 			</xsl:when>
 			<xsl:when test="collab">

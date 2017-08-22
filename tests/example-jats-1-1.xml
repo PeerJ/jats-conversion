@@ -33,6 +33,7 @@
             <contrib-group content-type="authors">
                 <contrib id="author-1" contrib-type="author" corresp="yes">
                     <contrib-id contrib-id-type="orcid">1234-1234-1234-1234</contrib-id>
+                    <contrib-id contrib-id-type="twitter-username">AbcDefGHi</contrib-id>
                     <name>
                         <surname>Farke</surname>
                         <given-names>Andrew A.</given-names>
