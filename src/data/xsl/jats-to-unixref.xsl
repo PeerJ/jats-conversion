@@ -523,7 +523,7 @@
 				<format mime_type="{graphic/@mimetype}/{graphic/@mime-subtype}"/>
 			</xsl:if>
 			<doi_data>
-				<doi><xsl:value-of select="object-id[@pub-id-type='doi']"/></doi>
+				<xsl:apply-templates select="object-id[@pub-id-type='doi']"/>
 				<resource><xsl:value-of select="concat($url, '/', @id)"/></resource>
 			</doi_data>
 		</component>
@@ -536,7 +536,7 @@
             <xsl:apply-templates select="caption/title"/>
             <format mime_type="text/html"/>
 			<doi_data>
-				<doi><xsl:value-of select="object-id[@pub-id-type='doi']"/></doi>
+				<xsl:apply-templates select="object-id[@pub-id-type='doi']"/>
 				<resource><xsl:value-of select="concat($url, '/', @id)"/></resource>
 			</doi_data>
 		</component>
@@ -551,7 +551,7 @@
 				<format mime_type="{@mimetype}/{@mime-subtype}"/>
 			</xsl:if>
 			<doi_data>
-				<doi><xsl:value-of select="object-id[@pub-id-type='doi']"/></doi>
+				<xsl:apply-templates select="object-id[@pub-id-type='doi']"/>
 				<resource><xsl:value-of select="concat($url, '/', @id)"/></resource>
 			</doi_data>
 		</component>
@@ -569,6 +569,23 @@
         </titles>
     </xsl:template>
 
+	<!-- doi -->
+	<xsl:template match="object-id[@pub-id-type='doi']">
+		<!-- When converting DOI's obey the Mandatory and recommended encoding for DOI deposit and URLs:
+			http://www.doi.org/doi_handbook/2_Numbering.html#2.5.2.4
+			note, this will allow the % sympbol which is the escaped characters -->
+		<xsl:param name="mustAndShouldBeEncoded">"# &gt;&lt;?{}^[]`|\+&gt;&lt;</xsl:param>
+		<doi>
+			<xsl:choose>
+				<xsl:when test="string-length(.) != string-length(translate(., $mustAndShouldBeEncoded, ''))">
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</doi>
+
+	</xsl:template>
 	<!-- http://help.crossref.org/include-abstracts-in-deposits -->
 	<xsl:template match="node()" mode="abstract">
 		<xsl:element name="jats:{local-name()}" namespace="http://www.ncbi.nlm.nih.gov/JATS1">
