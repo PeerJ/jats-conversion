@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.crossref.org/relations.xsd"
+    xmlns="http://www.crossref.org/relations.xsd">
+    <xsd:annotation>
+        <xsd:documentation> Version:   beta 0.3
+        
+        This schema provides for creating relationships between items represented by crossref DOIs and other items that may 
+        be defined by a DOI (crossref or other RA) or by some other identifier. New relation types will be added as they're needed.
+        Please contact support@crossref.org to request additions or changes.
+        
+        Certain relationship types are covered elsewhere in the main deposit schema due primarily to specific processing or 
+        the need to logically group those relations alongside other relevant metadata. For example cited-by relations are 
+        created by the deposit of a citation_list. Crossmark->Updates addresses relationships between DOIs where a primary 
+        item is updated, revised, hasErratum, withdrawn ... etc.  When constructing relations please be sure to use the 
+        the most appropriate metadata structure.
+        
+        Relationships between DOIs in crossref are established bidirectionally between those DOIs making it unnecessary to
+        deposit relationship metadata for both DOIs.
+        Example: 
+              DOI A metadata contains 'hasTranslation' with a target of DOI B will automatically
+              make this claim visible in metadata for B.
+              Seen from the perspective of B: A claims it hasTranslation of which B is the target of the claim.
+        
+        Change history: 
+        10/3/14  CSK   removed reg-agency attribute. This is not necessary, can be derived from the DOI
+        10/3/14  CSK   split into inter and intra relation elements
+        10/3/14  CSK   pulled in common crossref schema for description element and language attributes 
+        12/21/16 CSK   added comments to each relation type indicating the appropriate inverse relation type
+        3/6/17 PDF added accession as identifier-type
+        
+        ====== C O N V E N T I O N ==============================================================================================
+        Relationships between two objects have an implicit directionality that in natural language terms dictate which object is the actor
+        and which is acted-upon.  This directionality is semantically based on the relationship name. Crossref's model makes
+        no attempt to automatically 'understand' this semantic. 
+        
+        The identifier parent to the PROGRAM element is considered the claimant of the relationship (e.g. the entity that
+        establishes the relationship).
+        
+            yes:  10.1234/abcd references 10.5678/efgh    =>  10.1234/abcd claims that it references 10.5678/efgh
+            yes:  10.1234/abcd referencedBy 10.5678/efgh  =>  10.1234/abcd claims that it is referenced by 10.5678/efgh
+       
+        ==========================================================================================================================
+       
+        </xsd:documentation></xsd:annotation>
+    
+    <xsd:include schemaLocation="common4.3.5.xsd"/>    
+
+    <xsd:element name="program">
+        <xsd:annotation>
+            <xsd:documentation>Accommodates deposit of relationship claims between items.</xsd:documentation>
+        </xsd:annotation>
+
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="related_item" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+            <xsd:attribute name="name" type="xsd:string" fixed="relations"/>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="related_item">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:annotation><xsd:documentation>
+                    Description of the relationship to the target item or of the target item itself
+                </xsd:documentation></xsd:annotation>
+                <xsd:element ref="description" minOccurs="0" maxOccurs="1"/>
+                <xsd:choice>
+                    <xsd:element ref="inter_work_relation" minOccurs="1" maxOccurs="1"/>
+                    <xsd:element ref="intra_work_relation" minOccurs="1" maxOccurs="1"/> 
+                </xsd:choice>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>            
+    
+    <xsd:element name="inter_work_relation">
+        <xsd:complexType mixed="true">
+            <xsd:attribute name="relationship-type" use="required">
+                <xsd:annotation>
+                    <xsd:documentation> Used to describe relations between items that are not the same work.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <!--   Crossref  -->
+                        <xsd:enumeration value="isDerivedFrom"/>      <!-- hasDeverivtion -->
+                        <xsd:enumeration value="hasDerivation"/>      <!-- isDerivedFrom -->
+                        <xsd:enumeration value="isReviewOf"/>         <!-- hasReview -->
+                        <xsd:enumeration value="hasReview"/>          <!-- isReviewOf -->
+                        <xsd:enumeration value="isCommentOn"/>        <!-- hasComment -->
+                        <xsd:enumeration value="hasComment"/>         <!-- isCommentOn -->
+                        <xsd:enumeration value="isReplyTo"/>          <!-- hasReply -->
+                        <xsd:enumeration value="hasReply"/>           <!-- isReplyTo -->
+                        <xsd:enumeration value="basedOnData"/>        <!-- isDataBasisFor -->
+                        <xsd:enumeration value="isDataBasisFor"/>     <!-- basedOnData -->
+                        <xsd:enumeration value="hasRelatedMaterial"/> <!-- isRelatedMaterial -->
+                        <xsd:enumeration value="isRelatedMaterial"/>  <!-- hasRelatedMaterial -->
+                        
+                        <!--   Common with DataCite  -->
+                        <xsd:enumeration value="isCompiledBy"/>       <!-- compiles -->
+                        <xsd:enumeration value="compiles"/>           <!-- isCompiledBy -->
+                        <xsd:enumeration value="isDocumentedBy"/>     <!-- documents -->
+                        <xsd:enumeration value="documents"/>          <!-- isDocumentedBy -->
+                        <xsd:enumeration value="isSupplementTo"/>     <!-- isSupplememtedBy -->
+                        <xsd:enumeration value="isSupplementedBy"/>   <!-- isSupplementTo -->
+                        <xsd:enumeration value="isContinuedBy"/>      <!-- continues -->
+                        <xsd:enumeration value="continues"/>          <!-- isContinuedBy -->
+                         
+                        <!--   From Dublin core -->
+                        <xsd:enumeration value="isPartOf"/>           <!-- hasPart -->
+                        <xsd:enumeration value="hasPart"/>            <!-- isPartOf -->
+                        <xsd:enumeration value="references"/>         <!-- isReferencedBy -->
+                        <xsd:enumeration value="isReferencedBy"/>     <!-- references -->
+                        <xsd:enumeration value="isBasedOn"/>          <!-- isBasisFor -->
+                        <xsd:enumeration value="isBasisFor"/>         <!-- isBasedOn -->
+                        <xsd:enumeration value="requires"/>           <!-- isRequiredBy -->
+                        <xsd:enumeration value="isRequiredBy"/>       <!-- requires --> 
+                       
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+            <xsd:attributeGroup ref="relations_type.atts"/>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="intra_work_relation">
+        <xsd:complexType mixed="true">
+            <xsd:attribute name="relationship-type" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Used to define relations between items that are essentially the same work but may differ in 
+                                       format, language, revision ... etc. Assigning different identifers to exactly the same item
+                                       available in one place or as copies in multiple places can be problematic and should be avoided.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <!--   Crossref  -->              
+                        <xsd:enumeration value="isTranslationOf"/>    <!-- hasTranslation --> 
+                        <xsd:enumeration value="hasTranslation"/>     <!-- isTranslationOf --> 
+                        <xsd:enumeration value="isPreprintOf"/>       <!-- hasPreprint --> 
+                        <xsd:enumeration value="hasPreprint"/>        <!-- isPreprintOf --> 
+                        <xsd:enumeration value="isManuscriptOf"/>     <!-- hasManuscript --> 
+                        <xsd:enumeration value="hasManuscript"/>      <!-- isManuscriptOf --> 
+                        <xsd:enumeration value="isExpressionOf"/>     <!-- hasExpression --> 
+                        <xsd:enumeration value="hasExpression"/>      <!-- isExpressionOf --> 
+                        <xsd:enumeration value="isManifestationOf"/>  <!-- hasManifestation --> 
+                        <xsd:enumeration value="hasManifestation"/>   <!-- isManifestationOf --> 
+                        <xsd:enumeration value="isReplacedBy"/>       <!-- replaces --> 
+                        <xsd:enumeration value="replaces"/>           <!-- isReplacedBy --> 
+                        <xsd:enumeration value="isSameAs"/>           <!-- isSameAs --> 
+                         
+                        <!--   Common with DataCite  -->
+                        <xsd:enumeration value="isIdenticalTo"/>      <!-- isIdenticalTo --> 
+                        <xsd:enumeration value="isVariantFormOf"/>    <!-- isOriginalFormOf --> 
+                        <xsd:enumeration value="isOriginalFormOf"/>   <!-- isVariantFormOf --> 
+                        
+                        <!--   From Dublin core -->
+                        <xsd:enumeration value="isVersionOf"/>        <!-- hasVersion --> 
+                        <xsd:enumeration value="hasVersion"/>         <!-- isVersionOf -->                   
+                        <xsd:enumeration value="isFormatOf"/>         <!-- hasFormat --> 
+                        <xsd:enumeration value="hasFormat"/>          <!-- isFormatOf --> 
+                          
+                    </xsd:restriction>
+                </xsd:simpleType>
+             </xsd:attribute>     
+             <xsd:attributeGroup ref="relations_type.atts"/>
+        </xsd:complexType>
+    </xsd:element>   
+    
+    <!-- =========================================================== -->
+        
+    <xsd:attributeGroup name="relations_type.atts">
+        <xsd:attribute name="identifier-type" use="required">
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="doi"/>
+                    <xsd:enumeration value="issn"/>
+                    <xsd:enumeration value="isbn"/>
+                    <xsd:enumeration value="uri"/>
+                    <xsd:enumeration value="pmid"/>
+                    <xsd:enumeration value="pmcid"/>
+                    <xsd:enumeration value="purl"/>
+                    <xsd:enumeration value="arxiv"/>
+                    <xsd:enumeration value="ark"/>
+                    <xsd:enumeration value="handle"/>
+                    <xsd:enumeration value="uuid"/>
+                    <xsd:enumeration value="ecli"/>
+                    <xsd:enumeration value="accession"/>   
+                    <xsd:enumeration value="other"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
+        
+        <xsd:attribute name="namespace">
+            <xsd:annotation>
+                <xsd:documentation>An identifier systems may require a namespace that is needed in addition to the identifer value to provide uniqueness.</xsd:documentation>
+            </xsd:annotation>            
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="1024"/>
+                    <xsd:minLength value="4"/>          
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
+    </xsd:attributeGroup>
+</xsd:schema>
