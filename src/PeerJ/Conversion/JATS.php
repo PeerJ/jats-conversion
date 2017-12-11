@@ -81,20 +81,21 @@ class JATS
     /**
      * Convert to CrossRef deposit XML
      *
-     * @param \DOMDocument $input  XML document to be converted
-     * @param array        $params { 'depositorName', 'depositorEmail' }
+     * @param \DOMDocument $input    XML document to be converted
+     * @param array        $params   { 'depositorName', 'depositorEmail', 'timestamp', 'isPreprintOf', 'previousVersionDoi', 'nextVersionDoi' }
      * @param bool         $validate
      *
      * @return \DOMDocument
      */
-    public function generateCrossRef(\DOMDocument $input, $params = array(), $validate = true)
+    public function generateCrossRefPreprint(\DOMDocument $input, $params = array(), $validate = true)
     {
         $params['timestamp'] = date('YmdHis');
 
-        $output = $this->convert('jats-to-unixref', $input, $params);
+        $output = $this->convert('jats-to-unixref-posted-content-preprint', $input, $params);
 
+        // TODO MSJ add preprint schema into parameters, or pass it in
         if ($validate) {
-            $schema = 'http://www.crossref.org/schema/deposit/crossref4.3.6.xsd';
+            $schema = 'http://www.crossref.org/schema/deposit/crossref4.4.1.xsd';
             $this->validateWithSchema($output, $schema);
         }
 
@@ -104,8 +105,8 @@ class JATS
     /**
      * Convert to minimal CrossRef deposit XML
      *
-     * @param \DOMDocument $input  XML document to be converted
-     * @param array        $params { 'depositorName', 'depositorEmail' }
+     * @param \DOMDocument $input    XML document to be converted
+     * @param array        $params   { 'depositorName', 'depositorEmail' }
      * @param bool         $validate
      *
      * @return \DOMDocument
@@ -115,7 +116,7 @@ class JATS
         $params['timestamp'] = date('YmdHis');
 
         $output = $this->convert('jats-to-unixref-minimal', $input, $params);
-
+        // TODO MSJ add schema into parameters, or pass it in
         if ($validate) {
             $schema = 'http://www.crossref.org/schema/deposit/crossref4.3.6.xsd';
             $this->validateWithSchema($output, $schema);
@@ -125,6 +126,7 @@ class JATS
     }
 
     /**
+     * @deprecated EZID -> CrossRef
      * Convert to DataCite deposit XML
      *
      * @param \DOMDocument $input  XML document to be converted
@@ -135,6 +137,7 @@ class JATS
     public function generateDataCite(\DOMDocument $input, $params = array())
     {
         $output = $this->convert('jats-to-datacite', $input, $params);
+        // TODO MSJ add preprint schema into parameters, or pass it in
         $schema = 'http://schema.datacite.org/meta/kernel-3/metadata.xsd';
         $this->validateWithSchema($output, $schema);
 
@@ -151,6 +154,7 @@ class JATS
     public function generateDOAJ(\DOMDocument $input)
     {
         $output = $this->convert('jats-to-doaj', $input);
+        // TODO MSJ add schema into parameters, or pass it in
         $schema = 'http://www.doaj.org/schemas/doajArticles.xsd';
         $this->validateWithSchema($output, $schema);
 
