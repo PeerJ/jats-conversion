@@ -209,45 +209,45 @@
 
 
 <xsl:template name="relatedItems">
-    <xsl:if test="$isPreprintOf or $previousVersionDoi or $nextVersionDoi">
-      <rel:program>
-        <xsl:if test="$isPreprintOf">
-          <rel:related_item>
-            <rel:intra_work_relation relationship-type="isPreprintOf" identifier-type="doi">
-              <xsl:value-of select="$isPreprintOf"/>
-            </rel:intra_work_relation>
-          </rel:related_item>
-        </xsl:if>
-        <xsl:if test="$previousVersionDoi">
-          <rel:related_item>
-            <rel:intra_work_relation relationship-type="isVariantFormOf" identifier-type="doi">
-              <xsl:value-of select="$previousVersionDoi"/>
-            </rel:intra_work_relation>
-          </rel:related_item>
-        </xsl:if>
-        <xsl:if test="$nextVersionDoi">
-          <rel:related_item>
-            <rel:intra_work_relation relationship-type="isReplacedBy" identifier-type="doi">
-              <xsl:value-of select="$nextVersionDoi"/>
-            </rel:intra_work_relation>
-          </rel:related_item>
-        </xsl:if>
-      </rel:program>
-    </xsl:if>
+  <xsl:if test="$isPreprintOf or $previousVersionDoi or $nextVersionDoi">
+    <rel:program>
+      <xsl:if test="$isPreprintOf">
+        <rel:related_item>
+          <rel:intra_work_relation relationship-type="isPreprintOf" identifier-type="doi">
+            <xsl:value-of select="$isPreprintOf"/>
+          </rel:intra_work_relation>
+        </rel:related_item>
+      </xsl:if>
+      <xsl:if test="$previousVersionDoi">
+        <rel:related_item>
+          <rel:intra_work_relation relationship-type="isVariantFormOf" identifier-type="doi">
+            <xsl:value-of select="$previousVersionDoi"/>
+          </rel:intra_work_relation>
+        </rel:related_item>
+      </xsl:if>
+      <xsl:if test="$nextVersionDoi">
+        <rel:related_item>
+          <rel:intra_work_relation relationship-type="isReplacedBy" identifier-type="doi">
+            <xsl:value-of select="$nextVersionDoi"/>
+          </rel:intra_work_relation>
+        </rel:related_item>
+      </xsl:if>
+    </rel:program>
+  </xsl:if>
 </xsl:template>
 
 <relatedIdentifiers>
-    <!--<xsl:apply-templates select="../../back/ref-list/ref/pub-id[@pub-id-type='doi']"/>-->
-    <xsl:if test="$previousVersionDoi">
-        <relatedIdentifier relatedIdentifierType="DOI" relationType="IsNewVersionOf">
-            <xsl:value-of select="$previousVersionDoi"/>
-        </relatedIdentifier>
-    </xsl:if>
-    <xsl:if test="$nextVersionDoi">
-        <relatedIdentifier relatedIdentifierType="DOI" relationType="IsPreviousVersionOf">
-            <xsl:value-of select="$nextVersionDoi"/>
-        </relatedIdentifier>
-    </xsl:if>
+  <!--<xsl:apply-templates select="../../back/ref-list/ref/pub-id[@pub-id-type='doi']"/>-->
+  <xsl:if test="$previousVersionDoi">
+    <relatedIdentifier relatedIdentifierType="DOI" relationType="IsNewVersionOf">
+      <xsl:value-of select="$previousVersionDoi"/>
+    </relatedIdentifier>
+  </xsl:if>
+  <xsl:if test="$nextVersionDoi">
+    <relatedIdentifier relatedIdentifierType="DOI" relationType="IsPreviousVersionOf">
+      <xsl:value-of select="$nextVersionDoi"/>
+    </relatedIdentifier>
+  </xsl:if>
 </relatedIdentifiers>
 
 <!-- zero-pad a month or day number -->
@@ -746,3 +746,4 @@
     </item>
   </collection>
 </xsl:template>
+</xsl:stylesheet>
