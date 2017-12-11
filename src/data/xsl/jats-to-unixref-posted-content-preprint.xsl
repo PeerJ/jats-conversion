@@ -33,9 +33,6 @@
   <xsl:param name="previousVersionDoi"/>
   <xsl:param name="nextVersionDoi"/>
 
-  <!-- a comma-separated list of archive locations -->
-  <xsl:param name="archiveLocations"/>
-
 
 
   <!-- root element -->
@@ -749,15 +746,3 @@
     </item>
   </collection>
 </xsl:template>
-
-<!-- archive locations -->
-<xsl:template name="archive-locations">
-  <xsl:if test="$archiveLocations">
-    <archive_locations>
-      <xsl:for-each select="str:tokenize($archiveLocations, ',')">
-        <archive name="{.}"/>
-      </xsl:for-each>
-    </archive_locations>
-  </xsl:if>
-</xsl:template>
-</xsl:stylesheet>
