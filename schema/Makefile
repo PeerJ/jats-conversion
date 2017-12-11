@@ -3,7 +3,7 @@
 
 .PHONY: fetch nlm jats pmc
 
-fetch: | jats crossref nlm-stylechecker datacite doaj nlm w3 ncbi
+fetch: | jats crossref crossref441 crossrefRel nlm-stylechecker datacite doaj nlm w3 ncbi
 fetch-all: | fetch pmc eutils
 
 # Archive files
@@ -52,6 +52,15 @@ $(DOWNLOADS)/JATS-Publishing-1-1-MathML2-XSD.zip: | $(DOWNLOADS)
 crossref: | crossref/schematron.xsl
 	mkdir -p crossref
 	wget --recursive --level=1 --directory-prefix=crossref --no-directories --accept xsd http://doi.crossref.org/schemas/
+
+crossref441:
+		mkdir -p crossref
+		wget --directory-prefix=crossref --no-directories --accept xsd http://doi.crossref.org/schemas/common4.4.1.xsd
+		wget --directory-prefix=crossref --no-directories --accept xsd http://doi.crossref.org/schemas/crossref4.4.1.xsd
+		wget --directory-prefix=crossref --no-directories --accept xsd http://doi.crossref.org/schemas/clinicaltrials.xsd
+crossrefRel:
+		mkdir -p crossref
+		wget --directory-prefix=crossref --no-directories --accept xsd http://doi.crossref.org/schemas/relations.xsd
 
 crossref/schematron.xsl: | $(DOWNLOADS)/CrossRef_Schematron_Rules
 	mkdir -p crossref
