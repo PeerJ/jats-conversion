@@ -22,9 +22,10 @@
 
   <xsl:variable name="article-meta" select="/article/front/article-meta"/>
   <xsl:variable name="article-id" select="$article-meta/article-id[@pub-id-type='publisher-id']"/>
-  <xsl:variable name="doi" select="$article-meta/article-id[@pub-id-type='doi']"/>
+  <!-- <xsl:variable name="doi" select="$article-meta/article-id[@pub-id-type='doi']"/> -->
   <xsl:variable name="url" select="$article-meta/self-uri/@xlink:href"/>
 
+  <xsl:param name="doi"/>
   <xsl:param name="batchId" select="$doi"/>
   <xsl:param name="timestamp" />
   <xsl:param name="depositorName" />
