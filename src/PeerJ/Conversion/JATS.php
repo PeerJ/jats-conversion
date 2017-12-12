@@ -77,9 +77,30 @@ class JATS
 
         return $output;
     }
-
     /**
      * Convert to CrossRef deposit XML
+     *
+     * @param \DOMDocument $input  XML document to be converted
+     * @param array        $params { 'depositorName', 'depositorEmail' }
+     * @param bool         $validate
+     *
+     * @return \DOMDocument
+     */
+    public function generateCrossRef(\DOMDocument $input, $params = array(), $validate = true)
+    {
+        $params['timestamp'] = date('YmdHis');
+
+        $output = $this->convert('jats-to-unixref', $input, $params);
+
+        if ($validate) {
+            $schema = 'http://www.crossref.org/schema/deposit/crossref4.3.6.xsd';
+            $this->validateWithSchema($output, $schema);
+        }
+
+        return $output;
+    }
+    /**
+     * Convert to CrossRef posted content preprint deposit XML
      *
      * @param \DOMDocument $input    XML document to be converted
      * @param array        $params   { 'depositorName', 'depositorEmail', 'timestamp', 'isPreprintOf', 'previousVersionDoi', 'nextVersionDoi' }
