@@ -1,9 +1,9 @@
 #!/bin/bash
-PCTYPE=preprint
+
 if [ -z "$1" ]
-  then
-    echo "Usage: $0 {article.xml}"
-    exit
+then
+  echo "Usage: $0 {article.xml}"
+  exit
 fi
 
 ARTICLE=$1
@@ -30,25 +30,16 @@ echo "Validating against JATS XSD"
 # TODO: detect version or add option
 xmllint --nonet $TRACE --noout --catalogs --schema 'http://jats.nlm.nih.gov/publishing/1.1/xsd/JATS-journalpublishing1.xsd' "$ARTICLE"
 
-CROSSREF_FILE_NAME="$OUTPUT_DIR/crossref-posted-content.xml"
+CROSSREF_FILE_NAME="$OUTPUT_DIR/crossref-database.xml"
 
-# --stringparam 'isPreprintOf' '10.7717/peerj.XXXX' \
-# --stringparam 'previousVersionDoi' '10.7728/previousVersionDoi' \
-# --stringparam 'nextVersionDoi' '10.7728/nextVersionDoi' \
---stringparam 'doi' '10.7287/peerj.3115' \
-echo "creating preprint $type CrossRef DOI deposition"
+echo "creating preprint CrossRef DOI deposition"
 xsltproc --catalogs \
-    --nodtdattr \
-	--stringparam 'timestamp' `date +"%s"` \
-	--stringparam 'depositorName' 'test' \
-  --stringparam 'depositorEmail' 'test@example.com' \
-  --stringparam 'doi' '10.1234/abcdf.preprint.1234v2' \
-  --stringparam 'isPreprintOf' '10.1234/abcdf.review.4567'\
-  --stringparam 'previousVersionDoi' '10.1234/abcdf.preprint.1234v1'\
-  --stringparam 'nextVersionDoi''10.1234/abcdf.preprint.1234v3' \
-	"$XSL/jats-to-unixref-posted-content-preprint.xsl" "$ARTICLE" > "$CROSSREF_FILE_NAME"
-
-echo "Created $CROSSREF_FILE_NAME"
+--nodtdattr \
+--stringparam 'timestamp' `date +"%s"` \
+--stringparam 'depositorName' 'test' \
+--stringparam 'depositorEmail' 'test@example.com' \
+--stringparam 'doi' '10.1234/adbcef.ghijk.00000/' \
+"$XSL/jats-to-unixref-posted-content-database.xsl" "$ARTICLE" > "$CROSSREF_FILE_NAME"
 
 echo "Validating for CrossRef DOI deposition"
 xmllint --nonet $TRACE --noout --schema "$RESOURCES/crossref/crossref4.4.1.xsd" "$CROSSREF_FILE_NAME"
@@ -56,7 +47,7 @@ xmllint --nonet $TRACE --noout --schema "$RESOURCES/crossref/crossref4.4.1.xsd" 
 echo "Generating CrossRef schematron report"
 OUTPUT="$OUTPUT_DIR/$FILE-crossref-schematron-report.xml"
 #xsltproc --catalogs --stringparam "timestamp" `date +"%s"` "$$XSL/jats-to-unixref.xsl" "$ARTICLE" | xsltproc "$RESOURCES/schematron/crossref.xsl" -
-saxon "$CROSSREF_FILE_NAME" "$RESOURCES/crossref/schematron.xsl" > "$OUTPUT"
+saxon "$OUTPUT_DIR/crossref.xml" "$RESOURCES/crossref/schematron.xsl" > "$OUTPUT"
 echo "CrossRef schematron report written to $OUTPUT"
 
 echo "Checking PMC tagging style"

@@ -153,18 +153,19 @@
   </posted_date>
 
   <!-- acceptance_date -->
-  <acceptance_date media_type="online">
-    <month>
-      <xsl:apply-templates select="$accepted-date/month" mode="zero-pad-date"/>
-    </month>
-    <day>
-      <xsl:apply-templates select="$accepted-date/day" mode="zero-pad-date"/>
-    </day>
-    <year>
-      <xsl:value-of select="$accepted-date/year/@iso-8601-date"/>
-    </year>
-  </acceptance_date>
-
+  <xsl:if test="accepted-date">
+    <acceptance_date media_type="online">
+      <month>
+        <xsl:apply-templates select="$accepted-date/month" mode="zero-pad-date"/>
+      </month>
+      <day>
+        <xsl:apply-templates select="$accepted-date/day" mode="zero-pad-date"/>
+      </day>
+      <year>
+        <xsl:value-of select="$accepted-date/year/@iso-8601-date"/>
+      </year>
+    </acceptance_date>
+  </xsl:if>
   <!-- TODO institution, will accept a Pull Request that implements this.  -->
   <!-- Wrapper element for information about an organization that sponsored or hosted an item but is not the publisher of the item. -->
   <!-- http://data.crossref.org/reports/help/schema_doc/4.4.1/schema_4_4_1.html#http___www.crossref.org_schema_4.4.1_institution -->
@@ -186,7 +187,7 @@
   <!-- license URL -->
   <xsl:apply-templates select="permissions/license/@xlink:href" mode="access-indicators"/>
 
-  <!-- fundref -->
+  <!-- relatedItems -->
   <xsl:call-template name="relatedItems"/>
 
   <doi_data>
@@ -210,8 +211,9 @@
 
 
 <xsl:template name="relatedItems">
-  <xsl:if test="$isPreprintOf or $previousVersionDoi or $nextVersionDoi">
+  <xsl:if test="$isPreprintOf or $previousVersionDoi or $nextVersionDoi or //supplementary-material[object-id[@pub-id-type='doi']] ">
     <rel:program>
+      <xsl:apply-templates select="//supplementary-material[object-id[@pub-id-type='doi']]" mode="related-item"/>
       <xsl:if test="$isPreprintOf">
         <rel:related_item>
           <rel:intra_work_relation relationship-type="isPreprintOf" identifier-type="doi">
@@ -626,16 +628,15 @@
   </component>
 </xsl:template>
 
-<!-- caption title -->
-<xsl:template match="caption/title">
-  <titles>
-    <title>
-      <xsl:if test="../../label">
-        <xsl:value-of select="concat(../../label, ': ')"/>
-      </xsl:if>
-      <xsl:apply-templates select="node()" mode="title"/>
-    </title>
-  </titles>
+<!-- supplementary material component -->
+
+<xsl:template match="supplementary-material" mode="related-item">
+  <rel:related_item>
+    <rel:description><xsl:apply-templates select="caption/title"/></rel:description>
+    <rel:inter_work_relation relationship-type="references" identifier-type="doi">
+      <xsl:value-of select="object-id[@pub-id-type='doi']"/>
+    </rel:inter_work_relation>
+  </rel:related_item>
 </xsl:template>
 
 <!-- http://help.crossref.org/include-abstracts-in-deposits -->
