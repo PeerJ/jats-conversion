@@ -12,11 +12,11 @@
             <dt>Cite this article</dt>
             <dd>
                 <xsl:call-template name="self-citation-authors"/>
-                <xsl:text>&#32;(</xsl:text>
+                <xsl:text>&#32;</xsl:text>
                 <span class="self-citation-year">
                     <xsl:value-of select="$pub-date/year"/>
                 </span>
-                <xsl:text>)&#32;</xsl:text>
+                <xsl:text>.&#32;</xsl:text>
                 <xsl:apply-templates select="$title" mode="self-citation"/>
                 <xsl:call-template name="title-punctuation">
                     <xsl:with-param name="title" select="$title"/>
