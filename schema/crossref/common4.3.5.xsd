@@ -8,7 +8,7 @@
 
                           Introduction
 
-     CrossRef Schema Version 4.3
+     CrossRef Schema Version 4.3.5
 	 Developed for CrossRef (www.crossref.org) by
 
      Inera Incorporated
@@ -40,6 +40,9 @@
 
     Changes record version, author initials, date, and comments
   
+  4.3.0 - 4.4.1 (PDF) 3/1/18 update language.atts
+  4.3.1-4.4.0 (PDF) 6/5/2017 change ORCID to accept both http and https
+  4.3.0 - 4.4.0 (PDF) 5/15/2017 make crossmark_domains optional, limit crossmark_domain_exclusive to 1
   4.3.5 (PDF) add WebCite as value for archive
   4.3.0-6 (PDF) disallow empty value for citation "key" attribute
   4.3.5, 4.3.6 (PDF) 5/14/2015 added text/rtf as mime type
@@ -197,17 +200,21 @@
 	</xsd:attributeGroup>
 	<xsd:attributeGroup name="language.atts">
 		<xsd:annotation>
-			<xsd:documentation>language attributes are based on iso 639</xsd:documentation>
+			<xsd:documentation>Language attributes are based on ISO 639</xsd:documentation>
 		</xsd:annotation>
 		<xsd:attribute name="language" use="optional">
 			<xsd:simpleType>
 				<xsd:restriction base="xsd:NMTOKEN">
 					<xsd:enumeration value="aa"/>
 					<xsd:enumeration value="ab"/>
+					<xsd:enumeration value="ae"/>
 					<xsd:enumeration value="af"/>
+					<xsd:enumeration value="ak"/>
 					<xsd:enumeration value="am"/>
+					<xsd:enumeration value="an"/>
 					<xsd:enumeration value="ar"/>
 					<xsd:enumeration value="as"/>
+					<xsd:enumeration value="av"/>
 					<xsd:enumeration value="ay"/>
 					<xsd:enumeration value="az"/>
 					<xsd:enumeration value="ba"/>
@@ -215,16 +222,25 @@
 					<xsd:enumeration value="bg"/>
 					<xsd:enumeration value="bh"/>
 					<xsd:enumeration value="bi"/>
+					<xsd:enumeration value="bm"/>
 					<xsd:enumeration value="bn"/>
 					<xsd:enumeration value="bo"/>
 					<xsd:enumeration value="br"/>
+					<xsd:enumeration value="bs"/>
 					<xsd:enumeration value="ca"/>
+					<xsd:enumeration value="ce"/>
+					<xsd:enumeration value="ch"/>
 					<xsd:enumeration value="co"/>
+					<xsd:enumeration value="cr"/>
 					<xsd:enumeration value="cs"/>
+					<xsd:enumeration value="cu"/>
+					<xsd:enumeration value="cv"/>
 					<xsd:enumeration value="cy"/>
 					<xsd:enumeration value="da"/>
 					<xsd:enumeration value="de"/>
+					<xsd:enumeration value="dv"/>
 					<xsd:enumeration value="dz"/>
+					<xsd:enumeration value="ee"/>
 					<xsd:enumeration value="el"/>
 					<xsd:enumeration value="en"/>
 					<xsd:enumeration value="eo"/>
@@ -232,6 +248,7 @@
 					<xsd:enumeration value="et"/>
 					<xsd:enumeration value="eu"/>
 					<xsd:enumeration value="fa"/>
+					<xsd:enumeration value="ff"/>
 					<xsd:enumeration value="fi"/>
 					<xsd:enumeration value="fj"/>
 					<xsd:enumeration value="fo"/>
@@ -242,52 +259,80 @@
 					<xsd:enumeration value="gl"/>
 					<xsd:enumeration value="gn"/>
 					<xsd:enumeration value="gu"/>
+					<xsd:enumeration value="gv"/>
 					<xsd:enumeration value="ha"/>
 					<xsd:enumeration value="he"/>
 					<xsd:enumeration value="hi"/>
+					<xsd:enumeration value="ho"/>
 					<xsd:enumeration value="hr"/>
+					<xsd:enumeration value="ht"/>
 					<xsd:enumeration value="hu"/>
 					<xsd:enumeration value="hy"/>
+					<xsd:enumeration value="hz"/>
 					<xsd:enumeration value="ia"/>
 					<xsd:enumeration value="id"/>
 					<xsd:enumeration value="ie"/>
+					<xsd:enumeration value="ig"/>
+					<xsd:enumeration value="ii"/>
 					<xsd:enumeration value="ik"/>
+					<xsd:enumeration value="io"/>
 					<xsd:enumeration value="is"/>
 					<xsd:enumeration value="it"/>
+					<xsd:enumeration value="iu"/>
 					<xsd:enumeration value="ja"/>
 					<xsd:enumeration value="jw"/>
 					<xsd:enumeration value="ka"/>
+					<xsd:enumeration value="kg"/>
+					<xsd:enumeration value="ki"/>
+					<xsd:enumeration value="kj"/>
 					<xsd:enumeration value="kk"/>
 					<xsd:enumeration value="kl"/>
 					<xsd:enumeration value="km"/>
 					<xsd:enumeration value="kn"/>
 					<xsd:enumeration value="ko"/>
+					<xsd:enumeration value="kr"/>
 					<xsd:enumeration value="ks"/>
 					<xsd:enumeration value="ku"/>
+					<xsd:enumeration value="kv"/>
+					<xsd:enumeration value="kw"/>
 					<xsd:enumeration value="ky"/>
 					<xsd:enumeration value="la"/>
+					<xsd:enumeration value="lb"/>
+					<xsd:enumeration value="lg"/>
+					<xsd:enumeration value="li"/>
 					<xsd:enumeration value="ln"/>
 					<xsd:enumeration value="lo"/>
 					<xsd:enumeration value="lt"/>
+					<xsd:enumeration value="lu"/>
 					<xsd:enumeration value="lv"/>
 					<xsd:enumeration value="mg"/>
+					<xsd:enumeration value="mu"/>
 					<xsd:enumeration value="mi"/>
 					<xsd:enumeration value="mk"/>
 					<xsd:enumeration value="ml"/>
 					<xsd:enumeration value="mn"/>
-					<xsd:enumeration value="mo"/>
 					<xsd:enumeration value="mr"/>
 					<xsd:enumeration value="ms"/>
 					<xsd:enumeration value="mt"/>
 					<xsd:enumeration value="my"/>
 					<xsd:enumeration value="na"/>
+					<xsd:enumeration value="nb"/>
+					<xsd:enumeration value="nd"/>
 					<xsd:enumeration value="ne"/>
+					<xsd:enumeration value="ng"/>
 					<xsd:enumeration value="nl"/>
+					<xsd:enumeration value="nn"/>
 					<xsd:enumeration value="no"/>
+					<xsd:enumeration value="nr"/>
+					<xsd:enumeration value="nv"/>
+					<xsd:enumeration value="ny"/>
 					<xsd:enumeration value="oc"/>
+					<xsd:enumeration value="oj"/>
 					<xsd:enumeration value="om"/>
 					<xsd:enumeration value="or"/>
+					<xsd:enumeration value="os"/>
 					<xsd:enumeration value="pa"/>
+					<xsd:enumeration value="pi"/>
 					<xsd:enumeration value="pl"/>
 					<xsd:enumeration value="ps"/>
 					<xsd:enumeration value="pt"/>
@@ -298,7 +343,9 @@
 					<xsd:enumeration value="ru"/>
 					<xsd:enumeration value="rw"/>
 					<xsd:enumeration value="sa"/>
+					<xsd:enumeration value="sc"/>
 					<xsd:enumeration value="sd"/>
+					<xsd:enumeration value="se"/>
 					<xsd:enumeration value="sg"/>
 					<xsd:enumeration value="si"/>
 					<xsd:enumeration value="sk"/>
@@ -326,17 +373,21 @@
 					<xsd:enumeration value="ts"/>
 					<xsd:enumeration value="tt"/>
 					<xsd:enumeration value="tw"/>
+					<xsd:enumeration value="ty"/>
+					<xsd:enumeration value="ug"/>
 					<xsd:enumeration value="uk"/>
 					<xsd:enumeration value="ur"/>
 					<xsd:enumeration value="uz"/>
+					<xsd:enumeration value="ve"/>
 					<xsd:enumeration value="vi"/>
 					<xsd:enumeration value="vo"/>
+					<xsd:enumeration value="wa"/>
 					<xsd:enumeration value="wo"/>
 					<xsd:enumeration value="xh"/>
 					<xsd:enumeration value="yi"/>
 					<xsd:enumeration value="yo"/>
+					<xsd:enumeration value="za"/>
 					<xsd:enumeration value="zh"/>
-					<xsd:enumeration value="zu"/>
 				</xsd:restriction>
 			</xsd:simpleType>
 		</xsd:attribute>
@@ -616,7 +667,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			</xsd:restriction>
 		</xsd:simpleType>
 	</xsd:element>
-	<xsd:element name="timestamp" type="xsd:double">
+	<xsd:element name="timestamp" type="xsd:nonNegativeInteger">
 		<xsd:annotation>
 			<xsd:documentation>Indicates version of a batch file instance or DOI. timestamp is used
 				to uniquely identify batch files and DOI values when a DOI has been updated one or
@@ -1306,7 +1357,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 	</xsd:element>
 	<xsd:simpleType name="orcid_t">
 		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="http://orcid.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[X0-9]{1}"/>			
+			<xsd:pattern value="https?://orcid.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[X0-9]{1}"/>			
 		</xsd:restriction>
 	</xsd:simpleType>
 	
@@ -2304,8 +2355,8 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			<xsd:sequence minOccurs="0">
 				<xsd:element ref="crossmark_version" minOccurs="0"/>
 				<xsd:element ref="crossmark_policy"/>
-				<xsd:element ref="crossmark_domains"/>
-				<xsd:element ref="crossmark_domain_exclusive">
+				<xsd:element ref="crossmark_domains" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="crossmark_domain_exclusive" minOccurs="0">
 					<xsd:annotation>
 						<xsd:documentation>Required element. Some publishers encourage broad third
 							party hosting of the publisher's content. Other publishers do not. And

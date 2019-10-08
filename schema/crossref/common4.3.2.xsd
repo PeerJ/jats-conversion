@@ -6,7 +6,7 @@
 
 Introduction
 
-CrossRef Schema Version 4.3
+CrossRef Schema Version 4.3.2
 Developed for CrossRef (www.crossref.org) by
 
 Inera Incorporated
@@ -37,7 +37,10 @@ email: info@inera.com
                           Change History
 
     Changes record version, author initials, date, and comments
-    
+  
+  4.3.1-4.4.0 (PDF) 6/5/2017 change ORCID to accept both http and https
+  4.3.0 - 4.4.0 (PDF) 5/15/2017 make crossmark_domains optional, limit crossmark_domain_exclusive to 1  
+  4.3.2 (PDF) lengthen surname and given_name fields to 55
   4.3.0-6 (PDF) disallow empty value for citation "key" attribute
   4.3.1,2,4 (PDF) 6/24/2014 minor change to ORCID regex to only allow X
   4.3.2 (PDF) 4/14/2014 changed superseded_by to supersedes
@@ -568,7 +571,7 @@ The publisher must insure that this number is unique for every submission to Cro
 			</xsd:restriction>
 		</xsd:simpleType>
 	</xsd:element>
-	<xsd:element name="timestamp" type="xsd:double">
+	<xsd:element name="timestamp" type="xsd:nonNegativeInteger">
 		<xsd:annotation>
 			<xsd:documentation>Indicates version of a batch file instance or DOI.
 
@@ -1208,7 +1211,7 @@ Do not include titles such as "Dr.", "Prof.", or "President" in given_name. Thes
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
-				<xsd:maxLength value="35"/>
+				<xsd:maxLength value="55"/>
 				<xsd:minLength value="1"/>
 				<xsd:pattern value="[^\d\?]*"/>
 				<xsd:whiteSpace value="collapse"/>
@@ -1231,7 +1234,7 @@ Suffixes should be tagged with suffix. Author degrees (e.g. M.D., Ph.D.) should 
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
-				<xsd:maxLength value="45"/>
+				<xsd:maxLength value="55"/>
 				<xsd:minLength value="1"/>
 				<xsd:pattern value="[^\d\?]*[^\d\?\s]+[^\d\?]*"/>
 				<xsd:whiteSpace value="collapse"/>
@@ -1257,8 +1260,8 @@ Author degrees (e.g. M.D., Ph.D.) should not be included in CrossRef submissions
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="37"/>
 			<xsd:minLength value="34"/>
-			<xsd:pattern value="http://orcid.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[X0-9]{1}"/>
-			<xsd:pattern value="http://orcid.org/[0-9]{15}[X0-9]{1}"/>
+			<xsd:pattern value="https?://orcid.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[X0-9]{1}"/>
+
 		</xsd:restriction>
 	</xsd:simpleType>
 
@@ -2083,8 +2086,8 @@ The format element may contain only the mime_type attribute, or in addition it m
 			<xsd:sequence minOccurs="0">
 				<xsd:element ref="crossmark_version" minOccurs="0"/>
 				<xsd:element ref="crossmark_policy"/>
-				<xsd:element ref="crossmark_domains"/>
-				<xsd:element ref="crossmark_domain_exclusive">
+				<xsd:element ref="crossmark_domains" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="crossmark_domain_exclusive" minOccurs="0">
 					<xsd:annotation>
 						<xsd:documentation>Required element. Some publishers encourage broad third party hosting of the publisher's content. Other publishers do not. And still others vary their policy depending on whether a particular article has been published under an OA policy or not. This boolean flag allows the publisher to indicate whether the CrossMarked content will only legitimately be updated on the CrossMark domain (true) or whether the publisher encourages updating the content on other sites as well (false).</xsd:documentation>
 					</xsd:annotation>

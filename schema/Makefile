@@ -3,7 +3,7 @@
 
 .PHONY: fetch nlm jats pmc
 
-fetch: | jats crossref crossref441 crossrefRel nlm-stylechecker datacite doaj nlm w3 ncbi
+fetch: | jats crossref  nlm-stylechecker datacite doaj nlm w3 ncbi
 fetch-all: | fetch pmc eutils
 
 # Archive files
@@ -47,20 +47,15 @@ $(DOWNLOADS)/JATS-Publishing-1-1-MathML2-DTD.zip: | $(DOWNLOADS)
 $(DOWNLOADS)/JATS-Publishing-1-1-MathML2-XSD.zip: | $(DOWNLOADS)
 	wget -c -P $(DOWNLOADS) ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.1/xsd/JATS-Publishing-1-1-MathML2-XSD.zip
 
-# CrossRef Schema
-
-crossref: | crossref/schematron.xsl
+# CrossRef Schema, this is now being hosted on gitlab, the zip includes examples, which we don't copy
+crossref: | crossref/schematron.xsl (DOWNLOADS)/schema-0.1.1.zip
 	mkdir -p crossref
-	wget --recursive --level=1 --directory-prefix=crossref --no-directories --accept xsd http://doi.crossref.org/schemas/
+	unzip $(DOWNLOADS)/schema-0.1.1.zip -d $(DOWNLOADS)/schema-0.1.1
+	mv $(DOWNLOADS)/schema-0.1.1/schema-0.1.1/schemas/* crossref/
 
-crossref441:
-		mkdir -p crossref
-		wget --directory-prefix=crossref --no-directories --accept xsd http://doi.crossref.org/schemas/common4.4.1.xsd
-		wget --directory-prefix=crossref --no-directories --accept xsd http://doi.crossref.org/schemas/crossref4.4.1.xsd
-		wget --directory-prefix=crossref --no-directories --accept xsd http://doi.crossref.org/schemas/clinicaltrials.xsd
-crossrefRel:
-		mkdir -p crossref
-		wget --directory-prefix=crossref --no-directories --accept xsd http://doi.crossref.org/schemas/relations.xsd
+
+(DOWNLOADS)/schema-0.1.1.zip: | $(DOWNLOADS)
+	wget -c -P $(DOWNLOADS) https://gitlab.com/crossref/schema/-/archive/0.1.1/schema-0.1.1.zip
 
 crossref/schematron.xsl: | $(DOWNLOADS)/CrossRef_Schematron_Rules
 	mkdir -p crossref
@@ -71,6 +66,9 @@ $(DOWNLOADS)/CrossRef_Schematron_Rules.zip: | $(DOWNLOADS)
 
 $(DOWNLOADS)/CrossRef_Schematron_Rules: | $(DOWNLOADS)/CrossRef_Schematron_Rules.zip
 	unzip $(DOWNLOADS)/CrossRef_Schematron_Rules.zip -d $(DOWNLOADS)
+# use the jar file as supplied to run the tests
+	mkdir -p ../tests/
+	cp  $(DOWNLOADS)/CrossRef_Schematron_Rules/saxon8.jar ../tests/
 	touch $(DOWNLOADS)/CrossRef_Schematron_Rules
 
 # DataCite schema
@@ -101,7 +99,7 @@ datacite/meta/kernel-3: w3
 
 # W3 DTDs and Schema
 
-w3: | w3/2009/01/xml.xsd w3/1999/xlink.xsd w3/Math/DTD/mathml3 w3/Math/XMLSchema/mathml3
+w3: | w3/2001/xml.xsd w3/2009/01/xml.xsd w3/1999/xlink.xsd w3/Math/DTD/mathml3 w3/Math/XMLSchema/mathml3
 
 w3/2001/xml.xsd:
 	mkdir -p w3/2001

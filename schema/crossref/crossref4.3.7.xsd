@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns="http://www.crossref.org/schema/4.4.1"
+<xsd:schema xmlns="http://www.crossref.org/schema/4.3.7"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://www.crossref.org/schema/4.4.1"
+	targetNamespace="http://www.crossref.org/schema/4.3.7"
 	xmlns:fr="http://www.crossref.org/fundref.xsd"
 	xmlns:ct="http://www.crossref.org/clinicaltrials.xsd"
 	xmlns:ai="http://www.crossref.org/AccessIndicators.xsd"
@@ -13,7 +13,7 @@
 
                           Introduction
 
-     CrossRef W3C Deposit Schema Version 4.4.1
+     CrossRef W3C Deposit Schema Version 4.3.6\7
 
      Developed for CrossRef (www.crossref.org) by
 
@@ -22,7 +22,7 @@
      http://www.inera.com
      email: info@inera.com
 
-	For more information on the use of this schema see https://support.crossref.org/hc/en-us/sections/202832803
+	For more information on the use of this schema see http://help.crossref.org/#ID38158
 
      ============================================================= -->
 	<!-- =============================================================
@@ -48,8 +48,6 @@
 
     Changes record version, author initials, date, and comments
    
-   4.4.1 (CSK) 6/9/17  added early-content as a top level content type
-   4.4.0 (PDF) 4/24/17 added 'pmid' as id_type for identifier element
    4.3.7 (CSK) August 2015  Added linked clinical trials
    4.3.6  (CSK)  12/2/14  reworked standard designator
    4.3.5  10/31/14 added rel:program to support deposit of relationships
@@ -214,7 +212,7 @@
           0. Include module common to multiple CrossRef schemas
 
      ============================================================= -->
-	<xsd:include schemaLocation="common4.4.1.xsd"/>
+	<xsd:include schemaLocation="common4.3.7.xsd"/>
 	<!-- =============================================================
 
                           1. Shared attributes
@@ -250,8 +248,8 @@
 				indicates the start and end of the XML file. The version number is fixed to the
 				version of the schema. Be sure to set the name space attributes as shown above in
 				order for the Xerces parser to process the instance correctly. For the purposes of
-				parsing, you may also set xsi:schemaLocation to http://www.crossref.org/schema/4.x.x
-				http://www.crossref.org /schema/4.x.x/crossref.xsd. A copy of the schema is located
+				parsing, you may also set xsi:schemaLocation to http://www.crossref.org/schema/4.3.0
+				http://www.crossref.org /schema/4.3.0/crossref.xsd. A copy of the schema is located
 				on the CrossRef server at this URL and will remain constant for a given version of
 				the schema. This location permits you to have a constant location for the schema for
 				parsing without relying on a hardwired local directory on your development platform.
@@ -262,7 +260,7 @@
 				<xsd:element ref="head"/>
 				<xsd:element ref="body"/>
 			</xsd:sequence>
-			<xsd:attribute name="version" type="xsd:string" fixed="4.4.1"/>
+			<xsd:attribute name="version" type="xsd:string" fixed="4.3.7"/>
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="head">
@@ -299,8 +297,6 @@
 				<xsd:element ref="report-paper" maxOccurs="unbounded"/>
 				<xsd:element ref="standard" maxOccurs="unbounded"/>
 				<xsd:element ref="database" maxOccurs="unbounded"/>
-				<xsd:element ref="peer_review" maxOccurs="unbounded"/>
-				<xsd:element ref="posted_content" maxOccurs="unbounded"/>
 			</xsd:choice>
 		</xsd:complexType>
 	</xsd:element>
@@ -400,7 +396,6 @@
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="contributors" minOccurs="0"/>
-				<xsd:element ref="titles" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="publication_date" maxOccurs="10"/>
 				<xsd:element ref="journal_volume" minOccurs="0"/>
 				<xsd:element ref="issue" minOccurs="0"/>
@@ -452,7 +447,7 @@
 				heading from the journal section or table of contents (e.g. "Errata") in title.
 				journal_article allows for multiple titles per entity. In some cases it may be
 				helpful to submit multiple titles. For example, if an erratum carries title of the
-				original article a nd the heading "Errata", both should be submitted by using two
+				original article and the heading "Errata", both should be submitted by using two
 				titles elements.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
@@ -479,7 +474,6 @@
 				</xsd:choice>
 				<xsd:element ref="rel:program" minOccurs="0"/>
 				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
-				<xsd:element ref="scn_policies" minOccurs="0" maxOccurs="1"/>    <!-- cs-3495 -->
 				<xsd:element ref="doi_data"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 				<xsd:element ref="component_list" minOccurs="0"/>
@@ -849,7 +843,6 @@
 				</xsd:choice>
 				<xsd:element ref="rel:program" minOccurs="0"/>
 				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
-				<xsd:element ref="scn_policies" minOccurs="0" maxOccurs="1"/>    <!-- cs-3495 -->
 				<xsd:element ref="doi_data"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 				<xsd:element ref="component_list" minOccurs="0"/>
@@ -1187,7 +1180,6 @@
 				</xsd:choice>
 				<xsd:element ref="rel:program" minOccurs="0"/>
 				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
-				<xsd:element ref="scn_policies" minOccurs="0" maxOccurs="1"/>    <!-- cs-3495 -->
 				<xsd:element ref="doi_data"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 				<xsd:element ref="component_list" minOccurs="0"/>
@@ -1458,7 +1450,6 @@
 								<xsd:enumeration value="ISO-std-ref"/>
 								<xsd:enumeration value="std-designation"/>
 								<xsd:enumeration value="report-number"/>
-								<xsd:enumeration value="pmid"/>
 								<xsd:enumeration value="other"/>
 							</xsd:restriction>
 						</xsd:simpleType>
@@ -1502,7 +1493,6 @@
 				</xsd:choice>
 				<xsd:element ref="rel:program" minOccurs="0"/>
 				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
-				<xsd:element ref="scn_policies" minOccurs="0" maxOccurs="1"/>    <!-- cs-3495 -->
 				<xsd:element ref="doi_data"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 				<xsd:element ref="component_list" minOccurs="0"/>
@@ -1582,7 +1572,6 @@
 				</xsd:choice>
 				<xsd:element ref="rel:program" minOccurs="0"/>
 				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
-				<xsd:element ref="scn_policies" minOccurs="0" maxOccurs="1"/>    <!-- cs-3495 -->
 				<xsd:element ref="doi_data" minOccurs="0"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 			</xsd:sequence>
@@ -1868,165 +1857,41 @@
 			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
-
-	<!-- ===========================================================
-		Top level content type for peer-review DOIs
-		============================================================== -->
-	<xsd:element name="publication">
+	<xsd:element name="database_date">
 		<xsd:annotation>
-			<xsd:documentation> </xsd:documentation>
+			<xsd:documentation>database_date records key dates in the life of a database or dataset
+				item. Within database_date, creation_date is the date the item was first created,
+				publication_date is the date the item was first published, and update_date is the
+				date the item was last updated.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element ref="full_title" maxOccurs="10"/>
-				<xsd:choice>
-					<xsd:sequence>
-					<xsd:choice>
-						<xsd:element ref="issn" minOccurs="1" maxOccurs="6"/>	 			     
-						<xsd:element ref="isbn" minOccurs="1" maxOccurs="6"/>	 
-					</xsd:choice>	
-				    </xsd:sequence>
-					<xsd:sequence>
-						<xsd:element ref="doi" minOccurs="1" maxOccurs="6"/>
-						<xsd:choice>
-							<xsd:element ref="issn" minOccurs="0" maxOccurs="6"/>	 			     
-							<xsd:element ref="isbn" minOccurs="0" maxOccurs="6"/>	 
-						</xsd:choice>
-					</xsd:sequence>								
-				</xsd:choice>
+				<xsd:element ref="creation_date" minOccurs="0"/>
+				<xsd:element ref="publication_date" minOccurs="0"/>
+				<xsd:element ref="update_date" minOccurs="0"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
-
-	<!-- ===========================================================
-		Top level content type for peer_review DOIs
-		============================================================== -->
-	<xsd:element name="peer_review">
+	<xsd:element name="creation_date">
 		<xsd:annotation>
-			<xsd:documentation>
-				The  peer_review content type is intended for assigning DOIs to the reports and other artifacts associated with the review of published content.
-			</xsd:documentation>
+			<xsd:documentation>The date a database or dataset item was created.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element ref="contributors" minOccurs="0"/>
-				<xsd:element ref="titles" minOccurs="1" maxOccurs="1"/>	 
-				<xsd:element ref="review_date" minOccurs="1" maxOccurs="1"/>
-				<xsd:element ref="institution" minOccurs="0" maxOccurs="5"/>
-				<xsd:element ref="competing_interest_statement" minOccurs="0" maxOccurs="1"/>
-				<xsd:element ref="running_number" minOccurs="0" maxOccurs="1"/>
-				<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
-				<xsd:element ref="rel:program" minOccurs="1"/>
-				<xsd:element ref="scn_policies" minOccurs="0" maxOccurs="1"/>    <!-- cs-3495 -->
-				<xsd:element ref="doi_data" minOccurs="1" maxOccurs="1"/>
-			</xsd:sequence>
-			<xsd:attribute name="stage" use="optional">
-				<xsd:simpleType>
-					<xsd:restriction base="xsd:NMTOKEN">
-						<xsd:enumeration value="pre-publication"/>
-						<xsd:enumeration value="post-publication"/>
-					</xsd:restriction>
-				</xsd:simpleType>
-			</xsd:attribute>
-			<xsd:attribute name="type" use="optional">
-				<xsd:simpleType>
-					<xsd:restriction base="xsd:NMTOKEN">
-						<xsd:enumeration value="referee-report"/>
-						<xsd:enumeration value="editor-report"/>
-						<xsd:enumeration value="author-comment"/>
-						<xsd:enumeration value="community-comment"/>
-						<xsd:enumeration value="manuscript"/>
-						<xsd:enumeration value="aggregate"/>
-					</xsd:restriction>
-				</xsd:simpleType>
-			</xsd:attribute>
-			<xsd:attribute name="recommendation" use="optional">
-				<xsd:simpleType>
-					<xsd:restriction base="xsd:NMTOKEN">
-						<xsd:enumeration value="major-revision"/>
-						<xsd:enumeration value="minor-revision"/>
-						<xsd:enumeration value="reject"/>
-						<xsd:enumeration value="reject-with-resubmit"/>
-						<xsd:enumeration value="accept"/>
-					</xsd:restriction>
-				</xsd:simpleType>
-			</xsd:attribute>
-			<xsd:attribute name="revision-round" use="optional" type="xsd:integer">
-				<xsd:annotation>
-					<xsd:documentation>Required attribute. First submission defined as revision round zero</xsd:documentation>
-				</xsd:annotation>
-			</xsd:attribute>			
-			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>			</xsd:complexType>
-	
-	</xsd:element>
-
-	<!-- ===========================================================
-	     Top level content type for prepublication DOIs
-        ============================================================== -->
-
-	<xsd:element name="posted_content">
-		<xsd:annotation>
-			<xsd:documentation> Posted-content is for the assignment of DOIs to content that may
-				subsequently be formally published. Non-DOI identifiers associated with the content
-				may be recorded in the item_number element. We encourage the inclussion of an
-				abstract. The relation program (rel:program) should be used to link this content
-				item to other DOIs including the DOI of the published version of record. Pre-print
-				should not be used to assign DOIs to accepted manuscripts. A DOI may be assigned to
-				an accepted manuscript using the content type appropriate for early registration.
-				DOIs assigned to accepted manuscripts should be reused (e.g. reassigned to the
-				published article). POsted-contnet DOIs must be continuously supported by
-				maintaining their metadata and the URL at which the content is available.
-			</xsd:documentation>
-		</xsd:annotation>
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element ref="group_title" minOccurs="0" maxOccurs="1"/>
-				<xsd:element ref="contributors" minOccurs="0"/>
-				<xsd:element ref="titles"/>
-				<xsd:element ref="posted_date" minOccurs="1" maxOccurs="1"/>
-				<xsd:element ref="acceptance_date" minOccurs="0" maxOccurs="1"/>
-				<xsd:element ref="institution" minOccurs="0" maxOccurs="5"/>
-				<xsd:element ref="item_number" minOccurs="0" maxOccurs="3"/>
-				<xsd:element ref="jats:abstract" minOccurs="0"/>
-				<xsd:element maxOccurs="1" ref="fr:program" minOccurs="0"/>
-				<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
-				<xsd:element ref="rel:program" minOccurs="0"/>
-				<xsd:element ref="scn_policies" minOccurs="0" maxOccurs="1"/>    <!-- cs-3495 -->
-				<xsd:element ref="doi_data" minOccurs="1"/>
-				<xsd:element ref="citation_list" minOccurs="0"/>
-			</xsd:sequence>
-			<xsd:attribute name="type" default="preprint">
-				<xsd:simpleType>
-					<xsd:restriction base="xsd:NMTOKEN">
-						<xsd:enumeration value="preprint"/>
-						<xsd:enumeration value="working_paper"/>
-						<xsd:enumeration value="letter"/>
-						<xsd:enumeration value="dissertation"/>
-						<xsd:enumeration value="report"/>
-						<xsd:enumeration value="review"/>
-						<xsd:enumeration value="other"/>
-					</xsd:restriction>
-				</xsd:simpleType>
-			</xsd:attribute>
-			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
+			<xsd:complexContent>
+				<xsd:extension base="date_t"/>
+			</xsd:complexContent>
 		</xsd:complexType>
 	</xsd:element>
 
-	<xsd:element name="group_title">
+	<xsd:element name="update_date">
 		<xsd:annotation>
-			<xsd:documentation>Prepublication content items may be organzed into groupings within a
-				given publisher. This element provides for naming the group. It is expected that
-				publishers will have a small number of groups each of which reflect a topic or
-				subject area.</xsd:documentation>
+			<xsd:documentation>The date a database or dataset item was updated. </xsd:documentation>
 		</xsd:annotation>
-		<xsd:simpleType>
-			<xsd:restriction base="xsd:string">
-				<xsd:maxLength value="1024"/>
-				<xsd:minLength value="1"/>
-			</xsd:restriction>
-		</xsd:simpleType>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="date_t"/>
+			</xsd:complexContent>
+		</xsd:complexType>
 	</xsd:element>
 	<!-- =============================================================
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns="http://www.crossref.org/schema/4.4.1"
+<xsd:schema xmlns="http://www.crossref.org/schema/4.4.2"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://www.crossref.org/schema/4.4.1"
+	targetNamespace="http://www.crossref.org/schema/4.4.2"
 	xmlns:fr="http://www.crossref.org/fundref.xsd"
 	xmlns:ct="http://www.crossref.org/clinicaltrials.xsd"
 	xmlns:ai="http://www.crossref.org/AccessIndicators.xsd"
@@ -13,14 +13,10 @@
 
                           Introduction
 
-     Crossref W3C Deposit Schema Version 4.4.1
+     Crossref W3C Deposit Schema Version 4.4.2
 
-     Developed for Crossref (www.crossref.org) by
+     Developed for Crossref by Inera Incorporated (http://www.inera.com)
 
-     Inera Incorporated
-     Newton, MA 02460
-     http://www.inera.com
-     email: info@inera.com
 
 	For more information on the use of this schema see https://support.crossref.org/hc/en-us/sections/202832803
 
@@ -39,8 +35,8 @@
      6. Book elements
      7. Elements common to books and conferences
      8. Elements common to journals, books and conferences
-     9. Expanded Content Types (reports, dissertations, standards,database, peer review, posted content)
-    10. Elements common to reports, dissertations, standards, posted content, peer review
+     9. Expanded Content Types (reports, dissertations and standards)
+    10. Elements common to reports, dissertations and standards
      ============================================================= -->
 	<!-- =============================================================
 
@@ -48,11 +44,11 @@
 
     Changes record version, author initials, date, and comments
    
-   4.4.1 (PDF) 8/7/18 add 'accept-with-reservation' as peer review recommendation type
-   4.4.1 (PDF) 7/12/18 add 'recommendation' as peer review type
-   4.4.1 (PDF) 12/18/17 updates to documentation
-   4.4.1 (CSK) 10/13/17 added peer review content type and related elements
-   4.4.1 (CSK) 6/9/17  added early-content as a top level content type (draft)
+   4.4.2 (PDF) 4/26/19 increase number of allowed dissertation authors to unbounded; add acceptance_date to journal article, conference paper, and content_item 
+   4.4.1,2 (PDF) 8/7/18 add 'accept-with-reservation' as peer review recommendation type
+   4.4.1,2 (PDF) 7/12/18 add 'recommendation' as peer review type
+   4.4.2 (CSK) 5/29/18  chanegd early content to pending publication
+   4.4.1 (CSK) 6/9/17  added early-content as a top level content type
    4.4.0 (PDF) 4/24/17 added 'pmid' as id_type for identifier element
    4.3.7 (CSK) August 2015  Added linked clinical trials
    4.3.6  (CSK)  12/2/14  reworked standard designator
@@ -213,12 +209,13 @@
     version 0.3 by Howard Ratner.
 
      ============================================================= -->
+	<!-- include common schema -->
+
+	<xsd:include schemaLocation="common4.4.2.xsd"/>
+
 	<!-- =============================================================
-
-          0. Include module common to multiple Crossref schemas
-
-     ============================================================= -->
-	<xsd:include schemaLocation="common4.4.1.xsd"/>
+                         1. Header elements
+     =============================================================   -->
 	<!-- =============================================================
 
                           1. Shared attributes
@@ -238,7 +235,7 @@
      ================================================================= -->
 	<!--      Most elements moved to common.xsd for version 3.0.0      -->
 	<xsd:import namespace="http://www.ncbi.nlm.nih.gov/JATS1"
-		schemaLocation="JATS-journalpublishing1.xsd"/>
+		schemaLocation="JATS-journalpublishing1-mathml3.xsd"/>
 	<xsd:import namespace="http://www.w3.org/1998/Math/MathML"
 		schemaLocation="http://www.w3.org/Math/XMLSchema/mathml3/mathml3.xsd"/>
 	<xsd:import namespace="http://www.crossref.org/fundref.xsd" schemaLocation="fundref.xsd"/>
@@ -266,7 +263,7 @@
 				<xsd:element ref="head"/>
 				<xsd:element ref="body"/>
 			</xsd:sequence>
-			<xsd:attribute name="version" type="xsd:string" fixed="4.4.1"/>
+			<xsd:attribute name="version" type="xsd:string" fixed="4.4.2"/>
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="head">
@@ -288,10 +285,10 @@
 	<xsd:element name="body">
 		<xsd:annotation>
 			<xsd:documentation>The container for the main body of a DOI record submission. The body
-				contains a set of records within a support content type. It is not possible to mix
-				content types within a single registration file. It is possible to include records
-				for multiple journals, books, conferences, or stand alone components in a single
-				submission.</xsd:documentation>
+				contains a set of journal, book, conference proceedings or stand alone component
+				records. It is not possible to mix genres within a single DOI submission. It is
+				possible to include records for multiple journals, books, conferences, or stand
+				alone components in a single submission.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:choice>
@@ -304,6 +301,7 @@
 				<xsd:element ref="standard" maxOccurs="unbounded"/>
 				<xsd:element ref="database" maxOccurs="unbounded"/>
 				<xsd:element ref="peer_review" maxOccurs="unbounded"/>
+				<xsd:element ref="pending_publication" maxOccurs="unbounded"/>
 				<xsd:element ref="posted_content" maxOccurs="unbounded"/>
 			</xsd:choice>
 		</xsd:complexType>
@@ -317,12 +315,12 @@
 		<xsd:annotation>
 			<xsd:documentation>The container for all information about a single journal and the
 				articles being registered within the journal. journal is the core container for
-				information about a single journal and articles submitted for registration from
-				thatjournal. Within a journal instance, you may register articles from a single
-				issue, detailed in journal_issue. If you want to register items from more than one
-				issue, you must use multiple journal instances, which can be done within a single
-				batch submission. If you have articles that have not been assigned to an issue, you
-				may register them within a single journal instance. In this case, do not include a
+				information about a single journal and articles submitted for registration from that
+				journal. Within a journal instance, you may register articles from a single issue,
+				detailed in journal_issue. If you want to register items from more than one issue,
+				you must use multiple journal instances, which can be done within a single batch
+				submission. If you have articles that have not been assigned to an issue, you may
+				register them within a single journal instance. In this case, do not include a
 				journal_issue. You may chose to submit only top level journal_metadata and
 				journal_issue metadata for any journal or issue, allowing you to register DOIs for
 				an entire journal, or any issue or volume within a journal.</xsd:documentation>
@@ -350,7 +348,7 @@
 				<xsd:element ref="doi_data" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
+
 			<xsd:attributeGroup ref="reference_distribution_opts.att"/>
 		</xsd:complexType>
 	</xsd:element>
@@ -463,14 +461,9 @@
 			<xsd:sequence>
 				<xsd:element ref="titles" maxOccurs="20"/>
 				<xsd:element ref="contributors" minOccurs="0"/>
-				<xsd:element ref="jats:abstract" minOccurs="0" maxOccurs="10">
-					<xsd:annotation>
-						<xsd:documentation>The abstract element allows depositors to include
-							abstracts extracted from NLM or JATS XML in Crossref deposits. The jats:
-							namespace prefix must be included.</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
+				<xsd:element ref="jats:abstract" minOccurs="0" maxOccurs="unbounded"/>
 				<xsd:element ref="publication_date" maxOccurs="10"/>
+				<xsd:element ref="acceptance_date" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="pages" minOccurs="0"/>
 				<xsd:element ref="publisher_item" minOccurs="0"/>
 				<xsd:choice>
@@ -491,7 +484,7 @@
 			</xsd:sequence>
 			<xsd:attributeGroup ref="publication_type.atts"/>
 			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
+
 			<xsd:attributeGroup ref="reference_distribution_opts.att"/>
 		</xsd:complexType>
 	</xsd:element>
@@ -502,18 +495,22 @@
      ============================================================= -->
 	<xsd:element name="conference">
 		<xsd:annotation>
-			<xsd:documentation>conference is the core container for information about a single
+			<xsd:documentation>The container for all information about a single conference and its
+				proceedings. conference is the core container for information about a single
 				conference and its proceedings. If a conference proceedings spans multiple volumes,
 				each volume must be contained in a unique conference element. You may choose to
 				submit only top level contributors, event_metadata and proceedings_metadata for any
 				conference, or you may choose to submit these elements along with metadata for each
-				conference_paper. The Crossref system currently uses the proceedings_title and
-				conference_acronym in the query matching process. This system can cause problems
-				when the proceedings have a simple non-changing title (e.g Proceedings of SPIE) and
-				the conference event name, conference_name, is used to differentiate conference
-				topics (e.g. Optoelectronic Integrated Circuits II). To avoid this problem, Crossref
-				recommends that you make sure the conference_acronym accurately reflects the event
-				name (e.g OpIC II in this example).</xsd:documentation>
+				conference_paper. It is not necessary to submit metadata for all items listed on the
+				proceedings table of contents. You may chose to drop items of lesser significance
+				such as front and back matter. NOTE: The Crossref system currently uses the
+				proceedings_title and conference_acronym in the query matching process. This system
+				can cause problems when the proceedings have a simple non-changing title (e.g
+				PRoceedings of SPIE) and the conference event name, conference_name, is used to
+				differentiate conference topics (e.g. Optoelectronic Integrated Circuits II). To
+				avoid this problem, Crossref recommends that you make sure the conference_acronym
+				accurately reflects the event name (e.g OpIC II in this
+				example).</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -529,8 +526,16 @@
 	</xsd:element>
 	<xsd:element name="event_metadata">
 		<xsd:annotation>
-			<xsd:documentation> event_metadata captures information about a conference event like
-				sponsor, theme, and location. </xsd:documentation>
+			<xsd:documentation>A container for all information that applies to a conference event.
+				event_metadata captures information about a conference event. Data about conference
+				proceedings is captured in proceedings_metadata. NOTE: The Crossref system currently
+				uses the proceedings_title and conference_acronym in the query matching process.
+				This system can cause problems when the proceedings have a simple non-changing title
+				(e.g PRoceedings of SPIE) and the conference event name, conference_name, is used to
+				differentiate conference topics (e.g. Optoelectronic Integrated Circuits II). To
+				avoid this problem, Crossref recommends that you make sure the conference_acronym
+				accurately reflects the event name (e.g OpIC II in this
+				example).</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -552,7 +557,38 @@
 				conference name to include the conference number or subject. When any of these
 				metadata items appear in the conference name, they should be included in this
 				element, and also in the respective sub-element, conference_number or
-				proceedings_subject. </xsd:documentation>
+				proceedings_subject. The following example shows incorrect tagging of a conference
+				name and then the corrected version: INCORRECT: <event_metadata>
+					<conference_name>the second international conference</conference_name>
+					<conference_acronym>IEA/AIE '89</conference_acronym>
+					<conference_number>1989</conference_number>
+					<conference_location>Tullahoma, TN</conference_location>
+					<conference_date start_year="1989"/>
+				</event_metadata>
+				<proceedings_metadata language="en">
+					<proceedings_title>Proceedings of the second international conference on
+						Industrial and engineering applications of artificial intelligence and
+						expert systems - IEA/AIE'89</proceedings_title>
+					<proceedings_subject>Industrial and engineering applications of artificial
+						intelligence and expert systems</proceedings_subject>
+				</proceedings_metadata> CORRECT: <event_metadata>
+					<conference_name>The second international conference on Industrial and
+						engineering applications of artificial intelligence and expert
+						systems</conference_name>
+					<conference_acronym>IEA/AIE '89</conference_acronym>
+					<conference_number>2</conference_number>
+					<conference_location>Tullahoma, TN</conference_location>
+					<conference_date start_year="1989"/>
+				</event_metadata>
+				<proceedings_metadata language="en">
+					<proceedings_title>Proceedings of the second international conference on
+						Industrial and engineering applications of artificial intelligence and
+						expert systems - IEA/AIE '89</proceedings_title>
+					<proceedings_subject>Industrial and engineering applications of artificial
+						intelligence and expert systems</proceedings_subject>
+				</proceedings_metadata> Authors commonly cite a conference by the official name, so
+				it is important to provide this information as accurately as
+				possible.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -564,7 +600,11 @@
 	<xsd:element name="conference_theme">
 		<xsd:annotation>
 			<xsd:documentation> The theme is the slogan or special emphasis of a conference in a
-				particular year. </xsd:documentation>
+				particular year. The theme is the slogan of the conference. It differs from the
+				subject of a conference in that the subject is stable over the years while the theme
+				may vary from year to year. For example, the American Society for Information
+				Science and Technology conference theme was "Knowledge: Creation, Organization and
+				Use" in 1999 and "Defining Information Architecture" in 2000.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -608,8 +648,14 @@
 		<xsd:annotation>
 			<xsd:documentation>The number of a conference. conference_number should include only the
 				number of the conference without any extra text. For example, "The 24th Annual
-				Conference on..." should be tagged as
-				&lt;conference_number>24&lt;/conference_number>. Roman numerals are acceptable.
+				Conference on..." should be tagged as shown in the example above, and "th" should
+				not be included. Roman numerals are acceptable. When a conference is named such that
+				the year of the conference indicates the number (e.g. "SGML 1994"), the year appears
+				in conference_name, conference_date, and conference_number, as in:
+					<conference_name>SGML 1994</conference_name>
+				<conference_acronym>SGML</conference_acronym>
+				<conference_number>1994</conference_number>
+				<conference_date start_day="07" start_month="11" start_year="1994" end_day="10" end_month="11" end_year="1994">November 7-10, 1994</conference_date>
 			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
@@ -621,11 +667,12 @@
 	</xsd:element>
 	<xsd:element name="conference_location">
 		<xsd:annotation>
-			<xsd:documentation> The city and country of the conference. If the conference is in the
-				United States, the appropriate state should also be provided, and the country may be
-				omitted. If the conference is in Canada, the province should be provided, and the
-				country may be omitted. The specific venue or address within a city (e.g. conference
-				center, hotel, etc.) should not be provided.</xsd:documentation>
+			<xsd:documentation>The location of the conference. The city and country of the
+				conference. If the conference is in the United States, the appropriate state should
+				also be provided, and the country may be omitted. If the conference is in Canada,
+				the province should be provided, and the country may be omitted. The specific venue
+				or address within a city (e.g. conference center, hotel, etc.) should not be
+				provided.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -648,8 +695,7 @@
 				proceedings title page. 2. If publishers have parsed date values, provide them in
 				the attributes. 3. If both parsed date values and the date text are available, both
 				should be provided. This is the preferred tagging for conference_date. For example:
-					<conference_date start_month="01" start_year="1997" start_day="15"
-					end_year="1997" end_month="01" end_day="17">Jan. 15-17, 1997</conference_date>
+					<conference_date start_month="01" start_year="1997" start_day="15" end_year="1997" end_month="01" end_day="17">Jan. 15-17, 1997</conference_date>
 			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
@@ -667,8 +713,10 @@
 	</xsd:element>
 	<xsd:element name="proceedings_metadata">
 		<xsd:annotation>
-			<xsd:documentation> proceedings_metadata captures information about conference
-				proceedings. </xsd:documentation>
+			<xsd:documentation>A container for all information that applies to a non-series
+				conference proceeding. proceedings_metadata captures information about conference
+				proceedings. Data about conference events is captured in
+				event_metadata</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -685,7 +733,7 @@
 				<xsd:element ref="doi_data" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
+
 			<xsd:attributeGroup ref="reference_distribution_opts.att"/>
 		</xsd:complexType>
 	</xsd:element>
@@ -693,7 +741,7 @@
 		<xsd:annotation>
 			<xsd:documentation>A container for all information that applies to a specific conference
 				proceeding that is part of a series. A conference proceedings published as a series
-				can sometimes look just like a journal in that there is no volume information (no
+				can sometimes look just like a journnal in that there is no volume information (no
 				volume title, no ISBN). In these cases the conference proceeding may be deposited as
 				a journal (which more accurately should have been called a 'series_publication'). To
 				allow for the use of a consistent XML heirarchy we will allow a
@@ -731,19 +779,20 @@
 				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="doi_data" minOccurs="0"/>
 			</xsd:sequence>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
+
 			<xsd:attributeGroup ref="reference_distribution_opts.att"/>
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="proceedings_title">
 		<xsd:annotation>
-			<xsd:documentation>proceedings_title is the undifferentiated title of a conference
-				proceedings. It should generally be the title as it appears on the cover of the
-				printed proceedings. In some cases, proceedings_title may differ from
-				conference_name only in that the text "Proceedings of" often appears at the start of
-				the proceedings_title, and it this text should never be included in conference_name.
-				In other cases, the proceedings_title and conference_name may be quite
-				different.</xsd:documentation>
+			<xsd:documentation>The title of the conference proceedings as printed on title page of
+				the published conference proceedings. proceedings_title is the undifferentiated
+				title of a conference proceedings. It should generally be the title as it appears on
+				the cover of the printed proceedings. In some cases, proceedings_title may differ
+				from conference_name only in that the text "Proceedings of" often appears at the
+				start of the proceedings_title, and it this text should never be included in
+				conference_name. In other cases, the proceedings_title and conference_name may be
+				quite different.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -768,21 +817,17 @@
 	</xsd:element>
 	<xsd:element name="conference_paper">
 		<xsd:annotation>
-			<xsd:documentation>The container for all information about a single conference paper.
-			</xsd:documentation>
+			<xsd:documentation>The container for all information about a single conference paper. A
+				conference paper is required to have contributors, title and doi_data. All other
+				information is optional. </xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="contributors" minOccurs="0"/>
 				<xsd:element ref="titles"/>
-				<xsd:element ref="jats:abstract" minOccurs="0">
-					<xsd:annotation>
-						<xsd:documentation>The abstract element allows depositors to include
-							abstracts extracted from NLM or JATS XML in Crossref deposits. The jats:
-							namespace prefix must be included.</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
+				<xsd:element ref="jats:abstract" minOccurs="0" maxOccurs="unbounded"/>
 				<xsd:element ref="publication_date" minOccurs="0" maxOccurs="10"/>
+				<xsd:element ref="acceptance_date" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="pages" minOccurs="0"/>
 				<xsd:element ref="publisher_item" minOccurs="0"/>
 				<xsd:choice>
@@ -803,7 +848,7 @@
 			</xsd:sequence>
 			<xsd:attributeGroup ref="publication_type.atts"/>
 			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
+
 			<xsd:attributeGroup ref="reference_distribution_opts.att"/>
 		</xsd:complexType>
 	</xsd:element>
@@ -886,15 +931,10 @@
 			<xsd:sequence>
 				<xsd:element ref="contributors" minOccurs="0"/>
 				<xsd:element ref="titles"/>
-				<xsd:element ref="jats:abstract" minOccurs="0">
-					<xsd:annotation>
-						<xsd:documentation>The abstract element allows depositors to include
-							abstracts extracted from NLM or JATS XML in Crossref deposits. The jats:
-							namespace prefix must be included.</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
+				<xsd:element ref="jats:abstract" minOccurs="0" maxOccurs="unbounded"/>
 				<xsd:element ref="edition_number" minOccurs="0"/>
 				<xsd:element ref="publication_date" maxOccurs="10"/>
+				<xsd:element ref="acceptance_date" minOccurs="0" maxOccurs="1"/>
 				<xsd:choice>
 					<xsd:element ref="isbn" maxOccurs="6"/>
 					<xsd:element ref="noisbn"/>
@@ -914,7 +954,7 @@
 				<xsd:element ref="citation_list" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
+
 			<xsd:attributeGroup ref="reference_distribution_opts.att"/>
 		</xsd:complexType>
 	</xsd:element>
@@ -967,14 +1007,7 @@
 						<xsd:choice>
 							<xsd:sequence>
 								<xsd:element ref="titles"/>
-								<xsd:element ref="jats:abstract" minOccurs="0">
-									<xsd:annotation>
-										<xsd:documentation>The abstract element allows depositors to
-											include abstracts extracted from NLM or JATS XML in
-											Crossref deposits. The jats: namespace prefix must be
-											included.</xsd:documentation>
-									</xsd:annotation>
-								</xsd:element>
+								<xsd:element ref="jats:abstract" minOccurs="0" maxOccurs="unbounded"/>
 								<xsd:element ref="volume" minOccurs="0"/>
 							</xsd:sequence>
 							<xsd:element ref="volume"/>
@@ -1003,7 +1036,6 @@
 				<xsd:element ref="citation_list" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
 			<xsd:attributeGroup ref="reference_distribution_opts.att"/>
 		</xsd:complexType>
 	</xsd:element>
@@ -1044,13 +1076,7 @@
 				<xsd:choice>
 					<xsd:sequence>
 						<xsd:element ref="titles"/>
-						<xsd:element ref="jats:abstract" minOccurs="0">
-							<xsd:annotation>
-								<xsd:documentation>The abstract element allows depositors to include
-									abstracts extracted from NLM or JATS XML in Crossref deposits.
-									The jats: namespace prefix must be included.</xsd:documentation>
-							</xsd:annotation>
-						</xsd:element>
+						<xsd:element ref="jats:abstract" minOccurs="0" maxOccurs="unbounded"/>
 						<xsd:element ref="volume" minOccurs="0"/>
 					</xsd:sequence>
 					<xsd:element ref="volume"/>
@@ -1076,7 +1102,7 @@
 				<xsd:element ref="citation_list" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
+
 			<xsd:attributeGroup ref="reference_distribution_opts.att"/>
 		</xsd:complexType>
 	</xsd:element>
@@ -1113,15 +1139,10 @@
 			<xsd:sequence>
 				<xsd:element ref="contributors" minOccurs="0"/>
 				<xsd:element ref="titles" minOccurs="0"/>
-				<xsd:element ref="jats:abstract" minOccurs="0">
-					<xsd:annotation>
-						<xsd:documentation>The abstract element allows depositors to include
-							abstracts extracted from NLM or JATS XML in Crossref deposits. The jats:
-							namespace prefix must be included.</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
+				<xsd:element ref="jats:abstract" minOccurs="0" maxOccurs="unbounded"/>
 				<xsd:element ref="component_number" minOccurs="0"/>
 				<xsd:element ref="publication_date" minOccurs="0" maxOccurs="10"/>
+				<xsd:element ref="acceptance_date" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="pages" minOccurs="0"/>
 				<xsd:element ref="publisher_item" minOccurs="0"/>
 				<xsd:choice>
@@ -1135,7 +1156,6 @@
 				<xsd:element ref="rel:program" minOccurs="0"/>
 				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="scn_policies" minOccurs="0" maxOccurs="1"/>
-				<!-- cs-3495 -->
 				<xsd:element ref="doi_data"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 				<xsd:element ref="component_list" minOccurs="0"/>
@@ -1163,7 +1183,7 @@
 			</xsd:attribute>
 			<xsd:attributeGroup ref="publication_type.atts"/>
 			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
+
 			<xsd:attributeGroup ref="reference_distribution_opts.att"/>
 		</xsd:complexType>
 	</xsd:element>
@@ -1189,7 +1209,7 @@
 			<xsd:sequence>
 				<xsd:element ref="contributors" minOccurs="0"/>
 				<xsd:element ref="titles"/>
-				<xsd:element ref="jats:abstract" minOccurs="0">
+				<xsd:element ref="jats:abstract" minOccurs="0" maxOccurs="unbounded">
 					<xsd:annotation>
 						<xsd:documentation>The abstract element allows depositors to include
 							abstracts extracted from NLM or JATS XML in Crossref deposits. The jats:
@@ -1319,10 +1339,10 @@
 				in-appropriate to 'misuse' the first_page element to provide a value that has
 				meaning in an on-line only publication and does not convey an form of page number.
 				In these circumstances the attribute &lt;item_number
-				item_number_type="article-number"&gt; will instruct the Crossref system to treat the
+				item_number_type="article-number"> will instruct the Crossref system to treat the
 				value of item_number in the same manner as first_page. This value then becomes a
 				critical part of the query process. If both &lt;item_number
-				item_number_type="article-number"&gt; and first_page are present, first_page will
+				item_number_type="article-number"> and first_page are present, first_page will
 				take precedence.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
@@ -1416,9 +1436,9 @@
 		</xsd:complexType>
 	</xsd:element>
 	<!-- =============================================================
-	
+
       9. Expanded Content Types (reports, dissertations, standards, and datasets)
-		
+
      ============================================================= -->
 	<xsd:element name="dissertation">
 		<xsd:annotation>
@@ -1434,8 +1454,12 @@
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element ref="person_name"/>
+				<xsd:choice>
+				<xsd:element ref="person_name" minOccurs="1" maxOccurs="unbounded"/>
+					<xsd:element ref="contributors"/>
+				</xsd:choice>
 				<xsd:element ref="titles"/>
+				<xsd:element ref="jats:abstract" minOccurs="0" maxOccurs="unbounded"/>
 				<xsd:element ref="approval_date" maxOccurs="10"/>
 				<xsd:element ref="institution" maxOccurs="6"/>
 				<xsd:element ref="degree" minOccurs="0" maxOccurs="10"/>
@@ -1451,22 +1475,26 @@
 				<xsd:element ref="rel:program" minOccurs="0"/>
 				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="scn_policies" minOccurs="0" maxOccurs="1"/>
-				<!-- cs-3495 -->
 				<xsd:element ref="doi_data"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 				<xsd:element ref="component_list" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attributeGroup ref="publication_type.atts"/>
 			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
+
 			<xsd:attributeGroup ref="reference_distribution_opts.att"/>
 		</xsd:complexType>
 	</xsd:element>
+	<!--
+    report-paper is the top level element for deposit of metadata about
+    one or more reports or working papers.
 
-	<!-- =============================================================		
-      Reports / Working papers     
-     ============================================================= -->
-
+    component_list is included in report-paper to handle items that have
+    components but do not have content_item elements (i.e. a report that is not
+    divided into multiple chapters). If an item has content_item elements, then
+    component_list inside of content_item must be used rather than the element
+    available in report-paper
+-->
 	<xsd:element name="report-paper">
 		<xsd:annotation>
 			<xsd:documentation>report-paper is the top level element for deposit of metadata about
@@ -1510,6 +1538,7 @@
 				<xsd:element ref="contributors" minOccurs="0"/>
 				<xsd:element ref="titles"/>
 				<xsd:element ref="edition_number" minOccurs="0"/>
+				<xsd:element ref="jats:abstract" minOccurs="0" maxOccurs="unbounded"/>
 				<xsd:element ref="publication_date" maxOccurs="10"/>
 				<xsd:element ref="approval_date" minOccurs="0" maxOccurs="10"/>
 				<xsd:element ref="isbn" minOccurs="0" maxOccurs="6"/>
@@ -1527,12 +1556,11 @@
 				<xsd:element ref="rel:program" minOccurs="0"/>
 				<xsd:element ref="archive_locations" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="scn_policies" minOccurs="0" maxOccurs="1"/>
-				<!-- cs-3495 -->
 				<xsd:element ref="doi_data" minOccurs="0"/>
 				<xsd:element ref="citation_list" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
+
 			<xsd:attributeGroup ref="reference_distribution_opts.att"/>
 		</xsd:complexType>
 	</xsd:element>
@@ -1561,13 +1589,7 @@
 				<xsd:choice>
 					<xsd:sequence>
 						<xsd:element ref="titles"/>
-						<xsd:element ref="jats:abstract" minOccurs="0">
-							<xsd:annotation>
-								<xsd:documentation>The abstract element allows depositors to include
-									abstracts extracted from NLM or JATS XML in Crossref deposits.
-									The jats: namespace prefix must be included.</xsd:documentation>
-							</xsd:annotation>
-						</xsd:element>
+						<xsd:element ref="jats:abstract" minOccurs="0" maxOccurs="unbounded"/>
 						<xsd:element ref="volume" minOccurs="0"/>
 					</xsd:sequence>
 					<xsd:element ref="volume"/>
@@ -1586,16 +1608,10 @@
 				<xsd:element ref="rel:program" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
+
 			<xsd:attributeGroup ref="reference_distribution_opts.att"/>
 		</xsd:complexType>
 	</xsd:element>
-
-	<!-- =============================================================		
-      Standards      
-     ============================================================= -->
-
-
 	<xsd:element name="standard">
 		<xsd:annotation>
 			<xsd:documentation>standard is the top level element for deposit of metadata about
@@ -1657,13 +1673,7 @@
 			<xsd:sequence>
 				<xsd:element ref="contributors" minOccurs="0"/>
 				<xsd:element ref="titles"/>
-				<xsd:element ref="jats:abstract" minOccurs="0">
-					<xsd:annotation>
-						<xsd:documentation>The abstract element allows depositors to include
-							abstracts extracted from NLM or JATS XML in Crossref deposits. The jats:
-							namespace prefix must be included.</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
+				<xsd:element ref="jats:abstract" minOccurs="0" maxOccurs="unbounded"/>
 				<xsd:element ref="designators" minOccurs="1" maxOccurs="1"/>
 				<xsd:element ref="edition_number" minOccurs="0"/>
 				<xsd:element ref="approval_date" minOccurs="0" maxOccurs="1"/>
@@ -1692,14 +1702,11 @@
 				</xsd:simpleType>
 			</xsd:attribute>
 			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
+
 			<xsd:attributeGroup ref="reference_distribution_opts.att"/>
 		</xsd:complexType>
 	</xsd:element>
 
-	<!-- =============================================================		
-      Database / datasets     
-     ============================================================= -->
 
 	<xsd:element name="database">
 		<xsd:annotation>
@@ -1714,7 +1721,7 @@
 				sub-level is the dataset which may be a basic record of the top level object or a
 				collection in its own right. In either case dataset must represent a physical
 				construct. A third level is provided in the component_list. NOTE: component_list in
-				&lt;database&gt; (rather than in dataset may be used as a second level when no third
+				&lt;database> (rather than in dataset may be used as a second level when no third
 				level is required and the second level objects derive most of their qualities from
 				the parent. NOTE: This model is not intended to show relationships between different
 				dataset entries in the form of a relational database. However in the future it is
@@ -1764,7 +1771,7 @@
 				<xsd:element ref="rel:program" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
+
 			<xsd:attributeGroup ref="reference_distribution_opts.att"/>
 		</xsd:complexType>
 	</xsd:element>
@@ -1823,15 +1830,45 @@
 		</xsd:complexType>
 	</xsd:element>
 
-	<!-- =============================================================		
-      Peer review    
-     ============================================================= -->
+	<!-- ===========================================================
+		Top level content type for pending_publication DOIs
+		============================================================== -->
+	<xsd:element name="publication">
+		<xsd:annotation>
+			<xsd:documentation>Used to define a publication (book, journal, etc) for pending
+				publication content. A title must be supplied, as well as an ISSN, ISBN, or
+				title-level DOI </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="full_title" maxOccurs="10"/>
+				<xsd:choice>
+					<xsd:sequence>
+						<xsd:choice>
+							<xsd:element ref="issn" minOccurs="1" maxOccurs="1"/>
+							<xsd:element ref="isbn" minOccurs="1" maxOccurs="1"/>
+						</xsd:choice>
+					</xsd:sequence>
+					<xsd:sequence>
+						<xsd:element ref="doi" minOccurs="1" maxOccurs="1"/>
+						<xsd:choice>
+							<xsd:element ref="issn" minOccurs="0" maxOccurs="1"/>
+							<xsd:element ref="isbn" minOccurs="0" maxOccurs="1"/>
+						</xsd:choice>
+					</xsd:sequence>
+				</xsd:choice>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 
+	<!-- ===========================================================
+		Top level content type for peer_review DOIs
+		============================================================== -->
 	<xsd:element name="peer_review">
 		<xsd:annotation>
-			<xsd:documentation>The peer_review content type is intended for assigning DOIs to the
-				reports and other artifacts associated with the review of published
-				content.</xsd:documentation>
+			<xsd:documentation> The peer_review content type is intended for assigning DOIs to the
+				reports and other artifacts associated with the review of published content.
+			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -1862,15 +1899,13 @@
 						<xsd:enumeration value="editor-report"/>
 						<xsd:enumeration value="author-comment"/>
 						<xsd:enumeration value="community-comment"/>
+						<xsd:enumeration value="manuscript"/>
 						<xsd:enumeration value="aggregate"/>
 						<xsd:enumeration value="recommendation"/>
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>
 			<xsd:attribute name="recommendation" use="optional">
-				<xsd:annotation>
-					<xsd:documentation>Recommendation provided by reviewer</xsd:documentation>
-				</xsd:annotation>
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:NMTOKEN">
 						<xsd:enumeration value="major-revision"/>
@@ -1884,33 +1919,78 @@
 			</xsd:attribute>
 			<xsd:attribute name="revision-round" use="optional" type="xsd:integer">
 				<xsd:annotation>
-					<xsd:documentation>Revision round number, first submission is defined as
-						revision round 0</xsd:documentation>
+					<xsd:documentation>Required attribute. First submission defined as revision
+						round zero</xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
 			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
+
 		</xsd:complexType>
 
 	</xsd:element>
 
-	<!-- =============================================================		
-      Posted Content (pre-publication)     
-     ============================================================= -->
+
+
+	<!-- ===========================================================
+	     					11. Posted Content elements
+         ============================================================== -->
+
+	<xsd:element name="pending_publication">
+		<xsd:annotation>
+			<xsd:documentation> Pending publication (formeraly knows as Pre-register or early
+				content registration) DOIs are used to create a DOI for a content item that is not
+				yet available online or in print. The intended use is for a pubisher to create the
+				DOI upon manuscript acceptance where publication might not occur for some period.
+				This establishes the acceptance date and intent to publish and provides on online
+				presence that allows confirmation of intent to publish. The URL for early content
+				DOIs will point to a page maintained by Crossref. Early content registration is
+				intended for titles that have already been deposited at Crossref. Therefor the
+				publication data provided must identify a title (journal or book) that already
+				exists within the Crossref system </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="contributors" minOccurs="0"/>
+				<xsd:element ref="publication"/>
+				<xsd:element ref="titles" minOccurs="0"/>
+				<xsd:element ref="acceptance_date" minOccurs="1" maxOccurs="1"/>
+				<xsd:element ref="institution" minOccurs="0" maxOccurs="5"/>
+				<xsd:element ref="item_number" minOccurs="0" maxOccurs="3"/>
+				<xsd:element ref="intent_statement" minOccurs="0" maxOccurs="1"/>
+				<xsd:element ref="jats:abstract" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:choice>
+					<xsd:element ref="crossmark" minOccurs="0"/>
+					<xsd:sequence>
+						<xsd:element ref="fr:program" minOccurs="0" maxOccurs="1"/>
+						<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
+					</xsd:sequence>
+				</xsd:choice>
+				<xsd:element ref="rel:program" minOccurs="0"/>
+				<xsd:element ref="doi" minOccurs="1" maxOccurs="1"/>
+
+			</xsd:sequence>
+			<xsd:attributeGroup ref="language.atts"/>
+
+		</xsd:complexType>
+	</xsd:element>
+
+	<!-- ===========================================================
+	     Top level content type for prepublication DOIs
+        ============================================================== -->
 
 	<xsd:element name="posted_content">
 		<xsd:annotation>
 			<xsd:documentation> Posted-content is for the assignment of DOIs to content that may
-				subsequently be formally published, such as preprints. Non-DOI identifiers
-				associated with the content may be recorded in the item_number element. We encourage
-				the inclussion of an abstract. The relation program (rel:program) should be used to
-				link this content item to other DOIs including the DOI of the published version of
-				record. Posted content should not be used to assign DOIs to accepted manuscripts. A
-				DOI may be assigned to an accepted manuscript using the content type appropriate for
-				early registration. DOIs assigned to accepted manuscripts should be reused (e.g.
-				reassigned to the published article). Posted-content DOIs must be continuously
-				supported by maintaining their metadata and the URL at which the content is
-				available. </xsd:documentation>
+				subsequently be formally published. Non-DOI identifiers associated with the content
+				may be recorded in the item_number element. We encourage the inclussion of an
+				abstract. The relation program (rel:program) should be used to link this content
+				item to other DOIs including the DOI of the published version of record. Pre-print
+				should not be used to assign DOIs to accepted manuscripts. A DOI may be assigned to
+				an accepted manuscript using the content type appropriate for early registration.
+				DOIs assigned to accepted manuscripts should be reused (e.g. reassigned to the
+				published article). POsted-contnet DOIs must be continuously supported by
+				maintaining their metadata and the URL at which the content is available.
+			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -1921,7 +2001,7 @@
 				<xsd:element ref="acceptance_date" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="institution" minOccurs="0" maxOccurs="5"/>
 				<xsd:element ref="item_number" minOccurs="0" maxOccurs="3"/>
-				<xsd:element ref="jats:abstract" minOccurs="0"/>
+				<xsd:element ref="jats:abstract" minOccurs="0" maxOccurs="unbounded"/>
 				<xsd:element maxOccurs="1" ref="fr:program" minOccurs="0"/>
 				<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
 				<xsd:element ref="rel:program" minOccurs="0"/>
@@ -1944,13 +2024,13 @@
 				</xsd:simpleType>
 			</xsd:attribute>
 			<xsd:attributeGroup ref="language.atts"/>
-			<xsd:attributeGroup ref="metadata_distribution_opts.att"/>
+
 		</xsd:complexType>
 	</xsd:element>
 
 	<xsd:element name="group_title">
 		<xsd:annotation>
-			<xsd:documentation>Prepublication content items may be organized into groupings within a
+			<xsd:documentation>Prepublication content items may be organzed into groupings within a
 				given publisher. This element provides for naming the group. It is expected that
 				publishers will have a small number of groups each of which reflect a topic or
 				subject area.</xsd:documentation>
@@ -1962,11 +2042,11 @@
 			</xsd:restriction>
 		</xsd:simpleType>
 	</xsd:element>
-	<!-- =============================================================================
+	<!-- =============================================================
 
-        10. Elements common to reports, dissertations, standards, posted content, peer review
+        10. Elements common to reports, dissertations and standards
 
-     ============================================================================= -->
+     ============================================================= -->
 	<xsd:element name="institution">
 		<xsd:annotation>
 			<xsd:documentation>Wrapper element for information about an organization that sponsored
@@ -2020,10 +2100,11 @@
 	</xsd:element>
 	<xsd:element name="institution_place">
 		<xsd:annotation>
-			<xsd:documentation>institution_place gives the primary city location of the institution.
-				When the location is a major city (e.g. New York, Amsterdam), no qualifying country
-				or U.S. state need be given. If the city is not a major city, the appropriate
-				country and/or state or province should be added.</xsd:documentation>
+			<xsd:documentation>The primary city location of the institution. institution_place gives
+				the primary city location of the institution. When the location is a major city
+				(e.g. New York, Amsterdam), no qualifying country or U.S. state need be given. If
+				the city is not a major city, the appropriate country and/or state or province
+				should be added.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -2034,11 +2115,12 @@
 	</xsd:element>
 	<xsd:element name="institution_department">
 		<xsd:annotation>
-			<xsd:documentation> institution_department is a department within an institution. A
-				common use is the department under which a dissertation was completed. Note that the
-				institution_department is repeatable. If multiple departments are to be deposited,
-				each one should be given in a unique institution_department element. Example:
-				Department of Psychology </xsd:documentation>
+			<xsd:documentation>The department within an institution. institution_department gives
+				the department within an institution. A common use is the department under which a
+				dissertation was completed. Note that the institution_department is repeatable. If
+				multiple departments are to be deposited, each one should be given in a unique
+				institution_department element. Example: Department of Psychology
+			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">

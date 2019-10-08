@@ -89,10 +89,14 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 				<xsd:restriction base="xsd:NMTOKEN">
 					<xsd:enumeration value="aa"/>
 					<xsd:enumeration value="ab"/>
+					<xsd:enumeration value="ae"/>
 					<xsd:enumeration value="af"/>
+					<xsd:enumeration value="ak"/>
 					<xsd:enumeration value="am"/>
+					<xsd:enumeration value="an"/>
 					<xsd:enumeration value="ar"/>
 					<xsd:enumeration value="as"/>
+					<xsd:enumeration value="av"/>
 					<xsd:enumeration value="ay"/>
 					<xsd:enumeration value="az"/>
 					<xsd:enumeration value="ba"/>
@@ -100,16 +104,25 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 					<xsd:enumeration value="bg"/>
 					<xsd:enumeration value="bh"/>
 					<xsd:enumeration value="bi"/>
+					<xsd:enumeration value="bm"/>
 					<xsd:enumeration value="bn"/>
 					<xsd:enumeration value="bo"/>
 					<xsd:enumeration value="br"/>
+					<xsd:enumeration value="bs"/>
 					<xsd:enumeration value="ca"/>
+					<xsd:enumeration value="ce"/>
+					<xsd:enumeration value="ch"/>
 					<xsd:enumeration value="co"/>
+					<xsd:enumeration value="cr"/>
 					<xsd:enumeration value="cs"/>
+					<xsd:enumeration value="cu"/>
+					<xsd:enumeration value="cv"/>
 					<xsd:enumeration value="cy"/>
 					<xsd:enumeration value="da"/>
 					<xsd:enumeration value="de"/>
+					<xsd:enumeration value="dv"/>
 					<xsd:enumeration value="dz"/>
+					<xsd:enumeration value="ee"/>
 					<xsd:enumeration value="el"/>
 					<xsd:enumeration value="en"/>
 					<xsd:enumeration value="eo"/>
@@ -117,6 +130,7 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 					<xsd:enumeration value="et"/>
 					<xsd:enumeration value="eu"/>
 					<xsd:enumeration value="fa"/>
+					<xsd:enumeration value="ff"/>
 					<xsd:enumeration value="fi"/>
 					<xsd:enumeration value="fj"/>
 					<xsd:enumeration value="fo"/>
@@ -127,52 +141,80 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 					<xsd:enumeration value="gl"/>
 					<xsd:enumeration value="gn"/>
 					<xsd:enumeration value="gu"/>
+					<xsd:enumeration value="gv"/>
 					<xsd:enumeration value="ha"/>
 					<xsd:enumeration value="he"/>
 					<xsd:enumeration value="hi"/>
+					<xsd:enumeration value="ho"/>
 					<xsd:enumeration value="hr"/>
+					<xsd:enumeration value="ht"/>
 					<xsd:enumeration value="hu"/>
 					<xsd:enumeration value="hy"/>
+					<xsd:enumeration value="hz"/>
 					<xsd:enumeration value="ia"/>
 					<xsd:enumeration value="id"/>
 					<xsd:enumeration value="ie"/>
+					<xsd:enumeration value="ig"/>
+					<xsd:enumeration value="ii"/>
 					<xsd:enumeration value="ik"/>
+					<xsd:enumeration value="io"/>
 					<xsd:enumeration value="is"/>
 					<xsd:enumeration value="it"/>
+					<xsd:enumeration value="iu"/>
 					<xsd:enumeration value="ja"/>
 					<xsd:enumeration value="jw"/>
 					<xsd:enumeration value="ka"/>
+					<xsd:enumeration value="kg"/>
+					<xsd:enumeration value="ki"/>
+					<xsd:enumeration value="kj"/>
 					<xsd:enumeration value="kk"/>
 					<xsd:enumeration value="kl"/>
 					<xsd:enumeration value="km"/>
 					<xsd:enumeration value="kn"/>
 					<xsd:enumeration value="ko"/>
+					<xsd:enumeration value="kr"/>
 					<xsd:enumeration value="ks"/>
 					<xsd:enumeration value="ku"/>
+					<xsd:enumeration value="kv"/>
+					<xsd:enumeration value="kw"/>
 					<xsd:enumeration value="ky"/>
 					<xsd:enumeration value="la"/>
+					<xsd:enumeration value="lb"/>
+					<xsd:enumeration value="lg"/>
+					<xsd:enumeration value="li"/>
 					<xsd:enumeration value="ln"/>
 					<xsd:enumeration value="lo"/>
 					<xsd:enumeration value="lt"/>
+					<xsd:enumeration value="lu"/>
 					<xsd:enumeration value="lv"/>
 					<xsd:enumeration value="mg"/>
+					<xsd:enumeration value="mu"/>
 					<xsd:enumeration value="mi"/>
 					<xsd:enumeration value="mk"/>
 					<xsd:enumeration value="ml"/>
 					<xsd:enumeration value="mn"/>
-					<xsd:enumeration value="mo"/>
 					<xsd:enumeration value="mr"/>
 					<xsd:enumeration value="ms"/>
 					<xsd:enumeration value="mt"/>
 					<xsd:enumeration value="my"/>
 					<xsd:enumeration value="na"/>
+					<xsd:enumeration value="nb"/>
+					<xsd:enumeration value="nd"/>
 					<xsd:enumeration value="ne"/>
+					<xsd:enumeration value="ng"/>
 					<xsd:enumeration value="nl"/>
+					<xsd:enumeration value="nn"/>
 					<xsd:enumeration value="no"/>
+					<xsd:enumeration value="nr"/>
+					<xsd:enumeration value="nv"/>
+					<xsd:enumeration value="ny"/>
 					<xsd:enumeration value="oc"/>
+					<xsd:enumeration value="oj"/>
 					<xsd:enumeration value="om"/>
 					<xsd:enumeration value="or"/>
+					<xsd:enumeration value="os"/>
 					<xsd:enumeration value="pa"/>
+					<xsd:enumeration value="pi"/>
 					<xsd:enumeration value="pl"/>
 					<xsd:enumeration value="ps"/>
 					<xsd:enumeration value="pt"/>
@@ -183,7 +225,9 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 					<xsd:enumeration value="ru"/>
 					<xsd:enumeration value="rw"/>
 					<xsd:enumeration value="sa"/>
+					<xsd:enumeration value="sc"/>
 					<xsd:enumeration value="sd"/>
+					<xsd:enumeration value="se"/>
 					<xsd:enumeration value="sg"/>
 					<xsd:enumeration value="si"/>
 					<xsd:enumeration value="sk"/>
@@ -211,17 +255,21 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 					<xsd:enumeration value="ts"/>
 					<xsd:enumeration value="tt"/>
 					<xsd:enumeration value="tw"/>
+					<xsd:enumeration value="ty"/>
+					<xsd:enumeration value="ug"/>
 					<xsd:enumeration value="uk"/>
 					<xsd:enumeration value="ur"/>
 					<xsd:enumeration value="uz"/>
+					<xsd:enumeration value="ve"/>
 					<xsd:enumeration value="vi"/>
 					<xsd:enumeration value="vo"/>
+					<xsd:enumeration value="wa"/>
 					<xsd:enumeration value="wo"/>
 					<xsd:enumeration value="xh"/>
 					<xsd:enumeration value="yi"/>
 					<xsd:enumeration value="yo"/>
+					<xsd:enumeration value="za"/>
 					<xsd:enumeration value="zh"/>
-					<xsd:enumeration value="zu"/>
 				</xsd:restriction>
 			</xsd:simpleType>
 		</xsd:attribute>
@@ -1059,9 +1107,20 @@ Unified CrossRef XML schema. It is based a copy of the CrossRef.xsd metadata sch
 		</xsd:restriction>
 	</xsd:simpleType>
 	<xsd:element name="doi">
+		<xsd:complexType>
+			<xsd:simpleContent>
+				<xsd:extension base="doi_t">
+					<xsd:attribute name="provider" default="publisher">
 		<xsd:simpleType>
-			<xsd:restriction base="doi_t"/>
+							<xsd:restriction base="xsd:NMTOKEN">
+								<xsd:enumeration value="publisher"/>
+								<xsd:enumeration value="crossref"/>
+							</xsd:restriction>
 		</xsd:simpleType>
+					</xsd:attribute>
+				</xsd:extension>
+			</xsd:simpleContent>
+		</xsd:complexType>
 	</xsd:element>
 	<xsd:simpleType name="isbn_t">
 		<xsd:restriction base="xsd:string">
