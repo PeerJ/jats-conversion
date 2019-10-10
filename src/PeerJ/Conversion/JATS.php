@@ -93,7 +93,7 @@ class JATS
         $output = $this->convert('jats-to-unixref', $input, $params);
 
         if ($validate) {
-            $schema = 'http://www.crossref.org/schema/deposit/crossref4.3.6.xsd';
+            $schema = 'http://www.crossref.org/schema/deposit/crossref4.4.2.xsd';
             $this->validateWithSchema($output, $schema);
         }
 
@@ -116,7 +116,7 @@ class JATS
 
         // TODO add preprint schema into parameters, or pass it in
         if ($validate) {
-            $schema = 'http://www.crossref.org/schema/deposit/crossref4.4.1.xsd';
+            $schema = 'http://www.crossref.org/schema/deposit/crossref4.4.2.xsd';
             $this->validateWithSchema($output, $schema);
         }
 
@@ -140,7 +140,7 @@ class JATS
 
         // TODO add preprint schema into parameters, or pass it in
         if ($validate) {
-            $schema = 'http://www.crossref.org/schema/deposit/crossref4.4.1.xsd';
+            $schema = 'http://www.crossref.org/schema/deposit/crossref4.4.2.xsd';
             $this->validateWithSchema($output, $schema);
         }
 
@@ -162,7 +162,7 @@ class JATS
         $output = $this->convert('jats-to-unixref-minimal', $input, $params);
         // TODO add schema into parameters, or pass it in
         if ($validate) {
-            $schema = 'http://www.crossref.org/schema/deposit/crossref4.3.6.xsd';
+            $schema = 'http://www.crossref.org/schema/deposit/crossref4.4.2.xsd';
             $this->validateWithSchema($output, $schema);
         }
 

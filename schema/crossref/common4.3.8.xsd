@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fr="http://www.crossref.org/fundref.xsd" xmlns:ai="http://www.crossref.org/AccessIndicators.xsd"
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:fr="http://www.crossref.org/fundref.xsd"
+	xmlns:ct="http://www.crossref.org/clinicaltrials.xsd"
+    xmlns:ai="http://www.crossref.org/AccessIndicators.xsd"
 	xmlns:mml="http://www.w3.org/1998/Math/MathML">
 
 	<!-- =============================================================
 
-Introduction
+                          Introduction
 
-CrossRef Schema Version 4.3
-Developed for CrossRef (www.crossref.org) by
+     Crossref Schema Version 4.3.7
+     for Journal, book and conferernce submissions
 
-Inera Incorporated
-http://www.inera.com
-email: info@inera.com
+     Developed for Crossref (www.crossref.org) by
+
+     Inera Incorporated
+     Newton, MA 02460
+     http://www.inera.com
+     email: info@inera.com
 
 
      ============================================================= -->
@@ -40,16 +46,22 @@ email: info@inera.com
   
   4.3.0 - 4.4.1 (PDF) 3/1/18 update language.atts
   4.3.1-4.4.0 (PDF) 6/5/2017 change ORCID to accept both http and https
-  4.3.0 - 4.4.0 (PDF) 5/15/2017 make crossmark_domains optional, limit crossmark_domain_exclusive to 1
-  4.3.4 (PDF) add WebCite as value for archive
-  4.3.x (PDF) disallow empty value for citation "key" attribute
+  4.3.0 - 4.4.0 (PDF) 5/15/2017 make crossmark_domains optional, limit crossmark_domain_exclusive to 1  
+  4.3.7  (CSK) August 2015   Added linked clinical trials
+  4.3.5, 4.3.6 (PDF) 5/14/2015 added text/rtf as mime type
+  4.3.6 (PDF) 5/13/2015 relax surname validation to accommodate some author names with '?' and digits.
+  4.3.5,6 (PDF) 3/31/2015 added ai:program to components
   4.3.1,2,4,5,6 (PDF) 3/2/2015 removed redundant ORCID validation
+  4.3.6  (CSK)  12/2/14  reworked standard designator
+  4.3.5	(PDF) 10/9/2014 updated standard_designator and child elements, moved mml:math to xrefFaces to fix problem with depositing mathML and other markup, restricted CrossMark update types to an enumerated list, removed cm_update_label
   4.3.1,2,4 (PDF) 6/24/2014 minor change to ORCID regex to only allow X
   4.3.4 (PDF) 5/27/2014 added unspecified and syndication as values for property attribute, removed tdm as value for content_version
   4.3.2,4 (PDF) 4/14/2014 changed superseded_by to supersedes
   4.3.4 (PDF) 3/26/2014 moved standard_designator, standards_body, and child elements to common file, added standard_designator and standards_body to citation; added type attribute to standard_designator
   4.3.1,,2,4 (PDF) 3/13/2014 added application/epub+zip to mime_type.atts
   4.3.4 (PDF) 12/19/2013 changed 'KLB' to 'KB'
+  4.3.4 (PDF) 12/10/2013 added archive_location and archive; changed name to depositor_name to support JATS-like name changes, added alt-name, name elements 
+  4.3.4 (PDF) 12/10/2013 added archive_location and archive; changed name to depositor_name to support JATS-like name changes, added alt-name, name elements 
   4.3.4 (PDF) 12/10/2013 added archive_location and archive; changed name to depositor_name to support JATS-like name changes, added alt-name, name elements 
   4.3.2 (PDF) 9/17/2013 added content_version attribute to <resource> element
   4.3.2 (PDF) 5/1/2013 changed openAI.xsd to AccessIndicators.xsd
@@ -137,6 +149,9 @@ email: info@inera.com
 	<xsd:import namespace="http://www.w3.org/1998/Math/MathML" schemaLocation="http://www.w3.org/Math/XMLSchema/mathml3/mathml3.xsd"/>
 	<xsd:import namespace="http://www.crossref.org/fundref.xsd" schemaLocation="fundref.xsd"/>
 	<xsd:import namespace="http://www.crossref.org/AccessIndicators.xsd" schemaLocation="AccessIndicators.xsd"/>
+	<xsd:import namespace="http://www.crossref.org/clinicaltrials.xsd" schemaLocation="clinicaltrials.xsd"/>
+	
+	
 	<xsd:attributeGroup name="publication_type.atts">
 		<xsd:attribute name="publication_type" default="full_text">
 			<xsd:simpleType>
@@ -196,6 +211,7 @@ email: info@inera.com
 		<xsd:attribute name="language" use="optional">
 			<xsd:simpleType>
 				<xsd:restriction base="xsd:NMTOKEN">
+					
 					<xsd:enumeration value="aa"/>
 					<xsd:enumeration value="ab"/>
 					<xsd:enumeration value="ae"/>
@@ -385,7 +401,8 @@ email: info@inera.com
 	</xsd:attributeGroup>
 	<xsd:attributeGroup name="mime_type.atts">
 		<xsd:annotation>
-			<xsd:documentation>Mime types for component format. For mime types refer to http://www.iana.org/assignments/media-types/</xsd:documentation>
+			<xsd:documentation>Mime types for component format. For mime types refer to
+				http://www.iana.org/assignments/media-types/</xsd:documentation>
 		</xsd:annotation>
 		<xsd:attribute name="mime_type" use="optional">
 			<xsd:simpleType>
@@ -397,6 +414,7 @@ email: info@inera.com
 					<xsd:enumeration value="text/html"/>
 					<xsd:enumeration value="text/sgml"/>
 					<xsd:enumeration value="text/css"/>
+                                        <xsd:enumeration value="text/rtf"/>
 					<xsd:enumeration value="text/xml"/>
 					<xsd:enumeration value="text/xml-external-parsed-entity"/>
 					<xsd:enumeration value="multipart/mixed"/>
@@ -444,10 +462,14 @@ email: info@inera.com
 					<xsd:enumeration value="application/vnd.oasis.opendocument.spreadsheet"/>
 					<xsd:enumeration value="application/vnd.ms-excel"/>
 					<xsd:enumeration value="application/vnd.ms-powerpoint"/>
+                                        <xsd:enumeration value="application/vnd.wolfram.mathematica"/>
+                                        <xsd:enumeration value="application/vnd.wolfram.mathematica.package"/>
+                                        <xsd:enumeration value="application/vnd.wolfram.player"/>
 					<xsd:enumeration value="application/vnd.openxmlformats-officedocument.presentationml.presentation"/>
 					<xsd:enumeration value="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
 					<xsd:enumeration value="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
 					<xsd:enumeration value="application/epub+zip"/>
+					<xsd:enumeration value="application/regex.clinical-trial-number"/>
 					<xsd:enumeration value="image/fits"/>
 					<xsd:enumeration value="image/jpeg"/>
 					<xsd:enumeration value="image/gif"/>
@@ -530,7 +552,10 @@ email: info@inera.com
 	</xsd:attributeGroup>
 	<xsd:attributeGroup name="metadata_distribution_opts.att">
 		<xsd:annotation>
-			<xsd:documentation>Use to flag metadata for distribution.  "query" is the default and follows current protocol - bibliographic metadata is distributed to anyone in a query response, bulk distribution is only allowed per CMS rules.  "any" allows bulk distribution of metadata to anyone using OAI-PMH queries.</xsd:documentation>
+			<xsd:documentation>Use to flag metadata for distribution. "query" is the default and
+				follows current protocol - bibliographic metadata is distributed to anyone in a
+				query response, bulk distribution is only allowed per CMS rules. "any" allows bulk
+				distribution of metadata to anyone using OAI-PMH queries.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:attribute name="metadata_distribution_opts" use="optional" default="query">
 			<xsd:simpleType>
@@ -543,7 +568,14 @@ email: info@inera.com
 	</xsd:attributeGroup>
 	<xsd:attributeGroup name="reference_distribution_opts.att">
 		<xsd:annotation>
-			<xsd:documentation>Use to flag references for distribution. "none" is the default and follows current protocol - references are only distributed to everyone if the prefix level permission is set, otherwise reference distribution is limited to the DOI owner. Setting the value to "query" releases references to anyone making a query request (this overrides any established prefix level permission). Value "any" allows bulk distribution to anyone (using a CrossRef query account) using the OAI-PMH protocol, and also releases references to anyone making a query request.</xsd:documentation>
+			<xsd:documentation>Use to flag references for distribution. "none" is the default and
+				follows current protocol - references are only distributed to everyone if the prefix
+				level permission is set, otherwise reference distribution is limited to the DOI
+				owner. Setting the value to "query" releases references to anyone making a query
+				request (this overrides any established prefix level permission). Value "any" allows
+				bulk distribution to anyone (using a CrossRef query account) using the OAI-PMH
+				protocol, and also releases references to anyone making a query
+				request.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:attribute name="reference_distribution_opts" use="optional" default="none">
 			<xsd:simpleType>
@@ -567,9 +599,15 @@ email: info@inera.com
 	</xsd:complexType>
 	<xsd:group name="face_markup">
 		<xsd:annotation>
-			<xsd:documentation>The following are basic data types for face markup. Face markup that appears in the title, subtitle, and original_language_title elements should be retained when depositing metadata. Face markup in other elements (e.g. small caps in author names) must be dropped. Face markup support includes bold (b), italic (i), underline (u), over-line (ovl), superscript (sup), subscript (sub), small caps (scp), and typewriter text (tt).
+			<xsd:documentation>The following are basic data types for face markup. Face markup that
+				appears in the title, subtitle, and original_language_title elements should be
+				retained when depositing metadata. Face markup in other elements (e.g. small caps in
+				author names) must be dropped. Face markup support includes bold (b), italic (i),
+				underline (u), over-line (ovl), superscript (sup), subscript (sub), small caps
+				(scp), and typewriter text (tt). See
+				http://help.crossref.org/#face_markup
 				
-				See http://help.crossref.org/#face_markup</xsd:documentation>
+MathML may also be included using the 'mml' namespace prefix.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:choice>
 			<xsd:element ref="b"/>
@@ -581,6 +619,7 @@ email: info@inera.com
 			<xsd:element ref="scp"/>
 			<xsd:element ref="tt"/>
 			<xsd:element ref="font"/>
+			<xsd:element ref="mml:math"/>
 		</xsd:choice>
 	</xsd:group>
 	<xsd:element name="b" type="xrefFaces"/>
@@ -592,10 +631,10 @@ email: info@inera.com
 	<xsd:element name="scp" type="xrefFaces"/>
 	<xsd:element name="tt" type="xrefFaces"/>
 	<xsd:element name="font" type="xrefFaces"/>
-
 	<xsd:simpleType name="xrefYear">
 		<xsd:annotation>
-			<xsd:documentation>The following are basic data types for date parts.</xsd:documentation>
+			<xsd:documentation>The following are basic data types for date
+				parts.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:restriction base="xsd:positiveInteger">
 			<xsd:maxInclusive value="2200"/>
@@ -624,10 +663,10 @@ email: info@inera.com
      ============================================================= -->
 	<xsd:element name="doi_batch_id">
 		<xsd:annotation>
-			<xsd:documentation>Publisher generated ID that uniquely identifies the DOI submission batch. It will be used as a reference in error messages sent by the MDDB, and can be used for submission tracking.
-
-The publisher must insure that this number is unique for every submission to CrossRef.
-</xsd:documentation>
+			<xsd:documentation>Publisher generated ID that uniquely identifies the DOI submission
+				batch. It will be used as a reference in error messages sent by the MDDB, and can be
+				used for submission tracking. The publisher must insure that this number is unique
+				for every submission to CrossRef. </xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -638,20 +677,27 @@ The publisher must insure that this number is unique for every submission to Cro
 	</xsd:element>
 	<xsd:element name="timestamp" type="xsd:nonNegativeInteger">
 		<xsd:annotation>
-			<xsd:documentation>Indicates version of a batch file instance or DOI.
-
-timestamp is used to uniquely identify batch files and DOI values when a DOI has been updated one or more times.
-
-timestamp is an integer representation of date and time that serves as a version number for the record that is being deposited. Because CrossRef uses it as a version number, the format need not follow any public standard and therefore the publisher can determine the internal format. The schema format is a double of at least 64 bits, insuring that a fully qualified date/time stamp of 19 digits can be submitted.
-
-When depositing data, CrossRef will check to see if a DOI has already been deposited for the specific doi value. If the newer data carries a time stamp value that is equal to or greater than the old data based on a strict numeric comparison, the new data will replace the old data. If the new data value is less than the old data value, the new data will not replace the old data.
-
-timestamp is optional in doi_data and required in head. The value from the head instance timestamp will be used for all instances of doi_data that do not include a timestamp element.</xsd:documentation>
+			<xsd:documentation>Indicates version of a batch file instance or DOI. timestamp is used
+				to uniquely identify batch files and DOI values when a DOI has been updated one or
+				more times. timestamp is an integer representation of date and time that serves as a
+				version number for the record that is being deposited. Because CrossRef uses it as a
+				version number, the format need not follow any public standard and therefore the
+				publisher can determine the internal format. The schema format is a double of at
+				least 64 bits, insuring that a fully qualified date/time stamp of 19 digits can be
+				submitted. When depositing data, CrossRef will check to see if a DOI has already
+				been deposited for the specific doi value. If the newer data carries a time stamp
+				value that is equal to or greater than the old data based on a strict numeric
+				comparison, the new data will replace the old data. If the new data value is less
+				than the old data value, the new data will not replace the old data. timestamp is
+				optional in doi_data and required in head. The value from the head instance
+				timestamp will be used for all instances of doi_data that do not include a timestamp
+				element.</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
 	<xsd:element name="depositor">
 		<xsd:annotation>
-			<xsd:documentation>Information about the organization submitting DOI metadata to CrossRef</xsd:documentation>
+			<xsd:documentation>Information about the organization submitting DOI metadata to
+				CrossRef</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -662,9 +708,9 @@ timestamp is optional in doi_data and required in head. The value from the head 
 	</xsd:element>
 	<xsd:element name="depositor_name">
 		<xsd:annotation>
-			<xsd:documentation>Name of the organization registering the DOIs.
-
-The name placed in this element should match the name under which a depositing organization has registered with CrossRef.</xsd:documentation>
+			<xsd:documentation>Name of the organization registering the DOIs. The name placed in
+				this element should match the name under which a depositing organization has
+				registered with CrossRef.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -676,22 +722,26 @@ The name placed in this element should match the name under which a depositing o
 	<xsd:element name="email_address">
 		<xsd:annotation>
 			<xsd:documentation>e-mail address to which batch success and/or error messages are sent.
-
-It is recommended that this address be unique to a position within the organization submitting data (e.g. "doi@...") rather than unique to a person. In this way, the alias for delivery of this mail can be changed as responsibility for submission of DOI data within the organization changes from one person to another.
-</xsd:documentation>
+				It is recommended that this address be unique to a position within the organization
+				submitting data (e.g. "doi@...") rather than unique to a person. In this way, the
+				alias for delivery of this mail can be changed as responsibility for submission of
+				DOI data within the organization changes from one person to another.
+			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
 				<xsd:maxLength value="200"/>
 				<xsd:minLength value="6"/>
-				<xsd:pattern value="[\p{L}\p{N}!/+\-_]+(\.[\p{L}\p{N}!/+\-_]+)*@[\p{L}\p{N}!/+\-_]+(\.[\p{L}_-]+)+"/>
+				<xsd:pattern
+					value="[\p{L}\p{N}!/+\-_]+(\.[\p{L}\p{N}!/+\-_]+)*@[\p{L}\p{N}!/+\-_]+(\.[\p{L}_-]+)+"
+				/>
 			</xsd:restriction>
 		</xsd:simpleType>
 	</xsd:element>
 	<xsd:element name="registrant">
 		<xsd:annotation>
 			<xsd:documentation>The organization that owns the information being registered.
-</xsd:documentation>
+			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -708,10 +758,11 @@ It is recommended that this address be unique to a position within the organizat
 	<xsd:element name="component_number">
 		<xsd:annotation>
 			<xsd:documentation>The chapter, section, part, etc. number for a content item in a book.
-
-Unlike volume and edition_number, component_number should include any additional text that helps identify the type of component. In the example above, the text "Section 8" appeared on the table of contents and it is reflected here. "8" is also acceptable, however the former treatment is preferred.
-
-The type of the component is given the component_type attribute of content_item.</xsd:documentation>
+				Unlike volume and edition_number, component_number should include any additional
+				text that helps identify the type of component. In the example above, the text
+				"Section 8" appeared on the table of contents and it is reflected here. "8" is also
+				acceptable, however the former treatment is preferred. The type of the component is
+				given the component_type attribute of content_item.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -722,13 +773,18 @@ The type of the component is given the component_type attribute of content_item.
 	</xsd:element>
 	<xsd:element name="edition_number">
 		<xsd:annotation>
-			<xsd:documentation>The edition number of a book.
-
-edition_number should include only a number and not additional text such as "edition". For example, you should submit "3", not "third edition" or "3rd edition". Roman numerals are acceptable.
-
-Publishers will update a print edition with a new edition number when more than ten percent of the content has changed. However, publishers expect to continuously update online editions of books without changing the edition number.
-
-<i>The ability to update the electronic version independent of the print version could be problematic for researchers. For example, if a research article cites the print version of a chapter, and a researcher subsequently links to the online version of the same chapter, the content may be different from the print version without the typical indication of a new edition. This topic requires further discussion outside of the scope of this specification.</i></xsd:documentation>
+			<xsd:documentation>The edition number of a book. edition_number should include only a
+				number and not additional text such as "edition". For example, you should submit
+				"3", not "third edition" or "3rd edition". Roman numerals are acceptable. Publishers
+				will update a print edition with a new edition number when more than ten percent of
+				the content has changed. However, publishers expect to continuously update online
+				editions of books without changing the edition number. <i>The ability to update the
+					electronic version independent of the print version could be problematic for
+					researchers. For example, if a research article cites the print version of a
+					chapter, and a researcher subsequently links to the online version of the same
+					chapter, the content may be different from the print version without the typical
+					indication of a new edition. This topic requires further discussion outside of
+					the scope of this specification.</i></xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -744,54 +800,42 @@ Publishers will update a print edition with a new edition number when more than 
      ============================================================= -->
 	<xsd:element name="issue">
 		<xsd:annotation>
-			<xsd:documentation>The issue number in which an article is published.
-
-Only one issue name should be used for the issue. The issue number takes precedence over any other name. For example, if an issue has only a seasonal name, then the season should be listed in issue. However, if an issue has a number and a season, then only the number should be listed in issue, and the season should be placed in month (see the table in month, below, for proper encoding of the season) if the specific month of publication is not known. 
-
-Do not include the words "issue", "No" or "number" in this element.
-
-When submitting DOIs for journal articles published online ahead of print, you should submit the issue number, when known, even if the pagination information for the entity is not yet known.
-
-Data may be alpha, numeric or a combination.
-
-Examples:
-
-74(3):1999
-
-  <journal_issue>
-    <publication_date media_type="print">
-       <year>1999</year>
-    </publication_date>
-    <journal_volume>
-       <volume>74</volume>
-    </journal_volume>
-    <issue>3</issue>
-  </journal_issue>
-
-Volume 74, Spring 1999
-
-  <journal_issue>
-    <publication_date media_type="print">
-       <year>1999</year>
-    </publication_date>
-    <journal_volume>
-       <volume>74</volume>
-    </journal_volume>
-    <issue>Spring</issue>
-  </journal_issue>
-
-Volume 74, issue 3 Spring 1999
-
-  <journal_issue>
-    <publication_date media_type="print">
-       <month>21</month>
-       <year>1999</year>
-    </publication_date>
-    <journal_volume>
-       <volume>74</volume>
-    </journal_volume>
-    <issue>3</issue>
-  </journal_issue></xsd:documentation>
+			<xsd:documentation>The issue number in which an article is published. Only one issue
+				name should be used for the issue. The issue number takes precedence over any other
+				name. For example, if an issue has only a seasonal name, then the season should be
+				listed in issue. However, if an issue has a number and a season, then only the
+				number should be listed in issue, and the season should be placed in month (see the
+				table in month, below, for proper encoding of the season) if the specific month of
+				publication is not known. Do not include the words "issue", "No" or "number" in this
+				element. When submitting DOIs for journal articles published online ahead of print,
+				you should submit the issue number, when known, even if the pagination information
+				for the entity is not yet known. Data may be alpha, numeric or a combination.
+				Examples: 74(3):1999 <journal_issue>
+					<publication_date media_type="print">
+						<year>1999</year>
+					</publication_date>
+					<journal_volume>
+						<volume>74</volume>
+					</journal_volume>
+					<issue>3</issue>
+				</journal_issue> Volume 74, Spring 1999 <journal_issue>
+					<publication_date media_type="print">
+						<year>1999</year>
+					</publication_date>
+					<journal_volume>
+						<volume>74</volume>
+					</journal_volume>
+					<issue>Spring</issue>
+				</journal_issue> Volume 74, issue 3 Spring 1999 <journal_issue>
+					<publication_date media_type="print">
+						<month>21</month>
+						<year>1999</year>
+					</publication_date>
+					<journal_volume>
+						<volume>74</volume>
+					</journal_volume>
+					<issue>3</issue>
+				</journal_issue></xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -802,21 +846,19 @@ Volume 74, issue 3 Spring 1999
 	</xsd:element>
 	<!-- =============================================================
 
-       6. Elements common to journals, books and conferences
+       6. Elements shared by content types
 
      ============================================================= -->
 	<xsd:element name="doi_data">
 		<xsd:annotation>
-			<xsd:documentation>The container for elements related directly to a DOI.
-
-doi_data contains the doi, timestamp (version) and corresponding resource (URI) data for the doi.
-
-Cases of single-resolution (i.e. one DOI with a single corresponding URI) should be tagged with a doi/resource pair in doi_data.
-
-If additional resources are to be proved the &lt;collection&gt; element may also be used. The single URL provided in the &lt;resource&gt; is mandatory and serves as the single resolution target for the DOI.
-			
-Note: A timestamp value placed inside doi_data will override any timestamp value placed in the &lt;head&gt; element.
-</xsd:documentation>
+			<xsd:documentation>The container for elements related directly to a DOI. doi_data
+				contains the doi, timestamp (version) and corresponding resource (URI) data for the
+				doi. Cases of single-resolution (i.e. one DOI with a single corresponding URI)
+				should be tagged with a doi/resource pair in doi_data. If additional resources are
+				to be proved the &lt;collection&gt; element may also be used. The single URL
+				provided in the &lt;resource&gt; is mandatory and serves as the single resolution
+				target for the DOI. Note: A timestamp value placed inside doi_data will override any
+				timestamp value placed in the &lt;head&gt; element. </xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -829,16 +871,13 @@ Note: A timestamp value placed inside doi_data will override any timestamp value
 	</xsd:element>
 	<xsd:element name="resource">
 		<xsd:annotation>
-			<xsd:documentation>The element that contains a URI associated with a DOI.
-
-URLs are referred to as resources in the 2.0 CrossRef schema because they can be any valid URI.
-
-Cases of single-resolution (i.e. one DOI with a single corresponding URI) should be tagged with a doi/resource pair in doi_data.
-
-Only one resource is allowed per doi_data, the exception being resource elements within a collection element.
-
-Values for the "content_version" attribute are vor (version of record) and am (advance manuscript).
-</xsd:documentation>
+			<xsd:documentation>The element that contains a URI associated with a DOI. URLs are
+				referred to as resources in the 2.0 CrossRef schema because they can be any valid
+				URI. Cases of single-resolution (i.e. one DOI with a single corresponding URI)
+				should be tagged with a doi/resource pair in doi_data. Only one resource is allowed
+				per doi_data, the exception being resource elements within a collection element.
+				Values for the "content_version" attribute are vor (version of record) and am
+				(advance manuscript). </xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:simpleContent>
@@ -867,20 +906,18 @@ Values for the "content_version" attribute are vor (version of record) and am (a
 
 	<xsd:element name="collection">
 		<xsd:annotation>
-			<xsd:documentation>
-A collection is a container for one or more items  each holding a doi or a resource (URI) which is related to the DOI in the ancestor &lt;doi_data&gt; element. A collection must be qualified by a property attibute or the multi-resolution attribute.
-
-property attributes:
-
-  list-based: uses an interim page and presents the list of items to the user (via Multiple Resolution)
-  country-based: proxy picks destination based on the country code of the user's location (this option is not currently active, contact support@crossref.org for more info)  
-  crawler-based: identifies resource to be crawled by the specified crawlers.
-  text-mining: identifies resource to be used for text and data mining
-  unspecified: identifies resource with unspecified usage
-  syndication: identifies resource to be used for syndication
-
-The multi-resolution attribute may be used to lock or unlock DOIs for multiple resolution.
-</xsd:documentation>
+			<xsd:documentation> A collection is a container for one or more items each holding a doi
+				or a resource (URI) which is related to the DOI in the ancestor &lt;doi_data&gt;
+				element. A collection must be qualified by a property attibute or the
+				multi-resolution attribute. property attributes: list-based: uses an interim page
+				and presents the list of items to the user (via Multiple Resolution) country-based:
+				proxy picks destination based on the country code of the user's location (this
+				option is not currently active, contact support@crossref.org for more info)
+				crawler-based: identifies resource to be crawled by the specified crawlers.
+				text-mining: identifies resource to be used for text and data mining unspecified:
+				identifies resource with unspecified usage syndication: identifies resource to be
+				used for syndication The multi-resolution attribute may be used to lock or unlock
+				DOIs for multiple resolution. </xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -910,9 +947,9 @@ The multi-resolution attribute may be used to lock or unlock DOIs for multiple r
 	</xsd:element>
 	<xsd:element name="item">
 		<xsd:annotation>
-			<xsd:documentation>A container used to associate a collection, doi, or resource (URI) with zero or more property elements.
-
-item is currently used for supplying as-crawled URLs (http://help.crossref.org/#as-crawled-urls)</xsd:documentation>
+			<xsd:documentation>A container used to associate a collection, doi, or resource (URI)
+				with zero or more property elements. item is currently used for supplying as-crawled
+				URLs (http://help.crossref.org/#as-crawled-urls)</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -1198,10 +1235,10 @@ item is currently used for supplying as-crawled URLs (http://help.crossref.org/#
 	</xsd:simpleType>
 	<xsd:element name="property">
 		<xsd:annotation>
-			<xsd:documentation>property elements qualify the semantic meaning of a item or collection. property elements consist of a type/value pair where the property type is found in the type attribute and the value is found in the element content.
-			
-The property element is not currently in use.			
-			</xsd:documentation>
+			<xsd:documentation>property elements qualify the semantic meaning of a item or
+				collection. property elements consist of a type/value pair where the property type
+				is found in the type attribute and the value is found in the element content. The
+				property element is not currently in use. </xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:simpleContent>
@@ -1213,7 +1250,8 @@ The property element is not currently in use.
 	</xsd:element>
 	<xsd:element name="contributors">
 		<xsd:annotation>
-			<xsd:documentation>The container for all who contributed to authoring or editing an entity.</xsd:documentation>
+			<xsd:documentation>The container for all who contributed to authoring or editing an
+				entity.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -1233,11 +1271,14 @@ The property element is not currently in use.
 	</xsd:simpleType>
 	<xsd:element name="organization">
 		<xsd:annotation>
-			<xsd:documentation>The name of an organization (as opposed to a person) that contributed to authoring an entity.
-
-If multiple organizations authored an entity, each one should be captured in a unique organization element. If an entity was authored by individuals in addition to one or more organizations, person_name and organization may be freely intermixed within contributors.
-
-contributor_role should be set, as appropriate, to author or editor. When a contributor translated a work, set contributor_role to "translator". "chair" should only be used for conference proceedings to indicate a conference chair.</xsd:documentation>
+			<xsd:documentation>The name of an organization (as opposed to a person) that contributed
+				to authoring an entity. If multiple organizations authored an entity, each one
+				should be captured in a unique organization element. If an entity was authored by
+				individuals in addition to one or more organizations, person_name and organization
+				may be freely intermixed within contributors. contributor_role should be set, as
+				appropriate, to author or editor. When a contributor translated a work, set
+				contributor_role to "translator". "chair" should only be used for conference
+				proceedings to indicate a conference chair.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:simpleContent>
@@ -1249,11 +1290,14 @@ contributor_role should be set, as appropriate, to author or editor. When a cont
 	</xsd:element>
 	<xsd:element name="person_name">
 		<xsd:annotation>
-			<xsd:documentation>The name of a person (as opposed to an organization) that contributed to authoring an entity.
-
-Authors with name suffixes should have the suffix captured in suffix, not in surname. Author prefixes such as "Dr.", "Prof.", or "President" should not be included in person_name or any other element. Author degrees (e.g. M.D., Ph.D.) also should not be included in CrossRef submissions.
-
-contributor_role should be set, as appropriate, to author or editor. When a contributor translated a work, set contributor_role to "translator". "chair" should only be used for conference proceedings to indicate a conference chair.</xsd:documentation>
+			<xsd:documentation>The name of a person (as opposed to an organization) that contributed
+				to authoring an entity. Authors with name suffixes should have the suffix captured
+				in suffix, not in surname. Author prefixes such as "Dr.", "Prof.", or "President"
+				should not be included in person_name or any other element. Author degrees (e.g.
+				M.D., Ph.D.) also should not be included in CrossRef submissions. contributor_role
+				should be set, as appropriate, to author or editor. When a contributor translated a
+				work, set contributor_role to "translator". "chair" should only be used for
+				conference proceedings to indicate a conference chair.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -1269,17 +1313,16 @@ contributor_role should be set, as appropriate, to author or editor. When a cont
 	</xsd:element>
 	<xsd:element name="given_name">
 		<xsd:annotation>
-			<xsd:documentation>A contributor's given name.
-
-The given_name, combined with surname, forms the name of an author or editor. given_name may be submitted as either initials or a full name. 
-
-Do not place given_name within the surname unless it is unclear how to distinguish the given name from the surname, as may be the case in non-Western names.
-
-Do not include titles such as "Dr.", "Prof.", or "President" in given_name. These titles should not be submitted to CrossRef.</xsd:documentation>
+			<xsd:documentation>A contributor's given name. The given_name, combined with surname,
+				forms the name of an author or editor. given_name may be submitted as either
+				initials or a full name. Do not place given_name within the surname unless it is
+				unclear how to distinguish the given name from the surname, as may be the case in
+				non-Western names. Do not include titles such as "Dr.", "Prof.", or "President" in
+				given_name. These titles should not be submitted to CrossRef.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
-				<xsd:maxLength value="35"/>
+				<xsd:maxLength value="60"/>
 				<xsd:minLength value="1"/>
 				<xsd:pattern value="[^\d\?]*"/>
 				<xsd:whiteSpace value="collapse"/>
@@ -1288,34 +1331,30 @@ Do not include titles such as "Dr.", "Prof.", or "President" in given_name. Thes
 	</xsd:element>
 	<xsd:element name="surname">
 		<xsd:annotation>
-			<xsd:documentation>The surname of an author or editor.
-
-The surname, combined with given_name, forms the name of an author or editor. Whenever possible, the given name should not be included in the surname element.
-
-In cases where the given name is not clear, as may happen with non-Western names or some societies in which surnames are not distinguished, you may place the entire name in surname, e.g.:
-
-   <surname>Leonardo da Vinci</surname>
-   
-If an author is an organization, you should use organization, not surname. 
-
-Suffixes should be tagged with suffix. Author degrees (e.g. M.D., Ph.D.) should not be included in CrossRef submissions.</xsd:documentation>
+			<xsd:documentation>The surname of an author or editor. The surname, combined with
+				given_name, forms the name of an author or editor. Whenever possible, the given name
+				should not be included in the surname element. In cases where the given name is not
+				clear, as may happen with non-Western names or some societies in which surnames are
+				not distinguished, you may place the entire name in surname, e.g.: <surname>Leonardo
+					da Vinci</surname> If an author is an organization, you should use organization,
+				not surname. Suffixes should be tagged with suffix. Author degrees (e.g. M.D.,
+				Ph.D.) should not be included in CrossRef submissions.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
-				<xsd:maxLength value="45"/>
+				<xsd:maxLength value="60"/>
 				<xsd:minLength value="1"/>
-				<xsd:pattern value="[^\d\?]*[^\d\?\s]+[^\d\?]*"/>
+				<xsd:pattern value="[^\d\?]*[^\?\s]+[^\d]*"/>
 				<xsd:whiteSpace value="collapse"/>
 			</xsd:restriction>
 		</xsd:simpleType>
 	</xsd:element>
 	<xsd:element name="suffix">
 		<xsd:annotation>
-			<xsd:documentation>The suffix of an author name, e.g. junior or senior.
-
-A name suffix, that typically denotes a generation distinction, is tagged with suffix.
-
-Author degrees (e.g. M.D., Ph.D.) should not be included in CrossRef submissions.</xsd:documentation>
+			<xsd:documentation>The suffix of an author name, e.g. junior or senior. A name suffix,
+				that typically denotes a generation distinction, is tagged with suffix. Author
+				degrees (e.g. M.D., Ph.D.) should not be included in CrossRef
+				submissions.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -1345,27 +1384,27 @@ Author degrees (e.g. M.D., Ph.D.) should not be included in CrossRef submissions
 
 	<xsd:element name="affiliation">
 		<xsd:annotation>
-			<xsd:documentation>
-The institution(s) with which a contributor is affiliated. This element may hold the name and location of an affiliation with which a contributor is affiliated. Please note the following points when using this element:
-			
-1. A contributor may have up to five affiliations. Each affiliation should be in a unique &lt;affiliation&gt; element. The following is correct:
-				
-				&lt;affiliation&gt;University of New Mexico&lt;/affiliation&gt;
-				&lt;affiliation&gt;Sandia National Laboratories&lt;/affiliation&gt;
-				The following is NOT correct
-				&lt;affiliation&gt;University of New Mexico; Sandia National Laboratories&lt;/affiliation&gt;
-				
-2. The name of the institution is required in this element. The location is optional. Both of the following are correct:
-				
-				&lt;affiliation&gt;Harvard University&lt;/affiliation&gt;
-				&lt;affiliation&gt;Harvard University, Cambridge, MA&lt;/affiliation&gt;
-				
-3. Additional address information such as a URL or email address should NOT be deposited in this element
-				
-4. Visual linking indicators used in publication to connect authors with their affiliations such as footnote symbols or initials should NOT be included in the &lt;affiliation&gt; element
-				
-5. If you have only a single string that has the affiliation for multiple contributors to a work and that string is not broken out into the individual affliations for each author, please do NOT deposit the affilation information. This element is to be used only for affiliation information that is directly connected to the author with whom this information is included within the person_name element.
-		</xsd:documentation>
+			<xsd:documentation> The institution(s) with which a contributor is affiliated. This
+				element may hold the name and location of an affiliation with which a contributor is
+				affiliated. Please note the following points when using this element: 1. A
+				contributor may have up to five affiliations. Each affiliation should be in a unique
+				&lt;affiliation&gt; element. The following is correct: &lt;affiliation&gt;University
+				of New Mexico&lt;/affiliation&gt; &lt;affiliation&gt;Sandia National
+				Laboratories&lt;/affiliation&gt; The following is NOT correct
+				&lt;affiliation&gt;University of New Mexico; Sandia National
+				Laboratories&lt;/affiliation&gt; 2. The name of the institution is required in this
+				element. The location is optional. Both of the following are correct:
+				&lt;affiliation&gt;Harvard University&lt;/affiliation&gt; &lt;affiliation&gt;Harvard
+				University, Cambridge, MA&lt;/affiliation&gt; 3. Additional address information such
+				as a URL or email address should NOT be deposited in this element 4. Visual linking
+				indicators used in publication to connect authors with their affiliations such as
+				footnote symbols or initials should NOT be included in the &lt;affiliation&gt;
+				element 5. If you have only a single string that has the affiliation for multiple
+				contributors to a work and that string is not broken out into the individual
+				affliations for each author, please do NOT deposit the affilation information. This
+				element is to be used only for affiliation information that is directly connected to
+				the author with whom this information is included within the person_name element.
+			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -1456,7 +1495,8 @@ The institution(s) with which a contributor is affiliated. This element may hold
 
 	<xsd:element name="titles">
 		<xsd:annotation>
-			<xsd:documentation>A container for the title and original language title elements.</xsd:documentation>
+			<xsd:documentation>A container for the title and original language title
+				elements.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -1473,91 +1513,70 @@ The institution(s) with which a contributor is affiliated. This element may hold
 	</xsd:element>
 	<xsd:element name="title">
 		<xsd:annotation>
-			<xsd:documentation>The title of the entity being registered.
-
-When a title contains a subtitle, it is preferable to capture the subtitle portion in the subtitle element.
-
-Use care to remove face markup (such as italic applied to genus or species names) from article titles as this markup is not supported by CrossRef.</xsd:documentation>
+			<xsd:documentation>The title of the entity being registered. When a title contains a
+				subtitle, it is preferable to capture the subtitle portion in the subtitle element.
+				Only minimal face markup is supported, see See http://help.crossref.org/#face_markup</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType mixed="true">
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
 				<xsd:group ref="face_markup"/>
-				<xsd:element ref="mml:math"/>
 			</xsd:choice>
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="original_language_title">
 		<xsd:annotation>
-			<xsd:documentation>The title of an entity in its original language if the registration is for a translation of a work.
-
-When providing the original language of a title, you should set the language attribute.</xsd:documentation>
+			<xsd:documentation>The title of an entity in its original language if the registration
+				is for a translation of a work. When providing the original language of a title, you
+				should set the language attribute.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType mixed="true">
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
 				<xsd:group ref="face_markup"/>
-				<xsd:element ref="mml:math"/>
+
 			</xsd:choice>
 			<xsd:attributeGroup ref="language.atts"/>
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="subtitle">
 		<xsd:annotation>
-			<xsd:documentation>The sub-title portion of an entity title.
-
-When possible, it is better to tag a title and subtitle with separate elements. If this information is not available, it is acceptable to submit the title and subtitle all within the title element with punctuation (preferably a colon) used to separate the subtitle from the title.
-
-When a subtitle is tagged, the space and punctuation between the title and subtitle text should not be included. The following examples illustrate correct and incorrect tagging practices:
-
-Correct and optimal tagging:
-   <title>The Human Brain</title>
-   <subtitle>A Handbook</subtitle>
-   
-Correct but not optimal tagging:
-   <title>The Human Brain: A Handbook</title>
-
-Incorrect:
-   <title>The Human Brain: </title>
-   <subtitle>A Handbook</subtitle>
-   
-   <title>The Human Brain</title>
-   <subtitle>: A Handbook</subtitle></xsd:documentation>
+			<xsd:documentation>The sub-title portion of an entity title. When possible, it is better
+				to tag a title and subtitle with separate elements. If this information is not
+				available, it is acceptable to submit the title and subtitle all within the title
+				element with punctuation (preferably a colon) used to separate the subtitle from the
+				title. When a subtitle is tagged, the space and punctuation between the title and
+				subtitle text should not be included. The following examples illustrate correct and
+				incorrect tagging practices: Correct and optimal tagging: <title>The Human
+					Brain</title>
+				<subtitle>A Handbook</subtitle> Correct but not optimal tagging: <title>The Human
+					Brain: A Handbook</title> Incorrect: <title>The Human Brain: </title>
+				<subtitle>A Handbook</subtitle>
+				<title>The Human Brain</title>
+				<subtitle>: A Handbook</subtitle></xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType mixed="true">
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
 				<xsd:group ref="face_markup"/>
-				<xsd:element ref="mml:math"/>
+
 			</xsd:choice>
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="month" type="xrefMonth">
 		<xsd:annotation>
-			<xsd:documentation>Month of publication.
-
-The month must be expressed in numeric format rather spelling out the name (e.g.. submit "10", not "October").
-
-The month must be expressed with a leading zero if it is less than 10 (e.g. submit "05", not "5").
-
-When a journal issue has both an issue number and a season, the issue number should be placed in issue. If the month of publication is not known, the season should be placed in month as a two-digit value as follows:
-
-Season		Value
-
-Spring		21
-Summer		22
-Autumn		23
-Winter		24
-First Quarter	31
-Second Quarter	32
-Third Quarter	33
-Fourth Quarter	34
-
-In cases when an issue covers multiple months, e.g. "March-April", include only the digits for the first month of the range.</xsd:documentation>
+			<xsd:documentation>Month of publication. The month must be expressed in numeric format
+				rather spelling out the name (e.g.. submit "10", not "October"). The month must be
+				expressed with a leading zero if it is less than 10 (e.g. submit "05", not "5").
+				When a journal issue has both an issue number and a season, the issue number should
+				be placed in issue. If the month of publication is not known, the season should be
+				placed in month as a two-digit value as follows: Season Value Spring 21 Summer 22
+				Autumn 23 Winter 24 First Quarter 31 Second Quarter 32 Third Quarter 33 Fourth
+				Quarter 34 In cases when an issue covers multiple months, e.g. "March-April",
+				include only the digits for the first month of the range.</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
 	<xsd:element name="day" type="xrefDay">
 		<xsd:annotation>
-			<xsd:documentation>Day of publication.
-
-The should must be expressed with a leading zero if it is less than 10 (e.g. submit "05", not "5").</xsd:documentation>
+			<xsd:documentation>Day of publication. The should must be expressed with a leading zero
+				if it is less than 10 (e.g. submit "05", not "5").</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
 	<xsd:element name="year" type="xrefYear">
@@ -1567,11 +1586,10 @@ The should must be expressed with a leading zero if it is less than 10 (e.g. sub
 	</xsd:element>
 	<xsd:element name="publication_date">
 		<xsd:annotation>
-			<xsd:documentation>The date of publication.
-
-In all cases, multiple dates are allowed to allow for different dates of publication for online and print versions.
-
-This element was previously called date, but was renamed publication_date to distinguish more clearly from conference_date.</xsd:documentation>
+			<xsd:documentation>The date of publication. In all cases, multiple dates are allowed to
+				allow for different dates of publication for online and print versions. This element
+				was previously called date, but was renamed publication_date to distinguish more
+				clearly from conference_date.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:complexContent>
@@ -1597,15 +1615,13 @@ This element was previously called date, but was renamed publication_date to dis
 	</xsd:complexType>
 	<xsd:element name="pages">
 		<xsd:annotation>
-			<xsd:documentation>The container for information about page ranges.
-
-When an entity has non-contiguous page information, you should capture the first page range in first_page and last_page. Any additional page information should be captured in other_pages.
-
-Punctuation is only allowed in other_pages. It should not appear in first_page and last_page.
-
-Page number letter prefixes or suffixes should be included. Roman numeral pages are permitted in both upper case and lower case.
-
-Data may be alpha, numeric or a combination.</xsd:documentation>
+			<xsd:documentation>The container for information about page ranges. When an entity has
+				non-contiguous page information, you should capture the first page range in
+				first_page and last_page. Any additional page information should be captured in
+				other_pages. Punctuation is only allowed in other_pages. It should not appear in
+				first_page and last_page. Page number letter prefixes or suffixes should be
+				included. Roman numeral pages are permitted in both upper case and lower case. Data
+				may be alpha, numeric or a combination.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -1617,9 +1633,8 @@ Data may be alpha, numeric or a combination.</xsd:documentation>
 	</xsd:element>
 	<xsd:element name="first_page">
 		<xsd:annotation>
-			<xsd:documentation>First page number where an entity is located.
-
-Data may be alpha, numeric or a combination.</xsd:documentation>
+			<xsd:documentation>First page number where an entity is located. Data may be alpha,
+				numeric or a combination.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -1630,15 +1645,12 @@ Data may be alpha, numeric or a combination.</xsd:documentation>
 	</xsd:element>
 	<xsd:element name="last_page">
 		<xsd:annotation>
-			<xsd:documentation>The last page number of an entity.
-
-last_page should not be used when the last page number is the same as the first page number (i.e. when the entire entity fits on one page).
-
-Do not include punctuation for a page range in last_page.
-
-If the entity has non-contiguous paging, use last_page for the last page of the first range and place all other page information into other_pages. 
-
-Data may be alpha, numeric or a combination.</xsd:documentation>
+			<xsd:documentation>The last page number of an entity. last_page should not be used when
+				the last page number is the same as the first page number (i.e. when the entire
+				entity fits on one page). Do not include punctuation for a page range in last_page.
+				If the entity has non-contiguous paging, use last_page for the last page of the
+				first range and place all other page information into other_pages. Data may be
+				alpha, numeric or a combination.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -1649,13 +1661,14 @@ Data may be alpha, numeric or a combination.</xsd:documentation>
 	</xsd:element>
 	<xsd:element name="other_pages">
 		<xsd:annotation>
-			<xsd:documentation>Used to capture additional page information when items do not encompass contiguous page ranges.
-
-When an entity has non-contiguous page information, you should capture the first page range in first_page and last_page. Any additional page information should be captured in other_pages.
-
-You should include commas or hyphens to express discrete pages or page ranges. endash entities should be converted to ASCII hyphens. Spaces should not be included. Note that punctuation should never appear in first_page and last_page.
-
-Data may be alpha, numeric or a combination.</xsd:documentation>
+			<xsd:documentation>Used to capture additional page information when items do not
+				encompass contiguous page ranges. When an entity has non-contiguous page
+				information, you should capture the first page range in first_page and last_page.
+				Any additional page information should be captured in other_pages. You should
+				include commas or hyphens to express discrete pages or page ranges. endash entities
+				should be converted to ASCII hyphens. Spaces should not be included. Note that
+				punctuation should never appear in first_page and last_page. Data may be alpha,
+				numeric or a combination.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -1688,24 +1701,25 @@ Data may be alpha, numeric or a combination.</xsd:documentation>
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="1024"/>
 			<xsd:minLength value="4"/>
-			<xsd:pattern value="[A-Za-z0-9_]+([-.][A-Za-z0-9_]+)*\.[A-Za-z0-9_]+([-.][A-Za-z0-9_]+)*"/>
+			<xsd:pattern
+				value="[A-Za-z0-9_]+([-.][A-Za-z0-9_]+)*\.[A-Za-z0-9_]+([-.][A-Za-z0-9_]+)*"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 
 	<xsd:simpleType name="cm_update_type">
-		<xsd:restriction base="xsd:NCName">
-			<xsd:maxLength value="150"/>
-			<xsd:minLength value="2"/>
-		</xsd:restriction>
-	</xsd:simpleType>
-
-	<xsd:simpleType name="cm_update_label">
-		<xsd:annotation>
-			<xsd:documentation/>
-		</xsd:annotation>
-		<xsd:restriction base="xsd:string">
-			<xsd:maxLength value="150"/>
-			<xsd:minLength value="2"/>
+		<xsd:restriction base="xsd:NMTOKEN">
+			<xsd:enumeration value="addendum"/>
+			<xsd:enumeration value="clarification"/>
+			<xsd:enumeration value="correction"/>
+			<xsd:enumeration value="corrigendum"/>
+			<xsd:enumeration value="erratum"/>
+			<xsd:enumeration value="expression_of_concern"/>
+			<xsd:enumeration value="new_edition"/>
+			<xsd:enumeration value="new_version"/>
+			<xsd:enumeration value="partial_retraction"/>
+			<xsd:enumeration value="removal"/>
+			<xsd:enumeration value="retraction"/>
+			<xsd:enumeration value="withdrawal"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 
@@ -1752,13 +1766,15 @@ Data may be alpha, numeric or a combination.</xsd:documentation>
 	</xsd:simpleType>
 	<xsd:element name="isbn">
 		<xsd:annotation>
-			<xsd:documentation>The ISBN assigned to an entity.
-
-If a multi-volume work has one ISBN per volume and a unique ISBN for the series, all may be registered. The ISBN for the series must be in series_metadata, and the ISBN for each volume in proceedings_metadata, or book_metadata, respectively.
-
-The text "ISBN" should not be included in the ISBN element in CrossRef submissions.
-
-Although not required, the ISBN number should retain spaces or hyphens that appear in the formatted number because they aid in human-readability. For more information, please see http://www.isbn.org/standards/home/isbn/international/hyphenation- instructions.asp or http://www.isbn.org.</xsd:documentation>
+			<xsd:documentation>The ISBN assigned to an entity. If a multi-volume work has one ISBN
+				per volume and a unique ISBN for the series, all may be registered. The ISBN for the
+				series must be in series_metadata, and the ISBN for each volume in
+				proceedings_metadata, or book_metadata, respectively. The text "ISBN" should not be
+				included in the ISBN element in CrossRef submissions. Although not required, the
+				ISBN number should retain spaces or hyphens that appear in the formatted number
+				because they aid in human-readability. For more information, please see
+				http://www.isbn.org/standards/home/isbn/international/hyphenation- instructions.asp
+				or http://www.isbn.org.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:simpleContent>
@@ -1770,12 +1786,10 @@ Although not required, the ISBN number should retain spaces or hyphens that appe
 	</xsd:element>
 	<xsd:element name="noisbn">
 		<xsd:annotation>
-			<xsd:documentation>Identifies books or conference proceedings that have no ISBN assigned.
-				
-In very limited cases a book may never have an ISBN, this is particularly true for older texts.
-
-Conference proceedings, however, may regularly  have a volume number but no ISBN or volume title.
-			</xsd:documentation>
+			<xsd:documentation>Identifies books or conference proceedings that have no ISBN
+				assigned. In very limited cases a book may never have an ISBN, this is particularly
+				true for older texts. Conference proceedings, however, may regularly have a volume
+				number but no ISBN or volume title. </xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:attribute name="reason" use="required">
@@ -1799,13 +1813,14 @@ Conference proceedings, however, may regularly  have a volume number but no ISBN
 	</xsd:simpleType>
 	<xsd:element name="issn">
 		<xsd:annotation>
-			<xsd:documentation>The ISSN assigned to an entity.
-
-The ISSN must consist of eight digits (where the last digit may be an X), or it must consist of eight digits in two groups of four with a hyphen between the two groups. Spaces or other delimiters should not be included in an ISSN. For more information, please see http://www.issn.org:8080/English/pub/getting- checking/checking or http://www.issn.org.
-
-The text "ISSN" should not be included in the issn element in CrossRef submissions.
-
-CrossRef validates all ISSNs supplied in deposits, only valid ISSNs will be accepted.</xsd:documentation>
+			<xsd:documentation>The ISSN assigned to an entity. The ISSN must consist of eight digits
+				(where the last digit may be an X), or it must consist of eight digits in two groups
+				of four with a hyphen between the two groups. Spaces or other delimiters should not
+				be included in an ISSN. For more information, please see
+				http://www.issn.org:8080/English/pub/getting- checking/checking or
+				http://www.issn.org. The text "ISSN" should not be included in the issn element in
+				CrossRef submissions. CrossRef validates all ISSNs supplied in deposits, only valid
+				ISSNs will be accepted.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:simpleContent>
@@ -1817,7 +1832,8 @@ CrossRef validates all ISSNs supplied in deposits, only valid ISSNs will be acce
 	</xsd:element>
 	<xsd:element name="coden">
 		<xsd:annotation>
-			<xsd:documentation>The coden assigned to a journal or conference proceedings.</xsd:documentation>
+			<xsd:documentation>The coden assigned to a journal or conference
+				proceedings.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -1828,14 +1844,11 @@ CrossRef validates all ISSNs supplied in deposits, only valid ISSNs will be acce
 	</xsd:element>
 	<xsd:element name="volume">
 		<xsd:annotation>
-			<xsd:documentation>The volume number of a published journal, or the number of a printed volume for a book or conference proceedings.
-
-A journal volume is contained in the journal_volume element to allow for the assignment of a DOI to an entire journal volume.
-
-Do not include the words "Volume" or "vol." in this element.
-
-Data may be alpha, numeric or a combination. Roman numerals are acceptable.
-</xsd:documentation>
+			<xsd:documentation>The volume number of a published journal, or the number of a printed
+				volume for a book or conference proceedings. A journal volume is contained in the
+				journal_volume element to allow for the assignment of a DOI to an entire journal
+				volume. Do not include the words "Volume" or "vol." in this element. Data may be
+				alpha, numeric or a combination. Roman numerals are acceptable. </xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -1859,7 +1872,9 @@ Data may be alpha, numeric or a combination. Roman numerals are acceptable.
 	</xsd:element>
 	<xsd:element name="archive">
 		<xsd:annotation>
-			<xsd:documentation>Used to indicate the designated archiving organization(s) for an item.  Values for the name attribute are CLOCKSS, LOCKSS Portico, KB, DWT (Deep Web Technologies), Internet Archive, WebCite</xsd:documentation>
+			<xsd:documentation>Used to indicate the designated archiving organization(s) for an
+				item. Values for the name attribute are CLOCKSS, LOCKSS Portico, KB, DWT (Deep Web
+				Technologies), Internet Archive</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:attribute name="name" use="required">
@@ -1871,13 +1886,26 @@ Data may be alpha, numeric or a combination. Roman numerals are acceptable.
 						<xsd:enumeration value="KB"/>
 						<xsd:enumeration value="Internet Archive"/>
 						<xsd:enumeration value="DWT"/>
-                                                <xsd:enumeration value="WebCite"/>
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
 
+	<xsd:element name="approval_date">
+		<xsd:annotation>
+			<xsd:documentation> The date on which a dissertation was accepted by the institution
+				awarding the degree, a report was approved, or a standard was accepted.
+				approval_date includes the same elements as publication_date, but it has no
+				attributes. It is a distinct element from publication_date to reflect that an
+				important but different semantic meeting from publication_date </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="date_t"/>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
 
 	<!-- =============================================================
 
@@ -1886,18 +1914,26 @@ Data may be alpha, numeric or a combination. Roman numerals are acceptable.
      ============================================================= -->
 	<xsd:element name="citation_list">
 		<xsd:annotation>
-			<xsd:documentation>A list of articles, books, and other items cited by the parent item for which the DOI in the doi_data is being deposited.
-
-Some articles may have multiple lists of citations (e.g. main reference list, appendix reference list, etc.). All citations for one article should be included in a single citation_list regardless of whether one or more citation lists were in the original item.
-
-When combining multiple reference lists from an item into one citation_list element, but sure to give each citation a unique key attribute value. For example, if an appendix in an item has a separate citation list that restarts numbering at 1, these citations should be given key attributes such as "ab1" rather than "b1".
-
-Some articles may contain "Further Reading" or "Bibliography" lists. The distinguishing factor in these lists is that the references have not been cited from the article—they only provide a list of additional related reading material. It will be left to the discretion of the publisher if these items are to be considered citations and should be deposited.
-			
-NOTE: If a citation_list element is given and is empty then all citations for the given DOI will be deleted, otherwise any existing citations for the given DOI are left intact in the database. It is quite common that a publisher wants to fix the DOI's metadata without resubmitting the citations. Leaving out the citation_list element will do that.
-
-Also note that any given citations will override older citations for the given DOI so citation_lists are not cumulative over multiple records or submissions.		
-</xsd:documentation>
+			<xsd:documentation>A list of articles, books, and other items cited by the parent item
+				for which the DOI in the doi_data is being deposited. Some articles may have
+				multiple lists of citations (e.g. main reference list, appendix reference list,
+				etc.). All citations for one article should be included in a single citation_list
+				regardless of whether one or more citation lists were in the original item. When
+				combining multiple reference lists from an item into one citation_list element, but
+				sure to give each citation a unique key attribute value. For example, if an appendix
+				in an item has a separate citation list that restarts numbering at 1, these
+				citations should be given key attributes such as "ab1" rather than "b1". Some
+				articles may contain "Further Reading" or "Bibliography" lists. The distinguishing
+				factor in these lists is that the references have not been cited from the
+				article—they only provide a list of additional related reading material. It will be
+				left to the discretion of the publisher if these items are to be considered
+				citations and should be deposited. NOTE: If a citation_list element is given and is
+				empty then all citations for the given DOI will be deleted, otherwise any existing
+				citations for the given DOI are left intact in the database. It is quite common that
+				a publisher wants to fix the DOI's metadata without resubmitting the citations.
+				Leaving out the citation_list element will do that. Also note that any given
+				citations will override older citations for the given DOI so citation_lists are not
+				cumulative over multiple records or submissions. </xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -1987,7 +2023,7 @@ Also note that any given citations will override older citations for the given D
 			<!--  end of book/conf. specific elements-->
 			<xsd:element ref="article_title" minOccurs="0"/>
 			<!--standard-specific elements-->
-			<xsd:element ref="standard_designator" minOccurs="0"/>
+			<xsd:element ref="std_designator" minOccurs="0"/>
 			<xsd:element ref="standards_body" minOccurs="0" maxOccurs="1"/>
 			<!-- Citation text as it appears in    the    article    , future placeholder -->
 			<xsd:element ref="unstructured_citation" minOccurs="0"/>
@@ -1998,35 +2034,47 @@ Also note that any given citations will override older citations for the given D
     -->
 	<xsd:element name="citation">
 		<xsd:annotation>
-			<xsd:documentation>citation is used to deposit each citation in the reference list of the item for which the DOI is being deposited. The citations in the list will be run by the CrossRef system as queries looking for the DOI of the articles being cited.
-
-NOTE: Because the citation list is used to support forward linking, the more information supplied in the citation the better the chance of finding a match.
-
-For each citation that is deposited, one of four models should be used:
-    1. Parsed journal data
-    2. Parsed book or conference data
-    3. DOI
-    4. Unstructured citation (not yet supported for resolution)
-
-When parsed journal, book or conference data is deposited, CrossRef will perform a lookup to find the DOI.
-
-Each citation must be given a unique ID in the key attribute. It is recommended that this number be the citation number if the reference list is numbered in the published article, or the underlying XML ID if the reference list is name/date style in article.
-
-When submitting a journal citation, it should include an issn, journal_title or both. journal_title only is preferred over issn only. In addition the first author and first_page number should be submitted. The first_page number is preferred, but for those citations that are "in press", the author should be submitted. All elements are optional, however for best linking results, as much information as is known should be submitted.
-
-When submitting a book or conference citation, it should include an isbn, series_title, volume_title, or any combination of these three elements as may be available. All elements are optional, however for best linking results, as much information as is known should be submitted.
-
-When a DOI is already known for a citation, you may submit just the doi without additional information.
-
-When parsed information is not available for a citation, or the citation is of a type other than journal, book, or conference proceeding that is supported by CrossRef (e.g. standard, patent, thesis, newspaper, personal communication, etc.), it may be submitted using the unstructured_citation element. CrossRef is able to process some unstructured citations. When submitting unstructured citations, it is helpful, but not required to include all available face markup (e.g. bold, italic, etc) as this will make possible future parsing of the unstructured citation more accurate. In such cases, it is preferred, but not required, if the citation number (when Vancouver style is used) be removed from the unparsed citation. This number can be submitted using the key attribute
-
-Only the first author of a citation should be submitted, not the entire author list.
-
-Only the surname is required. Initials may be included, but are not recommended because the best linking results can be provided if initials are omitted. Author titles, roles and generation information should not be included. If the first author is an organization, the organization name should be submitted in the author element.
-
-cYear has a loose text model that can accommodate non-standard years such as year ranges such as "1998-1999". Note that years such as "1998a" or "1999b" should be deposited without the letter, e.g. "1998" or "1999", whenever possible.
-
-Citations that are "in press" should be submitted with as much information as is available.</xsd:documentation>
+			<xsd:documentation>citation is used to deposit each citation in the reference list of
+				the item for which the DOI is being deposited. The citations in the list will be run
+				by the CrossRef system as queries looking for the DOI of the articles being cited.
+				NOTE: Because the citation list is used to support forward linking, the more
+				information supplied in the citation the better the chance of finding a match. For
+				each citation that is deposited, one of four models should be used: 1. Parsed
+				journal data 2. Parsed book or conference data 3. DOI 4. Unstructured citation (not
+				yet supported for resolution) When parsed journal, book or conference data is
+				deposited, CrossRef will perform a lookup to find the DOI. Each citation must be
+				given a unique ID in the key attribute. It is recommended that this number be the
+				citation number if the reference list is numbered in the published article, or the
+				underlying XML ID if the reference list is name/date style in article. When
+				submitting a journal citation, it should include an issn, journal_title or both.
+				journal_title only is preferred over issn only. In addition the first author and
+				first_page number should be submitted. The first_page number is preferred, but for
+				those citations that are "in press", the author should be submitted. All elements
+				are optional, however for best linking results, as much information as is known
+				should be submitted. When submitting a book or conference citation, it should
+				include an isbn, series_title, volume_title, or any combination of these three
+				elements as may be available. All elements are optional, however for best linking
+				results, as much information as is known should be submitted. When a DOI is already
+				known for a citation, you may submit just the doi without additional information.
+				When parsed information is not available for a citation, or the citation is of a
+				type other than journal, book, or conference proceeding that is supported by
+				CrossRef (e.g. standard, patent, thesis, newspaper, personal communication, etc.),
+				it may be submitted using the unstructured_citation element. CrossRef is able to
+				process some unstructured citations. When submitting unstructured citations, it is
+				helpful, but not required to include all available face markup (e.g. bold, italic,
+				etc) as this will make possible future parsing of the unstructured citation more
+				accurate. In such cases, it is preferred, but not required, if the citation number
+				(when Vancouver style is used) be removed from the unparsed citation. This number
+				can be submitted using the key attribute Only the first author of a citation should
+				be submitted, not the entire author list. Only the surname is required. Initials may
+				be included, but are not recommended because the best linking results can be
+				provided if initials are omitted. Author titles, roles and generation information
+				should not be included. If the first author is an organization, the organization
+				name should be submitted in the author element. cYear has a loose text model that
+				can accommodate non-standard years such as year ranges such as "1998-1999". Note
+				that years such as "1998a" or "1999b" should be deposited without the letter, e.g.
+				"1998" or "1999", whenever possible. Citations that are "in press" should be
+				submitted with as much information as is available.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:complexContent>
@@ -2044,19 +2092,16 @@ Citations that are "in press" should be submitted with as much information as is
 
 	<xsd:attributeGroup name="citation_key.atts">
 		<xsd:annotation>
-			<xsd:documentation>citation_key allows the publisher to assign a unique ID to each citation that is deposited. It is recommended that this attribute be given the reference number if the publication uses reference numbers.
-
-For those publications that use name/date style citations, it is recommended that this attribute be used to indicate the sequential number of the citation in the reference list. However, some schema must be utilized as this is a required attribute. The system will use this key value to track the specific reference query and will return this value along with the DOI.</xsd:documentation>
+			<xsd:documentation>citation_key allows the publisher to assign a unique ID to each
+				citation that is deposited. It is recommended that this attribute be given the
+				reference number if the publication uses reference numbers. For those publications
+				that use name/date style citations, it is recommended that this attribute be used to
+				indicate the sequential number of the citation in the reference list. However, some
+				schema must be utilized as this is a required attribute. The system will use this
+				key value to track the specific reference query and will return this value along
+				with the DOI.</xsd:documentation>
 		</xsd:annotation>
-		<xsd:attribute name="key" use="required">
-			<xsd:simpleType>
-				<xsd:restriction base="xsd:string">
-					<xsd:minLength value="1"/>
-                                        <xsd:maxLength value="128"/>
-					<xsd:whiteSpace value="collapse" />
-				</xsd:restriction>
-			</xsd:simpleType>
-		</xsd:attribute>
+		<xsd:attribute name="key" type="xsd:string" use="required"/>
 	</xsd:attributeGroup>
 	<!-- =============================================================
 
@@ -2065,13 +2110,18 @@ For those publications that use name/date style citations, it is recommended tha
      ============================================================= -->
 	<xsd:element name="unstructured_citation">
 		<xsd:annotation>
-			<xsd:documentation>A citation that is to an item other than a journal article, book, or conference paper and cannot be structured with the CrossRef citation model. Also, it is used for a citation to a journal article, book, or conference paper for which the depositing publisher does not have structured information.
-
-unstructured_citation allows a publisher to deposit references for which no structural information is available. These may be journal, book, or conference references for which the supplier did not provide markup, or other types of references (e.g. standards, patents, etc) which are not supported by CrossRef.
-
-This structure permits publishers to deposit complete reference lists, without regard to the availability of markup, or the need to parse references beyond those types that CrossRef supports.
-
-CrossRef's ability to process unstructured citations is limited, for details see http://help.crossref.org/#ID38855</xsd:documentation>
+			<xsd:documentation>A citation that is to an item other than a journal article, book, or
+				conference paper and cannot be structured with the CrossRef citation model. Also, it
+				is used for a citation to a journal article, book, or conference paper for which the
+				depositing publisher does not have structured information. unstructured_citation
+				allows a publisher to deposit references for which no structural information is
+				available. These may be journal, book, or conference references for which the
+				supplier did not provide markup, or other types of references (e.g. standards,
+				patents, etc) which are not supported by CrossRef. This structure permits publishers
+				to deposit complete reference lists, without regard to the availability of markup,
+				or the need to parse references beyond those types that CrossRef supports.
+				CrossRef's ability to process unstructured citations is limited, for details see
+				http://help.crossref.org/#ID38855</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType mixed="true">
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
@@ -2082,47 +2132,60 @@ CrossRef's ability to process unstructured citations is limited, for details see
 	<xsd:element name="journal_title" type="xsd:string">
 		<xsd:annotation>
 			<xsd:documentation>Journal title in a citation. Only used in the citation element.
-
-Journal title in citation deposits is used for both abbreviated and spelled out journal names. No attribute is required to distinguish between name types. Both <journal_title>Proc. Natl. Acad. Sci. U.S.A.</journal_title> and <journal_title>Proceedings of the National Academy of Sciences of the United States of America</journal_title> are valid journal titles to use in this element.</xsd:documentation>
+				Journal title in citation deposits is used for both abbreviated and spelled out
+				journal names. No attribute is required to distinguish between name types. Both
+					<journal_title>Proc. Natl. Acad. Sci. U.S.A.</journal_title> and
+					<journal_title>Proceedings of the National Academy of Sciences of the United
+					States of America</journal_title> are valid journal titles to use in this
+				element.</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
 	<xsd:element name="series_title" type="xsd:string">
 		<xsd:annotation>
 			<xsd:documentation>Book series title in a citation. Only used in the citation element.
-
-series_title is an element for the deposit of book or conference series titles in citations without the hierarchy required by the series_metadata element. Note that face markup is not permitted when this element is deposited as part of a citation.</xsd:documentation>
+				series_title is an element for the deposit of book or conference series titles in
+				citations without the hierarchy required by the series_metadata element. Note that
+				face markup is not permitted when this element is deposited as part of a
+				citation.</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
 	<xsd:element name="volume_title" type="xsd:string">
 		<xsd:annotation>
 			<xsd:documentation>Book volume title in a citation. Only used in the citation element.
-
-volume_title is an element for the deposit of book or conference volume titles in citations without the hierarchy required by the titles element. Note that face markup is not permitted when this element is deposited as part of a citation.</xsd:documentation>
+				volume_title is an element for the deposit of book or conference volume titles in
+				citations without the hierarchy required by the titles element. Note that face
+				markup is not permitted when this element is deposited as part of a
+				citation.</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
 	<xsd:element name="author" type="xsd:string">
 		<xsd:annotation>
-			<xsd:documentation>First author in a citation. Only used in the citation element.
-
-The author element tags one author name in a citation without the hierarchy required by the contributors or person_name elements
-Only the first author should be deposited for each item. The author surname is required. Author initials may be added but are not recommended because queries work best when only the last name is provided. For example, the author "John Doe" can be deposited as <author>Doe</author> or
-<author>Doe J</author>, but the former style is recommended.
-If the author of a work is an organization rather than a person, the organization may be deposited as in: <author>World Health Organization</author></xsd:documentation>
+			<xsd:documentation>First author in a citation. Only used in the citation element. The
+				author element tags one author name in a citation without the hierarchy required by
+				the contributors or person_name elements Only the first author should be deposited
+				for each item. The author surname is required. Author initials may be added but are
+				not recommended because queries work best when only the last name is provided. For
+				example, the author "John Doe" can be deposited as <author>Doe</author> or
+					<author>Doe J</author>, but the former style is recommended. If the author of a
+				work is an organization rather than a person, the organization may be deposited as
+				in: <author>World Health Organization</author></xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
 	<xsd:element name="cYear" type="xsd:string">
 		<xsd:annotation>
-			<xsd:documentation>Year of publication in citation.
-
-Unlike the year element, cYear has a loose text model that can accommodate non-standard years such as year ranges such as "1998-1999".
-Note that years such as "1998a" or "1999b" should be deposited without the letter, e.g. "1998" or "1999". The letter is used for internal source document linking in name/date (Harvard) style documents rather than external cross reference linking to the original item.</xsd:documentation>
+			<xsd:documentation>Year of publication in citation. Unlike the year element, cYear has a
+				loose text model that can accommodate non-standard years such as year ranges such as
+				"1998-1999". Note that years such as "1998a" or "1999b" should be deposited without
+				the letter, e.g. "1998" or "1999". The letter is used for internal source document
+				linking in name/date (Harvard) style documents rather than external cross reference
+				linking to the original item.</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
 	<xsd:element name="article_title" type="xsd:string">
 		<xsd:annotation>
-			<xsd:documentation>Article title in a citation.
-
-Use care to remove face markup (such as italic applied to genus or species names) from article titles as this markup is not supported by CrossRef.</xsd:documentation>
+			<xsd:documentation>Article title in a citation. Use care to remove face markup (such as
+				italic applied to genus or species names) from article titles as this markup is not
+				supported by CrossRef.</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
 	<!-- =============================================================
@@ -2133,7 +2196,9 @@ Use care to remove face markup (such as italic applied to genus or species names
 
 	<xsd:element name="sa_component">
 		<xsd:annotation>
-			<xsd:documentation>The element for depositing a stand alone component. The parent DOI must already exist (created in an earlier deposit or via some other registration process).</xsd:documentation>
+			<xsd:documentation>The element for depositing a stand alone component. The parent DOI
+				must already exist (created in an earlier deposit or via some other registration
+				process).</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -2151,7 +2216,10 @@ Use care to remove face markup (such as italic applied to genus or species names
 	</xsd:element>
 	<xsd:element name="component_list">
 		<xsd:annotation>
-			<xsd:documentation>The wrapper element for including a group of components under a journal article, conference proceeding, book chapter, stand alone component, dissertation, technical report or working paper, standard, or database.</xsd:documentation>
+			<xsd:documentation>The wrapper element for including a group of components under a
+				journal article, conference proceeding, book chapter, stand alone component,
+				dissertation, technical report or working paper, standard, or
+				database.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -2161,13 +2229,18 @@ Use care to remove face markup (such as italic applied to genus or species names
 	</xsd:element>
 	<xsd:element name="component">
 		<xsd:annotation>
-			<xsd:documentation>A container element that allows registration of supplemental information for a journal article, book chapter, or conference paper such as figures, tables, videos, or data sets.
-
-Currently, the deposit of components primarily achieves only the first objective as the CrossRef system is not setup yet to support queries for components. The metadata associated with a component is intended to enable simple lookup searches of components in the future.
-
-When deposited as part of the metadata for a higher level work the parent DOI is implicitly known via the XML hierarchy. When deposited separately the DOI of the higher level work must be provided explicitly (see sa_component)
-
-All descriptive elements are optional allowing for the creation of simple anonymous DOIs. The 'parent_relation' attribute is mandatory and refers to the DOI described in the component's direct parent.</xsd:documentation>
+			<xsd:documentation>A container element that allows registration of supplemental
+				information for a journal article, book chapter, or conference paper such as
+				figures, tables, videos, or data sets. Currently, the deposit of components
+				primarily achieves only the first objective as the CrossRef system is not setup yet
+				to support queries for components. The metadata associated with a component is
+				intended to enable simple lookup searches of components in the future. When
+				deposited as part of the metadata for a higher level work the parent DOI is
+				implicitly known via the XML hierarchy. When deposited separately the DOI of the
+				higher level work must be provided explicitly (see sa_component) All descriptive
+				elements are optional allowing for the creation of simple anonymous DOIs. The
+				'parent_relation' attribute is mandatory and refers to the DOI described in the
+				component's direct parent.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -2176,6 +2249,7 @@ All descriptive elements are optional allowing for the creation of simple anonym
 				<xsd:element ref="publication_date" minOccurs="0"/>
 				<xsd:element ref="description" minOccurs="0"/>
 				<xsd:element ref="format" minOccurs="0"/>
+				<xsd:element ref="ai:program" minOccurs="0"/>
 				<xsd:choice>
 					<xsd:element ref="doi_data"/>
 					<xsd:element ref="doi"/>
@@ -2208,11 +2282,15 @@ All descriptive elements are optional allowing for the creation of simple anonym
 	</xsd:element>
 	<xsd:element name="unassigned_content">
 		<xsd:annotation>
-			<xsd:documentation>Normally book content that is published as a series is required to have a series title with an ISSN and a book title and/or a book volume number along with a book ISBN.  An exception is when book chapters are published on line first prior to being assigned to a specific book in which case only the series title (and ISSN) is known at time of DOI registration.  
-
-Element unassigned_content is used as a placeholder to force recognition of this condition and thus prevent accidental omission of book level title information. 
-
-When unassigned_content is present the system will allow omission of the ISBN. If unassigned_content is not present the system will require an ISBN for the book title.</xsd:documentation>
+			<xsd:documentation>Normally book content that is published as a series is required to
+				have a series title with an ISSN and a book title and/or a book volume number along
+				with a book ISBN. An exception is when book chapters are published on line first
+				prior to being assigned to a specific book in which case only the series title (and
+				ISSN) is known at time of DOI registration. Element unassigned_content is used as a
+				placeholder to force recognition of this condition and thus prevent accidental
+				omission of book level title information. When unassigned_content is present the
+				system will allow omission of the ISBN. If unassigned_content is not present the
+				system will require an ISBN for the book title.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:attribute name="type" use="required">
@@ -2226,7 +2304,10 @@ When unassigned_content is present the system will allow omission of the ISBN. I
 	</xsd:element>
 	<xsd:element name="description">
 		<xsd:annotation>
-			<xsd:documentation>A narrative description of a component (e.g. a figure caption or video description) which may be independent of any host document context. The description element may be present more than once to provide alternative language values.</xsd:documentation>
+			<xsd:documentation>A narrative description of a file (e.g. a figure caption or
+				video description) which may be independent of the host document context. The
+				description element may be present more than once to provide alternative language
+				values.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType mixed="true">
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
@@ -2243,9 +2324,13 @@ When unassigned_content is present the system will allow omission of the ISBN. I
 	</xsd:simpleType>
 	<xsd:element name="format">
 		<xsd:annotation>
-			<xsd:documentation>A narrative description of a component's file format and/or the file extension (for mime types refer to http://www.iana.org/assignments/media-types/)
-
-The format element may contain only the mime_type attribute, or in addition it may contain a narrative description of the file format. Be sure to use the narrative portion to description only the format of the component and not the actual content of the component (use description to describe the component's content).</xsd:documentation>
+			<xsd:documentation>A narrative description of a component's file format and/or the file
+				extension (for mime types refer to http://www.iana.org/assignments/media-types/) The
+				format element may contain only the mime_type attribute, or in addition it may
+				contain a narrative description of the file format. Be sure to use the narrative
+				portion to description only the format of the component and not the actual content
+				of the component (use description to describe the component's
+				content).</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:simpleContent>
@@ -2272,7 +2357,14 @@ The format element may contain only the mime_type attribute, or in addition it m
 				<xsd:element ref="crossmark_domains" minOccurs="0" maxOccurs="unbounded"/>
 				<xsd:element ref="crossmark_domain_exclusive" minOccurs="0">
 					<xsd:annotation>
-						<xsd:documentation>Required element. Some publishers encourage broad third party hosting of the publisher's content. Other publishers do not. And still others vary their policy depending on whether a particular article has been published under an OA policy or not. This boolean flag allows the publisher to indicate whether the CrossMarked content will only legitimately be updated on the CrossMark domain (true) or whether the publisher encourages updating the content on other sites as well (false).</xsd:documentation>
+						<xsd:documentation>Some publishers encourage broad third
+							party hosting of the publisher's content. Other publishers do not. And
+							still others vary their policy depending on whether a particular article
+							has been published under an OA policy or not. This boolean flag allows
+							the publisher to indicate whether the CrossMarked content will only
+							legitimately be updated on the CrossMark domain (true) or whether the
+							publisher encourages updating the content on other sites as well
+							(false).</xsd:documentation>
 					</xsd:annotation>
 				</xsd:element>
 				<xsd:sequence minOccurs="0">
@@ -2284,16 +2376,20 @@ The format element may contain only the mime_type attribute, or in addition it m
 	</xsd:element>
 	<xsd:element name="crossmark_policy" type="doi_t">
 		<xsd:annotation>
-			<xsd:documentation>A DOI which points to a publisher's CrossMark policy document. Publishers might have different policies for different publications.</xsd:documentation>
+			<xsd:documentation>A DOI which points to a publisher's CrossMark policy document.
+				Publishers might have different policies for different
+				publications.</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
 	<xsd:element name="crossmark_version" type="xsd:string"/>
 	<xsd:element name="crossmark_domains">
 		<xsd:annotation>
-			<xsd:documentation>Container element for crossmark_domain.
-			
-A list of domains where the publisher maintains updates and corrections to their content. Minimally, one of these should include the Internet domain name of the publisher's web site(s), but the publisher might also decide to include 3rd party aggregators (e.g. Ebsco, IngentaConnect) or archives with which the publisher has agreements to update the content
-			</xsd:documentation>
+			<xsd:documentation>Container element for crossmark_domain. A list of domains where the
+				publisher maintains updates and corrections to their content. Minimally, one of
+				these should include the Internet domain name of the publisher's web site(s), but
+				the publisher might also decide to include 3rd party aggregators (e.g. Ebsco,
+				IngentaConnect) or archives with which the publisher has agreements to update the
+				content </xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -2303,9 +2399,14 @@ A list of domains where the publisher maintains updates and corrections to their
 	</xsd:element>
 	<xsd:element name="crossmark_domain">
 		<xsd:annotation>
-			<xsd:documentation>This should be a simple Internet domain name or subdomain name (e.g. www.psychoceramics.org or psychoceramics.org). It is used to identify when a referring URL is coming from a CrossMark domain.
-
-A "crossmark_domain" is made up of two subelements; a "domain" and a "filter". The domain is required but the filter is optional and is only needed for use in situations where content from multiple publishers/publications is on the same host with the same domain name (e.g. an aggregator) and one needs to use the referrer's URI "path" to further determine whether the content in a crossmark domain.</xsd:documentation>
+			<xsd:documentation>This should be a simple Internet domain name or subdomain name (e.g.
+				www.psychoceramics.org or psychoceramics.org). It is used to identify when a
+				referring URL is coming from a CrossMark domain. A "crossmark_domain" is made up of
+				two subelements; a "domain" and a "filter". The domain is required but the filter is
+				optional and is only needed for use in situations where content from multiple
+				publishers/publications is on the same host with the same domain name (e.g. an
+				aggregator) and one needs to use the referrer's URI "path" to further determine
+				whether the content in a crossmark domain.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -2316,18 +2417,29 @@ A "crossmark_domain" is made up of two subelements; a "domain" and a "filter". T
 	</xsd:element>
 	<xsd:element name="domain" type="cm_domain">
 		<xsd:annotation>
-			<xsd:documentation>Required element. This should be a simple Internet domain name or subdomain name (e.g. www.psychoceramics.org or psychoceramics.org). It is used to identify when a referring URL is coming from a CrossMark domain.</xsd:documentation>
+			<xsd:documentation>Required element. This should be a simple Internet domain name or
+				subdomain name (e.g. www.psychoceramics.org or psychoceramics.org). It is used to
+				identify when a referring URL is coming from a CrossMark domain.</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
 	<xsd:element name="filter" type="xsd:string">
 		<xsd:annotation>
-			<xsd:documentation>Optional element. The filter element is used to disambiguate content in situations where multiple publishers share the same host (e.g. when on an aggregated platform). It should contain a substring of the path that can be used to uniquely identify a publisher's or publication's content. For instance, using the string "alpsp" here would help the CrossMark system distinguish between ALPSP publications on the ingentaconnect host and other publications on the same host.</xsd:documentation>
+			<xsd:documentation>Optional element. The filter element is used to disambiguate content
+				in situations where multiple publishers share the same host (e.g. when on an
+				aggregated platform). It should contain a substring of the path that can be used to
+				uniquely identify a publisher's or publication's content. For instance, using the
+				string "alpsp" here would help the CrossMark system distinguish between ALPSP
+				publications on the ingentaconnect host and other publications on the same
+				host.</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
 	<xsd:element name="crossmark_domain_exclusive" type="xsd:boolean"/>
 	<xsd:element name="updates">
 		<xsd:annotation>
-			<xsd:documentation>Optional element. A document might provide updates (e.g. corrections, clarifications, retractions) to several other documents. When this is the case, the DOIs of the documents that are being *updated* should be listed here.</xsd:documentation>
+			<xsd:documentation>Optional element. A document might provide updates (e.g. corrections,
+				clarifications, retractions) to several other documents. When this is the case, the
+				DOIs of the documents that are being *updated* should be listed
+				here.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -2337,42 +2449,56 @@ A "crossmark_domain" is made up of two subelements; a "domain" and a "filter". T
 	</xsd:element>
 	<xsd:element name="update">
 		<xsd:annotation>
-			<xsd:documentation>The DOI of the content being updated (e.g. corrected, retracted, etc.)
-
-In the CrossMark Terms and Conditions "updates" are defined as changes that are likely to "change the reader’s interpretation or crediting of the work." That is, *editorially significant* changes. "Updates" should not include minor changes to spelling, punctuation, formatting, etc.
-
-Attributes:
-
-label: Required attribute. This should be a human-readable version of the "type" attribute. This is what gets displayed in the CrossMark dialog when there is an update.
-
-type: Required attribute. This attribute should be used to give the machine-readable name of the update type. The human-readable version of the type should be but in the "label" attribute.
-						
-There are many "types" of updates. "Corrections, "clarifications", "retractions" and "withdrawals" are just a few of the better-known types. For these common types we recommend you use the values "correction", "clarification", "retraction" and "withdrawal" respectively as per your editorial policy.
-						
-However, different publishers sometimes have to support different, custom update types- for instance, "protocol amendments", "letters of concern", "comments", etc. The attribute supports custom types as well.
-
-date: The date of the update will be displayed in the CrossMark dialog and can help the researcher easily tell whther they are likley to have seen the update.</xsd:documentation>
+			<xsd:documentation>The DOI of the content being updated (e.g. corrected, retracted,
+				etc.) In the CrossMark Terms and Conditions "updates" are defined as changes that
+				are likely to "change the reader’s interpretation or crediting of the work." That
+				is, *editorially significant* changes. "Updates" should not include minor changes to
+				spelling, punctuation, formatting, etc. Attributes: label: Required attribute. This
+				should be a human-readable version of the "type" attribute. This is what gets
+				displayed in the CrossMark dialog when there is an update. type: Required attribute.
+				This attribute should be used to give the machine-readable name of the update type.
+				The human-readable version of the type should be but in the "label" attribute. There
+				are many "types" of updates. "Corrections, "clarifications", "retractions" and
+				"withdrawals" are just a few of the better-known types. For these common types we
+				recommend you use the values "correction", "clarification", "retraction" and
+				"withdrawal" respectively as per your editorial policy. However, different
+				publishers sometimes have to support different, custom update types- for instance,
+				"protocol amendments", "letters of concern", "comments", etc. The attribute supports
+				custom types as well. date: The date of the update will be displayed in the
+				CrossMark dialog and can help the researcher easily tell whther they are likley to
+				have seen the update.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType mixed="true">
 			<xsd:simpleContent>
 				<xsd:extension base="doi_t">
-					<xsd:attribute name="label" use="required" type="cm_update_label">
-						<xsd:annotation>
-							<xsd:documentation>Required attribute. This should be a human-readable version of the "type" attribute. This is what gets displayed in the CrossMark dialog when there is an update.</xsd:documentation>
-						</xsd:annotation>
-					</xsd:attribute>
 					<xsd:attribute name="type" use="required" type="cm_update_type">
 						<xsd:annotation>
-							<xsd:documentation>Required attribute. This attribute should be used to give the machine-readable name of the update type. The human-readable version of the type should be but in the "label" attribute.
-						
-There are many "types" of updates. "Corrections, "clarifications", "retractions" and "withdrawals" are just a few of the better-known types. For these common types we recommend you use the values "correction", "clarification", "retraction" and "withdrawal" respectively as per your editorial policy.
-						
-However, different publishers sometimes have to support different, custom update types- for instance, "protocol amendments", "letters of concern", "comments", etc. The attribute supports custom types as well.</xsd:documentation>
+							<xsd:documentation>Required attribute. This attribute should be used to
+								list the update type. Allowed update types are:
+									<ul>
+										<li>addendum</li>
+										<li>clarification</li>
+										<li>correction</li>
+										<li>corrigendum</li>
+										<li>erratum</li>
+										<li>expression_of_concern</li>
+										<li>new_edition</li>
+										<li>new_version</li>
+										<li>partial_retraction</li>
+										<li>removal</li>
+										<li>retraction</li>
+										<li>withdrawal</li>
+									</ul>
+							
+							</xsd:documentation>
 						</xsd:annotation>
 					</xsd:attribute>
 					<xsd:attribute name="date" use="required" type="xsd:date">
 						<xsd:annotation>
-							<xsd:documentation>Required attribute. The date of the update will be displayed in the CrossMark dialog and can help the researcher easily tell whther they are likley to have seen the update.</xsd:documentation>
+							<xsd:documentation>Required attribute. The date of the update will be
+								displayed in the CrossMark dialog and can help the researcher easily
+								tell whther they are likley to have seen the
+								update.</xsd:documentation>
 						</xsd:annotation>
 					</xsd:attribute>
 				</xsd:extension>
@@ -2381,40 +2507,59 @@ However, different publishers sometimes have to support different, custom update
 	</xsd:element>
 	<xsd:element name="custom_metadata">
 		<xsd:annotation>
-			<xsd:documentation>Optional element. Publishers are encouraged to provided any non-bibliographical metadata that they feel might help the researcher evaluate and make better use of the content that the Crossmark record refers to. For example, publishers might want to provide funding information, clinical trial numbers, information about the peer-review process or a summary of the publication history of the document.</xsd:documentation>
+			<xsd:documentation>Optional element. Publishers are encouraged to provided any
+				non-bibliographical metadata that they feel might help the researcher evaluate and
+				make better use of the content that the Crossmark record refers to. For example,
+				publishers might want to provide funding information, clinical trial numbers,
+				information about the peer-review process or a summary of the publication history of
+				the document.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:choice>
 				<xsd:sequence>
-					<xsd:element maxOccurs="unbounded" ref="assertion"/>
-					<xsd:element maxOccurs="1" ref="fr:program" minOccurs="0"/>
+					<xsd:element maxOccurs="unbounded" minOccurs="1" ref="assertion"/>
+					<xsd:element maxOccurs="1" ref="fr:program" minOccurs="0" />
 					<xsd:element maxOccurs="1" ref="ai:program" minOccurs="0"/>
+					<xsd:element maxOccurs="1" ref="ct:program" minOccurs="0"/>
 				</xsd:sequence>
 				<xsd:sequence>
-					<xsd:element maxOccurs="1" ref="fr:program"/>
+					<xsd:element maxOccurs="1" ref="fr:program" minOccurs="1"/>
 					<xsd:element maxOccurs="1" ref="ai:program" minOccurs="0"/>
+					<xsd:element maxOccurs="1" ref="ct:program" minOccurs="0"/>
 				</xsd:sequence>
-				<xsd:element ref="ai:program" minOccurs="0" maxOccurs="1"/>
+				<xsd:sequence>
+					<xsd:element maxOccurs="1" ref="ai:program" minOccurs="1"/>
+					<xsd:element maxOccurs="1" ref="ct:program" minOccurs="0"/>
+				</xsd:sequence>
+				<xsd:element ref="ct:program" minOccurs="1" maxOccurs="1"/>
 			</xsd:choice>
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="assertion">
 		<xsd:annotation>
-			<xsd:documentation>An assertion is a piece of custom, non-bibliographic metadata that the publisher is asserting about the content to which the CrossMark refers.
-
-assertion attributes:
-
-explanation: If the publisher wants to provide a further explanation of what the particular "assertion" means, they can link to such an explanation by providing an appropriate url on the "explanation" attribute.
-
-group_label: This is the human-readable form of the "group_name" attribute. This is what will be displayed in the group headings on the CrossMark metadata record dialog.
-
-group_name: Some assertions could be logically "grouped" together in the CrossMark dialog. For instance, if the publisher is recording several pieces of metadata related to funding sources (source name, percentage, grant number), they may want to make sure that these three assertions are grouped next to each-other in the CrossMark dialog. The group_name attribute is the machine-readable value that will be used for grouping such assertions.
-
-label: This is the human-readable version of the name attribute which will be displayed in the CrossMark dialog. If this attribute is missing, then the value of the assertion will *not* be displayed in the dialog. Publishers may want to "hide" assertions this way in cases where the assertion value is too large or too complex to display in the dialog, but where the assertion is nonetheless valuable enough to include in API queries and metadata dumps (e.g. detailed licensing terms).
-
-name: This is the machine-readable name of the assertion. Use the "label" attribute to provide a human-readable version of the name.
-
-order: The publisher may want to control the order in which assertions are displayed to the user in the CrossMark dialog. All assertions will be sorted by this element if it is present.</xsd:documentation>
+			<xsd:documentation>An assertion is a piece of custom, non-bibliographic metadata that
+				the publisher is asserting about the content to which the CrossMark refers.
+				assertion attributes: explanation: If the publisher wants to provide a further
+				explanation of what the particular "assertion" means, they can link to such an
+				explanation by providing an appropriate url on the "explanation" attribute.
+				group_label: This is the human-readable form of the "group_name" attribute. This is
+				what will be displayed in the group headings on the CrossMark metadata record
+				dialog. group_name: Some assertions could be logically "grouped" together in the
+				CrossMark dialog. For instance, if the publisher is recording several pieces of
+				metadata related to funding sources (source name, percentage, grant number), they
+				may want to make sure that these three assertions are grouped next to each-other in
+				the CrossMark dialog. The group_name attribute is the machine-readable value that
+				will be used for grouping such assertions. label: This is the human-readable version
+				of the name attribute which will be displayed in the CrossMark dialog. If this
+				attribute is missing, then the value of the assertion will *not* be displayed in the
+				dialog. Publishers may want to "hide" assertions this way in cases where the
+				assertion value is too large or too complex to display in the dialog, but where the
+				assertion is nonetheless valuable enough to include in API queries and metadata
+				dumps (e.g. detailed licensing terms). name: This is the machine-readable name of
+				the assertion. Use the "label" attribute to provide a human-readable version of the
+				name. order: The publisher may want to control the order in which assertions are
+				displayed to the user in the CrossMark dialog. All assertions will be sorted by this
+				element if it is present.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType mixed="true">
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
@@ -2422,32 +2567,55 @@ order: The publisher may want to control the order in which assertions are displ
 			</xsd:choice>
 			<xsd:attribute name="explanation" type="xsd:anyURI">
 				<xsd:annotation>
-					<xsd:documentation>Optional attribute. If the publisher wants to provide a further explanation of what the particular "assertion" means, they can link to such an explanation by providing an appropriate url on the "explanation" attribute.</xsd:documentation>
+					<xsd:documentation>Optional attribute. If the publisher wants to provide a
+						further explanation of what the particular "assertion" means, they can link
+						to such an explanation by providing an appropriate url on the "explanation"
+						attribute.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
 			<xsd:attribute name="group_label" type="cm_assertion_group_label">
 				<xsd:annotation>
-					<xsd:documentation>Optional attribute. This is the human-readable form of the "group_name" attribute. This is what will be displayed in the group headings on the CrossMark metadata record dialog.</xsd:documentation>
+					<xsd:documentation>Optional attribute. This is the human-readable form of the
+						"group_name" attribute. This is what will be displayed in the group headings
+						on the CrossMark metadata record dialog.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
 			<xsd:attribute name="group_name" type="cm_assertion_group_name">
 				<xsd:annotation>
-					<xsd:documentation>Optional attribute. Some assertions could be logically "grouped" together in the CrossMark dialog. For instance, if the publisher is recording several pieces of metadata related to funding sources (source name, percentage, grant number), they may want to make sure that these three assertions are grouped next to each-other in the CrossMark dialog. The group_name attribute is the machine-readable value that will be used for grouping such assertions.</xsd:documentation>
+					<xsd:documentation>Optional attribute. Some assertions could be logically
+						"grouped" together in the CrossMark dialog. For instance, if the publisher
+						is recording several pieces of metadata related to funding sources (source
+						name, percentage, grant number), they may want to make sure that these three
+						assertions are grouped next to each-other in the CrossMark dialog. The
+						group_name attribute is the machine-readable value that will be used for
+						grouping such assertions.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
 			<xsd:attribute name="label" type="cm_assertion_label">
 				<xsd:annotation>
-					<xsd:documentation>Optional attribute. This is the human-readable version of the name attribute which will be displayed in the CrossMark dialog. If this attribute is missing, then the value of the assertion will *not* be displayed in the dialog. Publishers may want to "hide" assertions this way in cases where the assertion value is too large or too complex to display in the dialog, but where the assertion is nonetheless valuable enough to include in API queries and metadata dumps (e.g. detailed licensing terms)</xsd:documentation>
+					<xsd:documentation>Optional attribute. This is the human-readable version of the
+						name attribute which will be displayed in the CrossMark dialog. If this
+						attribute is missing, then the value of the assertion will *not* be
+						displayed in the dialog. Publishers may want to "hide" assertions this way
+						in cases where the assertion value is too large or too complex to display in
+						the dialog, but where the assertion is nonetheless valuable enough to
+						include in API queries and metadata dumps (e.g. detailed licensing
+						terms)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
 			<xsd:attribute name="name" use="required" type="cm_assertion_name">
 				<xsd:annotation>
-					<xsd:documentation>Required attribute. This is the machine-readable name of the assertion. Use the "label" attribute to provide a human-readable version of the name.</xsd:documentation>
+					<xsd:documentation>Required attribute. This is the machine-readable name of the
+						assertion. Use the "label" attribute to provide a human-readable version of
+						the name.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
 			<xsd:attribute name="order" type="xsd:integer">
 				<xsd:annotation>
-					<xsd:documentation>Optional attribute. The publisher may want to control the order in which assertions are displayed to the user in the CrossMark dialog. All assertions will be sorted by this element if it is present.</xsd:documentation>
+					<xsd:documentation>Optional attribute. The publisher may want to control the
+						order in which assertions are displayed to the user in the CrossMark dialog.
+						All assertions will be sorted by this element if it is
+						present.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
 			<xsd:attribute name="href" type="xsd:anyURI">
@@ -2463,56 +2631,142 @@ order: The publisher may want to control the order in which assertions are displ
 		10. Elements for Standards
 		
 		============================================================= -->
-	<xsd:element name="standard_designator">
+	<xsd:element name="designators">
 		<xsd:annotation>
-			<xsd:documentation>A wrapper for designators or other primary identifiers for a standard.</xsd:documentation>
+			<xsd:documentation>A wrapper for designators or other primary identifiers for a
+				standard.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element ref="as_published" maxOccurs="unbounded" minOccurs="1"/>
-				<xsd:element ref="supersedes" maxOccurs="unbounded" minOccurs="0"/>
-				<xsd:element ref="adopted_from" maxOccurs="unbounded" minOccurs="0"/>
-				<xsd:element ref="revision_of" maxOccurs="unbounded" minOccurs="0"/>
+				<xsd:choice>
+					<xsd:sequence>
+						<xsd:choice>
+							<xsd:element ref="std_family_designator" minOccurs="0" maxOccurs="1"/>
+						<xsd:choice>
+					   	   <xsd:element ref="std_set_designator" minOccurs="0" maxOccurs="1"/>
+						   <xsd:element ref="std_undated_designator" minOccurs="0" maxOccurs="1"/>	
+						</xsd:choice>
+						</xsd:choice>
+					</xsd:sequence>
+					<xsd:sequence>
+				  		<xsd:element ref="std_as_published" minOccurs="0" maxOccurs="1"/>					
+						<xsd:element ref="std_alt_as_published" minOccurs="0" maxOccurs="unbounded"/>
+					</xsd:sequence>
+				</xsd:choice>
+				<xsd:element ref="std_supersedes" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="std_adopted_from" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="std_revision_of" minOccurs="0" maxOccurs="unbounded"/>
 			</xsd:sequence>
-			<xsd:attribute name="type" default="as_published">
-				<xsd:simpleType>
-					<xsd:list>
-						<xsd:simpleType>
-							<xsd:restriction base="xsd:NMTOKEN">
-								<xsd:enumeration value="as_published"/>
-								<xsd:enumeration value="supersedes"/>
-								<xsd:enumeration value="adopted_from"/>
-								<xsd:enumeration value="revision_of"/>
-							</xsd:restriction>
-						</xsd:simpleType>
-					</xsd:list>
-				</xsd:simpleType>
-			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
-	<xsd:element name="as_published">
+	<xsd:element name="std_as_published">
 		<xsd:annotation>
-			<xsd:documentation>Designator or other primary identifier for the standard being deposited. Required.</xsd:documentation>
+			<xsd:documentation>Designator or other primary identifier for the standard being
+				deposited. Required.</xsd:documentation>
 		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="std_designator_t">
+ 					   <xsd:attribute name="family" type="xsd:string"/>
+				   	   <xsd:attribute name="set" type="xsd:string"/>
+		               <xsd:attribute name="undated" type="xsd:string"/>	
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	
 	</xsd:element>
-	<xsd:element name="supersedes">
+
+	<xsd:element name="std_alt_as_published">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="std_designator_t">
+					<xsd:attribute name="reason" use="required">
+						<xsd:simpleType>
+							<xsd:list>
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:NMTOKEN">
+										<xsd:enumeration value="editorial"/>
+										<xsd:enumeration value="revision"/>
+										<xsd:enumeration value="reapproval"/>
+										<xsd:enumeration value="correction"/>
+										<xsd:enumeration value="amendment"/>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:list>
+						</xsd:simpleType>
+					</xsd:attribute>
+					<xsd:attribute name="approvedMonth" use="optional">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:positiveInteger">
+								<xsd:maxInclusive value="12"/>
+								<xsd:minInclusive value="01"/>
+								<xsd:totalDigits value="2"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:attribute>
+					<xsd:attribute name="approvedYear" use="required">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:gYear"/>
+						</xsd:simpleType>
+					</xsd:attribute>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="std_family_designator"  type="std_designator_t">
 		<xsd:annotation>
-			<xsd:documentation>Designator for standard replacing the standard being deposited.
+			<xsd:documentation>Provides for defining a DOI for a broad grouping of standards.
 			</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
-	<xsd:element name="adopted_from">
+	
+	<xsd:element name="std_set_designator">
+		<xsd:annotation>
+			<xsd:documentation>Provides for defining a DOI for a set of standards (sometimes know as truncated form).
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="std_designator_t">
+					<xsd:attribute name="family" type="xsd:string"/>
+ 				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+		
+	</xsd:element>
+	<xsd:element name="std_undated_designator">
+		<xsd:annotation>
+			<xsd:documentation>Provides for defining a DOI for a group of closely related standard documents (undated form is a stem for any dated form)
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="std_designator_t">
+					<xsd:attribute name="family" type="xsd:string"/>
+					<xsd:attribute name="set" type="xsd:string"/>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="std_supersedes"  type="std_designatorvalue_t">
+		<xsd:annotation>
+			<xsd:documentation>Designator for standard being replaced by the standard being deposited.
+			</xsd:documentation>
+		</xsd:annotation>
+	 </xsd:element>
+	<xsd:element name="std_adopted_from"  type="std_designatorvalue_t">
 		<xsd:annotation>
 			<xsd:documentation>Designator for standard from which the current deposit is adopted.
 			</xsd:documentation>
 		</xsd:annotation>
-	</xsd:element>
-	<xsd:element name="revision_of">
+ 	</xsd:element>
+	<xsd:element name="std_revision_of" type="std_designatorvalue_t">
 		<xsd:annotation>
-			<xsd:documentation>Designator for the previous revision of the standard being deposited.
+			<xsd:documentation>Designator for the previous revision of the standard being deposited. (note: use alt_as_published for revisions within designators having common stem)
 			</xsd:documentation>
 		</xsd:annotation>
-	</xsd:element>
+ 	</xsd:element>
 	<xsd:element name="standards_body">
 		<xsd:annotation>
 			<xsd:documentation>A wrapper for standards body information.</xsd:documentation>
@@ -2526,12 +2780,35 @@ order: The publisher may want to control the order in which assertions are displ
 	</xsd:element>
 	<xsd:element name="standards_body_name">
 		<xsd:annotation>
-			<xsd:documentation>Name of the standards organization / publisher. Required.</xsd:documentation>
+			<xsd:documentation>Name of the standards organization / publisher.
+				Required.</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
 	<xsd:element name="standards_body_acronym">
 		<xsd:annotation>
-			<xsd:documentation>Acronym for standards body. Will be used for query matching - required.</xsd:documentation>
+			<xsd:documentation>Acronym for standards body. Will be used for query matching -
+				required.</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
+
+
+	<xsd:simpleType name="std_designatorvalue_t">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="150"/>
+			<xsd:minLength value="2"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="std_designator_t">
+		<xsd:sequence>
+			<xsd:element ref="std_designator" minOccurs="1" maxOccurs="1"/>
+			<xsd:element ref="std_alt_script" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="std_variant_form" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="std_designator" type="std_designatorvalue_t"/>
+	<xsd:element name="std_alt_script" type="std_designatorvalue_t"/>
+	<xsd:element name="std_variant_form" type="std_designatorvalue_t"/>
+
 </xsd:schema>

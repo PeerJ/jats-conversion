@@ -9,7 +9,7 @@
 
                           Introduction
 
-     Crossref Schema Version 4.4.1
+     Crossref Schema Version 4.4.0
 
      Developed for Crossref (www.crossref.org) by
 
@@ -43,8 +43,7 @@
 
     Changes record version, author initials, date, and comments
   
-  4.4.1 10/12/2017 added scn_policy tag family
-  4.4.1 10/5/2017  added peer review report content
+  4.3.0 - 4.4.1 (PDF) 3/1/18 update language.atts
   4.4.0 (PDF) 7/26/2017 added elocation-id as citation element   
   4.4.0 (PDF) 7/13/2017 added application/vnd.ms-asf as mime type  
   4.3.1-4.4.0 (PDF) 6/5/2017 change ORCID to accept both http and https
@@ -190,11 +189,6 @@
 					<xsd:enumeration value="author"/>
 					<xsd:enumeration value="editor"/>
 					<xsd:enumeration value="chair"/>
-					<xsd:enumeration value="reviewer"/>
-					<xsd:enumeration value="review-assistant"/>
-					<xsd:enumeration value="stats-reviewer"/>
-					<xsd:enumeration value="reviewer-external"/>
-					<xsd:enumeration value="reader"/>
 					<xsd:enumeration value="translator"/>
 				</xsd:restriction>
 			</xsd:simpleType>
@@ -213,17 +207,21 @@
 	</xsd:attributeGroup>
 	<xsd:attributeGroup name="language.atts">
 		<xsd:annotation>
-			<xsd:documentation>language attributes are based on iso 639</xsd:documentation>
+			<xsd:documentation>Language attributes are based on ISO 639</xsd:documentation>
 		</xsd:annotation>
 		<xsd:attribute name="language" use="optional">
 			<xsd:simpleType>
 				<xsd:restriction base="xsd:NMTOKEN">
 					<xsd:enumeration value="aa"/>
 					<xsd:enumeration value="ab"/>
+					<xsd:enumeration value="ae"/>
 					<xsd:enumeration value="af"/>
+					<xsd:enumeration value="ak"/>
 					<xsd:enumeration value="am"/>
+					<xsd:enumeration value="an"/>
 					<xsd:enumeration value="ar"/>
 					<xsd:enumeration value="as"/>
+					<xsd:enumeration value="av"/>
 					<xsd:enumeration value="ay"/>
 					<xsd:enumeration value="az"/>
 					<xsd:enumeration value="ba"/>
@@ -231,16 +229,25 @@
 					<xsd:enumeration value="bg"/>
 					<xsd:enumeration value="bh"/>
 					<xsd:enumeration value="bi"/>
+					<xsd:enumeration value="bm"/>
 					<xsd:enumeration value="bn"/>
 					<xsd:enumeration value="bo"/>
 					<xsd:enumeration value="br"/>
+					<xsd:enumeration value="bs"/>
 					<xsd:enumeration value="ca"/>
+					<xsd:enumeration value="ce"/>
+					<xsd:enumeration value="ch"/>
 					<xsd:enumeration value="co"/>
+					<xsd:enumeration value="cr"/>
 					<xsd:enumeration value="cs"/>
+					<xsd:enumeration value="cu"/>
+					<xsd:enumeration value="cv"/>
 					<xsd:enumeration value="cy"/>
 					<xsd:enumeration value="da"/>
 					<xsd:enumeration value="de"/>
+					<xsd:enumeration value="dv"/>
 					<xsd:enumeration value="dz"/>
+					<xsd:enumeration value="ee"/>
 					<xsd:enumeration value="el"/>
 					<xsd:enumeration value="en"/>
 					<xsd:enumeration value="eo"/>
@@ -248,6 +255,7 @@
 					<xsd:enumeration value="et"/>
 					<xsd:enumeration value="eu"/>
 					<xsd:enumeration value="fa"/>
+					<xsd:enumeration value="ff"/>
 					<xsd:enumeration value="fi"/>
 					<xsd:enumeration value="fj"/>
 					<xsd:enumeration value="fo"/>
@@ -258,52 +266,80 @@
 					<xsd:enumeration value="gl"/>
 					<xsd:enumeration value="gn"/>
 					<xsd:enumeration value="gu"/>
+					<xsd:enumeration value="gv"/>
 					<xsd:enumeration value="ha"/>
 					<xsd:enumeration value="he"/>
 					<xsd:enumeration value="hi"/>
+					<xsd:enumeration value="ho"/>
 					<xsd:enumeration value="hr"/>
+					<xsd:enumeration value="ht"/>
 					<xsd:enumeration value="hu"/>
 					<xsd:enumeration value="hy"/>
+					<xsd:enumeration value="hz"/>
 					<xsd:enumeration value="ia"/>
 					<xsd:enumeration value="id"/>
 					<xsd:enumeration value="ie"/>
+					<xsd:enumeration value="ig"/>
+					<xsd:enumeration value="ii"/>
 					<xsd:enumeration value="ik"/>
+					<xsd:enumeration value="io"/>
 					<xsd:enumeration value="is"/>
 					<xsd:enumeration value="it"/>
+					<xsd:enumeration value="iu"/>
 					<xsd:enumeration value="ja"/>
 					<xsd:enumeration value="jw"/>
 					<xsd:enumeration value="ka"/>
+					<xsd:enumeration value="kg"/>
+					<xsd:enumeration value="ki"/>
+					<xsd:enumeration value="kj"/>
 					<xsd:enumeration value="kk"/>
 					<xsd:enumeration value="kl"/>
 					<xsd:enumeration value="km"/>
 					<xsd:enumeration value="kn"/>
 					<xsd:enumeration value="ko"/>
+					<xsd:enumeration value="kr"/>
 					<xsd:enumeration value="ks"/>
 					<xsd:enumeration value="ku"/>
+					<xsd:enumeration value="kv"/>
+					<xsd:enumeration value="kw"/>
 					<xsd:enumeration value="ky"/>
 					<xsd:enumeration value="la"/>
+					<xsd:enumeration value="lb"/>
+					<xsd:enumeration value="lg"/>
+					<xsd:enumeration value="li"/>
 					<xsd:enumeration value="ln"/>
 					<xsd:enumeration value="lo"/>
 					<xsd:enumeration value="lt"/>
+					<xsd:enumeration value="lu"/>
 					<xsd:enumeration value="lv"/>
 					<xsd:enumeration value="mg"/>
+					<xsd:enumeration value="mu"/>
 					<xsd:enumeration value="mi"/>
 					<xsd:enumeration value="mk"/>
 					<xsd:enumeration value="ml"/>
 					<xsd:enumeration value="mn"/>
-					<xsd:enumeration value="mo"/>
 					<xsd:enumeration value="mr"/>
 					<xsd:enumeration value="ms"/>
 					<xsd:enumeration value="mt"/>
 					<xsd:enumeration value="my"/>
 					<xsd:enumeration value="na"/>
+					<xsd:enumeration value="nb"/>
+					<xsd:enumeration value="nd"/>
 					<xsd:enumeration value="ne"/>
+					<xsd:enumeration value="ng"/>
 					<xsd:enumeration value="nl"/>
+					<xsd:enumeration value="nn"/>
 					<xsd:enumeration value="no"/>
+					<xsd:enumeration value="nr"/>
+					<xsd:enumeration value="nv"/>
+					<xsd:enumeration value="ny"/>
 					<xsd:enumeration value="oc"/>
+					<xsd:enumeration value="oj"/>
 					<xsd:enumeration value="om"/>
 					<xsd:enumeration value="or"/>
+					<xsd:enumeration value="os"/>
 					<xsd:enumeration value="pa"/>
+					<xsd:enumeration value="pi"/>
 					<xsd:enumeration value="pl"/>
 					<xsd:enumeration value="ps"/>
 					<xsd:enumeration value="pt"/>
@@ -314,7 +350,9 @@
 					<xsd:enumeration value="ru"/>
 					<xsd:enumeration value="rw"/>
 					<xsd:enumeration value="sa"/>
+					<xsd:enumeration value="sc"/>
 					<xsd:enumeration value="sd"/>
+					<xsd:enumeration value="se"/>
 					<xsd:enumeration value="sg"/>
 					<xsd:enumeration value="si"/>
 					<xsd:enumeration value="sk"/>
@@ -342,17 +380,21 @@
 					<xsd:enumeration value="ts"/>
 					<xsd:enumeration value="tt"/>
 					<xsd:enumeration value="tw"/>
+					<xsd:enumeration value="ty"/>
+					<xsd:enumeration value="ug"/>
 					<xsd:enumeration value="uk"/>
 					<xsd:enumeration value="ur"/>
 					<xsd:enumeration value="uz"/>
+					<xsd:enumeration value="ve"/>
 					<xsd:enumeration value="vi"/>
 					<xsd:enumeration value="vo"/>
+					<xsd:enumeration value="wa"/>
 					<xsd:enumeration value="wo"/>
 					<xsd:enumeration value="xh"/>
 					<xsd:enumeration value="yi"/>
 					<xsd:enumeration value="yo"/>
+					<xsd:enumeration value="za"/>
 					<xsd:enumeration value="zh"/>
-					<xsd:enumeration value="zu"/>
 				</xsd:restriction>
 			</xsd:simpleType>
 		</xsd:attribute>
@@ -416,6 +458,9 @@
 					<xsd:enumeration value="application/ipp"/>
 					<xsd:enumeration value="application/ocsp-request"/>
 					<xsd:enumeration value="application/ocsp-response"/>
+                                        <xsd:enumeration value="application/vnd.wolfram.mathematica"/>
+                                        <xsd:enumeration value="application/vnd.wolfram.mathematica.package"/>
+                                        <xsd:enumeration value="application/vnd.wolfram.player"/>
 					<xsd:enumeration value="application/vnd.oasis.opendocument.text"/>
 					<xsd:enumeration value="application/vnd.oasis.opendocument.presentation"/>
 					<xsd:enumeration value="application/vnd.oasis.opendocument.spreadsheet"/>
@@ -631,7 +676,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			</xsd:restriction>
 		</xsd:simpleType>
 	</xsd:element>
-	<xsd:element name="timestamp" type="xsd:double">
+	<xsd:element name="timestamp" type="xsd:nonNegativeInteger">
 		<xsd:annotation>
 			<xsd:documentation>Indicates version of a batch file instance or DOI. timestamp is used
 				to uniquely identify batch files and DOI values when a DOI has been updated one or
@@ -937,244 +982,254 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			<xsd:attribute name="country" use="optional">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:NMTOKEN">
-						<xsd:enumeration value="AX"/>
-						<xsd:enumeration value="AF"/>
-						<xsd:enumeration value="AL"/>
-						<xsd:enumeration value="DZ"/>
-						<xsd:enumeration value="AS"/>
 						<xsd:enumeration value="AD"/>
-						<xsd:enumeration value="AO"/>
-						<xsd:enumeration value="AI"/>
-						<xsd:enumeration value="AQ"/>
+						<xsd:enumeration value="AE"/>
+						<xsd:enumeration value="AF"/>
 						<xsd:enumeration value="AG"/>
-						<xsd:enumeration value="AR"/>
+						<xsd:enumeration value="AI"/>
+						<xsd:enumeration value="AL"/>
 						<xsd:enumeration value="AM"/>
-						<xsd:enumeration value="AW"/>
-						<xsd:enumeration value="AU"/>
+						<xsd:enumeration value="AN"/>
+						<xsd:enumeration value="AO"/>
+						<xsd:enumeration value="AQ"/>
+						<xsd:enumeration value="AR"/>
+						<xsd:enumeration value="AS"/>
 						<xsd:enumeration value="AT"/>
+						<xsd:enumeration value="AU"/>
+						<xsd:enumeration value="AW"/>
+						<xsd:enumeration value="AX"/>
 						<xsd:enumeration value="AZ"/>
-						<xsd:enumeration value="BS"/>
-						<xsd:enumeration value="BH"/>
-						<xsd:enumeration value="BD"/>
-						<xsd:enumeration value="BB"/>
-						<xsd:enumeration value="BY"/>
-						<xsd:enumeration value="BE"/>
-						<xsd:enumeration value="BZ"/>
-						<xsd:enumeration value="BJ"/>
-						<xsd:enumeration value="BM"/>
-						<xsd:enumeration value="BT"/>
-						<xsd:enumeration value="BO"/>
 						<xsd:enumeration value="BA"/>
-						<xsd:enumeration value="BW"/>
-						<xsd:enumeration value="BV"/>
-						<xsd:enumeration value="BR"/>
-						<xsd:enumeration value="IO"/>
-						<xsd:enumeration value="BN"/>
-						<xsd:enumeration value="BG"/>
+						<xsd:enumeration value="BB"/>
+						<xsd:enumeration value="BD"/>
+						<xsd:enumeration value="BE"/>
 						<xsd:enumeration value="BF"/>
+						<xsd:enumeration value="BG"/>
+						<xsd:enumeration value="BH"/>
 						<xsd:enumeration value="BI"/>
-						<xsd:enumeration value="KH"/>
-						<xsd:enumeration value="CM"/>
+						<xsd:enumeration value="BJ"/>
+						<xsd:enumeration value="BL"/>
+						<xsd:enumeration value="BM"/>
+						<xsd:enumeration value="BN"/>
+						<xsd:enumeration value="BO"/>
+						<xsd:enumeration value="BQ"/>
+						<xsd:enumeration value="BR"/>
+						<xsd:enumeration value="BS"/>
+						<xsd:enumeration value="BT"/>
+						<xsd:enumeration value="BV"/>
+						<xsd:enumeration value="BW"/>
+						<xsd:enumeration value="BY"/>
+						<xsd:enumeration value="BZ"/>
 						<xsd:enumeration value="CA"/>
-						<xsd:enumeration value="CV"/>
-						<xsd:enumeration value="KY"/>
-						<xsd:enumeration value="CF"/>
-						<xsd:enumeration value="TD"/>
-						<xsd:enumeration value="CL"/>
-						<xsd:enumeration value="CN"/>
-						<xsd:enumeration value="CX"/>
 						<xsd:enumeration value="CC"/>
-						<xsd:enumeration value="CO"/>
-						<xsd:enumeration value="KM"/>
 						<xsd:enumeration value="CD"/>
+						<xsd:enumeration value="CF"/>
 						<xsd:enumeration value="CG"/>
-						<xsd:enumeration value="CK"/>
-						<xsd:enumeration value="CR"/>
+						<xsd:enumeration value="CH"/>
 						<xsd:enumeration value="CI"/>
-						<xsd:enumeration value="HR"/>
+						<xsd:enumeration value="CK"/>
+						<xsd:enumeration value="CL"/>
+						<xsd:enumeration value="CM"/>
+						<xsd:enumeration value="CN"/>
+						<xsd:enumeration value="CO"/>
+						<xsd:enumeration value="CR"/>
+						<xsd:enumeration value="CS"/>
 						<xsd:enumeration value="CU"/>
+						<xsd:enumeration value="CV"/>
+						<xsd:enumeration value="CX"/>
 						<xsd:enumeration value="CY"/>
 						<xsd:enumeration value="CZ"/>
-						<xsd:enumeration value="DK"/>
+						<xsd:enumeration value="DE"/>
 						<xsd:enumeration value="DJ"/>
+						<xsd:enumeration value="DK"/>
 						<xsd:enumeration value="DM"/>
 						<xsd:enumeration value="DO"/>
+						<xsd:enumeration value="DZ"/>
 						<xsd:enumeration value="EC"/>
-						<xsd:enumeration value="EG"/>
-						<xsd:enumeration value="SV"/>
-						<xsd:enumeration value="GQ"/>
-						<xsd:enumeration value="ER"/>
 						<xsd:enumeration value="EE"/>
+						<xsd:enumeration value="EG"/>
+						<xsd:enumeration value="EH"/>
+						<xsd:enumeration value="ER"/>
+						<xsd:enumeration value="ES"/>
 						<xsd:enumeration value="ET"/>
-						<xsd:enumeration value="FK"/>
-						<xsd:enumeration value="FO"/>
-						<xsd:enumeration value="FJ"/>
 						<xsd:enumeration value="FI"/>
+						<xsd:enumeration value="FJ"/>
+						<xsd:enumeration value="FK"/>
+						<xsd:enumeration value="FM"/>
+						<xsd:enumeration value="FO"/>
 						<xsd:enumeration value="FR"/>
-						<xsd:enumeration value="GF"/>
-						<xsd:enumeration value="PF"/>
-						<xsd:enumeration value="TF"/>
 						<xsd:enumeration value="GA"/>
-						<xsd:enumeration value="GM"/>
+						<xsd:enumeration value="GB"/>
+						<xsd:enumeration value="GD"/>
 						<xsd:enumeration value="GE"/>
-						<xsd:enumeration value="DE"/>
+						<xsd:enumeration value="GF"/>
+						<xsd:enumeration value="GG"/>
 						<xsd:enumeration value="GH"/>
 						<xsd:enumeration value="GI"/>
-						<xsd:enumeration value="GR"/>
 						<xsd:enumeration value="GL"/>
-						<xsd:enumeration value="GD"/>
-						<xsd:enumeration value="GP"/>
-						<xsd:enumeration value="GU"/>
-						<xsd:enumeration value="GT"/>
+						<xsd:enumeration value="GM"/>
 						<xsd:enumeration value="GN"/>
+						<xsd:enumeration value="GP"/>
+						<xsd:enumeration value="GQ"/>
+						<xsd:enumeration value="GR"/>
+						<xsd:enumeration value="GS"/>
+						<xsd:enumeration value="GT"/>
+						<xsd:enumeration value="GU"/>
 						<xsd:enumeration value="GW"/>
 						<xsd:enumeration value="GY"/>
-						<xsd:enumeration value="HT"/>
+						<xsd:enumeration value="HK"/>
 						<xsd:enumeration value="HM"/>
 						<xsd:enumeration value="HN"/>
-						<xsd:enumeration value="HK"/>
+						<xsd:enumeration value="HR"/>
+						<xsd:enumeration value="HT"/>
 						<xsd:enumeration value="HU"/>
-						<xsd:enumeration value="IS"/>
-						<xsd:enumeration value="IN"/>
 						<xsd:enumeration value="ID"/>
-						<xsd:enumeration value="IR"/>
-						<xsd:enumeration value="IQ"/>
 						<xsd:enumeration value="IE"/>
 						<xsd:enumeration value="IL"/>
+						<xsd:enumeration value="IM"/>
+						<xsd:enumeration value="IN"/>
+						<xsd:enumeration value="IO"/>
+						<xsd:enumeration value="IQ"/>
+						<xsd:enumeration value="IR"/>
+						<xsd:enumeration value="IS"/>
 						<xsd:enumeration value="IT"/>
+						<xsd:enumeration value="JE"/>
 						<xsd:enumeration value="JM"/>
-						<xsd:enumeration value="JP"/>
 						<xsd:enumeration value="JO"/>
-						<xsd:enumeration value="KZ"/>
+						<xsd:enumeration value="JP"/>
 						<xsd:enumeration value="KE"/>
+						<xsd:enumeration value="KG"/>
+						<xsd:enumeration value="KH"/>
 						<xsd:enumeration value="KI"/>
+						<xsd:enumeration value="KM"/>
+						<xsd:enumeration value="KN"/>
 						<xsd:enumeration value="KP"/>
 						<xsd:enumeration value="KR"/>
 						<xsd:enumeration value="KW"/>
-						<xsd:enumeration value="KG"/>
+						<xsd:enumeration value="KY"/>
+						<xsd:enumeration value="KZ"/>
 						<xsd:enumeration value="LA"/>
-						<xsd:enumeration value="LV"/>
 						<xsd:enumeration value="LB"/>
-						<xsd:enumeration value="LS"/>
-						<xsd:enumeration value="LR"/>
-						<xsd:enumeration value="LY"/>
+						<xsd:enumeration value="LC"/>
 						<xsd:enumeration value="LI"/>
+						<xsd:enumeration value="LK"/>
+						<xsd:enumeration value="LR"/>
+						<xsd:enumeration value="LS"/>
 						<xsd:enumeration value="LT"/>
 						<xsd:enumeration value="LU"/>
-						<xsd:enumeration value="MO"/>
-						<xsd:enumeration value="MK"/>
+						<xsd:enumeration value="LV"/>
+						<xsd:enumeration value="LY"/>
+						<xsd:enumeration value="MA"/>
+						<xsd:enumeration value="MC"/>
+						<xsd:enumeration value="MD"/>
+						<xsd:enumeration value="ME"/>
+						<xsd:enumeration value="MF"/>
 						<xsd:enumeration value="MG"/>
-						<xsd:enumeration value="MW"/>
-						<xsd:enumeration value="MY"/>
-						<xsd:enumeration value="MV"/>
-						<xsd:enumeration value="ML"/>
-						<xsd:enumeration value="MT"/>
 						<xsd:enumeration value="MH"/>
+						<xsd:enumeration value="MK"/>
+						<xsd:enumeration value="ML"/>
+						<xsd:enumeration value="MM"/>
+						<xsd:enumeration value="MN"/>
+						<xsd:enumeration value="MO"/>
+						<xsd:enumeration value="MP"/>
 						<xsd:enumeration value="MQ"/>
 						<xsd:enumeration value="MR"/>
-						<xsd:enumeration value="MU"/>
-						<xsd:enumeration value="YT"/>
-						<xsd:enumeration value="MX"/>
-						<xsd:enumeration value="FM"/>
-						<xsd:enumeration value="MD"/>
-						<xsd:enumeration value="MC"/>
-						<xsd:enumeration value="MN"/>
 						<xsd:enumeration value="MS"/>
-						<xsd:enumeration value="MA"/>
+						<xsd:enumeration value="MT"/>
+						<xsd:enumeration value="MU"/>
+						<xsd:enumeration value="MV"/>
+						<xsd:enumeration value="MW"/>
+						<xsd:enumeration value="MX"/>
+						<xsd:enumeration value="MY"/>
 						<xsd:enumeration value="MZ"/>
-						<xsd:enumeration value="MM"/>
 						<xsd:enumeration value="NA"/>
-						<xsd:enumeration value="NR"/>
-						<xsd:enumeration value="NP"/>
-						<xsd:enumeration value="NL"/>
-						<xsd:enumeration value="AN"/>
 						<xsd:enumeration value="NC"/>
-						<xsd:enumeration value="NZ"/>
-						<xsd:enumeration value="NI"/>
 						<xsd:enumeration value="NE"/>
-						<xsd:enumeration value="NG"/>
-						<xsd:enumeration value="NU"/>
 						<xsd:enumeration value="NF"/>
-						<xsd:enumeration value="MP"/>
+						<xsd:enumeration value="NG"/>
+						<xsd:enumeration value="NI"/>
+						<xsd:enumeration value="NL"/>
 						<xsd:enumeration value="NO"/>
+						<xsd:enumeration value="NP"/>
+						<xsd:enumeration value="NR"/>
+						<xsd:enumeration value="NU"/>
+						<xsd:enumeration value="NZ"/>
 						<xsd:enumeration value="OM"/>
-						<xsd:enumeration value="PK"/>
-						<xsd:enumeration value="PW"/>
-						<xsd:enumeration value="PS"/>
 						<xsd:enumeration value="PA"/>
-						<xsd:enumeration value="PG"/>
-						<xsd:enumeration value="PY"/>
 						<xsd:enumeration value="PE"/>
+						<xsd:enumeration value="PF"/>
+						<xsd:enumeration value="PG"/>
 						<xsd:enumeration value="PH"/>
-						<xsd:enumeration value="PN"/>
+						<xsd:enumeration value="PK"/>
 						<xsd:enumeration value="PL"/>
-						<xsd:enumeration value="PT"/>
+						<xsd:enumeration value="PM"/>
+						<xsd:enumeration value="PN"/>
 						<xsd:enumeration value="PR"/>
+						<xsd:enumeration value="PS"/>
+						<xsd:enumeration value="PT"/>
+						<xsd:enumeration value="PW"/>
+						<xsd:enumeration value="PY"/>
 						<xsd:enumeration value="QA"/>
 						<xsd:enumeration value="RE"/>
 						<xsd:enumeration value="RO"/>
+						<xsd:enumeration value="RS"/>
 						<xsd:enumeration value="RU"/>
 						<xsd:enumeration value="RW"/>
-						<xsd:enumeration value="SH"/>
-						<xsd:enumeration value="KN"/>
-						<xsd:enumeration value="LC"/>
-						<xsd:enumeration value="PM"/>
-						<xsd:enumeration value="VC"/>
-						<xsd:enumeration value="WS"/>
-						<xsd:enumeration value="SM"/>
-						<xsd:enumeration value="ST"/>
 						<xsd:enumeration value="SA"/>
-						<xsd:enumeration value="SN"/>
-						<xsd:enumeration value="CS"/>
-						<xsd:enumeration value="SC"/>
-						<xsd:enumeration value="SL"/>
-						<xsd:enumeration value="SG"/>
-						<xsd:enumeration value="SK"/>
-						<xsd:enumeration value="SI"/>
 						<xsd:enumeration value="SB"/>
-						<xsd:enumeration value="SO"/>
-						<xsd:enumeration value="ZA"/>
-						<xsd:enumeration value="GS"/>
-						<xsd:enumeration value="ES"/>
-						<xsd:enumeration value="LK"/>
+						<xsd:enumeration value="SC"/>
 						<xsd:enumeration value="SD"/>
-						<xsd:enumeration value="SR"/>
-						<xsd:enumeration value="SJ"/>
-						<xsd:enumeration value="SZ"/>
 						<xsd:enumeration value="SE"/>
-						<xsd:enumeration value="CH"/>
+						<xsd:enumeration value="SG"/>
+						<xsd:enumeration value="SH"/>
+						<xsd:enumeration value="SI"/>
+						<xsd:enumeration value="SJ"/>
+						<xsd:enumeration value="SK"/>
+						<xsd:enumeration value="SL"/>
+						<xsd:enumeration value="SM"/>
+						<xsd:enumeration value="SN"/>
+						<xsd:enumeration value="SO"/>
+						<xsd:enumeration value="SR"/>
+						<xsd:enumeration value="SS"/>
+						<xsd:enumeration value="ST"/>
+						<xsd:enumeration value="SV"/>
+						<xsd:enumeration value="SX"/>
 						<xsd:enumeration value="SY"/>
-						<xsd:enumeration value="TW"/>
-						<xsd:enumeration value="TJ"/>
-						<xsd:enumeration value="TZ"/>
-						<xsd:enumeration value="TH"/>
-						<xsd:enumeration value="TL"/>
-						<xsd:enumeration value="TG"/>
-						<xsd:enumeration value="TK"/>
-						<xsd:enumeration value="TO"/>
-						<xsd:enumeration value="TT"/>
-						<xsd:enumeration value="TN"/>
-						<xsd:enumeration value="TR"/>
-						<xsd:enumeration value="TM"/>
+						<xsd:enumeration value="SZ"/>
 						<xsd:enumeration value="TC"/>
+						<xsd:enumeration value="TD"/>
+						<xsd:enumeration value="TF"/>
+						<xsd:enumeration value="TG"/>
+						<xsd:enumeration value="TH"/>
+						<xsd:enumeration value="TJ"/>
+						<xsd:enumeration value="TK"/>
+						<xsd:enumeration value="TL"/>
+						<xsd:enumeration value="TM"/>
+						<xsd:enumeration value="TN"/>
+						<xsd:enumeration value="TO"/>
+						<xsd:enumeration value="TR"/>
+						<xsd:enumeration value="TT"/>
 						<xsd:enumeration value="TV"/>
-						<xsd:enumeration value="UG"/>
+						<xsd:enumeration value="TW"/>
+						<xsd:enumeration value="TZ"/>
 						<xsd:enumeration value="UA"/>
-						<xsd:enumeration value="AE"/>
-						<xsd:enumeration value="GB"/>
-						<xsd:enumeration value="US"/>
+						<xsd:enumeration value="UG"/>
 						<xsd:enumeration value="UM"/>
+						<xsd:enumeration value="US"/>
 						<xsd:enumeration value="UY"/>
 						<xsd:enumeration value="UZ"/>
-						<xsd:enumeration value="VU"/>
 						<xsd:enumeration value="VA"/>
+						<xsd:enumeration value="VC"/>
 						<xsd:enumeration value="VE"/>
-						<xsd:enumeration value="VN"/>
 						<xsd:enumeration value="VG"/>
 						<xsd:enumeration value="VI"/>
+						<xsd:enumeration value="VN"/>
+						<xsd:enumeration value="VU"/>
 						<xsd:enumeration value="WF"/>
-						<xsd:enumeration value="EH"/>
+						<xsd:enumeration value="WS"/>
 						<xsd:enumeration value="YE"/>
+						<xsd:enumeration value="YT"/>
+						<xsd:enumeration value="ZA"/>
 						<xsd:enumeration value="ZM"/>
 						<xsd:enumeration value="ZW"/>
 					</xsd:restriction>
@@ -1214,7 +1269,6 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 				<xsd:choice maxOccurs="unbounded">
 					<xsd:element ref="organization"/>
 					<xsd:element ref="person_name"/>
-					<xsd:element ref="anonymous"/>		
 				</xsd:choice>
 			</xsd:sequence>
 		</xsd:complexType>
@@ -1268,21 +1322,6 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			<xsd:attributeGroup ref="contributor.atts"/>
 		</xsd:complexType>
 	</xsd:element>
-
-
-	<xsd:element name="anonymous">
-		<xsd:annotation>
-			<xsd:documentation> </xsd:documentation>
-		</xsd:annotation>
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element ref="affiliation" minOccurs="0" maxOccurs="5"/>
-			</xsd:sequence>
-			<xsd:attributeGroup ref="contributor.atts"/>
-		</xsd:complexType>
-	</xsd:element>	
-	
-	
 	<xsd:element name="given_name">
 		<xsd:annotation>
 			<xsd:documentation>A contributor's given name. The given_name, combined with surname,
@@ -1658,20 +1697,6 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 		</xsd:attribute>
 	</xsd:complexType>
 	
-	
-	<xsd:element name="review_date">
-		<xsd:annotation>
-			<xsd:documentation>The date a review was published to a repository.</xsd:documentation>
-		</xsd:annotation>
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element ref="month"  />
-				<xsd:element ref="day"/>
-				<xsd:element ref="year"/>
-			</xsd:sequence>
-		</xsd:complexType>
-	</xsd:element>
-	
 	<!--============   end various dates ========== -->
 	
 	<xsd:element name="pages">
@@ -2010,7 +2035,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			<xsd:element ref="volume" minOccurs="0"/>
 			<xsd:element ref="issue" minOccurs="0"/>
 			<xsd:element ref="first_page" minOccurs="0"/>
-<!--         uncomment when cs3391 is complete
+<!--  unomment when cs3391 is complete
 			<xsd:element ref="elocation_id" minOccurs="0"/>
 -->
 			<xsd:element ref="cYear" minOccurs="0"/>
@@ -2149,11 +2174,11 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 				supported by CrossRef.</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
-    <xsd:element name="elocation_id" type="xsd:string">
-         <xsd:annotation>
-            <xsd:documentation>article number or other page identifier for an article that does not have page numbers, used typically for electronic-only journals.</xsd:documentation>
-         </xsd:annotation>
-    </xsd:element>
+        <xsd:element name="elocation_id" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>article number or other page identifier for an article that does not have page numbers, used typically for electronic-only journals.</xsd:documentation>
+            </xsd:annotation>
+        </xsd:element>
 	<!-- =============================================================
 
            8. Elements used to deposit components
@@ -2294,25 +2319,6 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			<xsd:attributeGroup ref="language.atts"/>
 		</xsd:complexType>
 	</xsd:element>
-
-	<xsd:element name="competing_interest_statement">
-		<xsd:annotation>
-			<xsd:documentation>Pubsliher's custom statement for their intent to publish content for which a pre-register DOI has been created</xsd:documentation>
-		</xsd:annotation>
-		<xsd:complexType mixed="true">
-			<xsd:choice minOccurs="0" maxOccurs="unbounded">
-				<xsd:group ref="face_markup"/>
-			</xsd:choice>
-			<xsd:attributeGroup ref="language.atts"/>
-		</xsd:complexType>
-	</xsd:element>
-
-	<xsd:element name="running_number" type="xsd:string">
-			<xsd:annotation>
-				<xsd:documentation>Running numbers to specify the various reports (ex: RC1 to RC4) </xsd:documentation>
-			</xsd:annotation>
-	</xsd:element>	
-	
 	
 	<xsd:simpleType name="format_t">
 		<xsd:restriction base="xsd:string">
@@ -2320,7 +2326,6 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			<xsd:minLength value="0"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
 	<xsd:element name="format">
 		<xsd:annotation>
 			<xsd:documentation>A narrative description of a component's file format and/or the file
@@ -2810,42 +2815,4 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 	<xsd:element name="std_alt_script" type="std_designatorvalue_t"/>
 	<xsd:element name="std_variant_form" type="std_designatorvalue_t"/>
 
-<!-- ================SCN policy  cs-3495 ============================= -->
-	
-	<xsd:element name="scn_policies">
-		<xsd:annotation>
-			<xsd:documentation>A wrapper for Scholalry Sharing Network policy information</xsd:documentation>
-		</xsd:annotation>
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element ref="scn_policy_set" minOccurs="0" maxOccurs="unbounded"/>
- 			</xsd:sequence>
-		</xsd:complexType>
-	</xsd:element>
-	
-	
-	<xsd:element name="scn_policy_set">
-		<xsd:annotation>
-			<xsd:documentation>A group of related SCn policies</xsd:documentation>
-		</xsd:annotation>
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element ref="scn_policy_ref" minOccurs="0" maxOccurs="unbounded"/>
-			</xsd:sequence>
-			<xsd:attribute name="start_date" type="xsd:date" use="optional"/>
-		</xsd:complexType>
-	</xsd:element>
-	
-	<xsd:element name="scn_policy_ref">
-		<xsd:annotation>
-			<xsd:documentation>An individual SCN policy</xsd:documentation>
-		</xsd:annotation>
-		<xsd:complexType>
-			<xsd:simpleContent>
-				<xsd:extension base="resource_t"/> 				
-			</xsd:simpleContent>
-		</xsd:complexType>
-	</xsd:element>
- <!-- ================= -->       
-	
 </xsd:schema>

@@ -2,22 +2,16 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:fr="http://www.crossref.org/fundref.xsd"
 	xmlns:ct="http://www.crossref.org/clinicaltrials.xsd"
-    xmlns:ai="http://www.crossref.org/AccessIndicators.xsd"
+	xmlns:ai="http://www.crossref.org/AccessIndicators.xsd"
 	xmlns:mml="http://www.w3.org/1998/Math/MathML">
 
 	<!-- =============================================================
 
                           Introduction
 
-     Crossref Schema Version 4.4.1
+     Crossref Schema Version 4.4.2
 
-     Developed for Crossref (www.crossref.org) by
-
-     Inera Incorporated
-     Newton, MA 02460
-     http://www.inera.com
-     email: info@inera.com
-
+     Originally developed for Crossref (www.crossref.org) by Inera Incorporated (http://www.inera.com)
 
      ============================================================= -->
 	<!-- =============================================================
@@ -42,10 +36,12 @@
                           Change History
 
     Changes record version, author initials, date, and comments
-  
+    
+  4.4.2 add link-header, link_header_relationship option to collection to support endpoints (currently dul)
+  4.4.2 add pending publication    
+  4.3.0 - 4.4.1 (PDF) 3/1/18 update language.atts
   4.4.1 10/12/2017 added scn_policy tag family
   4.4.1 10/5/2017  added peer review report content
-  4.4.0 (PDF) 7/26/2017 added elocation-id as citation element   
   4.4.0 (PDF) 7/13/2017 added application/vnd.ms-asf as mime type  
   4.3.1-4.4.0 (PDF) 6/5/2017 change ORCID to accept both http and https
   4.3.0 - 4.4.0 (PDF) 5/15/2017 make crossmark_domains optional, limit crossmark_domain_exclusive to 1
@@ -136,10 +132,10 @@
 
     3.0.0 (BDR) 10/17/03 (CSK) 12/23/03
 
-    Created with elements from CrossRef Deposit Schema 2.0.6 based
+    Created with elements from Crossref Deposit Schema 2.0.6 based
     largely on elements from section 1, 2 3, and 8 of that parent file.
     This file now serves as an included module to the parent file
-    and other schemas from CrossRef.
+    and other schemas from Crossref.
 
      ============================================================= -->
 	<!-- =============================================================
@@ -148,12 +144,15 @@
 
      ============================================================= -->
 
-	<xsd:import namespace="http://www.w3.org/1998/Math/MathML" schemaLocation="http://www.w3.org/Math/XMLSchema/mathml3/mathml3.xsd"/>
+	<xsd:import namespace="http://www.w3.org/1998/Math/MathML"
+		schemaLocation="http://www.w3.org/Math/XMLSchema/mathml3/mathml3.xsd"/>
 	<xsd:import namespace="http://www.crossref.org/fundref.xsd" schemaLocation="fundref.xsd"/>
-	<xsd:import namespace="http://www.crossref.org/AccessIndicators.xsd" schemaLocation="AccessIndicators.xsd"/>
-	<xsd:import namespace="http://www.crossref.org/clinicaltrials.xsd" schemaLocation="clinicaltrials.xsd"/>
-	
-	
+	<xsd:import namespace="http://www.crossref.org/AccessIndicators.xsd"
+		schemaLocation="AccessIndicators.xsd"/>
+	<xsd:import namespace="http://www.crossref.org/clinicaltrials.xsd"
+		schemaLocation="clinicaltrials.xsd"/>
+
+
 	<xsd:attributeGroup name="publication_type.atts">
 		<xsd:attribute name="publication_type" default="full_text">
 			<xsd:simpleType>
@@ -213,17 +212,21 @@
 	</xsd:attributeGroup>
 	<xsd:attributeGroup name="language.atts">
 		<xsd:annotation>
-			<xsd:documentation>language attributes are based on iso 639</xsd:documentation>
+			<xsd:documentation>Language attributes are based on ISO 639</xsd:documentation>
 		</xsd:annotation>
 		<xsd:attribute name="language" use="optional">
 			<xsd:simpleType>
 				<xsd:restriction base="xsd:NMTOKEN">
 					<xsd:enumeration value="aa"/>
 					<xsd:enumeration value="ab"/>
+					<xsd:enumeration value="ae"/>
 					<xsd:enumeration value="af"/>
+					<xsd:enumeration value="ak"/>
 					<xsd:enumeration value="am"/>
+					<xsd:enumeration value="an"/>
 					<xsd:enumeration value="ar"/>
 					<xsd:enumeration value="as"/>
+					<xsd:enumeration value="av"/>
 					<xsd:enumeration value="ay"/>
 					<xsd:enumeration value="az"/>
 					<xsd:enumeration value="ba"/>
@@ -231,16 +234,25 @@
 					<xsd:enumeration value="bg"/>
 					<xsd:enumeration value="bh"/>
 					<xsd:enumeration value="bi"/>
+					<xsd:enumeration value="bm"/>
 					<xsd:enumeration value="bn"/>
 					<xsd:enumeration value="bo"/>
 					<xsd:enumeration value="br"/>
+					<xsd:enumeration value="bs"/>
 					<xsd:enumeration value="ca"/>
+					<xsd:enumeration value="ce"/>
+					<xsd:enumeration value="ch"/>
 					<xsd:enumeration value="co"/>
+					<xsd:enumeration value="cr"/>
 					<xsd:enumeration value="cs"/>
+					<xsd:enumeration value="cu"/>
+					<xsd:enumeration value="cv"/>
 					<xsd:enumeration value="cy"/>
 					<xsd:enumeration value="da"/>
 					<xsd:enumeration value="de"/>
+					<xsd:enumeration value="dv"/>
 					<xsd:enumeration value="dz"/>
+					<xsd:enumeration value="ee"/>
 					<xsd:enumeration value="el"/>
 					<xsd:enumeration value="en"/>
 					<xsd:enumeration value="eo"/>
@@ -248,6 +260,7 @@
 					<xsd:enumeration value="et"/>
 					<xsd:enumeration value="eu"/>
 					<xsd:enumeration value="fa"/>
+					<xsd:enumeration value="ff"/>
 					<xsd:enumeration value="fi"/>
 					<xsd:enumeration value="fj"/>
 					<xsd:enumeration value="fo"/>
@@ -258,52 +271,80 @@
 					<xsd:enumeration value="gl"/>
 					<xsd:enumeration value="gn"/>
 					<xsd:enumeration value="gu"/>
+					<xsd:enumeration value="gv"/>
 					<xsd:enumeration value="ha"/>
 					<xsd:enumeration value="he"/>
 					<xsd:enumeration value="hi"/>
+					<xsd:enumeration value="ho"/>
 					<xsd:enumeration value="hr"/>
+					<xsd:enumeration value="ht"/>
 					<xsd:enumeration value="hu"/>
 					<xsd:enumeration value="hy"/>
+					<xsd:enumeration value="hz"/>
 					<xsd:enumeration value="ia"/>
 					<xsd:enumeration value="id"/>
 					<xsd:enumeration value="ie"/>
+					<xsd:enumeration value="ig"/>
+					<xsd:enumeration value="ii"/>
 					<xsd:enumeration value="ik"/>
+					<xsd:enumeration value="io"/>
 					<xsd:enumeration value="is"/>
 					<xsd:enumeration value="it"/>
+					<xsd:enumeration value="iu"/>
 					<xsd:enumeration value="ja"/>
 					<xsd:enumeration value="jw"/>
 					<xsd:enumeration value="ka"/>
+					<xsd:enumeration value="kg"/>
+					<xsd:enumeration value="ki"/>
+					<xsd:enumeration value="kj"/>
 					<xsd:enumeration value="kk"/>
 					<xsd:enumeration value="kl"/>
 					<xsd:enumeration value="km"/>
 					<xsd:enumeration value="kn"/>
 					<xsd:enumeration value="ko"/>
+					<xsd:enumeration value="kr"/>
 					<xsd:enumeration value="ks"/>
 					<xsd:enumeration value="ku"/>
+					<xsd:enumeration value="kv"/>
+					<xsd:enumeration value="kw"/>
 					<xsd:enumeration value="ky"/>
 					<xsd:enumeration value="la"/>
+					<xsd:enumeration value="lb"/>
+					<xsd:enumeration value="lg"/>
+					<xsd:enumeration value="li"/>
 					<xsd:enumeration value="ln"/>
 					<xsd:enumeration value="lo"/>
 					<xsd:enumeration value="lt"/>
+					<xsd:enumeration value="lu"/>
 					<xsd:enumeration value="lv"/>
 					<xsd:enumeration value="mg"/>
+					<xsd:enumeration value="mu"/>
 					<xsd:enumeration value="mi"/>
 					<xsd:enumeration value="mk"/>
 					<xsd:enumeration value="ml"/>
 					<xsd:enumeration value="mn"/>
-					<xsd:enumeration value="mo"/>
 					<xsd:enumeration value="mr"/>
 					<xsd:enumeration value="ms"/>
 					<xsd:enumeration value="mt"/>
 					<xsd:enumeration value="my"/>
 					<xsd:enumeration value="na"/>
+					<xsd:enumeration value="nb"/>
+					<xsd:enumeration value="nd"/>
 					<xsd:enumeration value="ne"/>
+					<xsd:enumeration value="ng"/>
 					<xsd:enumeration value="nl"/>
+					<xsd:enumeration value="nn"/>
 					<xsd:enumeration value="no"/>
+					<xsd:enumeration value="nr"/>
+					<xsd:enumeration value="nv"/>
+					<xsd:enumeration value="ny"/>
 					<xsd:enumeration value="oc"/>
+					<xsd:enumeration value="oj"/>
 					<xsd:enumeration value="om"/>
 					<xsd:enumeration value="or"/>
+					<xsd:enumeration value="os"/>
 					<xsd:enumeration value="pa"/>
+					<xsd:enumeration value="pi"/>
 					<xsd:enumeration value="pl"/>
 					<xsd:enumeration value="ps"/>
 					<xsd:enumeration value="pt"/>
@@ -314,7 +355,9 @@
 					<xsd:enumeration value="ru"/>
 					<xsd:enumeration value="rw"/>
 					<xsd:enumeration value="sa"/>
+					<xsd:enumeration value="sc"/>
 					<xsd:enumeration value="sd"/>
+					<xsd:enumeration value="se"/>
 					<xsd:enumeration value="sg"/>
 					<xsd:enumeration value="si"/>
 					<xsd:enumeration value="sk"/>
@@ -342,40 +385,43 @@
 					<xsd:enumeration value="ts"/>
 					<xsd:enumeration value="tt"/>
 					<xsd:enumeration value="tw"/>
+					<xsd:enumeration value="ty"/>
+					<xsd:enumeration value="ug"/>
 					<xsd:enumeration value="uk"/>
 					<xsd:enumeration value="ur"/>
 					<xsd:enumeration value="uz"/>
+					<xsd:enumeration value="ve"/>
 					<xsd:enumeration value="vi"/>
 					<xsd:enumeration value="vo"/>
+					<xsd:enumeration value="wa"/>
 					<xsd:enumeration value="wo"/>
 					<xsd:enumeration value="xh"/>
 					<xsd:enumeration value="yi"/>
 					<xsd:enumeration value="yo"/>
+					<xsd:enumeration value="za"/>
 					<xsd:enumeration value="zh"/>
-					<xsd:enumeration value="zu"/>
 				</xsd:restriction>
 			</xsd:simpleType>
 		</xsd:attribute>
 	</xsd:attributeGroup>
 	<xsd:attributeGroup name="mime_type.atts">
 		<xsd:annotation>
-			<xsd:documentation>Mime types for component format. For mime types refer to
-				http://www.iana.org/assignments/media-types/</xsd:documentation>
+			<xsd:documentation>Media / mime types for component format. For mime types refer to http://www.iana.org/assignments/media-types/</xsd:documentation>
 		</xsd:annotation>
 		<xsd:attribute name="mime_type" use="optional">
 			<xsd:simpleType>
 				<xsd:restriction base="xsd:string">
-                                    <xsd:enumeration value="text/css"/>
-                                    <xsd:enumeration value="text/csv"/>
-                                    <xsd:enumeration value="text/enriched"/>
-                                    <xsd:enumeration value="text/html"/>
-                                    <xsd:enumeration value="text/plain"/>
-                                    <xsd:enumeration value="text/richtext"/>
-                                    <xsd:enumeration value="text/rtf"/>
-                                    <xsd:enumeration value="text/sgml"/>
-                                    <xsd:enumeration value="text/tab-separated-values"/>
-                                    <xsd:enumeration value="text/xml"/>
-                                    <xsd:enumeration value="text/xml-external-parsed-entity"/>
+					<xsd:enumeration value="text/css"/>
+					<xsd:enumeration value="text/csv"/>
+					<xsd:enumeration value="text/enriched"/>
+					<xsd:enumeration value="text/html"/>
+					<xsd:enumeration value="text/plain"/>
+					<xsd:enumeration value="text/richtext"/>
+					<xsd:enumeration value="text/rtf"/>
+					<xsd:enumeration value="text/sgml"/>
+					<xsd:enumeration value="text/tab-separated-values"/>
+					<xsd:enumeration value="text/xml"/>
+					<xsd:enumeration value="text/xml-external-parsed-entity"/>
 					<xsd:enumeration value="multipart/mixed"/>
 					<xsd:enumeration value="multipart/alternative"/>
 					<xsd:enumeration value="multipart/digest"/>
@@ -416,15 +462,21 @@
 					<xsd:enumeration value="application/ipp"/>
 					<xsd:enumeration value="application/ocsp-request"/>
 					<xsd:enumeration value="application/ocsp-response"/>
+					<xsd:enumeration value="application/vnd.wolfram.mathematica"/>
+					<xsd:enumeration value="application/vnd.wolfram.mathematica.package"/>
+					<xsd:enumeration value="application/vnd.wolfram.player"/>
 					<xsd:enumeration value="application/vnd.oasis.opendocument.text"/>
 					<xsd:enumeration value="application/vnd.oasis.opendocument.presentation"/>
 					<xsd:enumeration value="application/vnd.oasis.opendocument.spreadsheet"/>
-                                        <xsd:enumeration value="application/vnd.ms-asf"/>
+					<xsd:enumeration value="application/vnd.ms-asf"/>
 					<xsd:enumeration value="application/vnd.ms-excel"/>
 					<xsd:enumeration value="application/vnd.ms-powerpoint"/>
-					<xsd:enumeration value="application/vnd.openxmlformats-officedocument.presentationml.presentation"/>
-					<xsd:enumeration value="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
-					<xsd:enumeration value="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+					<xsd:enumeration
+						value="application/vnd.openxmlformats-officedocument.presentationml.presentation"/>
+					<xsd:enumeration
+						value="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+					<xsd:enumeration
+						value="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
 					<xsd:enumeration value="application/epub+zip"/>
 					<xsd:enumeration value="application/regex.clinical-trial-number"/>
 					<xsd:enumeration value="image/fits"/>
@@ -499,40 +551,21 @@
 					<xsd:enumeration value="chemical/x-vmd"/>
 					<xsd:enumeration value="chemical/x-xtel"/>
 					<xsd:enumeration value="chemical/x-xyz"/>
+					<xsd:enumeration value="model/stl"/>
+					<xsd:enumeration value="model/x.stl-binary"/>
+					<xsd:enumeration value="model/x.stl-ascii"/>
 					<xsd:enumeration value="model/vrml"/>
 					<xsd:enumeration value="audio/x-wav"/>
 					<xsd:enumeration value="video/x-flv"/>
-                                        <xsd:enumeration value="Data/spcvue.htm"/>
+					<xsd:enumeration value="Data/spcvue.htm"/>
 				</xsd:restriction>
 			</xsd:simpleType>
 		</xsd:attribute>
 	</xsd:attributeGroup>
-	<xsd:attributeGroup name="metadata_distribution_opts.att">
-		<xsd:annotation>
-			<xsd:documentation>Use to flag metadata for distribution. "query" is the default and
-				follows current protocol - bibliographic metadata is distributed to anyone in a
-				query response, bulk distribution is only allowed per CMS rules. "any" allows bulk
-				distribution of metadata to anyone using OAI-PMH queries.</xsd:documentation>
-		</xsd:annotation>
-		<xsd:attribute name="metadata_distribution_opts" use="optional" default="query">
-			<xsd:simpleType>
-				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="any"/>
-					<xsd:enumeration value="query"/>
-				</xsd:restriction>
-			</xsd:simpleType>
-		</xsd:attribute>
-	</xsd:attributeGroup>
+	
 	<xsd:attributeGroup name="reference_distribution_opts.att">
 		<xsd:annotation>
-			<xsd:documentation>Use to flag references for distribution. "none" is the default and
-				follows current protocol - references are only distributed to everyone if the prefix
-				level permission is set, otherwise reference distribution is limited to the DOI
-				owner. Setting the value to "query" releases references to anyone making a query
-				request (this overrides any established prefix level permission). Value "any" allows
-				bulk distribution to anyone (using a CrossRef query account) using the OAI-PMH
-				protocol, and also releases references to anyone making a query
-				request.</xsd:documentation>
+			<xsd:documentation>Use to flag references for distribution. "none" is the default and follows current protocol - references are only distributed to everyone if the prefix level permission is set, otherwise reference distribution is limited to the DOI owner. Setting the value to "query" releases references to anyone making a query request (this overrides any established prefix level permission). Value "any" allows bulk distribution to anyone (using a Crossref query account) using the OAI-PMH protocol, and also releases references to anyone making a query request.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:attribute name="reference_distribution_opts" use="optional" default="none">
 			<xsd:simpleType>
@@ -556,18 +589,15 @@
 	</xsd:complexType>
 	<xsd:group name="face_markup">
 		<xsd:annotation>
-			<xsd:documentation>The following are basic data types for face markup. Face markup that
-				appears in the title, subtitle, and original_language_title elements should be
-				retained when depositing metadata. Face markup in other elements (e.g. small caps in
-				author names) must be dropped. Face markup support includes bold (b), italic (i),
-				underline (u), over-line (ovl), superscript (sup), subscript (sub), small caps
-				(scp), and typewriter text (tt). See https://support.crossref.org/hc/en-us/articles/214532023
-				
+			<xsd:documentation>The following are basic data types for face markup. Face markup that appears in the title, subtitle, and original_language_title elements should be retained when depositing metadata. Face markup in other elements (e.g. small caps in author names) must be dropped. Face markup support includes bold (b), italic (i), underline (u), over-line (ovl), superscript (sup), subscript (sub), small caps (scp), and typewriter text (tt). See https://support.crossref.org/hc/en-us/articles/214532023 
+
 MathML may also be included using the 'mml' namespace prefix.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:choice>
 			<xsd:element ref="b"/>
 			<xsd:element ref="i"/>
+			<xsd:element ref="em"/>
+			<xsd:element ref="strong"/>
 			<xsd:element ref="u"/>
 			<xsd:element ref="ovl"/>
 			<xsd:element ref="sup"/>
@@ -580,6 +610,8 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 	</xsd:group>
 	<xsd:element name="b" type="xrefFaces"/>
 	<xsd:element name="i" type="xrefFaces"/>
+	<xsd:element name="em" type="xrefFaces"/>
+	<xsd:element name="strong" type="xrefFaces"/>
 	<xsd:element name="u" type="xrefFaces"/>
 	<xsd:element name="ovl" type="xrefFaces"/>
 	<xsd:element name="sup" type="xrefFaces"/>
@@ -587,6 +619,19 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 	<xsd:element name="scp" type="xrefFaces"/>
 	<xsd:element name="tt" type="xrefFaces"/>
 	<xsd:element name="font" type="xrefFaces"/>
+	<xsd:element name="a">
+		<xsd:annotation>
+			<xsd:documentation> content is "Inline" except that anchors shouldn't be nested
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType mixed="true">
+			<xsd:simpleContent>
+				<xsd:extension base="xsd:string">
+					<xsd:attribute name="href" type="xsd:anyURI"/>
+				</xsd:extension>
+			</xsd:simpleContent>
+		</xsd:complexType>
+	</xsd:element>
 	<xsd:simpleType name="xrefYear">
 		<xsd:annotation>
 			<xsd:documentation>The following are basic data types for date
@@ -621,8 +666,8 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 		<xsd:annotation>
 			<xsd:documentation>Publisher generated ID that uniquely identifies the DOI submission
 				batch. It will be used as a reference in error messages sent by the MDDB, and can be
-				used for submission tracking. The publisher must insure that this number is unique
-				for every submission to CrossRef. </xsd:documentation>
+				used for submission tracking. The publisher must ensure that this number is unique
+				for every submission to Crossref. </xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -631,16 +676,16 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			</xsd:restriction>
 		</xsd:simpleType>
 	</xsd:element>
-	<xsd:element name="timestamp" type="xsd:double">
+	<xsd:element name="timestamp" type="xsd:nonNegativeInteger">
 		<xsd:annotation>
 			<xsd:documentation>Indicates version of a batch file instance or DOI. timestamp is used
 				to uniquely identify batch files and DOI values when a DOI has been updated one or
 				more times. timestamp is an integer representation of date and time that serves as a
-				version number for the record that is being deposited. Because CrossRef uses it as a
+				version number for the record that is being deposited. Because Crossref uses it as a
 				version number, the format need not follow any public standard and therefore the
 				publisher can determine the internal format. The schema format is a double of at
 				least 64 bits, insuring that a fully qualified date/time stamp of 19 digits can be
-				submitted. When depositing data, CrossRef will check to see if a DOI has already
+				submitted. When depositing data, Crossref will check to see if a DOI has already
 				been deposited for the specific doi value. If the newer data carries a time stamp
 				value that is equal to or greater than the old data based on a strict numeric
 				comparison, the new data will replace the old data. If the new data value is less
@@ -653,7 +698,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 	<xsd:element name="depositor">
 		<xsd:annotation>
 			<xsd:documentation>Information about the organization submitting DOI metadata to
-				CrossRef</xsd:documentation>
+				Crossref</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -666,7 +711,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 		<xsd:annotation>
 			<xsd:documentation>Name of the organization registering the DOIs. The name placed in
 				this element should match the name under which a depositing organization has
-				registered with CrossRef.</xsd:documentation>
+				registered with Crossref.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -828,7 +873,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 	<xsd:element name="resource">
 		<xsd:annotation>
 			<xsd:documentation>The element that contains a URI associated with a DOI. URLs are
-				referred to as resources in the 2.0 CrossRef schema because they can be any valid
+				referred to as resources in the 2.0 Crossref schema because they can be any valid
 				URI. Cases of single-resolution (i.e. one DOI with a single corresponding URI)
 				should be tagged with a doi/resource pair in doi_data. Only one resource is allowed
 				per doi_data, the exception being resource elements within a collection element.
@@ -867,13 +912,13 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 				element. A collection must be qualified by a property attibute or the
 				multi-resolution attribute. property attributes: list-based: uses an interim page
 				and presents the list of items to the user (via Multiple Resolution) country-based:
-				proxy picks destination based on the country code of the user's location (this
-				option is not currently active, contact support@crossref.org for more info)
+				proxy picks destination based on the country code of the user's location
 				crawler-based: identifies resource to be crawled by the specified crawlers.
 				text-mining: identifies resource to be used for text and data mining unspecified:
 				identifies resource with unspecified usage syndication: identifies resource to be
-				used for syndication The multi-resolution attribute may be used to lock or unlock
-				DOIs for multiple resolution. </xsd:documentation>
+				used for syndication link-header: identifies resource to be used as an endpoint The
+				multi-resolution attribute may be used to lock or unlock DOIs for multiple
+				resolution. </xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -888,6 +933,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 						<xsd:enumeration value="text-mining"/>
 						<xsd:enumeration value="unspecified"/>
 						<xsd:enumeration value="syndication"/>
+						<xsd:enumeration value="link-header"/>
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>
@@ -904,8 +950,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 	<xsd:element name="item">
 		<xsd:annotation>
 			<xsd:documentation>A container used to associate a collection, doi, or resource (URI)
-				with zero or more property elements. item is currently used for supplying as-crawled
-				URLs (https://support.crossref.org/hc/en-us/articles/214018806)</xsd:documentation>
+				with zero or more property elements. </xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -917,7 +962,6 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			<xsd:attribute name="crawler" use="optional">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:NMTOKEN">
-						<xsd:enumeration value="altavista"/>
 						<xsd:enumeration value="google"/>
 						<xsd:enumeration value="msn"/>
 						<xsd:enumeration value="scirus"/>
@@ -937,249 +981,266 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			<xsd:attribute name="country" use="optional">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:NMTOKEN">
-						<xsd:enumeration value="AX"/>
-						<xsd:enumeration value="AF"/>
-						<xsd:enumeration value="AL"/>
-						<xsd:enumeration value="DZ"/>
-						<xsd:enumeration value="AS"/>
 						<xsd:enumeration value="AD"/>
-						<xsd:enumeration value="AO"/>
-						<xsd:enumeration value="AI"/>
-						<xsd:enumeration value="AQ"/>
+						<xsd:enumeration value="AE"/>
+						<xsd:enumeration value="AF"/>
 						<xsd:enumeration value="AG"/>
-						<xsd:enumeration value="AR"/>
+						<xsd:enumeration value="AI"/>
+						<xsd:enumeration value="AL"/>
 						<xsd:enumeration value="AM"/>
-						<xsd:enumeration value="AW"/>
-						<xsd:enumeration value="AU"/>
+						<xsd:enumeration value="AN"/>
+						<xsd:enumeration value="AO"/>
+						<xsd:enumeration value="AQ"/>
+						<xsd:enumeration value="AR"/>
+						<xsd:enumeration value="AS"/>
 						<xsd:enumeration value="AT"/>
+						<xsd:enumeration value="AU"/>
+						<xsd:enumeration value="AW"/>
+						<xsd:enumeration value="AX"/>
 						<xsd:enumeration value="AZ"/>
-						<xsd:enumeration value="BS"/>
-						<xsd:enumeration value="BH"/>
-						<xsd:enumeration value="BD"/>
-						<xsd:enumeration value="BB"/>
-						<xsd:enumeration value="BY"/>
-						<xsd:enumeration value="BE"/>
-						<xsd:enumeration value="BZ"/>
-						<xsd:enumeration value="BJ"/>
-						<xsd:enumeration value="BM"/>
-						<xsd:enumeration value="BT"/>
-						<xsd:enumeration value="BO"/>
 						<xsd:enumeration value="BA"/>
-						<xsd:enumeration value="BW"/>
-						<xsd:enumeration value="BV"/>
-						<xsd:enumeration value="BR"/>
-						<xsd:enumeration value="IO"/>
-						<xsd:enumeration value="BN"/>
-						<xsd:enumeration value="BG"/>
+						<xsd:enumeration value="BB"/>
+						<xsd:enumeration value="BD"/>
+						<xsd:enumeration value="BE"/>
 						<xsd:enumeration value="BF"/>
+						<xsd:enumeration value="BG"/>
+						<xsd:enumeration value="BH"/>
 						<xsd:enumeration value="BI"/>
-						<xsd:enumeration value="KH"/>
-						<xsd:enumeration value="CM"/>
+						<xsd:enumeration value="BJ"/>
+						<xsd:enumeration value="BL"/>
+						<xsd:enumeration value="BM"/>
+						<xsd:enumeration value="BN"/>
+						<xsd:enumeration value="BO"/>
+						<xsd:enumeration value="BQ"/>
+						<xsd:enumeration value="BR"/>
+						<xsd:enumeration value="BS"/>
+						<xsd:enumeration value="BT"/>
+						<xsd:enumeration value="BV"/>
+						<xsd:enumeration value="BW"/>
+						<xsd:enumeration value="BY"/>
+						<xsd:enumeration value="BZ"/>
 						<xsd:enumeration value="CA"/>
-						<xsd:enumeration value="CV"/>
-						<xsd:enumeration value="KY"/>
-						<xsd:enumeration value="CF"/>
-						<xsd:enumeration value="TD"/>
-						<xsd:enumeration value="CL"/>
-						<xsd:enumeration value="CN"/>
-						<xsd:enumeration value="CX"/>
 						<xsd:enumeration value="CC"/>
-						<xsd:enumeration value="CO"/>
-						<xsd:enumeration value="KM"/>
 						<xsd:enumeration value="CD"/>
+						<xsd:enumeration value="CF"/>
 						<xsd:enumeration value="CG"/>
-						<xsd:enumeration value="CK"/>
-						<xsd:enumeration value="CR"/>
+						<xsd:enumeration value="CH"/>
 						<xsd:enumeration value="CI"/>
-						<xsd:enumeration value="HR"/>
+						<xsd:enumeration value="CK"/>
+						<xsd:enumeration value="CL"/>
+						<xsd:enumeration value="CM"/>
+						<xsd:enumeration value="CN"/>
+						<xsd:enumeration value="CO"/>
+						<xsd:enumeration value="CR"/>
+						<xsd:enumeration value="CS"/>
 						<xsd:enumeration value="CU"/>
+						<xsd:enumeration value="CV"/>
+						<xsd:enumeration value="CX"/>
 						<xsd:enumeration value="CY"/>
 						<xsd:enumeration value="CZ"/>
-						<xsd:enumeration value="DK"/>
+						<xsd:enumeration value="DE"/>
 						<xsd:enumeration value="DJ"/>
+						<xsd:enumeration value="DK"/>
 						<xsd:enumeration value="DM"/>
 						<xsd:enumeration value="DO"/>
+						<xsd:enumeration value="DZ"/>
 						<xsd:enumeration value="EC"/>
-						<xsd:enumeration value="EG"/>
-						<xsd:enumeration value="SV"/>
-						<xsd:enumeration value="GQ"/>
-						<xsd:enumeration value="ER"/>
 						<xsd:enumeration value="EE"/>
+						<xsd:enumeration value="EG"/>
+						<xsd:enumeration value="EH"/>
+						<xsd:enumeration value="ER"/>
+						<xsd:enumeration value="ES"/>
 						<xsd:enumeration value="ET"/>
-						<xsd:enumeration value="FK"/>
-						<xsd:enumeration value="FO"/>
-						<xsd:enumeration value="FJ"/>
 						<xsd:enumeration value="FI"/>
+						<xsd:enumeration value="FJ"/>
+						<xsd:enumeration value="FK"/>
+						<xsd:enumeration value="FM"/>
+						<xsd:enumeration value="FO"/>
 						<xsd:enumeration value="FR"/>
-						<xsd:enumeration value="GF"/>
-						<xsd:enumeration value="PF"/>
-						<xsd:enumeration value="TF"/>
 						<xsd:enumeration value="GA"/>
-						<xsd:enumeration value="GM"/>
+						<xsd:enumeration value="GB"/>
+						<xsd:enumeration value="GD"/>
 						<xsd:enumeration value="GE"/>
-						<xsd:enumeration value="DE"/>
+						<xsd:enumeration value="GF"/>
+						<xsd:enumeration value="GG"/>
 						<xsd:enumeration value="GH"/>
 						<xsd:enumeration value="GI"/>
-						<xsd:enumeration value="GR"/>
 						<xsd:enumeration value="GL"/>
-						<xsd:enumeration value="GD"/>
-						<xsd:enumeration value="GP"/>
-						<xsd:enumeration value="GU"/>
-						<xsd:enumeration value="GT"/>
+						<xsd:enumeration value="GM"/>
 						<xsd:enumeration value="GN"/>
+						<xsd:enumeration value="GP"/>
+						<xsd:enumeration value="GQ"/>
+						<xsd:enumeration value="GR"/>
+						<xsd:enumeration value="GS"/>
+						<xsd:enumeration value="GT"/>
+						<xsd:enumeration value="GU"/>
 						<xsd:enumeration value="GW"/>
 						<xsd:enumeration value="GY"/>
-						<xsd:enumeration value="HT"/>
+						<xsd:enumeration value="HK"/>
 						<xsd:enumeration value="HM"/>
 						<xsd:enumeration value="HN"/>
-						<xsd:enumeration value="HK"/>
+						<xsd:enumeration value="HR"/>
+						<xsd:enumeration value="HT"/>
 						<xsd:enumeration value="HU"/>
-						<xsd:enumeration value="IS"/>
-						<xsd:enumeration value="IN"/>
 						<xsd:enumeration value="ID"/>
-						<xsd:enumeration value="IR"/>
-						<xsd:enumeration value="IQ"/>
 						<xsd:enumeration value="IE"/>
 						<xsd:enumeration value="IL"/>
+						<xsd:enumeration value="IM"/>
+						<xsd:enumeration value="IN"/>
+						<xsd:enumeration value="IO"/>
+						<xsd:enumeration value="IQ"/>
+						<xsd:enumeration value="IR"/>
+						<xsd:enumeration value="IS"/>
 						<xsd:enumeration value="IT"/>
+						<xsd:enumeration value="JE"/>
 						<xsd:enumeration value="JM"/>
-						<xsd:enumeration value="JP"/>
 						<xsd:enumeration value="JO"/>
-						<xsd:enumeration value="KZ"/>
+						<xsd:enumeration value="JP"/>
 						<xsd:enumeration value="KE"/>
+						<xsd:enumeration value="KG"/>
+						<xsd:enumeration value="KH"/>
 						<xsd:enumeration value="KI"/>
+						<xsd:enumeration value="KM"/>
+						<xsd:enumeration value="KN"/>
 						<xsd:enumeration value="KP"/>
 						<xsd:enumeration value="KR"/>
 						<xsd:enumeration value="KW"/>
-						<xsd:enumeration value="KG"/>
+						<xsd:enumeration value="KY"/>
+						<xsd:enumeration value="KZ"/>
 						<xsd:enumeration value="LA"/>
-						<xsd:enumeration value="LV"/>
 						<xsd:enumeration value="LB"/>
-						<xsd:enumeration value="LS"/>
-						<xsd:enumeration value="LR"/>
-						<xsd:enumeration value="LY"/>
+						<xsd:enumeration value="LC"/>
 						<xsd:enumeration value="LI"/>
+						<xsd:enumeration value="LK"/>
+						<xsd:enumeration value="LR"/>
+						<xsd:enumeration value="LS"/>
 						<xsd:enumeration value="LT"/>
 						<xsd:enumeration value="LU"/>
-						<xsd:enumeration value="MO"/>
-						<xsd:enumeration value="MK"/>
+						<xsd:enumeration value="LV"/>
+						<xsd:enumeration value="LY"/>
+						<xsd:enumeration value="MA"/>
+						<xsd:enumeration value="MC"/>
+						<xsd:enumeration value="MD"/>
+						<xsd:enumeration value="ME"/>
+						<xsd:enumeration value="MF"/>
 						<xsd:enumeration value="MG"/>
-						<xsd:enumeration value="MW"/>
-						<xsd:enumeration value="MY"/>
-						<xsd:enumeration value="MV"/>
-						<xsd:enumeration value="ML"/>
-						<xsd:enumeration value="MT"/>
 						<xsd:enumeration value="MH"/>
+						<xsd:enumeration value="MK"/>
+						<xsd:enumeration value="ML"/>
+						<xsd:enumeration value="MM"/>
+						<xsd:enumeration value="MN"/>
+						<xsd:enumeration value="MO"/>
+						<xsd:enumeration value="MP"/>
 						<xsd:enumeration value="MQ"/>
 						<xsd:enumeration value="MR"/>
-						<xsd:enumeration value="MU"/>
-						<xsd:enumeration value="YT"/>
-						<xsd:enumeration value="MX"/>
-						<xsd:enumeration value="FM"/>
-						<xsd:enumeration value="MD"/>
-						<xsd:enumeration value="MC"/>
-						<xsd:enumeration value="MN"/>
 						<xsd:enumeration value="MS"/>
-						<xsd:enumeration value="MA"/>
+						<xsd:enumeration value="MT"/>
+						<xsd:enumeration value="MU"/>
+						<xsd:enumeration value="MV"/>
+						<xsd:enumeration value="MW"/>
+						<xsd:enumeration value="MX"/>
+						<xsd:enumeration value="MY"/>
 						<xsd:enumeration value="MZ"/>
-						<xsd:enumeration value="MM"/>
 						<xsd:enumeration value="NA"/>
-						<xsd:enumeration value="NR"/>
-						<xsd:enumeration value="NP"/>
-						<xsd:enumeration value="NL"/>
-						<xsd:enumeration value="AN"/>
 						<xsd:enumeration value="NC"/>
-						<xsd:enumeration value="NZ"/>
-						<xsd:enumeration value="NI"/>
 						<xsd:enumeration value="NE"/>
-						<xsd:enumeration value="NG"/>
-						<xsd:enumeration value="NU"/>
 						<xsd:enumeration value="NF"/>
-						<xsd:enumeration value="MP"/>
+						<xsd:enumeration value="NG"/>
+						<xsd:enumeration value="NI"/>
+						<xsd:enumeration value="NL"/>
 						<xsd:enumeration value="NO"/>
+						<xsd:enumeration value="NP"/>
+						<xsd:enumeration value="NR"/>
+						<xsd:enumeration value="NU"/>
+						<xsd:enumeration value="NZ"/>
 						<xsd:enumeration value="OM"/>
-						<xsd:enumeration value="PK"/>
-						<xsd:enumeration value="PW"/>
-						<xsd:enumeration value="PS"/>
 						<xsd:enumeration value="PA"/>
-						<xsd:enumeration value="PG"/>
-						<xsd:enumeration value="PY"/>
 						<xsd:enumeration value="PE"/>
+						<xsd:enumeration value="PF"/>
+						<xsd:enumeration value="PG"/>
 						<xsd:enumeration value="PH"/>
-						<xsd:enumeration value="PN"/>
+						<xsd:enumeration value="PK"/>
 						<xsd:enumeration value="PL"/>
-						<xsd:enumeration value="PT"/>
+						<xsd:enumeration value="PM"/>
+						<xsd:enumeration value="PN"/>
 						<xsd:enumeration value="PR"/>
+						<xsd:enumeration value="PS"/>
+						<xsd:enumeration value="PT"/>
+						<xsd:enumeration value="PW"/>
+						<xsd:enumeration value="PY"/>
 						<xsd:enumeration value="QA"/>
 						<xsd:enumeration value="RE"/>
 						<xsd:enumeration value="RO"/>
+						<xsd:enumeration value="RS"/>
 						<xsd:enumeration value="RU"/>
 						<xsd:enumeration value="RW"/>
-						<xsd:enumeration value="SH"/>
-						<xsd:enumeration value="KN"/>
-						<xsd:enumeration value="LC"/>
-						<xsd:enumeration value="PM"/>
-						<xsd:enumeration value="VC"/>
-						<xsd:enumeration value="WS"/>
-						<xsd:enumeration value="SM"/>
-						<xsd:enumeration value="ST"/>
 						<xsd:enumeration value="SA"/>
-						<xsd:enumeration value="SN"/>
-						<xsd:enumeration value="CS"/>
-						<xsd:enumeration value="SC"/>
-						<xsd:enumeration value="SL"/>
-						<xsd:enumeration value="SG"/>
-						<xsd:enumeration value="SK"/>
-						<xsd:enumeration value="SI"/>
 						<xsd:enumeration value="SB"/>
-						<xsd:enumeration value="SO"/>
-						<xsd:enumeration value="ZA"/>
-						<xsd:enumeration value="GS"/>
-						<xsd:enumeration value="ES"/>
-						<xsd:enumeration value="LK"/>
+						<xsd:enumeration value="SC"/>
 						<xsd:enumeration value="SD"/>
-						<xsd:enumeration value="SR"/>
-						<xsd:enumeration value="SJ"/>
-						<xsd:enumeration value="SZ"/>
 						<xsd:enumeration value="SE"/>
-						<xsd:enumeration value="CH"/>
+						<xsd:enumeration value="SG"/>
+						<xsd:enumeration value="SH"/>
+						<xsd:enumeration value="SI"/>
+						<xsd:enumeration value="SJ"/>
+						<xsd:enumeration value="SK"/>
+						<xsd:enumeration value="SL"/>
+						<xsd:enumeration value="SM"/>
+						<xsd:enumeration value="SN"/>
+						<xsd:enumeration value="SO"/>
+						<xsd:enumeration value="SR"/>
+						<xsd:enumeration value="SS"/>
+						<xsd:enumeration value="ST"/>
+						<xsd:enumeration value="SV"/>
+						<xsd:enumeration value="SX"/>
 						<xsd:enumeration value="SY"/>
-						<xsd:enumeration value="TW"/>
-						<xsd:enumeration value="TJ"/>
-						<xsd:enumeration value="TZ"/>
-						<xsd:enumeration value="TH"/>
-						<xsd:enumeration value="TL"/>
-						<xsd:enumeration value="TG"/>
-						<xsd:enumeration value="TK"/>
-						<xsd:enumeration value="TO"/>
-						<xsd:enumeration value="TT"/>
-						<xsd:enumeration value="TN"/>
-						<xsd:enumeration value="TR"/>
-						<xsd:enumeration value="TM"/>
+						<xsd:enumeration value="SZ"/>
 						<xsd:enumeration value="TC"/>
+						<xsd:enumeration value="TD"/>
+						<xsd:enumeration value="TF"/>
+						<xsd:enumeration value="TG"/>
+						<xsd:enumeration value="TH"/>
+						<xsd:enumeration value="TJ"/>
+						<xsd:enumeration value="TK"/>
+						<xsd:enumeration value="TL"/>
+						<xsd:enumeration value="TM"/>
+						<xsd:enumeration value="TN"/>
+						<xsd:enumeration value="TO"/>
+						<xsd:enumeration value="TR"/>
+						<xsd:enumeration value="TT"/>
 						<xsd:enumeration value="TV"/>
-						<xsd:enumeration value="UG"/>
+						<xsd:enumeration value="TW"/>
+						<xsd:enumeration value="TZ"/>
 						<xsd:enumeration value="UA"/>
-						<xsd:enumeration value="AE"/>
-						<xsd:enumeration value="GB"/>
-						<xsd:enumeration value="US"/>
+						<xsd:enumeration value="UG"/>
 						<xsd:enumeration value="UM"/>
+						<xsd:enumeration value="US"/>
 						<xsd:enumeration value="UY"/>
 						<xsd:enumeration value="UZ"/>
-						<xsd:enumeration value="VU"/>
 						<xsd:enumeration value="VA"/>
+						<xsd:enumeration value="VC"/>
 						<xsd:enumeration value="VE"/>
-						<xsd:enumeration value="VN"/>
 						<xsd:enumeration value="VG"/>
 						<xsd:enumeration value="VI"/>
+						<xsd:enumeration value="VN"/>
+						<xsd:enumeration value="VU"/>
 						<xsd:enumeration value="WF"/>
-						<xsd:enumeration value="EH"/>
+						<xsd:enumeration value="WS"/>
 						<xsd:enumeration value="YE"/>
+						<xsd:enumeration value="YT"/>
+						<xsd:enumeration value="ZA"/>
 						<xsd:enumeration value="ZM"/>
 						<xsd:enumeration value="ZW"/>
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>
+                        <xsd:attribute name="link_header_relationship">
+                            <xsd:simpleType>
+                                <xsd:restriction base="xsd:NMTOKEN">
+                                    <xsd:enumeration value="dul"/>
+                                </xsd:restriction>
+                            </xsd:simpleType>
+                        </xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
 
@@ -1214,7 +1275,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 				<xsd:choice maxOccurs="unbounded">
 					<xsd:element ref="organization"/>
 					<xsd:element ref="person_name"/>
-					<xsd:element ref="anonymous"/>		
+					<xsd:element ref="anonymous"/>
 				</xsd:choice>
 			</xsd:sequence>
 		</xsd:complexType>
@@ -1251,7 +1312,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 				to authoring an entity. Authors with name suffixes should have the suffix captured
 				in suffix, not in surname. Author prefixes such as "Dr.", "Prof.", or "President"
 				should not be included in person_name or any other element. Author degrees (e.g.
-				M.D., Ph.D.) also should not be included in CrossRef submissions. contributor_role
+				M.D., Ph.D.) also should not be included in Crossref submissions. contributor_role
 				should be set, as appropriate, to author or editor. When a contributor translated a
 				work, set contributor_role to "translator". "chair" should only be used for
 				conference proceedings to indicate a conference chair.</xsd:documentation>
@@ -1280,9 +1341,9 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			</xsd:sequence>
 			<xsd:attributeGroup ref="contributor.atts"/>
 		</xsd:complexType>
-	</xsd:element>	
-	
-	
+	</xsd:element>
+
+
 	<xsd:element name="given_name">
 		<xsd:annotation>
 			<xsd:documentation>A contributor's given name. The given_name, combined with surname,
@@ -1290,7 +1351,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 				initials or a full name. Do not place given_name within the surname unless it is
 				unclear how to distinguish the given name from the surname, as may be the case in
 				non-Western names. Do not include titles such as "Dr.", "Prof.", or "President" in
-				given_name. These titles should not be submitted to CrossRef.</xsd:documentation>
+				given_name. These titles should not be submitted to Crossref.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -1310,7 +1371,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 				not distinguished, you may place the entire name in surname, e.g.: <surname>Leonardo
 					da Vinci</surname> If an author is an organization, you should use organization,
 				not surname. Suffixes should be tagged with suffix. Author degrees (e.g. M.D.,
-				Ph.D.) should not be included in CrossRef submissions.</xsd:documentation>
+				Ph.D.) should not be included in Crossref submissions.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
@@ -1325,7 +1386,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 		<xsd:annotation>
 			<xsd:documentation>The suffix of an author name, e.g. junior or senior. A name suffix,
 				that typically denotes a generation distinction, is tagged with suffix. Author
-				degrees (e.g. M.D., Ph.D.) should not be included in CrossRef
+				degrees (e.g. M.D., Ph.D.) should not be included in Crossref
 				submissions.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
@@ -1337,13 +1398,15 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 	</xsd:element>
 	<xsd:simpleType name="orcid_t">
 		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="https?://orcid.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[X0-9]{1}"/>			
+			<xsd:pattern value="https?://orcid.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[X0-9]{1}"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:element name="ORCID">
 		<xsd:annotation>
-			<xsd:documentation>The ORCID for an author. The schema performs basic pattern validation, checksum validation is performed upon deposit via a system check.</xsd:documentation>
+			<xsd:documentation>The ORCID for an author. The schema performs basic pattern
+				validation, checksum validation is performed upon deposit via a system
+				check.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:simpleContent>
@@ -1487,7 +1550,8 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 		<xsd:annotation>
 			<xsd:documentation>The title of the entity being registered. When a title contains a
 				subtitle, it is preferable to capture the subtitle portion in the subtitle element.
-				Only minimal face markup is supported, see https://support.crossref.org/hc/en-us/articles/214532023</xsd:documentation>
+				Only minimal face markup is supported, see
+				https://support.crossref.org/hc/en-us/articles/214532023</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType mixed="true">
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
@@ -1545,9 +1609,9 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 				include only the digits for the first month of the range.</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
-	
+
 	<!--============  Date related elements ========== -->
-	
+
 	<xsd:element name="day" type="xrefDay">
 		<xsd:annotation>
 			<xsd:documentation>Day of publication. The should must be expressed with a leading zero
@@ -1561,9 +1625,10 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 	</xsd:element>
 	<xsd:element name="database_date">
 		<xsd:annotation>
-			<xsd:documentation>database_date records key dates in the life of a database or dataset item.
-				
-				Within database_date, creation_date is the date the item was first created, publication_date is the date the item was first published, and update_date is the date the item was last updated.</xsd:documentation>
+			<xsd:documentation>database_date records key dates in the life of a database or dataset
+				item. Within database_date, creation_date is the date the item was first created,
+				publication_date is the date the item was first published, and update_date is the
+				date the item was last updated.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -1583,7 +1648,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			</xsd:complexContent>
 		</xsd:complexType>
 	</xsd:element>
-	
+
 	<xsd:element name="content_date">
 		<xsd:annotation>
 			<xsd:documentation>The date a content item was created.</xsd:documentation>
@@ -1594,7 +1659,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			</xsd:complexContent>
 		</xsd:complexType>
 	</xsd:element>
-	
+
 	<xsd:element name="posted_date">
 		<xsd:annotation>
 			<xsd:documentation>The date a pre-print was posted to a repository.</xsd:documentation>
@@ -1605,10 +1670,11 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			</xsd:complexContent>
 		</xsd:complexType>
 	</xsd:element>
-	
+
 	<xsd:element name="acceptance_date">
 		<xsd:annotation>
-			<xsd:documentation>The date a manuscript was accepted for publication.</xsd:documentation>
+			<xsd:documentation>The date a manuscript was accepted for
+				publication.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:complexContent>
@@ -1616,7 +1682,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			</xsd:complexContent>
 		</xsd:complexType>
 	</xsd:element>
-	
+
 	<xsd:element name="update_date">
 		<xsd:annotation>
 			<xsd:documentation>The date a database or dataset item was updated.</xsd:documentation>
@@ -1627,7 +1693,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			</xsd:complexContent>
 		</xsd:complexType>
 	</xsd:element>
-	
+
 	<xsd:element name="publication_date">
 		<xsd:annotation>
 			<xsd:documentation>The date of publication. In all cases, multiple dates are allowed to
@@ -1657,23 +1723,23 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			</xsd:simpleType>
 		</xsd:attribute>
 	</xsd:complexType>
-	
-	
+
+
 	<xsd:element name="review_date">
 		<xsd:annotation>
 			<xsd:documentation>The date a review was published to a repository.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element ref="month"  />
+				<xsd:element ref="month"/>
 				<xsd:element ref="day"/>
 				<xsd:element ref="year"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
-	
+
 	<!--============   end various dates ========== -->
-	
+
 	<xsd:element name="pages">
 		<xsd:annotation>
 			<xsd:documentation>The container for information about page ranges. When an entity has
@@ -1742,15 +1808,16 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="2048"/>
 			<xsd:minLength value="6"/>
+			<xsd:pattern value="10\.[0-9]{4,9}/.{1,200}"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 	<xsd:element name="doi">
 		<xsd:annotation>
-			<xsd:documentation>DOI for an entity being registered with CrossRef.  In 2008 CrossRef restricted DOI suffix 
-				characters to the following: "a-z", "A-Z", "0-9" and "-._;()/" 
-				
-				Existing DOIs with suffix characters outside of the allowed set are still supported.  For additional
-				information on DOI syntax, see https://support.crossref.org/hc/en-us/articles/214669823</xsd:documentation>
+			<xsd:documentation>DOI for an entity being registered with Crossref. In 2008 Crossref
+				restricted DOI suffix characters to the following: "a-z", "A-Z", "0-9" and "-._;()/"
+				Existing DOIs with suffix characters outside of the allowed set are still supported.
+				For additional information on DOI syntax, see
+				https://support.crossref.org/hc/en-us/articles/214669823</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="doi_t"/>
@@ -1831,7 +1898,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 				per volume and a unique ISBN for the series, all may be registered. The ISBN for the
 				series must be in series_metadata, and the ISBN for each volume in
 				proceedings_metadata, or book_metadata, respectively. The text "ISBN" should not be
-				included in the ISBN element in CrossRef submissions. Although not required, the
+				included in the ISBN element in Crossref submissions. Although not required, the
 				ISBN number should retain spaces or hyphens that appear in the formatted number
 				because they aid in human-readability. For more information, please see
 				http://www.isbn.org/standards/home/isbn/international/hyphenation- instructions.asp
@@ -1864,7 +1931,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
-	
+
 	<xsd:simpleType name="issn_t">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="9"/>
@@ -1880,7 +1947,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 				be included in an ISSN. For more information, please see
 				http://www.issn.org:8080/English/pub/getting- checking/checking or
 				http://www.issn.org. The text "ISSN" should not be included in the issn element in
-				CrossRef submissions. CrossRef validates all ISSNs supplied in deposits, only valid
+				Crossref submissions. Crossref validates all ISSNs supplied in deposits, only valid
 				ISSNs will be accepted.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
@@ -2010,9 +2077,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			<xsd:element ref="volume" minOccurs="0"/>
 			<xsd:element ref="issue" minOccurs="0"/>
 			<xsd:element ref="first_page" minOccurs="0"/>
-<!--         uncomment when cs3391 is complete
 			<xsd:element ref="elocation_id" minOccurs="0"/>
--->
 			<xsd:element ref="cYear" minOccurs="0"/>
 			<xsd:element ref="doi" minOccurs="0"/>
 			<!-- book/conf.    specific elements -->
@@ -2035,7 +2100,9 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
     -->
 	<xsd:element name="citation">
 		<xsd:annotation>
-			<xsd:documentation>citation is used to deposit each citation in the reference list of the item for which the DOI is being deposited. For details see: https://crossref.zendesk.com/hc/en-us/articles/215578403  </xsd:documentation>
+			<xsd:documentation>citation is used to deposit each citation in the reference list of
+				the item for which the DOI is being deposited. For details see:
+				https://crossref.zendesk.com/hc/en-us/articles/215578403 </xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:complexContent>
@@ -2062,7 +2129,15 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 				key value to track the specific reference query and will return this value along
 				with the DOI.</xsd:documentation>
 		</xsd:annotation>
-		<xsd:attribute name="key" type="xsd:string" use="required"/>
+		<xsd:attribute name="key" use="required">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1"/>
+					<xsd:maxLength value="128"/>
+					<xsd:whiteSpace value="collapse"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
 	</xsd:attributeGroup>
 	<!-- =============================================================
 
@@ -2071,18 +2146,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
      ============================================================= -->
 	<xsd:element name="unstructured_citation">
 		<xsd:annotation>
-			<xsd:documentation>A citation that is to an item other than a journal article, book, or
-				conference paper and cannot be structured with the CrossRef citation model. Also, it
-				is used for a citation to a journal article, book, or conference paper for which the
-				depositing publisher does not have structured information. unstructured_citation
-				allows a publisher to deposit references for which no structural information is
-				available. These may be journal, book, or conference references for which the
-				supplier did not provide markup, or other types of references (e.g. standards,
-				patents, etc) which are not supported by CrossRef. This structure permits publishers
-				to deposit complete reference lists, without regard to the availability of markup,
-				or the need to parse references beyond those types that CrossRef supports.
-				CrossRef's ability to process unstructured citations is limited, for details see
-				https://support.crossref.org/hc/en-us/articles/215007383</xsd:documentation>
+			<xsd:documentation>A citation to an item that is not structured with the Crossref citation model.  'unstructured_citation' supports deposit of references for which no structural information is available. </xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType mixed="true">
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
@@ -2146,14 +2210,15 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 		<xsd:annotation>
 			<xsd:documentation>Article title in a citation. Use care to remove face markup (such as
 				italic applied to genus or species names) from article titles as this markup is not
-				supported by CrossRef.</xsd:documentation>
+				supported by Crossref.</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
-    <xsd:element name="elocation_id" type="xsd:string">
-         <xsd:annotation>
-            <xsd:documentation>article number or other page identifier for an article that does not have page numbers, used typically for electronic-only journals.</xsd:documentation>
-         </xsd:annotation>
-    </xsd:element>
+	<xsd:element name="elocation_id" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>article number or other page identifier for an article that does not
+				have page numbers, used typically for electronic-only journals.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
 	<!-- =============================================================
 
            8. Elements used to deposit components
@@ -2198,7 +2263,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			<xsd:documentation>A container element that allows registration of supplemental
 				information for a journal article, book chapter, or conference paper such as
 				figures, tables, videos, or data sets. Currently, the deposit of components
-				primarily achieves only the first objective as the CrossRef system is not setup yet
+				primarily achieves only the first objective as the Crossref system is not setup yet
 				to support queries for components. The metadata associated with a component is
 				intended to enable simple lookup searches of components in the future. When
 				deposited as part of the metadata for a higher level work the parent DOI is
@@ -2270,9 +2335,9 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 	</xsd:element>
 	<xsd:element name="description">
 		<xsd:annotation>
-			<xsd:documentation>A narrative description of a file (e.g. a figure caption or
-				video description) which may be independent of the host document context. The
-				description element may be present more than once to provide alternative language
+			<xsd:documentation>A narrative description of a file (e.g. a figure caption or video
+				description) which may be independent of the host document context. The description
+				element may be present more than once to provide alternative language
 				values.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType mixed="true">
@@ -2282,14 +2347,18 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			<xsd:attributeGroup ref="language.atts"/>
 		</xsd:complexType>
 	</xsd:element>
-	
+
 	<xsd:element name="intent_statement">
 		<xsd:annotation>
-			<xsd:documentation>Pubsliher's custom statement for their intent to publish content for which a pre-register DOI has been created</xsd:documentation>
+			<xsd:documentation>Publisher's custom statement for their intent to publish content for
+				which a pre-register DOI has been created</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType mixed="true">
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
-				<xsd:group ref="face_markup"/>
+				<xsd:element ref="b"/>
+				<xsd:element ref="i"/>
+				<xsd:element ref="u"/>
+				<xsd:element ref="a"/>
 			</xsd:choice>
 			<xsd:attributeGroup ref="language.atts"/>
 		</xsd:complexType>
@@ -2297,7 +2366,8 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 
 	<xsd:element name="competing_interest_statement">
 		<xsd:annotation>
-			<xsd:documentation>Pubsliher's custom statement for their intent to publish content for which a pre-register DOI has been created</xsd:documentation>
+			<xsd:documentation>Statement of competing interest supplied by a review author during
+				the review process.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType mixed="true">
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
@@ -2308,19 +2378,20 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 	</xsd:element>
 
 	<xsd:element name="running_number" type="xsd:string">
-			<xsd:annotation>
-				<xsd:documentation>Running numbers to specify the various reports (ex: RC1 to RC4) </xsd:documentation>
-			</xsd:annotation>
-	</xsd:element>	
-	
-	
+		<xsd:annotation>
+			<xsd:documentation>Running numbers to specify the various reports (ex: RC1 to RC4)
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+
 	<xsd:simpleType name="format_t">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="130"/>
 			<xsd:minLength value="0"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:element name="format">
 		<xsd:annotation>
 			<xsd:documentation>A narrative description of a component's file format and/or the file
@@ -2356,12 +2427,12 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 				<xsd:element ref="crossmark_domains" minOccurs="0" maxOccurs="unbounded"/>
 				<xsd:element ref="crossmark_domain_exclusive" minOccurs="0">
 					<xsd:annotation>
-						<xsd:documentation>Some publishers encourage broad third
-							party hosting of the publisher's content. Other publishers do not. And
-							still others vary their policy depending on whether a particular article
-							has been published under an OA policy or not. This boolean flag allows
-							the publisher to indicate whether the CrossMarked content will only
-							legitimately be updated on the CrossMark domain (true) or whether the
+						<xsd:documentation>Some publishers encourage broad third party hosting of
+							the publisher's content. Other publishers do not. And still others vary
+							their policy depending on whether a particular article has been
+							published under an OA policy or not. This boolean flag allows the
+							publisher to indicate whether the Crossmarked content will only
+							legitimately be updated on the Crossmark domain (true) or whether the
 							publisher encourages updating the content on other sites as well
 							(false).</xsd:documentation>
 					</xsd:annotation>
@@ -2473,22 +2544,20 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 					<xsd:attribute name="type" use="required" type="cm_update_type">
 						<xsd:annotation>
 							<xsd:documentation>Required attribute. This attribute should be used to
-								list the update type. Allowed update types are:
-									<ul>
-										<li>addendum</li>
-										<li>clarification</li>
-										<li>correction</li>
-										<li>corrigendum</li>
-										<li>erratum</li>
-										<li>expression_of_concern</li>
-										<li>new_edition</li>
-										<li>new_version</li>
-										<li>partial_retraction</li>
-										<li>removal</li>
-										<li>retraction</li>
-										<li>withdrawal</li>
-									</ul>
-							
+								list the update type. Allowed update types are: <ul>
+									<li>addendum</li>
+									<li>clarification</li>
+									<li>correction</li>
+									<li>corrigendum</li>
+									<li>erratum</li>
+									<li>expression_of_concern</li>
+									<li>new_edition</li>
+									<li>new_version</li>
+									<li>partial_retraction</li>
+									<li>removal</li>
+									<li>retraction</li>
+									<li>withdrawal</li>
+								</ul>
 							</xsd:documentation>
 						</xsd:annotation>
 					</xsd:attribute>
@@ -2517,7 +2586,7 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			<xsd:choice>
 				<xsd:sequence>
 					<xsd:element maxOccurs="unbounded" minOccurs="1" ref="assertion"/>
-					<xsd:element maxOccurs="1" ref="fr:program" minOccurs="0" />
+					<xsd:element maxOccurs="1" ref="fr:program" minOccurs="0"/>
 					<xsd:element maxOccurs="1" ref="ai:program" minOccurs="0"/>
 					<xsd:element maxOccurs="1" ref="ct:program" minOccurs="0"/>
 				</xsd:sequence>
@@ -2641,15 +2710,17 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 					<xsd:sequence>
 						<xsd:choice>
 							<xsd:element ref="std_family_designator" minOccurs="0" maxOccurs="1"/>
-						<xsd:choice>
-					   	   <xsd:element ref="std_set_designator" minOccurs="0" maxOccurs="1"/>
-						   <xsd:element ref="std_undated_designator" minOccurs="0" maxOccurs="1"/>	
-						</xsd:choice>
+							<xsd:choice>
+								<xsd:element ref="std_set_designator" minOccurs="0" maxOccurs="1"/>
+								<xsd:element ref="std_undated_designator" minOccurs="0"
+									maxOccurs="1"/>
+							</xsd:choice>
 						</xsd:choice>
 					</xsd:sequence>
 					<xsd:sequence>
-				  		<xsd:element ref="std_as_published" minOccurs="0" maxOccurs="1"/>					
-						<xsd:element ref="std_alt_as_published" minOccurs="0" maxOccurs="unbounded"/>
+						<xsd:element ref="std_as_published" minOccurs="0" maxOccurs="1"/>
+						<xsd:element ref="std_alt_as_published" minOccurs="0" maxOccurs="unbounded"
+						/>
 					</xsd:sequence>
 				</xsd:choice>
 				<xsd:element ref="std_supersedes" minOccurs="0" maxOccurs="unbounded"/>
@@ -2666,13 +2737,13 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 		<xsd:complexType>
 			<xsd:complexContent>
 				<xsd:extension base="std_designator_t">
- 					   <xsd:attribute name="family" type="xsd:string"/>
-				   	   <xsd:attribute name="set" type="xsd:string"/>
-		               <xsd:attribute name="undated" type="xsd:string"/>	
+					<xsd:attribute name="family" type="xsd:string"/>
+					<xsd:attribute name="set" type="xsd:string"/>
+					<xsd:attribute name="undated" type="xsd:string"/>
 				</xsd:extension>
 			</xsd:complexContent>
 		</xsd:complexType>
-	
+
 	</xsd:element>
 
 	<xsd:element name="std_alt_as_published">
@@ -2713,31 +2784,31 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 		</xsd:complexType>
 	</xsd:element>
 
-	<xsd:element name="std_family_designator"  type="std_designator_t">
+	<xsd:element name="std_family_designator" type="std_designator_t">
 		<xsd:annotation>
 			<xsd:documentation>Provides for defining a DOI for a broad grouping of standards.
 			</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
-	
+
 	<xsd:element name="std_set_designator">
 		<xsd:annotation>
-			<xsd:documentation>Provides for defining a DOI for a set of standards (sometimes know as truncated form).
-			</xsd:documentation>
+			<xsd:documentation>Provides for defining a DOI for a set of standards (sometimes know as
+				truncated form). </xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:complexContent>
 				<xsd:extension base="std_designator_t">
 					<xsd:attribute name="family" type="xsd:string"/>
- 				</xsd:extension>
+				</xsd:extension>
 			</xsd:complexContent>
 		</xsd:complexType>
-		
+
 	</xsd:element>
 	<xsd:element name="std_undated_designator">
 		<xsd:annotation>
-			<xsd:documentation>Provides for defining a DOI for a group of closely related standard documents (undated form is a stem for any dated form)
-			</xsd:documentation>
+			<xsd:documentation>Provides for defining a DOI for a group of closely related standard
+				documents (undated form is a stem for any dated form) </xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:complexContent>
@@ -2748,24 +2819,25 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			</xsd:complexContent>
 		</xsd:complexType>
 	</xsd:element>
-	<xsd:element name="std_supersedes"  type="std_designatorvalue_t">
+	<xsd:element name="std_supersedes" type="std_designatorvalue_t">
 		<xsd:annotation>
-			<xsd:documentation>Designator for standard being replaced by the standard being deposited.
-			</xsd:documentation>
+			<xsd:documentation>Designator for standard being replaced by the standard being
+				deposited. </xsd:documentation>
 		</xsd:annotation>
-	 </xsd:element>
-	<xsd:element name="std_adopted_from"  type="std_designatorvalue_t">
+	</xsd:element>
+	<xsd:element name="std_adopted_from" type="std_designatorvalue_t">
 		<xsd:annotation>
 			<xsd:documentation>Designator for standard from which the current deposit is adopted.
 			</xsd:documentation>
 		</xsd:annotation>
- 	</xsd:element>
+	</xsd:element>
 	<xsd:element name="std_revision_of" type="std_designatorvalue_t">
 		<xsd:annotation>
-			<xsd:documentation>Designator for the previous revision of the standard being deposited. (note: use alt_as_published for revisions within designators having common stem)
+			<xsd:documentation>Designator for the previous revision of the standard being deposited.
+				(note: use alt_as_published for revisions within designators having common stem)
 			</xsd:documentation>
 		</xsd:annotation>
- 	</xsd:element>
+	</xsd:element>
 	<xsd:element name="standards_body">
 		<xsd:annotation>
 			<xsd:documentation>A wrapper for standards body information.</xsd:documentation>
@@ -2810,23 +2882,24 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 	<xsd:element name="std_alt_script" type="std_designatorvalue_t"/>
 	<xsd:element name="std_variant_form" type="std_designatorvalue_t"/>
 
-<!-- ================SCN policy  cs-3495 ============================= -->
-	
+	<!-- ================SCN policy  cs-3495 ============================= -->
+
 	<xsd:element name="scn_policies">
 		<xsd:annotation>
-			<xsd:documentation>A wrapper for Scholalry Sharing Network policy information</xsd:documentation>
+			<xsd:documentation>A wrapper for Scholarly Sharing Network (SCN) policy
+				information</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="scn_policy_set" minOccurs="0" maxOccurs="unbounded"/>
- 			</xsd:sequence>
+			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
-	
-	
+
+
 	<xsd:element name="scn_policy_set">
 		<xsd:annotation>
-			<xsd:documentation>A group of related SCn policies</xsd:documentation>
+			<xsd:documentation>A group of related SCN policies</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
@@ -2835,17 +2908,17 @@ MathML may also be included using the 'mml' namespace prefix.</xsd:documentation
 			<xsd:attribute name="start_date" type="xsd:date" use="optional"/>
 		</xsd:complexType>
 	</xsd:element>
-	
+
 	<xsd:element name="scn_policy_ref">
 		<xsd:annotation>
 			<xsd:documentation>An individual SCN policy</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:simpleContent>
-				<xsd:extension base="resource_t"/> 				
+				<xsd:extension base="resource_t"/>
 			</xsd:simpleContent>
 		</xsd:complexType>
 	</xsd:element>
- <!-- ================= -->       
-	
+	<!-- ================= -->
+
 </xsd:schema>

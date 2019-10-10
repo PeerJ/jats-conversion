@@ -2,51 +2,24 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     targetNamespace="http://www.crossref.org/relations.xsd"
     xmlns="http://www.crossref.org/relations.xsd">
+    
+    <!--=== Change History =======
+        
+        5/30/18 (PF) move language.atts and face_markup to this schema to eliminate importing older common schema (no impact on registration XML)
+        
+    -->    
+    
     <xsd:annotation>
-        <xsd:documentation> Version:   beta 0.3
-        
-        This schema provides for creating relationships between items represented by crossref DOIs and other items that may 
-        be defined by a DOI (crossref or other RA) or by some other identifier. New relation types will be added as they're needed.
-        Please contact support@crossref.org to request additions or changes.
-        
-        Certain relationship types are covered elsewhere in the main deposit schema due primarily to specific processing or 
-        the need to logically group those relations alongside other relevant metadata. For example cited-by relations are 
-        created by the deposit of a citation_list. Crossmark->Updates addresses relationships between DOIs where a primary 
-        item is updated, revised, hasErratum, withdrawn ... etc.  When constructing relations please be sure to use the 
-        the most appropriate metadata structure.
-        
-        Relationships between DOIs in crossref are established bidirectionally between those DOIs making it unnecessary to
-        deposit relationship metadata for both DOIs.
-        Example: 
-              DOI A metadata contains 'hasTranslation' with a target of DOI B will automatically
-              make this claim visible in metadata for B.
-              Seen from the perspective of B: A claims it hasTranslation of which B is the target of the claim.
-        
-        Change history: 
-        10/3/14  CSK   removed reg-agency attribute. This is not necessary, can be derived from the DOI
-        10/3/14  CSK   split into inter and intra relation elements
-        10/3/14  CSK   pulled in common crossref schema for description element and language attributes 
-        
-        ====== C O N V E N T I O N ==============================================================================================
-        Relationships between two objects have an implicit directionality that in natural language terms dictate which object is the actor
-        and which is acted-upon.  This directionality is semantically based on the relationship name. Crossref's model makes
-        no attempt to automatically 'understand' this semantic. 
-        
-        The identifier parent to the PROGRAM element is considered the claimant of the relationship (e.g. the entity that
-        establishes the relationship).
-        
-            yes:  10.1234/abcd references 10.5678/efgh    =>  10.1234/abcd claims that it references 10.5678/efgh
-            yes:  10.1234/abcd referencedBy 10.5678/efgh  =>  10.1234/abcd claims that it is referenced by 10.5678/efgh
-       
-        ==========================================================================================================================
+        <xsd:documentation> 
+            This schema provides for creating relationships between items identified by Crossref DOIs, non-Crossref DOIs, and other identifiers. See: https://support.crossref.org/hc/en-us/articles/214357426
        
         </xsd:documentation></xsd:annotation>
     
-    <xsd:include schemaLocation="common4.3.5.xsd"/>    
+   
 
     <xsd:element name="program">
         <xsd:annotation>
-            <xsd:documentation>Accommodates deposit of relationship claims between items.</xsd:documentation>
+            <xsd:documentation>Wrapper element for relationship metadata</xsd:documentation>
         </xsd:annotation>
 
         <xsd:complexType>
@@ -82,36 +55,42 @@
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:string">
                         <!--   Crossref  -->
-                        <xsd:enumeration value="isDerivedFrom"/> 
-                        <xsd:enumeration value="isReviewOf"/>
-                        <xsd:enumeration value="hasReview"/>
-                        <xsd:enumeration value="isCommentOn"/>
-                        <xsd:enumeration value="hasComment"/>
-                        <xsd:enumeration value="isReplyTo"/>
-                        <xsd:enumeration value="hasReply"/>
-                        <xsd:enumeration value="basedOnData"/>
-                        <xsd:enumeration value="hasRelatedMaterial"/>
+                        <xsd:enumeration value="isDerivedFrom"/>      <!-- hasDerivation -->
+                        <xsd:enumeration value="hasDerivation"/>      <!-- isDerivedFrom -->
+                        <xsd:enumeration value="isReviewOf"/>         <!-- hasReview -->
+                        <xsd:enumeration value="hasReview"/>          <!-- isReviewOf -->
+                        <xsd:enumeration value="isCommentOn"/>        <!-- hasComment -->
+                        <xsd:enumeration value="hasComment"/>         <!-- isCommentOn -->
+                        <xsd:enumeration value="isReplyTo"/>          <!-- hasReply -->
+                        <xsd:enumeration value="hasReply"/>           <!-- isReplyTo -->
+                        <xsd:enumeration value="basedOnData"/>        <!-- isDataBasisFor -->
+                        <xsd:enumeration value="isDataBasisFor"/>     <!-- basedOnData -->
+                        <xsd:enumeration value="hasRelatedMaterial"/> <!-- isRelatedMaterial -->
+                        <xsd:enumeration value="isRelatedMaterial"/>  <!-- hasRelatedMaterial -->
                         
                         <!--   Common with DataCite  -->
-                        <xsd:enumeration value="isCompiledBy"/>
-                        <xsd:enumeration value="compiles"/>
-                        <xsd:enumeration value="isDocumentedBy"/>
-                        <xsd:enumeration value="documents"/>
-                        <xsd:enumeration value="isSupplementTo"/>
-                        <xsd:enumeration value="isSupplementedBy"/>
-                        <xsd:enumeration value="isContinuedBy"/>
-                        <xsd:enumeration value="continues"/>
+                        <xsd:enumeration value="isCompiledBy"/>       <!-- compiles -->
+                        <xsd:enumeration value="compiles"/>           <!-- isCompiledBy -->
+                        <xsd:enumeration value="isDocumentedBy"/>     <!-- documents -->
+                        <xsd:enumeration value="documents"/>          <!-- isDocumentedBy -->
+                        <xsd:enumeration value="isSupplementTo"/>     <!-- isSupplememtedBy -->
+                        <xsd:enumeration value="isSupplementedBy"/>   <!-- isSupplementTo -->
+                        <xsd:enumeration value="isContinuedBy"/>      <!-- continues -->
+                        <xsd:enumeration value="continues"/>          <!-- isContinuedBy -->
                          
                         <!--   From Dublin core -->
-                        <xsd:enumeration value="isPartOf"/>
-                        <xsd:enumeration value="hasPart"/>
-                         <xsd:enumeration value="references"/>
-                        <xsd:enumeration value="isReferencedBy"/>
-                        <xsd:enumeration value="isBasedOn"/>
-                        <xsd:enumeration value="isBasisFor"/>
-                        <xsd:enumeration value="requires"/>
-                        <xsd:enumeration value="isRequiredBy"/>         
+                        <xsd:enumeration value="isPartOf"/>           <!-- hasPart -->
+                        <xsd:enumeration value="hasPart"/>            <!-- isPartOf -->
+                        <xsd:enumeration value="references"/>         <!-- isReferencedBy -->
+                        <xsd:enumeration value="isReferencedBy"/>     <!-- references -->
+                        <xsd:enumeration value="isBasedOn"/>          <!-- isBasisFor -->
+                        <xsd:enumeration value="isBasisFor"/>         <!-- isBasedOn -->
+                        <xsd:enumeration value="requires"/>           <!-- isRequiredBy -->
+                        <xsd:enumeration value="isRequiredBy"/>       <!-- requires --> 
                        
+                        <!-- TODO added for Grant testing -->
+                        <xsd:enumeration value="finances"/>       <!-- isFinancedBy --> 
+                        <xsd:enumeration value="isFinancedBy"/>       <!-- finances --> 
                     </xsd:restriction>
                 </xsd:simpleType>
             </xsd:attribute>
@@ -123,36 +102,36 @@
         <xsd:complexType mixed="true">
             <xsd:attribute name="relationship-type" use="required">
                 <xsd:annotation>
-                    <xsd:documentation>Used to define relations between items that are essentially the same work but may differ in 
-                                       format, language, revision ... etc. Assigning different identifers to exactly the same item
-                                       available in one place or as copies in multiple places can be problematic and should be avoided.
+                    <xsd:documentation>Used to define relations between items that are essentially the same work but may differ in some way that impacts citation, for example a difference in format, language, or revision. Assigning different identifers to exactly the same item available in one place or as copies in multiple places can be problematic and should be avoided.
                     </xsd:documentation>
                 </xsd:annotation>
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:string">
                         <!--   Crossref  -->              
-                        <xsd:enumeration value="isTranslationOf"/>
-                        <xsd:enumeration value="hasTranslation"/>
-                        <xsd:enumeration value="isPreprintOf"/>
-                        <xsd:enumeration value="hasPreprint"/>
-                        <xsd:enumeration value="isManuscriptOf"/>
-                        <xsd:enumeration value="hasManuscript"/>
-                        <xsd:enumeration value="isExpressionOf"/>
-                        <xsd:enumeration value="hasExpression"/>
-                        <xsd:enumeration value="isManifestationOf"/>
-                        <xsd:enumeration value="hasManifestation"/>
-                        <xsd:enumeration value="isReplacedBy"/>
-                        
+                        <xsd:enumeration value="isTranslationOf"/>    <!-- hasTranslation --> 
+                        <xsd:enumeration value="hasTranslation"/>     <!-- isTranslationOf --> 
+                        <xsd:enumeration value="isPreprintOf"/>       <!-- hasPreprint --> 
+                        <xsd:enumeration value="hasPreprint"/>        <!-- isPreprintOf --> 
+                        <xsd:enumeration value="isManuscriptOf"/>     <!-- hasManuscript --> 
+                        <xsd:enumeration value="hasManuscript"/>      <!-- isManuscriptOf --> 
+                        <xsd:enumeration value="isExpressionOf"/>     <!-- hasExpression --> 
+                        <xsd:enumeration value="hasExpression"/>      <!-- isExpressionOf --> 
+                        <xsd:enumeration value="isManifestationOf"/>  <!-- hasManifestation --> 
+                        <xsd:enumeration value="hasManifestation"/>   <!-- isManifestationOf --> 
+                        <xsd:enumeration value="isReplacedBy"/>       <!-- replaces --> 
+                        <xsd:enumeration value="replaces"/>           <!-- isReplacedBy --> 
+                        <xsd:enumeration value="isSameAs"/>           <!-- isSameAs --> 
+                         
                         <!--   Common with DataCite  -->
-                        <xsd:enumeration value="isIdenticalTo"/>
-                        <xsd:enumeration value="isVariantFormOf"/>
-                        <xsd:enumeration value="isOriginalFormOf"/>
+                        <xsd:enumeration value="isIdenticalTo"/>      <!-- isIdenticalTo --> 
+                        <xsd:enumeration value="isVariantFormOf"/>    <!-- isOriginalFormOf --> 
+                        <xsd:enumeration value="isOriginalFormOf"/>   <!-- isVariantFormOf --> 
                         
                         <!--   From Dublin core -->
-                        <xsd:enumeration value="isVersionOf"/>
-                        <xsd:enumeration value="hasVersion"/>                        
-                        <xsd:enumeration value="isFormatOf"/>
-                        <xsd:enumeration value="hasFormat"/>
+                        <xsd:enumeration value="isVersionOf"/>        <!-- hasVersion --> 
+                        <xsd:enumeration value="hasVersion"/>         <!-- isVersionOf -->                   
+                        <xsd:enumeration value="isFormatOf"/>         <!-- hasFormat --> 
+                        <xsd:enumeration value="hasFormat"/>          <!-- isFormatOf --> 
                           
                     </xsd:restriction>
                 </xsd:simpleType>
@@ -178,7 +157,8 @@
                     <xsd:enumeration value="ark"/>
                     <xsd:enumeration value="handle"/>
                     <xsd:enumeration value="uuid"/>
-                    <xsd:enumeration value="ecli"/>   
+                    <xsd:enumeration value="ecli"/>
+                    <xsd:enumeration value="accession"/>   
                     <xsd:enumeration value="other"/>
                 </xsd:restriction>
             </xsd:simpleType>
@@ -192,6 +172,251 @@
                 <xsd:restriction base="xsd:string">
                     <xsd:maxLength value="1024"/>
                     <xsd:minLength value="4"/>          
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
+    </xsd:attributeGroup>
+    
+
+    
+    <xsd:element name="description">
+        <xsd:annotation>
+            <xsd:documentation>A narrative description of the relationship target item</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType mixed="true">
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                <xsd:group ref="face_markup"/>
+            </xsd:choice>
+            <xsd:attributeGroup ref="language.atts"/>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:complexType name="xrefFaces" mixed="true">
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:group ref="face_markup"/>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:group name="face_markup">
+        <xsd:annotation>
+            <xsd:documentation>Basic data types for face markup in the target related item</xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice>
+            <xsd:element ref="b"/>
+            <xsd:element ref="i"/>
+            <xsd:element ref="em"/>
+            <xsd:element ref="strong"/>
+            <xsd:element ref="u"/>
+            <xsd:element ref="ovl"/>
+            <xsd:element ref="sup"/>
+            <xsd:element ref="sub"/>
+            <xsd:element ref="scp"/>
+            <xsd:element ref="tt"/>
+            <xsd:element ref="font"/>
+        </xsd:choice>
+    </xsd:group>
+    <xsd:element name="b" type="xrefFaces"/>
+    <xsd:element name="i" type="xrefFaces"/>
+    <xsd:element name="em" type="xrefFaces"/>
+    <xsd:element name="strong" type="xrefFaces"/>
+    <xsd:element name="u" type="xrefFaces"/>
+    <xsd:element name="ovl" type="xrefFaces"/>
+    <xsd:element name="sup" type="xrefFaces"/>
+    <xsd:element name="sub" type="xrefFaces"/>
+    <xsd:element name="scp" type="xrefFaces"/>
+    <xsd:element name="tt" type="xrefFaces"/>
+    <xsd:element name="font" type="xrefFaces"/>
+    
+  <!-- language -->
+    <xsd:attributeGroup name="language.atts">
+        <xsd:annotation>
+            <xsd:documentation>Language attributes are based on ISO 639</xsd:documentation>
+        </xsd:annotation>
+        <xsd:attribute name="language" use="optional">
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:NMTOKEN">
+                    <xsd:enumeration value="aa"/>
+                    <xsd:enumeration value="ab"/>
+                    <xsd:enumeration value="ae"/>
+                    <xsd:enumeration value="af"/>
+                    <xsd:enumeration value="ak"/>
+                    <xsd:enumeration value="am"/>
+                    <xsd:enumeration value="an"/>
+                    <xsd:enumeration value="ar"/>
+                    <xsd:enumeration value="as"/>
+                    <xsd:enumeration value="av"/>
+                    <xsd:enumeration value="ay"/>
+                    <xsd:enumeration value="az"/>
+                    <xsd:enumeration value="ba"/>
+                    <xsd:enumeration value="be"/>
+                    <xsd:enumeration value="bg"/>
+                    <xsd:enumeration value="bh"/>
+                    <xsd:enumeration value="bi"/>
+                    <xsd:enumeration value="bm"/>
+                    <xsd:enumeration value="bn"/>
+                    <xsd:enumeration value="bo"/>
+                    <xsd:enumeration value="br"/>
+                    <xsd:enumeration value="bs"/>
+                    <xsd:enumeration value="ca"/>
+                    <xsd:enumeration value="ce"/>
+                    <xsd:enumeration value="ch"/>
+                    <xsd:enumeration value="co"/>
+                    <xsd:enumeration value="cr"/>
+                    <xsd:enumeration value="cs"/>
+                    <xsd:enumeration value="cu"/>
+                    <xsd:enumeration value="cv"/>
+                    <xsd:enumeration value="cy"/>
+                    <xsd:enumeration value="da"/>
+                    <xsd:enumeration value="de"/>
+                    <xsd:enumeration value="dv"/>
+                    <xsd:enumeration value="dz"/>
+                    <xsd:enumeration value="ee"/>
+                    <xsd:enumeration value="el"/>
+                    <xsd:enumeration value="en"/>
+                    <xsd:enumeration value="eo"/>
+                    <xsd:enumeration value="es"/>
+                    <xsd:enumeration value="et"/>
+                    <xsd:enumeration value="eu"/>
+                    <xsd:enumeration value="fa"/>
+                    <xsd:enumeration value="ff"/>
+                    <xsd:enumeration value="fi"/>
+                    <xsd:enumeration value="fj"/>
+                    <xsd:enumeration value="fo"/>
+                    <xsd:enumeration value="fr"/>
+                    <xsd:enumeration value="fy"/>
+                    <xsd:enumeration value="ga"/>
+                    <xsd:enumeration value="gd"/>
+                    <xsd:enumeration value="gl"/>
+                    <xsd:enumeration value="gn"/>
+                    <xsd:enumeration value="gu"/>
+                    <xsd:enumeration value="gv"/>
+                    <xsd:enumeration value="ha"/>
+                    <xsd:enumeration value="he"/>
+                    <xsd:enumeration value="hi"/>
+                    <xsd:enumeration value="ho"/>
+                    <xsd:enumeration value="hr"/>
+                    <xsd:enumeration value="ht"/>
+                    <xsd:enumeration value="hu"/>
+                    <xsd:enumeration value="hy"/>
+                    <xsd:enumeration value="hz"/>
+                    <xsd:enumeration value="ia"/>
+                    <xsd:enumeration value="id"/>
+                    <xsd:enumeration value="ie"/>
+                    <xsd:enumeration value="ig"/>
+                    <xsd:enumeration value="ii"/>
+                    <xsd:enumeration value="ik"/>
+                    <xsd:enumeration value="io"/>
+                    <xsd:enumeration value="is"/>
+                    <xsd:enumeration value="it"/>
+                    <xsd:enumeration value="iu"/>
+                    <xsd:enumeration value="ja"/>
+                    <xsd:enumeration value="jw"/>
+                    <xsd:enumeration value="ka"/>
+                    <xsd:enumeration value="kg"/>
+                    <xsd:enumeration value="ki"/>
+                    <xsd:enumeration value="kj"/>
+                    <xsd:enumeration value="kk"/>
+                    <xsd:enumeration value="kl"/>
+                    <xsd:enumeration value="km"/>
+                    <xsd:enumeration value="kn"/>
+                    <xsd:enumeration value="ko"/>
+                    <xsd:enumeration value="kr"/>
+                    <xsd:enumeration value="ks"/>
+                    <xsd:enumeration value="ku"/>
+                    <xsd:enumeration value="kv"/>
+                    <xsd:enumeration value="kw"/>
+                    <xsd:enumeration value="ky"/>
+                    <xsd:enumeration value="la"/>
+                    <xsd:enumeration value="lb"/>
+                    <xsd:enumeration value="lg"/>
+                    <xsd:enumeration value="li"/>
+                    <xsd:enumeration value="ln"/>
+                    <xsd:enumeration value="lo"/>
+                    <xsd:enumeration value="lt"/>
+                    <xsd:enumeration value="lu"/>
+                    <xsd:enumeration value="lv"/>
+                    <xsd:enumeration value="mg"/>
+                    <xsd:enumeration value="mu"/>
+                    <xsd:enumeration value="mi"/>
+                    <xsd:enumeration value="mk"/>
+                    <xsd:enumeration value="ml"/>
+                    <xsd:enumeration value="mn"/>
+                    <xsd:enumeration value="mr"/>
+                    <xsd:enumeration value="ms"/>
+                    <xsd:enumeration value="mt"/>
+                    <xsd:enumeration value="my"/>
+                    <xsd:enumeration value="na"/>
+                    <xsd:enumeration value="nb"/>
+                    <xsd:enumeration value="nd"/>
+                    <xsd:enumeration value="ne"/>
+                    <xsd:enumeration value="ng"/>
+                    <xsd:enumeration value="nl"/>
+                    <xsd:enumeration value="nn"/>
+                    <xsd:enumeration value="no"/>
+                    <xsd:enumeration value="nr"/>
+                    <xsd:enumeration value="nv"/>
+                    <xsd:enumeration value="ny"/>
+                    <xsd:enumeration value="oc"/>
+                    <xsd:enumeration value="oj"/>
+                    <xsd:enumeration value="om"/>
+                    <xsd:enumeration value="or"/>
+                    <xsd:enumeration value="os"/>
+                    <xsd:enumeration value="pa"/>
+                    <xsd:enumeration value="pi"/>
+                    <xsd:enumeration value="pl"/>
+                    <xsd:enumeration value="ps"/>
+                    <xsd:enumeration value="pt"/>
+                    <xsd:enumeration value="qu"/>
+                    <xsd:enumeration value="rm"/>
+                    <xsd:enumeration value="rn"/>
+                    <xsd:enumeration value="ro"/>
+                    <xsd:enumeration value="ru"/>
+                    <xsd:enumeration value="rw"/>
+                    <xsd:enumeration value="sa"/>
+                    <xsd:enumeration value="sc"/>
+                    <xsd:enumeration value="sd"/>
+                    <xsd:enumeration value="se"/>
+                    <xsd:enumeration value="sg"/>
+                    <xsd:enumeration value="si"/>
+                    <xsd:enumeration value="sk"/>
+                    <xsd:enumeration value="sl"/>
+                    <xsd:enumeration value="sm"/>
+                    <xsd:enumeration value="sn"/>
+                    <xsd:enumeration value="so"/>
+                    <xsd:enumeration value="sq"/>
+                    <xsd:enumeration value="sr"/>
+                    <xsd:enumeration value="ss"/>
+                    <xsd:enumeration value="st"/>
+                    <xsd:enumeration value="su"/>
+                    <xsd:enumeration value="sv"/>
+                    <xsd:enumeration value="sw"/>
+                    <xsd:enumeration value="ta"/>
+                    <xsd:enumeration value="te"/>
+                    <xsd:enumeration value="tg"/>
+                    <xsd:enumeration value="th"/>
+                    <xsd:enumeration value="ti"/>
+                    <xsd:enumeration value="tk"/>
+                    <xsd:enumeration value="tl"/>
+                    <xsd:enumeration value="tn"/>
+                    <xsd:enumeration value="to"/>
+                    <xsd:enumeration value="tr"/>
+                    <xsd:enumeration value="ts"/>
+                    <xsd:enumeration value="tt"/>
+                    <xsd:enumeration value="tw"/>
+                    <xsd:enumeration value="ty"/>
+                    <xsd:enumeration value="ug"/>
+                    <xsd:enumeration value="uk"/>
+                    <xsd:enumeration value="ur"/>
+                    <xsd:enumeration value="uz"/>
+                    <xsd:enumeration value="ve"/>
+                    <xsd:enumeration value="vi"/>
+                    <xsd:enumeration value="vo"/>
+                    <xsd:enumeration value="wa"/>
+                    <xsd:enumeration value="wo"/>
+                    <xsd:enumeration value="xh"/>
+                    <xsd:enumeration value="yi"/>
+                    <xsd:enumeration value="yo"/>
+                    <xsd:enumeration value="za"/>
+                    <xsd:enumeration value="zh"/>
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>

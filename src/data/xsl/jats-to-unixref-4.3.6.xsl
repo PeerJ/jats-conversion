@@ -8,8 +8,8 @@
                 xmlns:mml="http://www.w3.org/1998/Math/MathML"
                 xmlns:ai="http://www.crossref.org/AccessIndicators.xsd"
                 xmlns:str="http://exslt.org/strings"
-                xmlns="http://www.crossref.org/schema/4.4.2"
-                xsi:schemaLocation="http://www.crossref.org/schema/4.4.2 http://www.crossref.org/schema/deposit/crossref4.4.2.xsd
+                xmlns="http://www.crossref.org/schema/4.3.6"
+                xsi:schemaLocation="http://www.crossref.org/schema/4.3.6 http://www.crossref.org/schema/deposit/crossref4.3.6.xsd
                 http://www.crossref.org/fundref.xsd http://www.crossref.org/schema/deposit/fundref.xsd
                 http://www.crossref.org/AccessIndicators.xsd http://www.crossref.org/schemas/AccessIndicators.xsd"
                 exclude-result-prefixes="xlink">
@@ -35,7 +35,7 @@
 	<!-- root element -->
 
 	<xsl:template match="/">
-		<doi_batch version="4.4.2" xsi:schemaLocation="http://www.crossref.org/schema/4.4.2 http://www.crossref.org/schema/deposit/crossref4.4.2.xsd">
+		<doi_batch version="4.3.6" xsi:schemaLocation="http://www.crossref.org/schema/4.3.6 http://www.crossref.org/schema/deposit/crossref4.3.6.xsd">
 			<head>
 				<xsl:call-template name="deposition"/>
 			</head>
@@ -73,15 +73,16 @@
 	<xsl:template match="article">
         <xsl:variable name="meta" select="front/article-meta"/>
         <xsl:variable name="pub-date" select="$meta/pub-date[@date-type='pub'][@pub-type='epub']|$meta/pub-date[@date-type='preprint'][@pub-type='epreprint']"/>
-
 		<journal>
 			<!-- journal -->
-			<journal_metadata language="en" reference_distribution_opts="any">
+			<journal_metadata language="en" reference_distribution_opts="any" metadata_distribution_opts="any">
 				<full_title>
 					<xsl:value-of select="front/journal-meta/journal-title-group/journal-title"/>
 				</full_title>
 
-				<xsl:apply-templates select="front/journal-meta/issn"/>
+				<issn media_type="electronic">
+					<xsl:value-of select="front/journal-meta/issn"/>
+				</issn>
 
 				<xsl:call-template name="archive-locations"/>
 			</journal_metadata>
@@ -91,6 +92,7 @@
 				<publication_date media_type="online">
 					<year><xsl:value-of select="$pub-date/year/@iso-8601-date"/></year>
 				</publication_date>
+
 				<journal_volume>
 					<volume>
 						<xsl:value-of select="$meta/volume"/>
@@ -115,22 +117,6 @@
 				</component_list>
 			</journal_article>
 		</journal>
-	</xsl:template>
-
-	<!-- issn -->
-
-	<xsl:template match="issn">
-		<xsl:choose>
-			<xsl:when test=".='0000-0000'">
-				<!-- miss out the placeholder ISSN - 0000-0000
-				JATS must have a ISSN set but Crossref 4.4.1 onwards is optional -->
-			</xsl:when>
-			<xsl:otherwise>
-				<issn media_type="electronic">
-					<xsl:value-of select="."/>
-				</issn>
-			</xsl:otherwise>
-		</xsl:choose>
 	</xsl:template>
 
 	<!-- article metadata -->
@@ -703,5 +689,4 @@
 			</archive_locations>
 		</xsl:if>
 	</xsl:template>
-
 </xsl:stylesheet>

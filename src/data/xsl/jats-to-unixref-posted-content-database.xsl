@@ -40,7 +40,7 @@
   <!-- root element -->
 
   <xsl:template match="/">
-    <doi_batch version="4.4.1" xsi:schemaLocation="http://www.crossref.org/schema/4.4.1 http://www.crossref.org/schema/deposit/crossref4.4.1.xsd">
+    <doi_batch version="4.4.2" xsi:schemaLocation="http://www.crossref.org/schema/4.4.2 http://www.crossref.org/schema/deposit/crossref4.4.2.xsd">
       <head>
         <xsl:call-template name="deposition"/>
       </head>

@@ -130,6 +130,12 @@
 					<xsd:enumeration value="editor"/>
 					<xsd:enumeration value="chair"/>
 					<xsd:enumeration value="translator"/>
+                                        <xsd:enumeration value="reviewer"/>
+                                        <xsd:enumeration value="review-assistant"/>
+                                        <xsd:enumeration value="stats-reviewer"/>
+                                        <xsd:enumeration value="reviewer-external"/>
+                                        <xsd:enumeration value="reader"/>
+                                        <xsd:enumeration value="translator"/>
 				</xsd:restriction>
 			</xsd:simpleType>
 		</xsd:attribute>

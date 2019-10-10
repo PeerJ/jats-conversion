@@ -1,0 +1,186 @@
+[
+    {
+        "filename": "AccessIndicators.xsd",
+        "namespace": "http://www.crossref.org/AccessIndicators.xsd"
+    },
+    {
+        "filename": "clinicaltrials.xsd",
+        "namespace": "http://www.crossref.org/clinicaltrials.xsd"
+    },
+    {
+        "filename": "common4.3.0.xsd",
+        "namespace": null
+    },
+    {
+        "filename": "common4.3.0_authors.xsd",
+        "namespace": null
+    },
+    {
+        "filename": "common4.3.1.xsd",
+        "namespace": null
+    },
+    {
+        "filename": "common4.3.2.xsd",
+        "namespace": null
+    },
+    {
+        "filename": "common4.3.4.xsd",
+        "namespace": null
+    },
+    {
+        "filename": "common4.3.5.xsd",
+        "namespace": null
+    },
+    {
+        "filename": "common4.3.6.xsd",
+        "namespace": null
+    },
+    {
+        "filename": "common4.3.7.xsd",
+        "namespace": null
+    },
+    {
+        "filename": "common4.3.8.xsd",
+        "namespace": null
+    },
+    {
+        "filename": "common4.4.0.xsd",
+        "namespace": null
+    },
+    {
+        "filename": "common4.4.1.xsd",
+        "namespace": null
+    },
+    {
+        "filename": "common4.4.2.xsd",
+        "namespace": null
+    },
+    {
+        "filename": "crossref4.3.0.xsd",
+        "namespace": "http://www.crossref.org/schema/4.3.0"
+    },
+    {
+        "filename": "crossref4.3.1.xsd",
+        "namespace": "http://www.crossref.org/schema/4.3.1"
+    },
+    {
+        "filename": "crossref4.3.2.xsd",
+        "namespace": "http://www.crossref.org/schema/4.3.2"
+    },
+    {
+        "filename": "crossref4.3.3.xsd",
+        "namespace": "http://www.crossref.org/schema/4.3.3"
+    },
+    {
+        "filename": "crossref4.3.4.xsd",
+        "namespace": "http://www.crossref.org/schema/4.3.4"
+    },
+    {
+        "filename": "crossref4.3.5.xsd",
+        "namespace": "http://www.crossref.org/schema/4.3.5"
+    },
+    {
+        "filename": "crossref4.3.6.xsd",
+        "namespace": "http://www.crossref.org/schema/4.3.6"
+    },
+    {
+        "filename": "crossref4.3.7.xsd",
+        "namespace": "http://www.crossref.org/schema/4.3.7"
+    },
+    {
+        "filename": "crossref4.3.8.xsd",
+        "namespace": "http://www.crossref.org/schema/4.3.8"
+    },
+    {
+        "filename": "crossref4.4.0.xsd",
+        "namespace": "http://www.crossref.org/schema/4.4.0"
+    },
+    {
+        "filename": "crossref4.4.1.xsd",
+        "namespace": "http://www.crossref.org/schema/4.4.1"
+    },
+    {
+        "filename": "crossref4.4.2.xsd",
+        "namespace": "http://www.crossref.org/schema/4.4.2"
+    },
+    {
+        "filename": "crossref_citations_1.0.0.xsd",
+        "namespace": null
+    },
+    {
+        "filename": "crossref_output3.0.0.xsd",
+        "namespace": "http://www.crossref.org/output/3.0"
+    },
+    {
+        "filename": "crossref_output3.0.1.xsd",
+        "namespace": "http://www.crossref.org/output/3.0"
+    },
+    {
+        "filename": "crossref_query_input1.0.xsd",
+        "namespace": "http://www.crossref.org/qschema/1.0"
+    },
+    {
+        "filename": "crossref_query_input2.0.xsd",
+        "namespace": "http://www.crossref.org/qschema/2.0"
+    },
+    {
+        "filename": "crossref_query_output1.0.xsd",
+        "namespace": "http://www.crossref.org/qrschema/1.0"
+    },
+    {
+        "filename": "crossref_query_output2.0.xsd",
+        "namespace": "http://www.crossref.org/qrschema/2.0"
+    },
+    {
+        "filename": "crossref_query_output3.0.xsd",
+        "namespace": "http://www.crossref.org/qrschema/3.0"
+    },
+    {
+        "filename": "doi_resources4.3.0.xsd",
+        "namespace": "http://www.crossref.org/doi_resources_schema/4.3.0"
+    },
+    {
+        "filename": "doi_resources4.3.2.xsd",
+        "namespace": "http://www.crossref.org/doi_resources_schema/4.3.2"
+    },
+    {
+        "filename": "doi_resources4.3.4.xsd",
+        "namespace": "http://www.crossref.org/doi_resources_schema/4.3.4"
+    },
+    {
+        "filename": "doi_resources4.3.5.xsd",
+        "namespace": "http://www.crossref.org/doi_resources_schema/4.3.5"
+    },
+    {
+        "filename": "doi_resources4.3.6.xsd",
+        "namespace": "http://www.crossref.org/doi_resources_schema/4.3.6"
+    },
+    {
+        "filename": "doi_resources4.4.2.xsd",
+        "namespace": "http://www.crossref.org/doi_resources_schema/4.4.2"
+    },
+    {
+        "filename": "fundref.xsd",
+        "namespace": "http://www.crossref.org/fundref.xsd"
+    },
+    {
+        "filename": "fundrefoutput.xsd",
+        "namespace": "http://www.crossref.org/fundrefoutput.xsd"
+    },
+    {
+        "filename": "grant_id0.0.1.xsd",
+        "namespace": "http://www.crossref.org/grant_id/0.0.1"
+    },
+    {
+        "filename": "relations.xsd",
+        "namespace": "http://www.crossref.org/relations.xsd"
+    },
+    {
+        "filename": "unixref1.0.xsd",
+        "namespace": "http://www.crossref.org/xschema/1.0"
+    },
+    {
+        "filename": "unixref1.1.xsd",
+        "namespace": "http://www.crossref.org/xschema/1.1"
+    }
+]
