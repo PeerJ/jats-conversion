@@ -1,8 +1,8 @@
 #!/bin/bash
 if [ -z "$1" ]
 then
-	echo "Usage: $0 {article.xml}"
-	exit
+  echo "Usage: $0 {article.xml}"
+  exit
 fi
 
 ARTICLE=$1
@@ -33,11 +33,11 @@ xmllint --nonet $TRACE --noout --catalogs --schema 'http://jats.nlm.nih.gov/publ
 DEPOSITION="$OUTPUT_DIR/$FILE-CrossRef-DOI-deposition.xml"
 echo "Creating CrossRef DOI deposition - $DEPOSITION"
 xsltproc --catalogs \
-	--nodtdattr \
-	--stringparam 'timestamp' `date +"%s"` \
-	--stringparam 'depositorName' 'test' \
-	--stringparam 'depositorEmail' 'test@example.com' \
-	"$XSLT" "$ARTICLE" > "$DEPOSITION"
+  --nodtdattr \
+  --stringparam 'timestamp' `date +"%s"` \
+  --stringparam 'depositorName' 'test' \
+  --stringparam 'depositorEmail' 'test@example.com' \
+  "$XSLT" "$ARTICLE" > "$DEPOSITION"
 
 echo "Validating CrossRef DOI deposition - $DEPOSITION"
 xmllint --nonet $TRACE --noout --schema "$RESOURCES/crossref/crossref4.4.2.xsd" "$DEPOSITION"
@@ -59,7 +59,7 @@ OUTPUT="$OUTPUT_DIR/$FILE-preview.html"
 xsltproc --catalogs -output "$OUTPUT" "$XSL/jats-to-html.xsl" "$ARTICLE"
 echo "HTML written to $OUTPUT"
 
-# cp "$DEPOSITION" .
-# cp "$OUTPUT_DIR" .
+cp "$DEPOSITION" .
+cp -r "$OUTPUT_DIR" .
 
 # TODO: run JS tests in PhantomJS

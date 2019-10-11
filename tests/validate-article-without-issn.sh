@@ -1,5 +1,4 @@
 #!/bin/bash
-
 if [ -z "$1" ]
 then
   echo "Usage: $0 {article.xml}"
@@ -14,7 +13,7 @@ TRACE=''
 # http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 XSL="$DIR/../src/data/xsl"
-XSLT="$XSL/jats-to-unixref-posted-content-preprint.xsl"
+XSLT="$XSL/jats-to-unixref.xsl"
 RESOURCES="$DIR/../schema"
 
 OUTPUT_DIR=$(mktemp -d -t validate-XXX)
@@ -32,16 +31,14 @@ echo "Validating against JATS XSD"
 xmllint --nonet $TRACE --noout --catalogs --schema 'http://jats.nlm.nih.gov/publishing/1.1/xsd/JATS-journalpublishing1.xsd' "$ARTICLE"
 
 DEPOSITION="$OUTPUT_DIR/$FILE-CrossRef-DOI-deposition.xml"
-echo "Creating CrossRef DOI deposition - $DEPOSITION via $XSLT"
+echo "Creating CrossRef DOI deposition - $DEPOSITION"
 xsltproc --catalogs \
   --nodtdattr \
   --stringparam 'timestamp' `date +"%s"` \
   --stringparam 'depositorName' 'test' \
   --stringparam 'depositorEmail' 'test@example.com' \
-  --stringparam 'doi' '10.1234/abcdf.preprint.1234v2' \
-  --stringparam 'isPreprintOf' '10.1234/abcdf.review.4567'\
-  --stringparam 'previousVersionDoi' '10.1234/abcdf.preprint.1234v1'\
-  --stringparam 'nextVersionDoi' '10.1234/abcdf.preprint.1234v3' \
+  --stringparam 'doi_data_doi' '10.7717/peerj-pchem.' \
+  --stringparam 'doi_data_resource' 'https://www.peerj.com/physical-chemistry/' \
   "$XSLT" "$ARTICLE" > "$DEPOSITION"
 
 echo "Validating CrossRef DOI deposition - $DEPOSITION"
@@ -64,7 +61,7 @@ OUTPUT="$OUTPUT_DIR/$FILE-preview.html"
 xsltproc --catalogs -output "$OUTPUT" "$XSL/jats-to-html.xsl" "$ARTICLE"
 echo "HTML written to $OUTPUT"
 
-# cp "$DEPOSITION" .
-# cp -r "$OUTPUT_DIR" .
+cp "$DEPOSITION" .
+cp -r "$OUTPUT_DIR" .
 
 # TODO: run JS tests in PhantomJS
