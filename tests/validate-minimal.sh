@@ -13,7 +13,7 @@ TRACE=''
 # http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 XSL="$DIR/../src/data/xsl"
-XSLT="$XSL/jats-to-unixref.xsl"
+XSLT="$XSL/jats-to-unixref-minimal.xsl"
 RESOURCES="$DIR/../schema"
 
 OUTPUT_DIR=$(mktemp -d -t validate-XXX)
@@ -37,7 +37,7 @@ xsltproc --catalogs \
   --stringparam 'timestamp' `date +"%s"` \
   --stringparam 'depositorName' 'test' \
   --stringparam 'depositorEmail' 'test@example.com' \
-  --stringparam 'doi_data_doi' '10.7717/peerj-pchem.' \
+   --stringparam 'doi_data_doi' '10.7717/peerj-pchem.' \
   --stringparam 'doi_data_resource' 'https://www.peerj.com/physical-chemistry/' \
   "$XSLT" "$ARTICLE" > "$DEPOSITION"
 

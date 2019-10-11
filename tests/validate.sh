@@ -59,7 +59,7 @@ OUTPUT="$OUTPUT_DIR/$FILE-preview.html"
 xsltproc --catalogs -output "$OUTPUT" "$XSL/jats-to-html.xsl" "$ARTICLE"
 echo "HTML written to $OUTPUT"
 
-# cp "$DEPOSITION" .
-# cp "$OUTPUT_DIR" .
+cp "$DEPOSITION" .
+cp -r "$OUTPUT_DIR" .
 
 # TODO: run JS tests in PhantomJS
