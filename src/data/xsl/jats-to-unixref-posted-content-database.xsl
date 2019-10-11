@@ -1,20 +1,20 @@
 <?xml version="1.0"?>
 <!-- this is a inital covnverions of jats to CrossRef unixref jats-to-unixref.xsl altered to produce posted_content for preprints -->
 <xsl:stylesheet version="1.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:xlink="http://www.w3.org/1999/xlink"
-  xmlns:fr="http://www.crossref.org/fundref.xsd"
-  xmlns:rel="http://www.crossref.org/relations.xsd"
-  xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1"
-  xmlns:mml="http://www.w3.org/1998/Math/MathML"
-  xmlns:ai="http://www.crossref.org/AccessIndicators.xsd"
-  xmlns:str="http://exslt.org/strings"
-  xmlns="http://www.crossref.org/schema/4.4.1"
-  xsi:schemaLocation="http://www.crossref.org/schema/4.4.1 http://www.crossref.org/schema/deposit/crossref4.4.1.xsd
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                xmlns:fr="http://www.crossref.org/fundref.xsd"
+                xmlns:rel="http://www.crossref.org/relations.xsd"
+                xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1"
+                xmlns:mml="http://www.w3.org/1998/Math/MathML"
+                xmlns:ai="http://www.crossref.org/AccessIndicators.xsd"
+                xmlns:str="http://exslt.org/strings"
+                xmlns="http://www.crossref.org/schema/4.4.2"
+                xsi:schemaLocation="http://www.crossref.org/schema/4.4.2 http://www.crossref.org/schema/deposit/crossref4.4.2.xsd
   http://www.crossref.org/fundref.xsd http://www.crossref.org/schema/deposit/fundref.xsd
   http://www.crossref.org/AccessIndicators.xsd http://www.crossref.org/schemas/AccessIndicators.xsd"
-  exclude-result-prefixes="xlink">
+                exclude-result-prefixes="xlink">
 
   <xsl:output method="xml" indent="yes" encoding="UTF-8" standalone="yes" />
 
@@ -22,20 +22,18 @@
 
   <xsl:variable name="article-meta" select="/article/front/article-meta"/>
   <xsl:variable name="article-id" select="$article-meta/article-id[@pub-id-type='publisher-id']"/>
-  <!-- <xsl:variable name="doi" select="$article-meta/article-id[@pub-id-type='doi']"/> -->
+<!--	<xsl:variable name="doi" select="$article-meta/article-id[@pub-id-type='doi']"/>-->
   <xsl:variable name="url" select="$article-meta/self-uri/@xlink:href"/>
 
   <xsl:param name="doi"/>
+  <xsl:param name="batchId" select="concat($doi, '/database')"/>
+  <xsl:param name="timestamp"/>
+  <xsl:param name="depositorName"/>
+  <xsl:param name="depositorEmail"/>
   <xsl:param name="version"/>
   <xsl:variable name="itemVersion" select="/article/front/article-meta/custom-meta-group/custom-meta[meta-name='version']/meta-value"/>
   <xsl:param name="target"/>
   <xsl:param name="references"/>
-  <xsl:param name="batchId" select="concat($doi, '/database')"/>
-  <xsl:param name="timestamp" />
-  <xsl:param name="depositorName" />
-  <xsl:param name="depositorEmail"/>
-
-
 
   <!-- root element -->
 
@@ -134,219 +132,205 @@
     <xsl:value-of select="alternatives/tex-math"/>
   </xsl:template>
 
-  <!--
-  <xsl:template match="tex-math" mode="title"/>
+  <!-- TODO: math markup -->
 
-  <xsl:template match="mml:*" mode="title">
-  <xsl:copy-of select="."/>
-</xsl:template>
--->
-
-<!-- TODO: math markup -->
-
-<!-- publication date -->
+  <!-- publication date -->
 
 
-<!-- contributors -->
+  <!-- contributors -->
 
-<xsl:template match="contrib">
-  <xsl:choose>
-    <xsl:when test="name">
-      <person_name contributor_role="author" sequence="additional">
-        <xsl:call-template name="contributor-sequence"/>
-        <xsl:apply-templates select="name" mode="contrib"/>
-        <xsl:apply-templates select="xref[@ref-type='aff']" mode="contrib"/>
-        <xsl:apply-templates select="contrib-id[@contrib-id-type='orcid']" mode="contrib"/>
-      </person_name>
-    </xsl:when>
-    <xsl:when test="collab">
-      <organization contributor_role="author" sequence="additional">
-        <xsl:call-template name="contributor-sequence"/>
-        <xsl:value-of select="collab"/><!-- string value -->
-      </organization>
-    </xsl:when>
-  </xsl:choose>
-</xsl:template>
+  <xsl:template match="contrib">
+    <xsl:choose>
+      <xsl:when test="name">
+        <person_name contributor_role="author" sequence="additional">
+          <xsl:call-template name="contributor-sequence"/>
+          <xsl:apply-templates select="name" mode="contrib"/>
+          <xsl:apply-templates select="xref[@ref-type='aff']" mode="contrib"/>
+          <xsl:apply-templates select="contrib-id[@contrib-id-type='orcid']" mode="contrib"/>
+        </person_name>
+      </xsl:when>
+      <xsl:when test="collab">
+        <organization contributor_role="author" sequence="additional">
+          <xsl:call-template name="contributor-sequence"/>
+          <xsl:value-of select="collab"/><!-- string value -->
+        </organization>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:template>
 
-<xsl:template name="contributor-sequence">
-  <xsl:choose>
-    <xsl:when test="position() = 1">
-      <xsl:attribute name="sequence">first</xsl:attribute>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:attribute name="sequence">additional</xsl:attribute>
-    </xsl:otherwise>
-  </xsl:choose>
-</xsl:template>
+  <xsl:template name="contributor-sequence">
+    <xsl:choose>
+      <xsl:when test="position() = 1">
+        <xsl:attribute name="sequence">first</xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:attribute name="sequence">additional</xsl:attribute>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
 
-<!-- contributor name -->
+  <!-- contributor name -->
 
-<xsl:template match="name" mode="contrib">
-  <!-- there must be a surname, so use given-names as surname if needed -->
-  <xsl:choose>
-    <xsl:when test="surname">
-      <xsl:if test="given-names">
-        <given_name>
+  <xsl:template match="name" mode="contrib">
+    <!-- there must be a surname, so use given-names as surname if needed -->
+    <xsl:choose>
+      <xsl:when test="surname">
+        <xsl:if test="given-names">
+          <given_name>
+            <xsl:value-of select="given-names"/>
+          </given_name>
+        </xsl:if>
+
+        <surname>
+          <xsl:value-of select="surname"/>
+        </surname>
+      </xsl:when>
+
+      <xsl:otherwise>
+        <surname>
           <xsl:value-of select="given-names"/>
-        </given_name>
-      </xsl:if>
+        </surname>
+      </xsl:otherwise>
+    </xsl:choose>
 
-      <surname>
-        <xsl:value-of select="surname"/>
-      </surname>
-    </xsl:when>
+    <xsl:if test="suffix">
+      <suffix>
+        <xsl:apply-templates select="suffix"/>
+      </suffix>
+    </xsl:if>
+  </xsl:template>
 
-    <xsl:otherwise>
-      <surname>
-        <xsl:value-of select="given-names"/>
-      </surname>
-    </xsl:otherwise>
-  </xsl:choose>
+  <xsl:template match="contrib-id[@contrib-id-type='orcid']" mode="contrib">
+    <ORCID authenticated="true">
+      <xsl:value-of select="concat('http://orcid.org/', .)"/>
+    </ORCID>
+  </xsl:template>
 
-  <xsl:if test="suffix">
-    <suffix>
-      <xsl:apply-templates select="suffix"/>
-    </suffix>
-  </xsl:if>
-</xsl:template>
+  <!-- affiliation -->
 
-<xsl:template match="contrib-id[@contrib-id-type='orcid']" mode="contrib">
-  <ORCID authenticated="true">
-    <xsl:value-of select="concat('http://orcid.org/', .)"/>
-  </ORCID>
-</xsl:template>
+  <xsl:template match="xref[@ref-type='aff']" mode="contrib">
+    <xsl:apply-templates select="//aff[@id=current()/@rid]" mode="contrib"/>
+  </xsl:template>
 
-<!-- affiliation -->
+  <xsl:template match="aff" mode="contrib">
+    <affiliation>
+      <xsl:apply-templates select="node()" mode="aff"/>
+    </affiliation>
+  </xsl:template>
 
-<xsl:template match="xref[@ref-type='aff']" mode="contrib">
-  <xsl:apply-templates select="//aff[@id=current()/@rid]" mode="contrib"/>
-</xsl:template>
-
-<xsl:template match="aff" mode="contrib">
-  <affiliation>
-    <xsl:apply-templates select="node()" mode="aff"/>
-  </affiliation>
-</xsl:template>
-
-<!-- include most elements in affiliations -->
-<xsl:template match="*" mode="aff">
-  <xsl:value-of select="."/>
-  <xsl:if test="position() != last()">
-    <xsl:text>, </xsl:text>
-  </xsl:if>
-</xsl:template>
-
-<!-- don't include the label in affiliations -->
-<xsl:template match="label" mode="aff"/>
-
-<!-- ignore text nodes (commas) in affiliations -->
-<xsl:template match="text()" mode="aff"/>
-
-<!-- supplementary material database -->
-<!-- I'm not using  the database_metadata attrs metadata_distribution_opts OR reference_distribution_opts
-as we are using database only untill  when CrossRef supports Supplemental
-Files in posted_content preprints.
-http://data.crossref.org/reports/help/schema_doc/4.4.1/schema_4_4_1.html#metadata_distribution_opts.att
-http://data.crossref.org/reports/help/schema_doc/4.4.1/schema_4_4_1.html#reference_distribution_opts.att
--->
-<xsl:template match="supplementary-material" mode="database">
-  <database>
-    <database_metadata language="en">
-      <!-- contributors -->
-      <contributors>
-        <xsl:apply-templates select="../../../front/article-meta/contrib-group/contrib[@contrib-type='author']"/>
-      </contributors>
-      <xsl:apply-templates select="caption/title"/>
-      <description>
-        <xsl:apply-templates select="caption/p"/>
-      </description>
-    </database_metadata>
-    <dataset>
-      <rel:program name="relations">
-        <rel:related_item>
-          <rel:inter_work_relation relationship-type="isReferencedBy" identifier-type="doi">
-            <xsl:value-of select="$doi"/>
-          </rel:inter_work_relation>
-        </rel:related_item>
-      </rel:program>
-      <doi_data>
-        <xsl:choose>
-          <xsl:when test="$version and $itemVersion">
-            <doi><xsl:value-of select="object-id[@pub-id-type='doi']"/></doi>
-            <resource><xsl:value-of select="concat($url, 'v', $itemVersion, '/', @id)"/></resource>
-          </xsl:when>
-          <xsl:otherwise>
-            <doi><xsl:value-of select="concat($doi, '/', @id)"/></doi>
-            <resource><xsl:value-of select="concat($url, '/', @id)"/></resource>
-          </xsl:otherwise>
-        </xsl:choose>
-      </doi_data>
-    </dataset>
-  </database>
-</xsl:template>
-
-<!-- caption title -->
-<xsl:template match="caption/title">
-  <titles>
-    <title>
-      <xsl:if test="../../label">
-        <xsl:value-of select="concat(../../label, ': ')"/>
-      </xsl:if>
-      <xsl:apply-templates select="node()" mode="title"/>
-    </title>
-  </titles>
-</xsl:template>
-
-<!-- caption description -->
-<xsl:template match="caption/p" mode="database">
-  <titles>
-    <title>
-      <xsl:if test="../../label">
-        <xsl:value-of select="concat(../../label, ': ')"/>
-      </xsl:if>
-      <xsl:apply-templates select="node()" mode="title"/>
-    </title>
-  </titles>
-</xsl:template>
-
-<!-- http://help.crossref.org/include-abstracts-in-deposits -->
-<xsl:template match="node()" mode="abstract">
-  <xsl:element name="jats:{local-name()}" namespace="http://www.ncbi.nlm.nih.gov/JATS1">
-    <!--<xsl:copy-of select="namespace::*"/>-->
-    <xsl:apply-templates select="node()|@*" mode="abstract"/>
-  </xsl:element>
-</xsl:template>
-
-<xsl:template match="text()" mode="abstract">
-  <xsl:value-of select="."/>
-</xsl:template>
-
-<xsl:template match="@*" mode="abstract">
-  <xsl:attribute name="{name()}">
+  <!-- include most elements in affiliations -->
+  <xsl:template match="*" mode="aff">
     <xsl:value-of select="."/>
-  </xsl:attribute>
-</xsl:template>
+    <xsl:if test="position() != last()">
+      <xsl:text>, </xsl:text>
+    </xsl:if>
+  </xsl:template>
 
-<xsl:template match="xref" mode="abstract">
-  <xsl:apply-templates select="node()"/>
-</xsl:template>
+  <!-- don't include the label in affiliations -->
+  <xsl:template match="label" mode="aff"/>
 
-<!-- license URL -->
-<!-- http://tdmsupport.crossref.org/license-uris-technical-details/ -->
-<xsl:template match="permissions/license/@xlink:href" mode="access-indicators">
-  <ai:program name="AccessIndicators">
-    <ai:license_ref>
+  <!-- ignore text nodes (commas) in affiliations -->
+  <xsl:template match="text()" mode="aff"/>
+
+  <!-- supplementary material database -->
+  <xsl:template match="supplementary-material" mode="database">
+    <database>
+      <database_metadata language="en">
+        <!-- contributors -->
+        <contributors>
+          <xsl:apply-templates select="../../../front/article-meta/contrib-group/contrib[@contrib-type='author']"/>
+        </contributors>
+        <xsl:apply-templates select="caption/title"/>
+        <description>
+          <xsl:apply-templates select="caption/p"/>
+        </description>
+      </database_metadata>
+      <dataset>
+        <rel:program name="relations">
+          <rel:related_item>
+            <rel:inter_work_relation relationship-type="isReferencedBy" identifier-type="doi">
+              <xsl:value-of select="$doi"/>
+            </rel:inter_work_relation>
+          </rel:related_item>
+        </rel:program>
+        <doi_data>
+          <xsl:choose>
+            <xsl:when test="$version and $itemVersion">
+              <doi><xsl:value-of select="object-id[@pub-id-type='doi']"/></doi>
+              <resource><xsl:value-of select="concat($url, 'v', $itemVersion, '/', @id)"/></resource>
+            </xsl:when>
+            <xsl:otherwise>
+              <doi><xsl:value-of select="concat($doi, '/', @id)"/></doi>
+              <resource><xsl:value-of select="concat($url, '/', @id)"/></resource>
+            </xsl:otherwise>
+          </xsl:choose>
+        </doi_data>
+      </dataset>
+    </database>
+  </xsl:template>
+
+  <!-- caption title -->
+  <xsl:template match="caption/title">
+    <titles>
+      <title>
+        <xsl:if test="../../label">
+          <xsl:value-of select="concat(../../label, ': ')"/>
+        </xsl:if>
+        <xsl:apply-templates select="node()" mode="title"/>
+      </title>
+    </titles>
+  </xsl:template>
+
+  <!-- caption description -->
+  <xsl:template match="caption/p" mode="database">
+    <titles>
+      <title>
+        <xsl:if test="../../label">
+          <xsl:value-of select="concat(../../label, ': ')"/>
+        </xsl:if>
+        <xsl:apply-templates select="node()" mode="title"/>
+      </title>
+    </titles>
+  </xsl:template>
+
+  <!-- http://help.crossref.org/include-abstracts-in-deposits -->
+  <xsl:template match="node()" mode="abstract">
+    <xsl:element name="jats:{local-name()}" namespace="http://www.ncbi.nlm.nih.gov/JATS1">
+      <!--<xsl:copy-of select="namespace::*"/>-->
+      <xsl:apply-templates select="node()|@*" mode="abstract"/>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="text()" mode="abstract">
+    <xsl:value-of select="."/>
+  </xsl:template>
+
+  <xsl:template match="@*" mode="abstract">
+    <xsl:attribute name="{name()}">
       <xsl:value-of select="."/>
-    </ai:license_ref>
-  </ai:program>
-</xsl:template>
+    </xsl:attribute>
+  </xsl:template>
 
-<!-- fundref -->
-<!-- http://help.crossref.org/fundref -->
-<xsl:template match="funding-group" mode="fundref">
-  <fr:program>
-    <xsl:apply-templates select="award-group/funding-source" mode="fundref"/>
-  </fr:program>
-</xsl:template>
+  <xsl:template match="xref" mode="abstract">
+    <xsl:apply-templates select="node()"/>
+  </xsl:template>
+
+  <!-- license URL -->
+  <!-- http://tdmsupport.crossref.org/license-uris-technical-details/ -->
+  <xsl:template match="permissions/license/@xlink:href" mode="access-indicators">
+    <ai:program name="AccessIndicators">
+      <ai:license_ref>
+        <xsl:value-of select="."/>
+      </ai:license_ref>
+    </ai:program>
+  </xsl:template>
+
+  <!-- fundref -->
+  <!-- http://help.crossref.org/fundref -->
+  <xsl:template match="funding-group" mode="fundref">
+    <fr:program>
+      <xsl:apply-templates select="award-group/funding-source" mode="fundref"/>
+    </fr:program>
+  </xsl:template>
 
 </xsl:stylesheet>
