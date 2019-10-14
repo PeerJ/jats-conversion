@@ -81,8 +81,8 @@
         </full_title>
 
         <xsl:apply-templates select="front/journal-meta/issn"/>
-        <xsl:call-template name="doi_data"/>
         <xsl:call-template name="archive-locations"/>
+        <xsl:call-template name="doi_data"/>
       </journal_metadata>
 
       <!-- journal issue -->
