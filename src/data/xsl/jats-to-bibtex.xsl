@@ -156,10 +156,17 @@
     </template>
 
     <template match="issn">
-        <call-template name="item">
-            <with-param name="key">issn</with-param>
-            <with-param name="value" select="."/>
-        </call-template>
+        <choose>
+            <when test=".='0000-0000'">
+                <!-- miss out the placeholder ISSN - 0000-0000 -->
+            </when>
+            <otherwise>
+                <call-template name="item">
+                    <with-param name="key">issn</with-param>
+                    <with-param name="value" select="."/>
+                </call-template>
+            </otherwise>
+        </choose>
     </template>
 
     <!-- formatting markup -->
