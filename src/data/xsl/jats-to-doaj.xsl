@@ -164,7 +164,7 @@
             </xsl:when>
             <xsl:otherwise>
                 <eissn>
-                    <with-param name="value" select="." />
+                    <xsl:value-of select="." />
                 </eissn>
             </xsl:otherwise>
         </xsl:choose>
