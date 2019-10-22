@@ -27,9 +27,7 @@
                 <xsl:value-of select="../journal-meta/journal-title-group/journal-title" />
             </journalTitle>
 
-            <eissn>
-                <xsl:value-of select="../journal-meta/issn"/>
-            </eissn>
+            <xsl:apply-templates select="../journal-meta/issn"/>
 
             <publicationDate>
                 <xsl:value-of select="$pub-date/@iso-8601-date"/>
@@ -157,4 +155,19 @@
             <xsl:text>&#10;&#10;</xsl:text>
         </xsl:if>
     </xsl:template>
+
+    <!-- ISSN -->
+    <xsl:template match="issn">
+        <xsl:choose>
+            <xsl:when test=".='0000-0000'">
+                <!-- obmit out the placeholder ISSN - 0000-0000 -->
+            </xsl:when>
+            <xsl:otherwise>
+                <eissn>
+                    <with-param name="value" select="." />
+                </eissn>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
 </xsl:stylesheet>

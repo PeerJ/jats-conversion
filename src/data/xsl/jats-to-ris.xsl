@@ -126,10 +126,18 @@
             <with-param name="key">J2</with-param>
         </call-template>
     </template>
+    <!-- issn -->
 
     <template match="issn">
-        <call-template name="item">
-            <with-param name="key">SN</with-param>
-        </call-template>
+        <choose>
+            <when test=".='0000-0000'">
+                <!-- obmit the placeholder ISSN of 0000-0000 -->
+            </when>
+            <otherwise>
+                <call-template name="item">
+                    <with-param name="key">SN</with-param>
+                </call-template>
+            </otherwise>
+        </choose>
     </template>
 </stylesheet>
