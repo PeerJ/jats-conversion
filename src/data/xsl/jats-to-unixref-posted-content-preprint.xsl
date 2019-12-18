@@ -20,11 +20,6 @@
 
   <xsl:strip-space elements="aff"/>
 
-  <xsl:variable name="article-meta" select="/article/front/article-meta"/>
-  <xsl:variable name="article-id" select="$article-meta/article-id[@pub-id-type='publisher-id']"/>
-<!--	<xsl:variable name="doi" select="$article-meta/article-id[@pub-id-type='doi']"/>-->
-  <xsl:variable name="url" select="$article-meta/self-uri/@xlink:href"/>
-
   <xsl:param name="doi"/>
   <xsl:param name="batchId" select="$doi"/>
   <xsl:param name="timestamp"/>
@@ -33,6 +28,23 @@
   <xsl:param name="isPreprintOf"/>
   <xsl:param name="previousVersionDoi"/>
   <xsl:param name="nextVersionDoi"/>
+  <xsl:param name="useThisUrl" />
+
+  <xsl:variable name="url">
+    <xsl:choose>
+      <xsl:when test="$useThisUrl =''">
+        <xsl:value-of select="$article-meta/self-uri/@xlink:href"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$useThisUrl"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
+
+  <xsl:variable name="article-meta" select="/article/front/article-meta"/>
+  <xsl:variable name="article-id" select="$article-meta/article-id[@pub-id-type='publisher-id']"/>
+  <!--	<xsl:variable name="doi" select="$article-meta/article-id[@pub-id-type='doi']"/>-->
 
 
 
@@ -196,7 +208,7 @@
         <xsl:value-of select="$doi"/>
       </doi>
       <resource>
-        <xsl:value-of select="self-uri/@xlink:href"/>
+        <xsl:value-of select="$url"/>
       </resource>
       <xsl:call-template name="tdm"/>
       <xsl:call-template name="crawler"/>

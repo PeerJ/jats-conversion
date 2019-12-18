@@ -40,6 +40,7 @@ xsltproc --catalogs \
   --stringparam 'depositorEmail' 'test@example.com' \
   --stringparam 'doi' '10.1234/abcdf.preprint.1234v2' \
   "$XSLT" "$ARTICLE" > "$DEPOSITION"
+#  --stringparam 'useThisUrl' 'http://example.com/preprints/1234' \
 
 echo "Validating CrossRef DOI deposition - $DEPOSITION"
 xmllint --nonet $TRACE --noout --schema "$RESOURCES/crossref/crossref4.4.2.xsd" "$DEPOSITION"
