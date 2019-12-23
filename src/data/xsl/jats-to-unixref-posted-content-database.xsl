@@ -264,9 +264,8 @@
           </rel:related_item>
         </rel:program>
         <doi_data>
-          <xsl:choose>
-            <doi><xsl:value-of select="concat($doi, '/', @id)"/></doi>
-            <resource><xsl:value-of select="concat($url, '/', @id)"/></resource>
+          <doi><xsl:value-of select="concat($doi, '/', @id)"/></doi>
+          <resource><xsl:value-of select="concat($url, '/', @id)"/></resource>
         </doi_data>
       </dataset>
     </database>
