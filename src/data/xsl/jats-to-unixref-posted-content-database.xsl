@@ -42,7 +42,6 @@
   <xsl:param name="depositorName"/>
   <xsl:param name="depositorEmail"/>
   <xsl:param name="version"/>
-  <xsl:variable name="itemVersion" select="/article/front/article-meta/custom-meta-group/custom-meta[meta-name='version']/meta-value"/>
   <xsl:param name="target"/>
   <xsl:param name="references"/>
 
@@ -266,15 +265,8 @@
         </rel:program>
         <doi_data>
           <xsl:choose>
-            <xsl:when test="$version and $itemVersion">
-              <doi><xsl:value-of select="object-id[@pub-id-type='doi']"/></doi>
-              <resource><xsl:value-of select="concat($url, 'v', $itemVersion, '/', @id)"/></resource>
-            </xsl:when>
-            <xsl:otherwise>
-              <doi><xsl:value-of select="concat($doi, '/', @id)"/></doi>
-              <resource><xsl:value-of select="concat($url, '/', @id)"/></resource>
-            </xsl:otherwise>
-          </xsl:choose>
+            <doi><xsl:value-of select="concat($doi, '/', @id)"/></doi>
+            <resource><xsl:value-of select="concat($url, '/', @id)"/></resource>
         </doi_data>
       </dataset>
     </database>
