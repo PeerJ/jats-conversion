@@ -41,37 +41,43 @@
         </call-template>
     </template>
 
-	<template match="article-title">
-        <call-template name="item">
-            <with-param name="key">TI</with-param>
-        </call-template>
-	</template>
+    <template match="article-title">
+      <call-template name="item">
+        <with-param name="key">TI</with-param>
+      </call-template>
+    </template>
 
     <!-- contributors (authors and editors) -->
-	<template match="contrib">
-        <variable name="type" select="@contrib-type"/>
+    <template match="contrib">
+      <variable name="type" select="@contrib-type"/>
 
-        <variable name="tag">
-            <choose>
-                <when test="$type = 'author'">AU</when>
-                <when test="$type = 'editor'">A2</when><!-- ED -->
-                <otherwise>A3</otherwise>
-            </choose>
-        </variable>
-
+      <variable name="tag">
         <choose>
-            <when test="name">
-                <call-template name="item">
-                    <with-param name="key" select="$tag"/>
-                    <with-param name="value">
-                        <value-of select="name/surname"/>
-                        <apply-templates select="name/given-names" mode="name"/>
-                        <apply-templates select="name/suffix" mode="name"/>
-                    </with-param>
-                </call-template>
-            </when>
+          <when test="$type = 'author'">AU</when>
+          <when test="$type = 'editor'">A2</when><!-- ED -->
+          <otherwise>A3</otherwise>
         </choose>
-	</template>
+      </variable>
+
+      <choose>
+        <when test="name">
+          <call-template name="item">
+            <with-param name="key" select="$tag"/>
+            <with-param name="value">
+              <value-of select="name/surname"/>
+              <apply-templates select="name/given-names" mode="name"/>
+              <apply-templates select="name/suffix" mode="name"/>
+            </with-param>
+          </call-template>
+        </when>
+        <when test="collab">
+          <call-template name="item">
+            <with-param name="key" select="$tag"/>
+            <with-param name="value" select="collab" />
+          </call-template>
+        </when>
+      </choose>
+    </template>
 
     <template match="given-names | suffix" mode="name">
         <value-of select="concat(',', .)"/>
