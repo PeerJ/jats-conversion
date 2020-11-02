@@ -83,6 +83,9 @@
                 <apply-templates select="name/suffix" mode="name"/>
                 <apply-templates select="name/given-names" mode="name"/>
             </when>
+            <when test="collab">
+                <apply-templates select="collab" mode="name"/>
+            </when>
         </choose>
 
         <if test="position() != last()">
