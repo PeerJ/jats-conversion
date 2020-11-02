@@ -375,7 +375,7 @@
 
     <!-- deceased authors -->
     <xsl:template name="deceased">
-        <span class="deceased" title="Deceased" data-toggle="tooltip"><i class="icon-star-empty">&#8203;</i></span>
+      <span class="deceased" title="Deceased" data-toggle="tooltip"><b>&#8224;</b></span>
     </xsl:template>
 
     <xsl:template match="label" mode="front">
