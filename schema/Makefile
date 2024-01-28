@@ -15,7 +15,7 @@ $(DOWNLOADS):
 
 # JATS DTD
 
-jats: | jats/publishing/1.0 jats/publishing/1.1
+jats: | jats/publishing/1.0 jats/publishing/1.1 jats/publishing/1.2 jats/publishing/1.3
 
 # JATS 1.0
 
@@ -46,6 +46,35 @@ $(DOWNLOADS)/JATS-Publishing-1-1-MathML2-DTD.zip: | $(DOWNLOADS)
 
 $(DOWNLOADS)/JATS-Publishing-1-1-MathML2-XSD.zip: | $(DOWNLOADS)
 	wget -c -P $(DOWNLOADS) ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.1/xsd/JATS-Publishing-1-1-MathML2-XSD.zip
+
+jats/publishing/1.2: | $(DOWNLOADS)/JATS-Publishing-1-2-MathML3-DTD.zip $(DOWNLOADS)/JATS-Publishing-1-2-MathML3-XSD.zip
+	mkdir -p jats/publishing/1.2
+	unzip $(DOWNLOADS)/JATS-Publishing-1-2-MathML3-DTD.zip -d $(DOWNLOADS)
+	mv $(DOWNLOADS)/JATS-Publishing-1-2-MathML3-DTD/ jats/publishing/1.2
+
+	unzip $(DOWNLOADS)/JATS-Publishing-1-2-MathML3-XSD.zip -d $(DOWNLOADS)
+	mv $(DOWNLOADS)/JATS-Publishing-1-2-MathML3-XSD jats/publishing/1.2/xsd
+
+
+$(DOWNLOADS)/JATS-Publishing-1-2-MathML3-DTD.zip: | $(DOWNLOADS)
+	wget -c -P $(DOWNLOADS) ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.2/JATS-Publishing-1-2-MathML3-DTD.zip
+
+$(DOWNLOADS)/JATS-Publishing-1-2-MathML3-XSD.zip: | $(DOWNLOADS)
+	wget -c -P $(DOWNLOADS) ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.2/xsd/JATS-Publishing-1-2-MathML3-XSD.zip
+
+jats/publishing/1.3: | $(DOWNLOADS)/JATS-Publishing-1-3-MathML3-DTD.zip $(DOWNLOADS)/JATS-Publishing-1-3-MathML3-XSD.zip
+	mkdir -p jats/publishing/1.3
+	unzip $(DOWNLOADS)/JATS-Publishing-1-3-MathML3-DTD.zip -d $(DOWNLOADS)
+	mv $(DOWNLOADS)/JATS-Publishing-1-3-MathML3-DTD/ jats/publishing/1.3
+
+	unzip $(DOWNLOADS)/JATS-Publishing-1-3-MathML3-XSD.zip -d $(DOWNLOADS)
+	mv $(DOWNLOADS)/JATS-Publishing-1-3-MathML3-XSD jats/publishing/1.3/xsd
+
+$(DOWNLOADS)/JATS-Publishing-1-3-MathML3-DTD.zip: | $(DOWNLOADS)
+	wget -c -P $(DOWNLOADS) ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.3/JATS-Publishing-1-3-MathML3-DTD.zip
+
+$(DOWNLOADS)/JATS-Publishing-1-3-MathML3-XSD.zip: | $(DOWNLOADS)
+	wget -c -P $(DOWNLOADS) ftp://ftp.ncbi.nih.gov/pub/jats/publishing/1.3/xsd/JATS-Publishing-1-3-MathML3-XSD.zip
 
 # CrossRef Schema, this is now being hosted on gitlab, the zip includes examples, which we don't copy
 crossref: | crossref/schematron.xsl (DOWNLOADS)/schema-0.1.1.zip
