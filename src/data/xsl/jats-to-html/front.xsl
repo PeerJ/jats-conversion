@@ -102,13 +102,7 @@
                 </xsl:call-template>
 
                 <xsl:if test="$public-reviews">
-                    <xsl:variable name="prefix">
-                        <xsl:choose>
-                            <xsl:when test="count($authors) = 1">The author has</xsl:when>
-                            <xsl:otherwise>The authors have</xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:variable>
-                    <div class="alert alert-success view-public-reviews"><xsl:value-of select="$prefix"/> chosen to make <a href="{$public-reviews}">the review history of this article</a> public.</div>
+                    <div class="alert alert-success view-public-reviews"><a href="{$public-reviews}">The review history of this article has been made public.</a></div>
                 </xsl:if>
 
                 <!-- the "version" custom-meta might not be present -->
