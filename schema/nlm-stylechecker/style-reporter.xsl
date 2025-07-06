@@ -2,8 +2,11 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:output method="html"  indent="yes"/>
    <xsl:param name="filename"/>
+   <xsl:param name="full" select="'yes'"/>
 		
 	<xsl:template match="ERR">
+	<xsl:choose>
+		<xsl:when test="$full='yes'">
 		<html>
 			<head>
 				<title></title>
@@ -39,24 +42,36 @@
 				</h4>
 				</xsl:otherwise>
 			</xsl:choose>
-			
+	</ol>
+	<xsl:call-template name="reportmeat"/>	
+			</body>
+		</html>
+	</xsl:when>
+	<xsl:otherwise>
+		<xsl:call-template name="reportmeat"/>
+		</xsl:otherwise>
+	</xsl:choose>
+		</xsl:template>
+
+<xsl:template name="reportmeat">
+	<div class="report-details">
+        <ol>
          <h3>
             <xsl:if test="//warning">
-               <xsl:text>Total of warnings = </xsl:text><xsl:value-of select="count(//warning)"/><br/>        
+               <xsl:text>Total of warnings = </xsl:text><xsl:value-of select="count(//warning)"/><br/>
             </xsl:if>
             <xsl:text>Total of errors = </xsl:text><xsl:value-of select="count(//error)"/><br/>Unique errors are listed below.
          </h3>
-			<xsl:apply-templates select="descendant::*[self::error or self::warning]"/>
-			</ol>
-			<hr/>
-			<ol>
-			<pre style="white-space: pre-wrap;">
-			<xsl:apply-templates mode="copy"/>
-			</pre>
-			</ol>
-			</body>
-		</html>
-		</xsl:template>
+                        <xsl:apply-templates select="descendant::*[self::error or self::warning]"/>
+                        </ol>
+<hr/>
+                        <ol>
+                        <pre style="white-space: pre-wrap;">
+                        <xsl:apply-templates mode="copy"/>
+                        </pre>
+                        </ol>
+	</div>
+	</xsl:template>
 
 	<xsl:template match="error|warning">
 		<xsl:variable name="nodepath">
@@ -69,7 +84,7 @@
 			</xsl:variable>
 		<xsl:if test="$nodepath != $preceding-nodepath and string(node()) != string(preceding::*[self::error or self::warning][1])">
 		<p>
-			<a href="#{generate-id()}"><b><xsl:value-of select="substring-before(substring-after($nodepath,'/ERR'),'/error')"/>: </b></a>
+			<a><xsl:attribute name="href"><xsl:call-template name="generate-id"/></xsl:attribute><b><xsl:value-of select="substring-before(substring-after($nodepath,'/ERR'),'/error')"/>: </b></a>
          
          <!--<xsl:if test="current()[self::warning]">
             <xsl:text> [warning] </xsl:text>
@@ -98,7 +113,7 @@
 		
 		<xsl:if test="$nodepath = $preceding-nodepath and string(node()) != string(preceding::*[self::error or self::warning][1])">
 		<p>
-			<a href="#{generate-id()}"><b><xsl:value-of select="substring-before(substring-after($nodepath,'/ERR'),'/error')"/>: </b></a>
+			<a><xsl:attribute name="href"><xsl:call-template name="generate-id"/></xsl:attribute><b><xsl:value-of select="substring-before(substring-after($nodepath,'/ERR'),'/error')"/>: </b></a>
          
       <!--   <xsl:if test="current()[self::warning]">
             <xsl:text> [warning] </xsl:text>
@@ -152,12 +167,20 @@
 
 
 	<xsl:template match="error" mode="copy">
-		<a name="{generate-id()}"/>
+		<a>
+			<xsl:attribute name="name">
+				<xsl:call-template name="generate-id"/>
+			</xsl:attribute>
+		</a>
 		<font color="red"><b><xsl:text>[ERROR: </xsl:text><xsl:apply-templates/><xsl:text>]</xsl:text></b></font>
 		</xsl:template>	
       
    <xsl:template match="warning" mode="copy">
-      <a name="{generate-id()}"/>
+      <a>
+      	<xsl:attribute name="name">
+      		<xsl:call-template name="generate-id"/>
+      	</xsl:attribute>
+      </a>
       <font color="#FF8D00"><b><xsl:text>[WARNING: </xsl:text><xsl:apply-templates/><xsl:text>]</xsl:text></b></font>
       </xsl:template>   
 
@@ -180,5 +203,11 @@
 			<xsl:apply-templates/>
 		</a>
 		</xsl:template>	
-		
+	
+	<xsl:template name="generate-id">
+		<!-- isolated so we can override it during testing -->
+		<xsl:text>#</xsl:text>
+		<xsl:value-of select="generate-id()"/>
+	</xsl:template>
+	
 </xsl:stylesheet>

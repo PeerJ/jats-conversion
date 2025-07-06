@@ -12,4 +12,6 @@
 	<rewriteURI uriStartString="http://jats.nlm.nih.gov/" rewritePrefix="jats/"/>
 	<nextCatalog catalog="jats/publishing/1.0/catalog-test-jats-v1.xml"/>
 	<nextCatalog catalog="jats/publishing/1.1/catalog-jats-v1-1-no-base.xml"/>
+	<nextCatalog catalog="jats/publishing/1.2/catalog-jats-v1-2-no-base.xml"/>
+	<nextCatalog catalog="jats/publishing/1.3/catalog-jats-v1-3-no-base.xml"/>
 </catalog>

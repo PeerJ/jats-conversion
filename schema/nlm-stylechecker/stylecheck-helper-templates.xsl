@@ -5,6 +5,7 @@
    xmlns:xlink="http://www.w3.org/1999/xlink" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xmlns:mml="http://www.w3.org/1998/Math/MathML" 
+   xmlns:ali="http://www.niso.org/schemas/ali/1.0/"
    version="1.0">
    
 
@@ -73,7 +74,7 @@
       <xsl:param name="description" select="''"/>
       <xsl:param name="tg-target" select="''"/>
       <xsl:param name="class"       select="'error'"/>
-      
+     
       <xsl:variable name="class-type">
          <xsl:choose>
             <xsl:when test="$class = 'error'">
@@ -110,8 +111,17 @@
       <xsl:if test="string-length($error-type) &gt; 0 and
 	                string-length($description) &gt; 0">
          <xsl:element name="{$class-type}">
-            <xsl:value-of select="$error-type"/>
-            <xsl:text>: </xsl:text>
+			<xsl:choose>
+				<xsl:when test="$notices='yes'">
+					<xsl:attribute name="notice">
+					<xsl:value-of select="concat('sc:',translate(normalize-space($error-type),' ','_'))"/>
+						</xsl:attribute>
+					</xsl:when>
+					<xsl:otherwise>
+            		<xsl:value-of select="normalize-space($error-type)"/>
+            		<xsl:text>: </xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
             <xsl:value-of select="$description"/>
 				<xsl:if test="$stream='manuscript'">
 					<xsl:text> (</xsl:text>
@@ -144,13 +154,13 @@
 		<xsl:variable name="base">
 			<xsl:choose>
 				<xsl:when test="$stream='book'">
-					<xsl:value-of select="'http://www.pubmedcentral.nih.gov/pmcdoc/tagging-guidelines/book/'"/>
+					<xsl:value-of select="'https://www.ncbi.nlm.nih.gov/pmc/pmcdoc/tagging-guidelines/book/'"/>
 					</xsl:when>
 				<xsl:when test="$stream='manuscript'">
-					<xsl:value-of select="'http://www.pubmedcentral.nih.gov/pmcdoc/tagging-guidelines/manuscript/'"/>
+					<xsl:value-of select="'https://www.ncbi.nlm.nih.gov/pmc/pmcdoc/tagging-guidelines/manuscript/'"/>
 					</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="'http://www.pubmedcentral.nih.gov/pmcdoc/tagging-guidelines/article/'"/>
+					<xsl:value-of select="'https://www.ncbi.nlm.nih.gov/pmc/pmcdoc/tagging-guidelines/article/'"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
@@ -182,7 +192,7 @@
       <xsl:param name="errpath" />
       <xsl:param name="type" select="''"/>
       
-      <xsl:variable name="descriptor">
+      <!--<xsl:variable name="descriptor">
          <xsl:choose>
             <xsl:when test="$class='warning'">
                <xsl:text> (warning)</xsl:text>
@@ -203,10 +213,10 @@
 					<xsl:text> (</xsl:text>
 					<xsl:value-of select="$errpath"/>
 					<xsl:text>)</xsl:text>
-					</xsl:if>
+					<!-\-</xsl:if>-\->
             <xsl:text disable-output-escaping="yes">&#10;</xsl:text>
          </xsl:message>
-      </xsl:if>
+      </xsl:if>-->
    </xsl:template>
 
 		
@@ -221,16 +231,21 @@
      -->
    <!-- ********************************************************************* -->
    <!-- ********************************************************************* -->
-   <xsl:template match="text()" name="check-prohibited-math-characters-outside-math-context">
+	
+	<xsl:template name="check-prohibited-math-characters-outside-math-context">
+		<!-- keeping this as the template is called from a importing secondary checker for books -->
+	</xsl:template>
+	
+   <!-- <xsl:template match="text()" name="check-prohibited-math-characters-outside-math-context">
 
-        <!-- are we in math context ?-->
+        <!-/- are we in math context ?-/->
    	  <xsl:if test="not(ancestor::node()[local-name() = 'math'
 					    or local-name() = 'inline-formula'
 					    or local-name() = 'disp-formula'
-					    or local-name() = 'text-math'])">
+					    or local-name() = 'tex-math'])">
 
-            <!-- here you can list using "OR" a banch of contains function calls 
-                to check prohibited  characters.  -->
+            <!-/- here you can list using "OR" a banch of contains function calls 
+                to check prohibited  characters.  -/->
             <xsl:if test="contains(., '&#xFE37;')">
                 
                 <xsl:call-template name="make-error">
@@ -244,19 +259,19 @@
 
 	  </xsl:if>
 
-      <!-- If we are in the text() node copy its content to the output, 
+      <!-/- If we are in the text() node copy its content to the output, 
            otherwise we're in the attribute node, and we do not do output here, 
-           because it is done in other place. -->
+           because it is done in other place. -/->
       <xsl:if test="(name(.)='')">
          <xsl:copy-of select="."/>
       </xsl:if>
-   </xsl:template>
+   </xsl:template> -->
 
 
    <!-- ********************************************************************* -->
-   <xsl:template match="@*" mode="check-prohibited-math-characters-outside-math-context">
+   <!-- <xsl:template match="@*" mode="check-prohibited-math-characters-outside-math-context">
       <xsl:call-template name="check-prohibited-math-characters-outside-math-context"/>
-   </xsl:template>
+   </xsl:template> -->
 
 
 	<xsl:template name="capitalize">
@@ -392,5 +407,739 @@
       </xsl:if>
    </xsl:template>
 
+<xsl:template name="get-context">
+	<xsl:text>(context: </xsl:text>
+	<xsl:choose>
+		<xsl:when test="@id">
+			<xsl:value-of select="name()"/>
+			<xsl:text>[@id="</xsl:text>
+			<xsl:value-of select="@id"/>
+			<xsl:text>"]</xsl:text>
+			</xsl:when>
+		<xsl:otherwise>
+			<xsl:call-template name="nodePath"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	<xsl:text> )</xsl:text>
+	</xsl:template>
+
+	<xsl:template name="nodePath">
+		<xsl:for-each select="ancestor-or-self::*">
+			<xsl:variable name="nm" select="name()"/>
+			<xsl:variable name="pos" select="count(preceding-sibling::node()[name() = $nm])"/>
+			<xsl:variable name="more" select="count(following-sibling::node()[name() = $nm])"/>
+			<xsl:variable name="poslabel">
+				<xsl:if test="($pos + 1 &gt; 1) or ($more &gt; 0)">
+					<xsl:text>[</xsl:text><xsl:value-of select="$pos + 1"/><xsl:text>]</xsl:text>
+					</xsl:if>
+				</xsl:variable>
+
+            <xsl:choose>
+               <xsl:when test="name() = 'warning'">
+                  <xsl:text>/error</xsl:text>
+               </xsl:when>
+               
+               <xsl:otherwise>
+                  <xsl:value-of select="concat('/',name(),$poslabel)"/>               
+               </xsl:otherwise>
+            </xsl:choose>
+		</xsl:for-each>
+		</xsl:template>
+	
+	<xsl:template name="canonical-cc-license-urls">
+		<!-- list of canonical cc license urls as provided by cc with publicdomain/mark/1.0 added  -->
+		<xsl:value-of
+			select="
+				concat(
+				' creativecommons.org/licenses/by-nc-nd/4.0',
+				' creativecommons.org/licenses/by-nc-sa/4.0',
+				' creativecommons.org/licenses/by-nc/4.0',
+				' creativecommons.org/licenses/by-nd/4.0',
+				' creativecommons.org/licenses/by-sa/4.0',
+				' creativecommons.org/licenses/by/4.0',
+				
+				' creativecommons.org/licenses/by-nc-nd/3.0',
+				' creativecommons.org/licenses/by-nc-nd/3.0/am',
+				' creativecommons.org/licenses/by-nc-nd/3.0/at',
+				' creativecommons.org/licenses/by-nc-nd/3.0/au',
+				' creativecommons.org/licenses/by-nc-nd/3.0/az',
+				' creativecommons.org/licenses/by-nc-nd/3.0/br',
+				' creativecommons.org/licenses/by-nc-nd/3.0/ca',
+				' creativecommons.org/licenses/by-nc-nd/3.0/ch',
+				' creativecommons.org/licenses/by-nc-nd/3.0/cl',
+				' creativecommons.org/licenses/by-nc-nd/3.0/cn',
+				' creativecommons.org/licenses/by-nc-nd/3.0/cr',
+				' creativecommons.org/licenses/by-nc-nd/3.0/cz',
+				' creativecommons.org/licenses/by-nc-nd/3.0/de',
+				' creativecommons.org/licenses/by-nc-nd/3.0/ec',
+				' creativecommons.org/licenses/by-nc-nd/3.0/ee',
+				' creativecommons.org/licenses/by-nc-nd/3.0/eg',
+				' creativecommons.org/licenses/by-nc-nd/3.0/es',
+				' creativecommons.org/licenses/by-nc-nd/3.0/fr',
+				' creativecommons.org/licenses/by-nc-nd/3.0/ge',
+				' creativecommons.org/licenses/by-nc-nd/3.0/gr',
+				' creativecommons.org/licenses/by-nc-nd/3.0/gt',
+				' creativecommons.org/licenses/by-nc-nd/3.0/hk',
+				' creativecommons.org/licenses/by-nc-nd/3.0/hr',
+				' creativecommons.org/licenses/by-nc-nd/3.0/ie',
+				' creativecommons.org/licenses/by-nc-nd/3.0/igo',
+				' creativecommons.org/licenses/by-nc-nd/3.0/it',
+				' creativecommons.org/licenses/by-nc-nd/3.0/lu',
+				' creativecommons.org/licenses/by-nc-nd/3.0/nl',
+				' creativecommons.org/licenses/by-nc-nd/3.0/no',
+				' creativecommons.org/licenses/by-nc-nd/3.0/nz',
+				' creativecommons.org/licenses/by-nc-nd/3.0/ph',
+				' creativecommons.org/licenses/by-nc-nd/3.0/pl',
+				' creativecommons.org/licenses/by-nc-nd/3.0/pr',
+				' creativecommons.org/licenses/by-nc-nd/3.0/pt',
+				' creativecommons.org/licenses/by-nc-nd/3.0/ro',
+				' creativecommons.org/licenses/by-nc-nd/3.0/rs',
+				' creativecommons.org/licenses/by-nc-nd/3.0/sg',
+				' creativecommons.org/licenses/by-nc-nd/3.0/th',
+				' creativecommons.org/licenses/by-nc-nd/3.0/tw',
+				' creativecommons.org/licenses/by-nc-nd/3.0/ug',
+				' creativecommons.org/licenses/by-nc-nd/3.0/us',
+				' creativecommons.org/licenses/by-nc-nd/3.0/ve',
+				' creativecommons.org/licenses/by-nc-nd/3.0/vn',
+				' creativecommons.org/licenses/by-nc-nd/3.0/za',
+				
+				' creativecommons.org/licenses/by-nc-sa/3.0',
+				' creativecommons.org/licenses/by-nc-sa/3.0/am',
+				' creativecommons.org/licenses/by-nc-sa/3.0/at',
+				' creativecommons.org/licenses/by-nc-sa/3.0/au',
+				' creativecommons.org/licenses/by-nc-sa/3.0/az',
+				' creativecommons.org/licenses/by-nc-sa/3.0/br',
+				' creativecommons.org/licenses/by-nc-sa/3.0/ca',
+				' creativecommons.org/licenses/by-nc-sa/3.0/ch',
+				' creativecommons.org/licenses/by-nc-sa/3.0/cl',
+				' creativecommons.org/licenses/by-nc-sa/3.0/cn',
+				' creativecommons.org/licenses/by-nc-sa/3.0/cr',
+				' creativecommons.org/licenses/by-nc-sa/3.0/cz',
+				' creativecommons.org/licenses/by-nc-sa/3.0/de',
+				' creativecommons.org/licenses/by-nc-sa/3.0/ec',
+				' creativecommons.org/licenses/by-nc-sa/3.0/ee',
+				' creativecommons.org/licenses/by-nc-sa/3.0/eg',
+				' creativecommons.org/licenses/by-nc-sa/3.0/es',
+				' creativecommons.org/licenses/by-nc-sa/3.0/fr',
+				' creativecommons.org/licenses/by-nc-sa/3.0/ge',
+				' creativecommons.org/licenses/by-nc-sa/3.0/gr',
+				' creativecommons.org/licenses/by-nc-sa/3.0/gt',
+				' creativecommons.org/licenses/by-nc-sa/3.0/hk',
+				' creativecommons.org/licenses/by-nc-sa/3.0/hr',
+				' creativecommons.org/licenses/by-nc-sa/3.0/ie',
+				' creativecommons.org/licenses/by-nc-sa/3.0/igo',
+				' creativecommons.org/licenses/by-nc-sa/3.0/it',
+				' creativecommons.org/licenses/by-nc-sa/3.0/lu',
+				' creativecommons.org/licenses/by-nc-sa/3.0/nl',
+				' creativecommons.org/licenses/by-nc-sa/3.0/no',
+				' creativecommons.org/licenses/by-nc-sa/3.0/nz',
+				' creativecommons.org/licenses/by-nc-sa/3.0/ph',
+				' creativecommons.org/licenses/by-nc-sa/3.0/pl',
+				' creativecommons.org/licenses/by-nc-sa/3.0/pr',
+				' creativecommons.org/licenses/by-nc-sa/3.0/pt',
+				' creativecommons.org/licenses/by-nc-sa/3.0/ro',
+				' creativecommons.org/licenses/by-nc-sa/3.0/rs',
+				' creativecommons.org/licenses/by-nc-sa/3.0/sg',
+				' creativecommons.org/licenses/by-nc-sa/3.0/th',
+				' creativecommons.org/licenses/by-nc-sa/3.0/tw',
+				' creativecommons.org/licenses/by-nc-sa/3.0/ug',
+				' creativecommons.org/licenses/by-nc-sa/3.0/us',
+				' creativecommons.org/licenses/by-nc-sa/3.0/ve',
+				' creativecommons.org/licenses/by-nc-sa/3.0/vn',
+				' creativecommons.org/licenses/by-nc-sa/3.0/za',
+				
+				' creativecommons.org/licenses/by-nc/3.0',
+				' creativecommons.org/licenses/by-nc/3.0/am',
+				' creativecommons.org/licenses/by-nc/3.0/at',
+				' creativecommons.org/licenses/by-nc/3.0/au',
+				' creativecommons.org/licenses/by-nc/3.0/az',
+				' creativecommons.org/licenses/by-nc/3.0/br',
+				' creativecommons.org/licenses/by-nc/3.0/ca',
+				' creativecommons.org/licenses/by-nc/3.0/ch',
+				' creativecommons.org/licenses/by-nc/3.0/cl',
+				' creativecommons.org/licenses/by-nc/3.0/cn',
+				' creativecommons.org/licenses/by-nc/3.0/cr',
+				' creativecommons.org/licenses/by-nc/3.0/cz',
+				' creativecommons.org/licenses/by-nc/3.0/de',
+				' creativecommons.org/licenses/by-nc/3.0/ec',
+				' creativecommons.org/licenses/by-nc/3.0/ee',
+				' creativecommons.org/licenses/by-nc/3.0/eg',
+				' creativecommons.org/licenses/by-nc/3.0/es',
+				' creativecommons.org/licenses/by-nc/3.0/fr',
+				' creativecommons.org/licenses/by-nc/3.0/ge',
+				' creativecommons.org/licenses/by-nc/3.0/gr',
+				' creativecommons.org/licenses/by-nc/3.0/gt',
+				' creativecommons.org/licenses/by-nc/3.0/hk',
+				' creativecommons.org/licenses/by-nc/3.0/hr',
+				' creativecommons.org/licenses/by-nc/3.0/ie',
+				' creativecommons.org/licenses/by-nc/3.0/igo',
+				' creativecommons.org/licenses/by-nc/3.0/it',
+				' creativecommons.org/licenses/by-nc/3.0/lu',
+				' creativecommons.org/licenses/by-nc/3.0/nl',
+				' creativecommons.org/licenses/by-nc/3.0/no',
+				' creativecommons.org/licenses/by-nc/3.0/nz',
+				' creativecommons.org/licenses/by-nc/3.0/ph',
+				' creativecommons.org/licenses/by-nc/3.0/pl',
+				' creativecommons.org/licenses/by-nc/3.0/pr',
+				' creativecommons.org/licenses/by-nc/3.0/pt',
+				' creativecommons.org/licenses/by-nc/3.0/ro',
+				' creativecommons.org/licenses/by-nc/3.0/rs',
+				' creativecommons.org/licenses/by-nc/3.0/sg',
+				' creativecommons.org/licenses/by-nc/3.0/th',
+				' creativecommons.org/licenses/by-nc/3.0/tw',
+				' creativecommons.org/licenses/by-nc/3.0/ug',
+				' creativecommons.org/licenses/by-nc/3.0/us',
+				' creativecommons.org/licenses/by-nc/3.0/ve',
+				' creativecommons.org/licenses/by-nc/3.0/vn',
+				' creativecommons.org/licenses/by-nc/3.0/za',
+				
+				' creativecommons.org/licenses/by-nd/3.0',
+				' creativecommons.org/licenses/by-nd/3.0/am',
+				' creativecommons.org/licenses/by-nd/3.0/at',
+				' creativecommons.org/licenses/by-nd/3.0/au',
+				' creativecommons.org/licenses/by-nd/3.0/az',
+				' creativecommons.org/licenses/by-nd/3.0/br',
+				' creativecommons.org/licenses/by-nd/3.0/ca',
+				' creativecommons.org/licenses/by-nd/3.0/ch',
+				' creativecommons.org/licenses/by-nd/3.0/cl',
+				' creativecommons.org/licenses/by-nd/3.0/cn',
+				' creativecommons.org/licenses/by-nd/3.0/cr',
+				' creativecommons.org/licenses/by-nd/3.0/cz',
+				' creativecommons.org/licenses/by-nd/3.0/de',
+				' creativecommons.org/licenses/by-nd/3.0/ec',
+				' creativecommons.org/licenses/by-nd/3.0/ee',
+				' creativecommons.org/licenses/by-nd/3.0/eg',
+				' creativecommons.org/licenses/by-nd/3.0/es',
+				' creativecommons.org/licenses/by-nd/3.0/fr',
+				' creativecommons.org/licenses/by-nd/3.0/ge',
+				' creativecommons.org/licenses/by-nd/3.0/gr',
+				' creativecommons.org/licenses/by-nd/3.0/gt',
+				' creativecommons.org/licenses/by-nd/3.0/hk',
+				' creativecommons.org/licenses/by-nd/3.0/hr',
+				' creativecommons.org/licenses/by-nd/3.0/ie',
+				' creativecommons.org/licenses/by-nd/3.0/igo',
+				' creativecommons.org/licenses/by-nd/3.0/it',
+				' creativecommons.org/licenses/by-nd/3.0/lu',
+				' creativecommons.org/licenses/by-nd/3.0/nl',
+				' creativecommons.org/licenses/by-nd/3.0/no',
+				' creativecommons.org/licenses/by-nd/3.0/nz',
+				' creativecommons.org/licenses/by-nd/3.0/ph',
+				' creativecommons.org/licenses/by-nd/3.0/pl',
+				' creativecommons.org/licenses/by-nd/3.0/pr',
+				' creativecommons.org/licenses/by-nd/3.0/pt',
+				' creativecommons.org/licenses/by-nd/3.0/ro',
+				' creativecommons.org/licenses/by-nd/3.0/rs',
+				' creativecommons.org/licenses/by-nd/3.0/sg',
+				' creativecommons.org/licenses/by-nd/3.0/th',
+				' creativecommons.org/licenses/by-nd/3.0/tw',
+				' creativecommons.org/licenses/by-nd/3.0/ug',
+				' creativecommons.org/licenses/by-nd/3.0/us',
+				' creativecommons.org/licenses/by-nd/3.0/ve',
+				' creativecommons.org/licenses/by-nd/3.0/vn',
+				' creativecommons.org/licenses/by-nd/3.0/za',
+				
+				' creativecommons.org/licenses/by-sa/3.0',
+				' creativecommons.org/licenses/by-sa/3.0/am',
+				' creativecommons.org/licenses/by-sa/3.0/at',
+				' creativecommons.org/licenses/by-sa/3.0/au',
+				' creativecommons.org/licenses/by-sa/3.0/az',
+				' creativecommons.org/licenses/by-sa/3.0/br',
+				' creativecommons.org/licenses/by-sa/3.0/ca',
+				' creativecommons.org/licenses/by-sa/3.0/ch',
+				' creativecommons.org/licenses/by-sa/3.0/cl',
+				' creativecommons.org/licenses/by-sa/3.0/cn',
+				' creativecommons.org/licenses/by-sa/3.0/cr',
+				' creativecommons.org/licenses/by-sa/3.0/cz',
+				' creativecommons.org/licenses/by-sa/3.0/de',
+				' creativecommons.org/licenses/by-sa/3.0/ec',
+				' creativecommons.org/licenses/by-sa/3.0/ee',
+				' creativecommons.org/licenses/by-sa/3.0/eg',
+				' creativecommons.org/licenses/by-sa/3.0/es',
+				' creativecommons.org/licenses/by-sa/3.0/fr',
+				' creativecommons.org/licenses/by-sa/3.0/ge',
+				' creativecommons.org/licenses/by-sa/3.0/gr',
+				' creativecommons.org/licenses/by-sa/3.0/gt',
+				' creativecommons.org/licenses/by-sa/3.0/hk',
+				' creativecommons.org/licenses/by-sa/3.0/hr',
+				' creativecommons.org/licenses/by-sa/3.0/ie',
+				' creativecommons.org/licenses/by-sa/3.0/igo',
+				' creativecommons.org/licenses/by-sa/3.0/it',
+				' creativecommons.org/licenses/by-sa/3.0/lu',
+				' creativecommons.org/licenses/by-sa/3.0/nl',
+				' creativecommons.org/licenses/by-sa/3.0/no',
+				' creativecommons.org/licenses/by-sa/3.0/nz',
+				' creativecommons.org/licenses/by-sa/3.0/ph',
+				' creativecommons.org/licenses/by-sa/3.0/pl',
+				' creativecommons.org/licenses/by-sa/3.0/pr',
+				' creativecommons.org/licenses/by-sa/3.0/pt',
+				' creativecommons.org/licenses/by-sa/3.0/ro',
+				' creativecommons.org/licenses/by-sa/3.0/rs',
+				' creativecommons.org/licenses/by-sa/3.0/sg',
+				' creativecommons.org/licenses/by-sa/3.0/th',
+				' creativecommons.org/licenses/by-sa/3.0/tw',
+				' creativecommons.org/licenses/by-sa/3.0/ug',
+				' creativecommons.org/licenses/by-sa/3.0/us',
+				' creativecommons.org/licenses/by-sa/3.0/ve',
+				' creativecommons.org/licenses/by-sa/3.0/vn',
+				' creativecommons.org/licenses/by-sa/3.0/za',
+				
+				' creativecommons.org/licenses/by/3.0',
+				' creativecommons.org/licenses/by/3.0/am',
+				' creativecommons.org/licenses/by/3.0/at',
+				' creativecommons.org/licenses/by/3.0/au',
+				' creativecommons.org/licenses/by/3.0/az',
+				' creativecommons.org/licenses/by/3.0/br',
+				' creativecommons.org/licenses/by/3.0/ca',
+				' creativecommons.org/licenses/by/3.0/ch',
+				' creativecommons.org/licenses/by/3.0/cl',
+				' creativecommons.org/licenses/by/3.0/cn',
+				' creativecommons.org/licenses/by/3.0/cr',
+				' creativecommons.org/licenses/by/3.0/cz',
+				' creativecommons.org/licenses/by/3.0/de',
+				' creativecommons.org/licenses/by/3.0/ec',
+				' creativecommons.org/licenses/by/3.0/ee',
+				' creativecommons.org/licenses/by/3.0/eg',
+				' creativecommons.org/licenses/by/3.0/es',
+				' creativecommons.org/licenses/by/3.0/fr',
+				' creativecommons.org/licenses/by/3.0/ge',
+				' creativecommons.org/licenses/by/3.0/gr',
+				' creativecommons.org/licenses/by/3.0/gt',
+				' creativecommons.org/licenses/by/3.0/hk',
+				' creativecommons.org/licenses/by/3.0/hr',
+				' creativecommons.org/licenses/by/3.0/ie',
+				' creativecommons.org/licenses/by/3.0/igo',
+				' creativecommons.org/licenses/by/3.0/it',
+				' creativecommons.org/licenses/by/3.0/lu',
+				' creativecommons.org/licenses/by/3.0/nl',
+				' creativecommons.org/licenses/by/3.0/no',
+				' creativecommons.org/licenses/by/3.0/nz',
+				' creativecommons.org/licenses/by/3.0/ph',
+				' creativecommons.org/licenses/by/3.0/pl',
+				' creativecommons.org/licenses/by/3.0/pr',
+				' creativecommons.org/licenses/by/3.0/pt',
+				' creativecommons.org/licenses/by/3.0/ro',
+				' creativecommons.org/licenses/by/3.0/rs',
+				' creativecommons.org/licenses/by/3.0/sg',
+				' creativecommons.org/licenses/by/3.0/th',
+				' creativecommons.org/licenses/by/3.0/tw',
+				' creativecommons.org/licenses/by/3.0/ug',
+				' creativecommons.org/licenses/by/3.0/us',
+				' creativecommons.org/licenses/by/3.0/ve',
+				' creativecommons.org/licenses/by/3.0/vn',
+				' creativecommons.org/licenses/by/3.0/za',
+				
+				' creativecommons.org/licenses/by-nc-nd/2.5',
+				' creativecommons.org/licenses/by-nc-nd/2.5/ar',
+				' creativecommons.org/licenses/by-nc-nd/2.5/au',
+				' creativecommons.org/licenses/by-nc-nd/2.5/bg',
+				' creativecommons.org/licenses/by-nc-nd/2.5/br',
+				' creativecommons.org/licenses/by-nc-nd/2.5/ca',
+				' creativecommons.org/licenses/by-nc-nd/2.5/ch',
+				' creativecommons.org/licenses/by-nc-nd/2.5/cn',
+				' creativecommons.org/licenses/by-nc-nd/2.5/co',
+				' creativecommons.org/licenses/by-nc-nd/2.5/dk',
+				' creativecommons.org/licenses/by-nc-nd/2.5/es',
+				' creativecommons.org/licenses/by-nc-nd/2.5/hr',
+				' creativecommons.org/licenses/by-nc-nd/2.5/hu',
+				' creativecommons.org/licenses/by-nc-nd/2.5/il',
+				' creativecommons.org/licenses/by-nc-nd/2.5/in',
+				' creativecommons.org/licenses/by-nc-nd/2.5/it',
+				' creativecommons.org/licenses/by-nc-nd/2.5/mk',
+				' creativecommons.org/licenses/by-nc-nd/2.5/mt',
+				' creativecommons.org/licenses/by-nc-nd/2.5/mx',
+				' creativecommons.org/licenses/by-nc-nd/2.5/my',
+				' creativecommons.org/licenses/by-nc-nd/2.5/nl',
+				' creativecommons.org/licenses/by-nc-nd/2.5/pe',
+				' creativecommons.org/licenses/by-nc-nd/2.5/pl',
+				' creativecommons.org/licenses/by-nc-nd/2.5/pt',
+				' creativecommons.org/licenses/by-nc-nd/2.5/scotland',
+				' creativecommons.org/licenses/by-nc-nd/2.5/se',
+				' creativecommons.org/licenses/by-nc-nd/2.5/si',
+				' creativecommons.org/licenses/by-nc-nd/2.5/tw',
+				' creativecommons.org/licenses/by-nc-nd/2.5/za',
+				
+				' creativecommons.org/licenses/by-nc-sa/2.5',
+				' creativecommons.org/licenses/by-nc-sa/2.5/ar',
+				' creativecommons.org/licenses/by-nc-sa/2.5/au',
+				' creativecommons.org/licenses/by-nc-sa/2.5/bg',
+				' creativecommons.org/licenses/by-nc-sa/2.5/br',
+				' creativecommons.org/licenses/by-nc-sa/2.5/ca',
+				' creativecommons.org/licenses/by-nc-sa/2.5/ch',
+				' creativecommons.org/licenses/by-nc-sa/2.5/cn',
+				' creativecommons.org/licenses/by-nc-sa/2.5/co',
+				' creativecommons.org/licenses/by-nc-sa/2.5/dk',
+				' creativecommons.org/licenses/by-nc-sa/2.5/es',
+				' creativecommons.org/licenses/by-nc-sa/2.5/hr',
+				' creativecommons.org/licenses/by-nc-sa/2.5/hu',
+				' creativecommons.org/licenses/by-nc-sa/2.5/il',
+				' creativecommons.org/licenses/by-nc-sa/2.5/in',
+				' creativecommons.org/licenses/by-nc-sa/2.5/it',
+				' creativecommons.org/licenses/by-nc-sa/2.5/mk',
+				' creativecommons.org/licenses/by-nc-sa/2.5/mt',
+				' creativecommons.org/licenses/by-nc-sa/2.5/mx',
+				' creativecommons.org/licenses/by-nc-sa/2.5/my',
+				' creativecommons.org/licenses/by-nc-sa/2.5/nl',
+				' creativecommons.org/licenses/by-nc-sa/2.5/pe',
+				' creativecommons.org/licenses/by-nc-sa/2.5/pl',
+				' creativecommons.org/licenses/by-nc-sa/2.5/pt',
+				' creativecommons.org/licenses/by-nc-sa/2.5/scotland',
+				' creativecommons.org/licenses/by-nc-sa/2.5/se',
+				' creativecommons.org/licenses/by-nc-sa/2.5/si',
+				' creativecommons.org/licenses/by-nc-sa/2.5/tw',
+				' creativecommons.org/licenses/by-nc-sa/2.5/za',
+				
+				' creativecommons.org/licenses/by-nc/2.5',
+				' creativecommons.org/licenses/by-nc/2.5/ar',
+				' creativecommons.org/licenses/by-nc/2.5/au',
+				' creativecommons.org/licenses/by-nc/2.5/bg',
+				' creativecommons.org/licenses/by-nc/2.5/br',
+				' creativecommons.org/licenses/by-nc/2.5/ca',
+				' creativecommons.org/licenses/by-nc/2.5/ch',
+				' creativecommons.org/licenses/by-nc/2.5/cn',
+				' creativecommons.org/licenses/by-nc/2.5/co',
+				' creativecommons.org/licenses/by-nc/2.5/dk',
+				' creativecommons.org/licenses/by-nc/2.5/es',
+				' creativecommons.org/licenses/by-nc/2.5/hr',
+				' creativecommons.org/licenses/by-nc/2.5/hu',
+				' creativecommons.org/licenses/by-nc/2.5/il',
+				' creativecommons.org/licenses/by-nc/2.5/in',
+				' creativecommons.org/licenses/by-nc/2.5/it',
+				' creativecommons.org/licenses/by-nc/2.5/mk',
+				' creativecommons.org/licenses/by-nc/2.5/mt',
+				' creativecommons.org/licenses/by-nc/2.5/mx',
+				' creativecommons.org/licenses/by-nc/2.5/my',
+				' creativecommons.org/licenses/by-nc/2.5/nl',
+				' creativecommons.org/licenses/by-nc/2.5/pe',
+				' creativecommons.org/licenses/by-nc/2.5/pl',
+				' creativecommons.org/licenses/by-nc/2.5/pt',
+				' creativecommons.org/licenses/by-nc/2.5/scotland',
+				' creativecommons.org/licenses/by-nc/2.5/se',
+				' creativecommons.org/licenses/by-nc/2.5/si',
+				' creativecommons.org/licenses/by-nc/2.5/tw',
+				' creativecommons.org/licenses/by-nc/2.5/za',
+				
+				' creativecommons.org/licenses/by-nd/2.5',
+				' creativecommons.org/licenses/by-nd/2.5/ar',
+				' creativecommons.org/licenses/by-nd/2.5/au',
+				' creativecommons.org/licenses/by-nd/2.5/bg',
+				' creativecommons.org/licenses/by-nd/2.5/br',
+				' creativecommons.org/licenses/by-nd/2.5/ca',
+				' creativecommons.org/licenses/by-nd/2.5/ch',
+				' creativecommons.org/licenses/by-nd/2.5/cn',
+				' creativecommons.org/licenses/by-nd/2.5/co',
+				' creativecommons.org/licenses/by-nd/2.5/dk',
+				' creativecommons.org/licenses/by-nd/2.5/es',
+				' creativecommons.org/licenses/by-nd/2.5/hr',
+				' creativecommons.org/licenses/by-nd/2.5/hu',
+				' creativecommons.org/licenses/by-nd/2.5/il',
+				' creativecommons.org/licenses/by-nd/2.5/in',
+				' creativecommons.org/licenses/by-nd/2.5/it',
+				' creativecommons.org/licenses/by-nd/2.5/mk',
+				' creativecommons.org/licenses/by-nd/2.5/mt',
+				' creativecommons.org/licenses/by-nd/2.5/mx',
+				' creativecommons.org/licenses/by-nd/2.5/my',
+				' creativecommons.org/licenses/by-nd/2.5/nl',
+				' creativecommons.org/licenses/by-nd/2.5/pe',
+				' creativecommons.org/licenses/by-nd/2.5/pl',
+				' creativecommons.org/licenses/by-nd/2.5/pt',
+				' creativecommons.org/licenses/by-nd/2.5/scotland',
+				' creativecommons.org/licenses/by-nd/2.5/se',
+				' creativecommons.org/licenses/by-nd/2.5/si',
+				' creativecommons.org/licenses/by-nd/2.5/tw',
+				' creativecommons.org/licenses/by-nd/2.5/za',
+				
+				' creativecommons.org/licenses/by-sa/2.5',
+				' creativecommons.org/licenses/by-sa/2.5/ar',
+				' creativecommons.org/licenses/by-sa/2.5/au',
+				' creativecommons.org/licenses/by-sa/2.5/bg',
+				' creativecommons.org/licenses/by-sa/2.5/br',
+				' creativecommons.org/licenses/by-sa/2.5/ca',
+				' creativecommons.org/licenses/by-sa/2.5/ch',
+				' creativecommons.org/licenses/by-sa/2.5/cn',
+				' creativecommons.org/licenses/by-sa/2.5/co',
+				' creativecommons.org/licenses/by-sa/2.5/dk',
+				' creativecommons.org/licenses/by-sa/2.5/es',
+				' creativecommons.org/licenses/by-sa/2.5/hr',
+				' creativecommons.org/licenses/by-sa/2.5/hu',
+				' creativecommons.org/licenses/by-sa/2.5/il',
+				' creativecommons.org/licenses/by-sa/2.5/in',
+				' creativecommons.org/licenses/by-sa/2.5/it',
+				' creativecommons.org/licenses/by-sa/2.5/mk',
+				' creativecommons.org/licenses/by-sa/2.5/mt',
+				' creativecommons.org/licenses/by-sa/2.5/mx',
+				' creativecommons.org/licenses/by-sa/2.5/my',
+				' creativecommons.org/licenses/by-sa/2.5/nl',
+				' creativecommons.org/licenses/by-sa/2.5/pe',
+				' creativecommons.org/licenses/by-sa/2.5/pl',
+				' creativecommons.org/licenses/by-sa/2.5/pt',
+				' creativecommons.org/licenses/by-sa/2.5/scotland',
+				' creativecommons.org/licenses/by-sa/2.5/se',
+				' creativecommons.org/licenses/by-sa/2.5/si',
+				' creativecommons.org/licenses/by-sa/2.5/tw',
+				' creativecommons.org/licenses/by-sa/2.5/za',
+				
+				' creativecommons.org/licenses/by/2.5',
+				' creativecommons.org/licenses/by/2.5/ar',
+				' creativecommons.org/licenses/by/2.5/au',
+				' creativecommons.org/licenses/by/2.5/bg',
+				' creativecommons.org/licenses/by/2.5/br',
+				' creativecommons.org/licenses/by/2.5/ca',
+				' creativecommons.org/licenses/by/2.5/ch',
+				' creativecommons.org/licenses/by/2.5/cn',
+				' creativecommons.org/licenses/by/2.5/co',
+				' creativecommons.org/licenses/by/2.5/dk',
+				' creativecommons.org/licenses/by/2.5/es',
+				' creativecommons.org/licenses/by/2.5/hr',
+				' creativecommons.org/licenses/by/2.5/hu',
+				' creativecommons.org/licenses/by/2.5/il',
+				' creativecommons.org/licenses/by/2.5/in',
+				' creativecommons.org/licenses/by/2.5/it',
+				' creativecommons.org/licenses/by/2.5/mk',
+				' creativecommons.org/licenses/by/2.5/mt',
+				' creativecommons.org/licenses/by/2.5/mx',
+				' creativecommons.org/licenses/by/2.5/my',
+				' creativecommons.org/licenses/by/2.5/nl',
+				' creativecommons.org/licenses/by/2.5/pe',
+				' creativecommons.org/licenses/by/2.5/pl',
+				' creativecommons.org/licenses/by/2.5/pt',
+				' creativecommons.org/licenses/by/2.5/scotland',
+				' creativecommons.org/licenses/by/2.5/se',
+				' creativecommons.org/licenses/by/2.5/si',
+				' creativecommons.org/licenses/by/2.5/tw',
+				' creativecommons.org/licenses/by/2.5/za',
+				
+				' creativecommons.org/licenses/by-nc-nd/2.1/au',
+				' creativecommons.org/licenses/by-nc-nd/2.1/ca',
+				' creativecommons.org/licenses/by-nc-nd/2.1/es',
+				' creativecommons.org/licenses/by-nc-nd/2.1/jp',
+				
+				' creativecommons.org/licenses/by-nc-sa/2.1/au',
+				' creativecommons.org/licenses/by-nc-sa/2.1/ca',
+				' creativecommons.org/licenses/by-nc-sa/2.1/es',
+				' creativecommons.org/licenses/by-nc-sa/2.1/jp',
+				
+				' creativecommons.org/licenses/by-nc/2.1/au',
+				' creativecommons.org/licenses/by-nc/2.1/ca',
+				' creativecommons.org/licenses/by-nc/2.1/es',
+				' creativecommons.org/licenses/by-nc/2.1/jp',
+				
+				' creativecommons.org/licenses/by-nd/2.1/au',
+				' creativecommons.org/licenses/by-nd/2.1/ca',
+				' creativecommons.org/licenses/by-nd/2.1/es',
+				' creativecommons.org/licenses/by-nd/2.1/jp',
+				
+				' creativecommons.org/licenses/by-sa/2.1/au',
+				' creativecommons.org/licenses/by-sa/2.1/ca',
+				' creativecommons.org/licenses/by-sa/2.1/es',
+				' creativecommons.org/licenses/by-sa/2.1/jp',
+				
+				' creativecommons.org/licenses/by/2.1/au',
+				' creativecommons.org/licenses/by/2.1/ca',
+				' creativecommons.org/licenses/by/2.1/es',
+				' creativecommons.org/licenses/by/2.1/jp',
+				
+				' creativecommons.org/licenses/by-nc-nd/2.0',
+				' creativecommons.org/licenses/by-nc-nd/2.0/at',
+				' creativecommons.org/licenses/by-nc-nd/2.0/au',
+				' creativecommons.org/licenses/by-nc-nd/2.0/be',
+				' creativecommons.org/licenses/by-nc-nd/2.0/br',
+				' creativecommons.org/licenses/by-nc-nd/2.0/ca',
+				' creativecommons.org/licenses/by-nc-nd/2.0/cl',
+				' creativecommons.org/licenses/by-nc-nd/2.0/de',
+				' creativecommons.org/licenses/by-nc-nd/2.0/es',
+				' creativecommons.org/licenses/by-nc-nd/2.0/fr',
+				' creativecommons.org/licenses/by-nc-nd/2.0/hr',
+				' creativecommons.org/licenses/by-nc-nd/2.0/it',
+				' creativecommons.org/licenses/by-nc-nd/2.0/jp',
+				' creativecommons.org/licenses/by-nc-nd/2.0/kr',
+				' creativecommons.org/licenses/by-nc-nd/2.0/nl',
+				' creativecommons.org/licenses/by-nc-nd/2.0/pl',
+				' creativecommons.org/licenses/by-nc-nd/2.0/tw',
+				' creativecommons.org/licenses/by-nc-nd/2.0/uk',
+				' creativecommons.org/licenses/by-nc-nd/2.0/za',
+				
+				' creativecommons.org/licenses/by-nc-sa/2.0',
+				' creativecommons.org/licenses/by-nc-sa/2.0/at',
+				' creativecommons.org/licenses/by-nc-sa/2.0/au',
+				' creativecommons.org/licenses/by-nc-sa/2.0/be',
+				' creativecommons.org/licenses/by-nc-sa/2.0/br',
+				' creativecommons.org/licenses/by-nc-sa/2.0/ca',
+				' creativecommons.org/licenses/by-nc-sa/2.0/cl',
+				' creativecommons.org/licenses/by-nc-sa/2.0/de',
+				' creativecommons.org/licenses/by-nc-sa/2.0/es',
+				' creativecommons.org/licenses/by-nc-sa/2.0/fr',
+				' creativecommons.org/licenses/by-nc-sa/2.0/hr',
+				' creativecommons.org/licenses/by-nc-sa/2.0/it',
+				' creativecommons.org/licenses/by-nc-sa/2.0/jp',
+				' creativecommons.org/licenses/by-nc-sa/2.0/kr',
+				' creativecommons.org/licenses/by-nc-sa/2.0/nl',
+				' creativecommons.org/licenses/by-nc-sa/2.0/pl',
+				' creativecommons.org/licenses/by-nc-sa/2.0/tw',
+				' creativecommons.org/licenses/by-nc-sa/2.0/uk',
+				' creativecommons.org/licenses/by-nc-sa/2.0/za',
+				
+				' creativecommons.org/licenses/by-nc/2.0',
+				' creativecommons.org/licenses/by-nc/2.0/at',
+				' creativecommons.org/licenses/by-nc/2.0/au',
+				' creativecommons.org/licenses/by-nc/2.0/be',
+				' creativecommons.org/licenses/by-nc/2.0/br',
+				' creativecommons.org/licenses/by-nc/2.0/ca',
+				' creativecommons.org/licenses/by-nc/2.0/cl',
+				' creativecommons.org/licenses/by-nc/2.0/de',
+				' creativecommons.org/licenses/by-nc/2.0/es',
+				' creativecommons.org/licenses/by-nc/2.0/fr',
+				' creativecommons.org/licenses/by-nc/2.0/hr',
+				' creativecommons.org/licenses/by-nc/2.0/it',
+				' creativecommons.org/licenses/by-nc/2.0/jp',
+				' creativecommons.org/licenses/by-nc/2.0/kr',
+				' creativecommons.org/licenses/by-nc/2.0/nl',
+				' creativecommons.org/licenses/by-nc/2.0/pl',
+				' creativecommons.org/licenses/by-nc/2.0/tw',
+				' creativecommons.org/licenses/by-nc/2.0/uk',
+				' creativecommons.org/licenses/by-nc/2.0/za',
+				
+				' creativecommons.org/licenses/by-nd/2.0',
+				' creativecommons.org/licenses/by-nd/2.0/at',
+				' creativecommons.org/licenses/by-nd/2.0/au',
+				' creativecommons.org/licenses/by-nd/2.0/be',
+				' creativecommons.org/licenses/by-nd/2.0/br',
+				' creativecommons.org/licenses/by-nd/2.0/ca',
+				' creativecommons.org/licenses/by-nd/2.0/cl',
+				' creativecommons.org/licenses/by-nd/2.0/de',
+				' creativecommons.org/licenses/by-nd/2.0/es',
+				' creativecommons.org/licenses/by-nd/2.0/fr',
+				' creativecommons.org/licenses/by-nd/2.0/hr',
+				' creativecommons.org/licenses/by-nd/2.0/it',
+				' creativecommons.org/licenses/by-nd/2.0/jp',
+				' creativecommons.org/licenses/by-nd/2.0/kr',
+				' creativecommons.org/licenses/by-nd/2.0/nl',
+				' creativecommons.org/licenses/by-nd/2.0/pl',
+				' creativecommons.org/licenses/by-nd/2.0/tw',
+				' creativecommons.org/licenses/by-nd/2.0/uk',
+				' creativecommons.org/licenses/by-nd/2.0/za',
+				
+				' creativecommons.org/licenses/by-sa/2.0',
+				' creativecommons.org/licenses/by-sa/2.0/at',
+				' creativecommons.org/licenses/by-sa/2.0/au',
+				' creativecommons.org/licenses/by-sa/2.0/be',
+				' creativecommons.org/licenses/by-sa/2.0/br',
+				' creativecommons.org/licenses/by-sa/2.0/ca',
+				' creativecommons.org/licenses/by-sa/2.0/cl',
+				' creativecommons.org/licenses/by-sa/2.0/de',
+				' creativecommons.org/licenses/by-sa/2.0/es',
+				' creativecommons.org/licenses/by-sa/2.0/fr',
+				' creativecommons.org/licenses/by-sa/2.0/hr',
+				' creativecommons.org/licenses/by-sa/2.0/it',
+				' creativecommons.org/licenses/by-sa/2.0/jp',
+				' creativecommons.org/licenses/by-sa/2.0/kr',
+				' creativecommons.org/licenses/by-sa/2.0/nl',
+				' creativecommons.org/licenses/by-sa/2.0/pl',
+				' creativecommons.org/licenses/by-sa/2.0/tw',
+				' creativecommons.org/licenses/by-sa/2.0/uk',
+				' creativecommons.org/licenses/by-sa/2.0/za',
+				
+				' creativecommons.org/licenses/by/2.0',
+				' creativecommons.org/licenses/by/2.0/at',
+				' creativecommons.org/licenses/by/2.0/au',
+				' creativecommons.org/licenses/by/2.0/be',
+				' creativecommons.org/licenses/by/2.0/br',
+				' creativecommons.org/licenses/by/2.0/ca',
+				' creativecommons.org/licenses/by/2.0/cl',
+				' creativecommons.org/licenses/by/2.0/de',
+				' creativecommons.org/licenses/by/2.0/es',
+				' creativecommons.org/licenses/by/2.0/fr',
+				' creativecommons.org/licenses/by/2.0/hr',
+				' creativecommons.org/licenses/by/2.0/it',
+				' creativecommons.org/licenses/by/2.0/jp',
+				' creativecommons.org/licenses/by/2.0/kr',
+				' creativecommons.org/licenses/by/2.0/nl',
+				' creativecommons.org/licenses/by/2.0/pl',
+				' creativecommons.org/licenses/by/2.0/tw',
+				' creativecommons.org/licenses/by/2.0/uk',
+				' creativecommons.org/licenses/by/2.0/za',
+				
+				' creativecommons.org/licenses/nc-sa/2.0/jp',
+				
+				' creativecommons.org/licenses/nc/2.0/jp',
+				
+				' creativecommons.org/licenses/nd-nc/2.0/jp',
+				
+				' creativecommons.org/licenses/nd/2.0/jp',
+				
+				' creativecommons.org/licenses/sa/2.0/jp',
+				
+				' creativecommons.org/licenses/by-nc-sa/1.0',
+				' creativecommons.org/licenses/by-nc-sa/1.0/fi',
+				' creativecommons.org/licenses/by-nc-sa/1.0/il',
+				' creativecommons.org/licenses/by-nc-sa/1.0/nl',
+				
+				' creativecommons.org/licenses/by-nc/1.0',
+				' creativecommons.org/licenses/by-nc/1.0/fi',
+				' creativecommons.org/licenses/by-nc/1.0/il',
+				' creativecommons.org/licenses/by-nc/1.0/nl',
+				
+				' creativecommons.org/licenses/by-nd-nc/1.0',
+				' creativecommons.org/licenses/by-nd-nc/1.0/fi',
+				' creativecommons.org/licenses/by-nd-nc/1.0/il',
+				' creativecommons.org/licenses/by-nd-nc/1.0/nl',
+				
+				' creativecommons.org/licenses/by-nd/1.0',
+				' creativecommons.org/licenses/by-nd/1.0/fi',
+				' creativecommons.org/licenses/by-nd/1.0/il',
+				' creativecommons.org/licenses/by-nd/1.0/nl',
+				
+				' creativecommons.org/licenses/by-sa/1.0',
+				' creativecommons.org/licenses/by-sa/1.0/fi',
+				' creativecommons.org/licenses/by-sa/1.0/il',
+				' creativecommons.org/licenses/by-sa/1.0/nl',
+				
+				' creativecommons.org/licenses/by/1.0',
+				' creativecommons.org/licenses/by/1.0/fi',
+				' creativecommons.org/licenses/by/1.0/il',
+				' creativecommons.org/licenses/by/1.0/nl',
+				
+				' creativecommons.org/licenses/nc-sa/1.0',
+				' creativecommons.org/licenses/nc-sa/1.0/fi',
+				' creativecommons.org/licenses/nc-sa/1.0/nl',
+				
+				' creativecommons.org/licenses/nc-samplingplus/1.0',
+				' creativecommons.org/licenses/nc-samplingplus/1.0/tw',
+				
+				' creativecommons.org/licenses/nc/1.0',
+				' creativecommons.org/licenses/nc/1.0/fi',
+				' creativecommons.org/licenses/nc/1.0/nl',
+				
+				' creativecommons.org/licenses/nd-nc/1.0',
+				' creativecommons.org/licenses/nd-nc/1.0/fi',
+				' creativecommons.org/licenses/nd-nc/1.0/nl',
+				
+				' creativecommons.org/licenses/nd/1.0',
+				' creativecommons.org/licenses/nd/1.0/fi',
+				' creativecommons.org/licenses/nd/1.0/nl',
+				
+				' creativecommons.org/licenses/sa/1.0',
+				' creativecommons.org/licenses/sa/1.0/fi',
+				' creativecommons.org/licenses/sa/1.0/nl',
+				
+				' creativecommons.org/licenses/sampling+/1.0',
+				' creativecommons.org/licenses/sampling+/1.0/br',
+				' creativecommons.org/licenses/sampling+/1.0/de',
+				' creativecommons.org/licenses/sampling+/1.0/tw',
+				
+				' creativecommons.org/licenses/sampling/1.0',
+				' creativecommons.org/licenses/sampling/1.0/br',
+				' creativecommons.org/licenses/sampling/1.0/tw',
+				
+				' creativecommons.org/publicdomain/zero/1.0',
+				' creativecommons.org/licenses/devnations/2.0',
+				' creativecommons.org/publicdomain/zero-assert/1.0',
+				' creativecommons.org/publicdomain/zero-waive/1.0',
+				' creativecommons.org/publicdomain/mark/1.0',
+				
+				' '
+			)"
+		/>
+	</xsl:template>
+	
 
 </xsl:stylesheet>

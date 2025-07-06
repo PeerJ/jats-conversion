@@ -26,19 +26,19 @@
  -->
 <!-- ************************************************************************ -->
 <!--                                     NLM STYLECHECKER
-                                           Version 5.12
+                                           Version 5.39
     
     Stylesheet tests an XML instance to determine whether it conforms to correct
     PMC style as defined in the Tagging Guidelines located at:
     
      For Journal Articles:
-      http://www.pubmedcentral.nih.gov/pmcdoc/tagging-guidelines/article/style.html
+      https://www.ncbi.nlm.nih.gov/pmc/pmcdoc/tagging-guidelines/article/style.html
      
      For Manuscripts:
-      http://www.pubmedcentral.nih.gov/pmcdoc/tagging-guidelines/manuscript/style.html
+      https://www.ncbi.nlm.nih.gov/pmc/pmcdoc/tagging-guidelines/manuscript/style.html
         
     For Books
-      http://www.pubmedcentral.nih.gov/pmcdoc/tagging-guidelines/book/style.html
+      https://www.ncbi.nlm.nih.gov/pmc/pmcdoc/tagging-guidelines/book/style.html
      
     Output from this stylesheet will have the following structure:
       -<ERR> will be the root element
@@ -77,8 +77,430 @@
      
    PMC Project Revision notes:
 
-    November 8, 2016: Version 5.12
+   November 13, 2023
+        Cut release branch for Version 5.39.
+        Public release of 4th quarter changes will occur on December 12, 2023.
+
+   October 13, 2023
+        Added new test to href-content-check to disallow xlink:href (on ext-link) that
+        start with the # character.
+
+   October 10, 2023
+        Updated third test in list-continued-check to run only when @id is non-empty.
+
+   September 25, 2023
+        Updated col, colgroup, th, and td handlers in stylecheck-match-templates.xsl
+        to call table-span-check only when @span, @colspan, or @rowspan are present.
+        Commented out check-prohibited-math-characters-outside-math-context in
+        stylecheck-helper-templates.xsl.
+
+   September 12, 2023: Version 5.38
+        Public release of 3rd quarter changes.
+
+   August 10, 2023
+        Cut release branch for Version 5.38.
+        Public release of 3rd quarter changes will occur on September 12, 2023.
+
+   July 30, 2023
+        Added new condition to name-content-check to disallow surname if name[@name-style="given-only"].
+
+   June 28, 2023
+        Added @related-article-type="author-comment" to related-article-to-article-type-attribute.
+
+   June 16, 2023
+        Removed SwissProt from article-documented-elt-values.
+
+   June 13, 2023: Version 5.37
+        Public release of 2nd quarter changes.
+
+   June 1, 2023
+        Added new check for name parts tagged as punctuation only.
+
+   May 16, 2023
+         Cut release branch for Version 5.37.
+         Public release of 2nd quarter changes will occur on June 13, 2023.
+
+   April 24, 2023
+         Removed "QandA" from set of allowed @list-type values.
+
+   April 11, 2023
+         Updated pub-date-conflict-check to look for @date-type="collection"
+         and @publication-format="electronic".
+         Removed "collection" from list of allowed values in publication-format-check.
+
+   March 31, 2023
+         Added "mult-values" param to call to mml-attr-value-check for mathml 
+         attributes @display, @mathvariant, and @equalrows.
+
+   March 29, 2023
+         Added new test copyright-statement-check_v2 that makes the presence of
+         license info in <copyright-statement> an error if no <license> exists.
+
+   March 13, 2023
+         Updated journal-meta-issn-check to allow @publication-format on issn.
+         Added new test issn-publication-format-check to ensure that the value
+         of @publication-format is 'print' or 'electronic'.
+
+   March 7, 2023: Version 5.36
+         Public release of 1st quarter changes
+
+   March 1, 2023
+         Added new test disp-formula-content-test 
+
+   February 7, 2023
+         Cut release branch for Version 5.36
+         Public release of 1st quarter changes will occur on March 7, 2023
+
+   December 20, 2022
+         Added new PI value 'gatesmanu' to manuscript-pi-test
+
+   December 9, 2022: Version 5.35
+         Public release of 4th quarter changes
+
+   November 30, 2022
+         In pub-date-content-check, added check that @date-type and
+         @publication-format coexist
+
+   November 17, 2022
+         Added new test issue-id-check-issue-exists
+
+   November 9, 2022
+         Cut release branch for Version 5.35
+         Public release of 4th quarter changes will occur on December 9, 2022
+
+   October 27, 2022
+         Removed PACTR from article-documented-elt-values
+
+   October 6, 2022
+         Added new tests volume-count-check and issue-count-check, and called them from
+         article-meta and front-stub
+
+   September 22, 2022
+         Added new test book-abstract-length-test
+
+   September 21, 2022
+         Removed unused @ext-link-type values from variable 'article-supported-elt-values'
+  
+   September 20, 2022
+         Allowed the ext-link-type = 'ccdc' (Cambridge Crystallographic Data Centre)
+
+   September 9, 2022: Version 5.34
+         Public release of 3rd quarter changes
+
+   August 5, 2022
+         Cut release branch for Version 5.34
+         Public release of 3rd quarter changes: September 9, 2022
+
+   July 28, 2022
+         Updated formula-content-test to look at all text() nodes, not just
+         the first
+
+   June 9, 2022: Version 5.33
+         Public release of 2nd quarter changes
+   
+   May 17, 2022
+         Removed set of undocumented ext-link types 
+
+   May 13, 2022
+         Added new test disp-level-check
+
+   May 11, 2022
+         Added @ext-link-type values pombase, flybase, wormbase, mirbase, rfam,
+         pfam, prosite, and swiss-model
+
+   May 9, 2022
+         Cut release branch for Version 5.33
+         Public release of 2nd quarter changes: June 9, 2022
+
+   May 4, 2022
+         Adjusted ms-footnote-license-check to issue a warning in all cases
+
+   April 26, 2022
+         Added support for @article-type and @related-article-type values that can
+         appear in peer-review content
+
+   February 10, 2022 Version 5.32
+	 Public release of 1st quarter changes 
+
+   January 31, 2022
+         In check for duplicate @specific-use, allow duplicates if elements are
+         differentiated by @xml:lang
+   
+   January 24, 2022
+         Allowed for empty role if a @content-type containing a CRediT URL is present.   
+
+   November 29, 2021
+         Disallowed empty ali:license_ref
+
+   October 28, 2021
+         In @ext-link-type check, separated allowed and supported values in books
+         and allowed and supported values in articles into four lists to allow for
+         better detail in errors
+
+   October 26, 2021
+         Adjusted first test in ms-footnote-license-check to avoid issuing an error
+         for casual mentions of Creative Commons licenses
+
+   October 25, 2021 Version 5.31
+         Public release of 4th quarter changes
+
+   September 1, 2021
+         Added @custom-type check to article-id, fn, person-group, pub-id, and xref 
+						
+   July 27, 2021 Version 5.30
+						Public release of 3rd quarter changes
+
+   June 4, 2021
+         Disallowed more than one article-id with certain @pub-id-type values
+
+   April 29, 2021 Version 5.30
+				 		Public release of 2nd quarter changes
+    
+   April 29, 2021
+         Disallowed more than one ali:license_ref with a Creative Commons URL per license
+         
+    April 9, 2021
+         Added test to check that ali:license_ref and ext-link in license match
+         Required canonical Creative Common URLs in licenses
+   
+   April 6, 2021
+         Removed the requirement that link text and URL must match for external links in licenses
+         
+  January 26, 2021
+         Disallowed XLink namespace URIs other than http://www.w3.org/1999/xlink
+	     
+   December 11, 2020
+          PMC-44617: For element pub-id, added pmid-check to make sure PMIDs do not contain letters and
+	     do not start with a zero
+
+   December 7, 2020
+          MS-4151: Allow doi in related-article links and republications as corrections for manuscripts
+   
+   November 30, 2020
+          Allowed ack in body for books
+          
+   November 10, 2020
+          Fix rules for maligngroup
+          
+   November 5, 2020
+          Updated rules for maligngroup to allow for implied mrow in mtd with multiple children
+          
+   August 24, 2020
+            Updated error message in license-integrity-check to mirror message in 
+               license-ext-link-content-check
+
+   August 17, 2020
+            Updated error message in license-ext-link-content-check
+            
+   August 11, 2020: Version 5.27
+            Public release of 3rd quarter changes
+   
+   July 2, 2020
+            Added check for '10..' in DOI value   
+   
+   June 29, 2020
+            xref should have @ref-type value   
+   
+   June 15, 2020: Version 5.26
+            Public release of 2nd quarter changes
+   
+   June 5, 2020:
+            Disallowed the continued-from attribute on a list to point to an element that is not list
+            Disallowed circular references in continued-from attributes on lists
+            
+   May 21, 2020:
+            Add parent and ancestor tests for maligngroup element
+   
+   April 30, 2020:
+            Allowed the related-article types 'preprint' and 'published-article'
+  
+   April 7, 2020:
+            Disallowed empty fpage, lpage, and elocation-id elements
+            
+   March 31, 2020:
+            Allowed article-type 'chapter-article'
+            Updated sub-article check to allow correction, retraction, expression-of-concern when
+              sub-article is in a different language than the parent article
+            Allowed any value for season if an @iso-8601-date is present
+
+   March 23, 2020:
+            Expanded media in alternatives check to include inline-media, graphic, and inline-graphic.
+            Removed unused test in alternatives-content-check.
+            
+   March 11, 2020:
+            Media in alternatives can point to external site iff there is another media specifying a local file
+
+   March 6, 2020:
+            Allowed xrefs with ref-type=supplementary-material to point to inline-supplementary-material
+	      
+   February 25, 2020:
+            Disallowed non-numeric values in the colspan, rowspan, and span table attributes
+             
+   February 11, 2020: Version 5.25
+		     Public release of 1st quarter changes   
+   
+   November 22, 2019:
+             Added warning for multiple tbody elements in books tables
+
+   November 13, 2019:
+             Disallowed multiple child math elements in alternatives
+
+   November 12, 2019: Version 5.24
+	         Public release of 4th quarter changes   
+  
+   October 15, 2019:
+              Disallowed continued-from attributes referencing the parent list
+	       
+
+   September 25, 2019:
+              Added EBI:emdb and sasbdb to the list of allowed ext-link-type values
+	      
+   August 20, 2019:
+              Refined article-type-to-related-article-check to produce an error for a correction/retraction without a proper @related-article-type 
+
+   August 16, 2019:
+              Check for presence of xlink:href in inline-supplementary-material
+
+   August 13, 2019: Version 5.23
               Public release of 3rd quarter changes
+
+   July 1, 2019:
+              Added Xpath context to the following checks:
+                  day-check
+                  formula-content-test
+                  href-content-check
+                  href-ext-check
+                  license-ext-link-content-check
+                  month-check
+                  xref-check
+
+   June 5, 2019:
+              Added error type 'related-article letter reply check' for related-article-self-test warnings 
+
+   May 28, 2019:
+              Allowed xrefs with ref-type=sec to point to (BITS) question and answer elements
+
+   May 20, 2019: Version 5.22.1
+              Fixed link generation in HTML style report  
+        	
+   May 15, 2019: Version 5.22
+              Public release of 2nd quarter changes   
+        	
+   March 7, 2019:
+              Updated license integrity check to recognize license URI in ali:license_ref
+   
+   February 25, 2019:
+              Added values retraction-republication and retracted-republished-article to allowed @related-article-type values 
+              Added retracted-republished-article to the existing related-article-to-artucle-type test; article-type must be retraction
+              
+    February 12, 2019: Version 5.21
+              Public release of 1st quarter changes   
+        	
+    January 2, 2019:
+              Applied alternatives content check when parent is bio   
+        	
+    December 10, 2018:
+              Added values reprint and reprinted-article to allowed @related-article-type values   
+        	
+    November 13, 2018: Version 5.20
+              Public release of 4th quarter changes
+    
+    October 29, 2018:
+              Required xrefs with ref-type=aff in books to point to an aff element within the same sec-meta, book-part-meta, book-meta, or collection-meta as the xref itself.
+              Required @id on various elements 
+              
+    September 25, 2018:
+              Expanded href file extension string limit from 10 to 15
+    
+    August 14, 2018: Version 5.19
+              Public release of 3rd quarter changes
+    
+    July 16, 2018:
+             Expanded list of documented ext-link-type values
+
+    July 9, 2018:
+             Removed contrib-author-notes-test
+             Removed deceased and equal-contrib tests from content-attribute-checking
+
+    June 11, 2018:
+             Required book-part-id and book-id to not be empty
+             Required book-part-id-type on book-part-id and book-id-type on book-id
+	     Required DOI syntax for book-id and book-part-id marked as 'doi'
+	     
+    May 9, 2018: Version 5.18
+              Public release of 2nd quarter changes
+    
+    April 9, 2018:
+             Modified contrib-content-test to produce an error when a contrib contains both name and name-alternatives
+	
+    April 9, 2018:
+             Applied article-type-content-check to responses and sub-articles 
+	
+    March 15, 2018:
+             Updated related-article-check error message for missing attributes 
+	
+    February 21, 2018:
+             Required title and ID on every main chunk of a book
+             Required book-title and publisher in book-meta 
+	
+    February 13, 2018: Version 5.17
+              Public release of 1st quarter changes
+    
+    January 23, 2018
+              Added "update" as an approved pub-date @date-type
+    
+    December 21, 2017
+              Dropped empty-element-check from string-date when not a child of a date element
+    
+    December 1, 2017
+              Modified article-type-to-related-article-check to produce an error when a correction or retraction contains no related-article element 
+    
+    November 14, 2017: Version 5.16
+              Public release of 4th quarter changes
+    
+    November 13, 2017
+              Updated names for a few tests: "contrib attributes check" to "equal contrib attributes check"; "date check" to "electronic date check"; "date check" to "rrn date check"; "date check" to "book date check"; "date check" to "article date check"; "license check" to "cc no uri license check"
+	      
+    August 15, 2017
+              Updated test for @xml:lang on trans-title so that the trans-title/@xml:lang
+              could be the same as the /article/@xml:lang IF the article-title was different
+              from /article/@xml:lang
+   
+    August 10, 2017: Version 5.15
+              Public release of 3rd quarter changes
+    
+    June 1, 2017
+              Added bio as an approved parent of alternatives.
+              
+              Modified href extension check to permit extensions containing an underscore.
+              
+    May 9, 2017: Version 5.14
+              Public release of 2nd quarter changes
+              
+    March 30, 2017
+              Expanded formula-content-test to report inline-formula within disp-formula, and vice versa. 
+   
+    February 27, 2017
+    	PMC-29933 - Remove collab-contrib-grp-check because we have content 
+		that has contrib-group associated with a collab that has 
+		collab members. pmcdata/frontiers/frontpediatrics/5-2017/noissue/00018/
+		
+    February 14, 2017: Version 5.13
+              Public release of 1st quarter changes
+              
+    January 31, 2017
+   	Added copyright license check: copyright-statement must not contain license information
+   	
+   	Added warning for Creative Commons license statements with no license URI.
+   
+    December 21, 2016
+              Apply history-date-type-attribute-check only to dates within history
+   
+    November 14, 2016:
+              Updates for NLM Biomedical Journal Digitization: history-date-type-attribute-check
+
+    November 8, 2016: Version 5.12
+              Public release of 4th quarter changes
               
     September 28, 2016
               pub-date must contain no more than one month element
@@ -203,7 +625,7 @@
    
     December 23, 2013:
                      subj-group[@subj-group-type="heading"] cannot have a 
-                       subject with only an <inline-grapic>
+                       subject with only an <inline-graphic>
    
     December 3, 2013:
                     Added explicit test for @xml:lang on all trans-* elements
@@ -416,6 +838,7 @@
    xmlns:xlink="http://www.w3.org/1999/xlink" 
    xmlns:mml="http://www.w3.org/1998/Math/MathML" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ali="http://www.niso.org/schemas/ali/1.0/"
    version="1.0">
    
    <xsl:output method="xml" 
@@ -444,6 +867,10 @@
    <!-- If "true" then output messages to standard error; do not if "false" -->
    <xsl:param name="messages" select="'false'"/>
 
+  <!-- If "yes" then notice names will be written to <error> and <warning> as 
+       the value of @notice -->
+   <xsl:param name="notices" select="'no'"/>
+
    <!-- Consider the document-type to be the type-name of the root element. -->
    <xsl:param name="document-type" select="
       name(/child::node()[not(self::comment()) and 
@@ -451,7 +878,7 @@
                           not(self::text())])"/>
 
    <!-- Indicate our own version -->
-   <xsl:param name="stylechecker-version"     select="'5.12'"/>
+   <xsl:param name="stylechecker-version"     select="'5.39'"/>
    <xsl:param name="stylechecker-mainline"    select="'nlm-stylechecker5.xsl'"/>
 
    <!-- The 'style' selects the rules that can be applied by the stylechecker.
@@ -521,6 +948,7 @@
 			<xsl:when test="not(/node()/@dtd-version)"> and unknown version </xsl:when>
 			<xsl:when test="$attvalue='1' and /article/front/journal-meta/journal-title-group">j1</xsl:when>
 			<xsl:when test="$attvalue='1' and (/book-part-wrapper | /book/namespace::xi)">b1</xsl:when>
+			<xsl:when test="$attvalue='2' and (/book-part-wrapper | /book/namespace::xi)">b2</xsl:when>
 			<xsl:when test="$attvalue='3'">3</xsl:when>
 			<xsl:when test="$attvalue='2' or $attvalue='1'">2</xsl:when>
 			<xsl:otherwise>[<xsl:value-of select="/node()/@dtd-version"/>||<xsl:value-of select="$attvalue"/>]</xsl:otherwise>
@@ -545,8 +973,9 @@
 		</xsl:choose>
 	</xsl:param>
 	
-	<xsl:param name="pub-id-type-values" select="' accession aggregator archive art-access-id arxiv coden doaj doi index isbn manuscript medline other pii pmc pmc-scan pmcid pmid publisher-id publisher-manuscript sici std-designation '"/>
+	<xsl:param name="pub-id-type-values" select="' accession aggregator archive art-access-id arxiv coden custom doaj doi index isbn manuscript medline other pii pmc pmc-scan pmcid pmid publisher-id publisher-manuscript sici std-designation '"/>
 
+	<xsl:key name="el-by-id" match="*[@id]" use="@id"/>
 
    <!-- ********************************************************************* -->
    <!-- Template: / 
@@ -566,7 +995,7 @@
 				<xsl:value-of select="$stylechecker-version"/>
 				<xsl:text> of the NLM XML StyleChecker. </xsl:text>
 				<xsl:text>||</xsl:text>
-				<xsl:text>The document is being checked against the PMC Tagging Guidlines rules for "</xsl:text>
+				<xsl:text>The document is being checked against the PMC Tagging Guidelines rules for "</xsl:text>
 				<xsl:value-of select="$stream"/>
 				<xsl:text>" for content tagged using </xsl:text>
 				<xsl:choose>
@@ -582,6 +1011,9 @@
 					<xsl:when test="$dtd-version='b1'">
 						<xsl:text>version 1.0 </xsl:text>
 					</xsl:when>
+					<xsl:when test="$dtd-version='b2'">
+						<xsl:text>version 2.0 </xsl:text>
+					</xsl:when>
 					<xsl:otherwise>
 						<xsl:value-of select="$dtd-version"/>
 						</xsl:otherwise>
@@ -592,6 +1024,9 @@
 						<xsl:text>JATS DTD. </xsl:text>
 					</xsl:when>
 					<xsl:when test="$dtd-version='b1'">
+						<xsl:text>BITS DTD. </xsl:text>
+					</xsl:when>
+					<xsl:when test="$dtd-version='b2'">
 						<xsl:text>BITS DTD. </xsl:text>
 					</xsl:when>
 					<xsl:otherwise>
@@ -611,3 +1046,4 @@
 		</xsl:template>
 
 </xsl:stylesheet>
+

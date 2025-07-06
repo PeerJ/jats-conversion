@@ -29,6 +29,8 @@ xmllint --loaddtd --valid --nonet $TRACE --noout --catalogs "$ARTICLE"
 echo "Validating against JATS XSD"
 # TODO: detect version or add option
 xmllint --nonet $TRACE --noout --catalogs --schema 'http://jats.nlm.nih.gov/publishing/1.1/xsd/JATS-journalpublishing1.xsd' "$ARTICLE"
+#xmllint --nonet $TRACE --noout --catalogs --schema 'http://jats.nlm.nih.gov/publishing/1.2/xsd/JATS-journalpublishing1.xsd' "$ARTICLE"
+#xmllint --nonet $TRACE --noout --catalogs --schema 'http://jats.nlm.nih.gov/publishing/1.3/xsd/JATS-journalpublishing1.xsd' "$ARTICLE"
 
 DEPOSITION="$OUTPUT_DIR/$FILE-CrossRef-DOI-deposition.xml"
 echo "Creating CrossRef DOI deposition - $DEPOSITION"
